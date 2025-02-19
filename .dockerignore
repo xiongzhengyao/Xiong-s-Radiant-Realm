@@ -4,4 +4,13 @@ Dockerfile
 .dockerignore
 .git
 .gitignore
-README.md 
+README.md
+.DS_Store
+.env*
+*.log
+coverage
+.vscode
+.idea
+dist
+tests
+docs 

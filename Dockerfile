@@ -1,30 +1,29 @@
 # 构建阶段
 FROM node:18-alpine AS builder
 WORKDIR /app
+
+# 1. 首先只复制 package 文件，利用 Docker 缓存
 COPY package*.json ./
-RUN npm install
+RUN npm install  # 改用 npm install 替代 npm ci
+
+# 2. 复制源代码并构建
 COPY . .
 RUN npm run build
-# 添加调试信息
-RUN ls -la /app
-RUN ls -la /app/dist || echo "dist directory not created"
 
-# 生产阶段
-FROM node:18-alpine
-WORKDIR /app
-# 复制构建后的文件
-COPY --from=builder /app/dist ./dist
-# 复制服务器文件和依赖
-COPY --from=builder /app/server.js ./
-COPY --from=builder /app/package*.json ./
-RUN npm install --production
+# 生产阶段 - 使用更轻量的基础镜像
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
 
-# 添加调试信息
-RUN ls -la /app
-RUN ls -la /app/dist || echo "dist directory not copied"
+# 3. 只复制构建产物和必要文件
+COPY --from=builder /app/dist .
+COPY --from=builder /app/server.js /app/
+COPY --from=builder /app/package.json /app/
+COPY --from=builder /app/node_modules /app/node_modules
 
-EXPOSE 3000
-ENV HOST=0.0.0.0
-ENV PORT=3000
+# 4. 配置 nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-CMD ["npm", "start"] 
+EXPOSE 8888
+
+# 5. 使用 nginx 来服务静态文件
+CMD ["nginx", "-g", "daemon off;"] 
