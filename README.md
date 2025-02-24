@@ -47,6 +47,54 @@
 
    打开浏览器，访问 `http://localhost:8888`。
 
+### 停止和删除容器
+
+- **停止服务**
+
+  ```bash
+  docker-compose down
+  ```
+
+- **删除所有停止的容器**
+
+  ```bash
+  docker container prune
+  ```
+
+### 清理未使用的镜像
+
+- **删除未使用的镜像**
+
+  ```bash
+  docker image prune
+  ```
+
+- **删除所有未使用的镜像、网络和挂载**
+
+  ```bash
+  docker system prune
+  ```
+
+### 快速更改端口配置
+
+要快速更改应用的端口配置，可以通过修改 `.env` 文件中的 `PORT` 变量来实现：
+
+1. 打开项目根目录下的 `.env` 文件。
+2. 找到 `PORT` 变量并修改为所需的端口号，例如：
+
+   ```env
+   PORT=3000
+   ```
+
+3. 保存文件后，重新构建和启动 Docker 服务：
+
+   ```bash
+   docker-compose down
+   docker-compose up --build
+   ```
+
+4. 访问新的端口，例如 `http://localhost:3000`。
+
 ### 本地开发
 
 1. **安装依赖**
