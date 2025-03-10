@@ -2,147 +2,181 @@
   <div class="blog">
     <el-row justify="center">
       <el-col :span="18">
-        <div class="blog-header">
-          <h1>技术博客</h1>
-          
-          <!-- 添加分类过滤器 -->
-          <div class="category-filter">
-            <el-radio-group v-model="selectedCategory" size="large">
-              <el-radio-button label="all">全部</el-radio-button>
-              <el-radio-button 
-                v-for="category in categories" 
-                :key="category.name" 
-                :label="category.name"
-              >
-                {{ category.label }}
-              </el-radio-button>
-            </el-radio-group>
-          </div>
-
-          <el-input
-            v-model="searchQuery"
-            placeholder="搜索文章..."
-            prefix-icon="Search"
-            clearable
-            class="search-input"
-          />
-        </div>
-
-        <el-row :gutter="30">
-          <!-- 博客列表 -->
-          <el-col :span="16">
-            <div class="post-list">
-              <el-card 
-                v-for="post in filteredPosts" 
-                :key="post.id"
-                class="post-card"
-              >
-                <div class="post-header">
-                  <h2>{{ post.title }}</h2>
-                  <div class="post-meta">
-                    <el-icon><Calendar /></el-icon>
-                    <span>{{ post.date }}</span>
-                    <el-divider direction="vertical" />
-                    <el-icon><User /></el-icon>
-                    <span>{{ post.author }}</span>
-                  </div>
-                </div>
-                <img :src="post.image" class="post-image" />
-                <p class="post-excerpt">{{ post.excerpt }}</p>
-                <div class="post-footer">
-                  <div class="post-tags">
-                    <el-tag 
-                      v-for="tag in post.tags" 
-                      :key="tag"
-                      size="small"
-                      class="post-tag"
-                    >
-                      {{ tag }}
-                    </el-tag>
-                  </div>
-                  <el-button type="primary" text @click="showPostDetail(post)">阅读更多</el-button>
-                </div>
-              </el-card>
-
-              <el-pagination
-                v-model:current-page="currentPage"
-                :page-size="5"
-                :total="totalPosts"
-                layout="prev, pager, next"
-                class="pagination"
-              />
-            </div>
-          </el-col>
-
-          <!-- 侧边栏 -->
-          <el-col :span="8">
-            <el-card class="sidebar-card">
-              <template #header>
-                <div class="card-header">
-                  <span>文章分类</span>
-                </div>
-              </template>
-              <el-menu @select="handleCategorySelect">
-                <el-menu-item index="all">
-                  全部文章
-                  <template #title>
-                    <span>({{ posts.length }})</span>
-                  </template>
-                </el-menu-item>
-                <el-menu-item 
+        <!-- 博客列表视图 -->
+        <div v-if="!currentPostId">
+          <div class="blog-header">
+            <h1>技术博客</h1>
+            
+            <!-- 添加分类过滤器 -->
+            <div class="category-filter">
+              <el-radio-group v-model="selectedCategory" size="large">
+                <el-radio-button label="all">全部</el-radio-button>
+                <el-radio-button 
                   v-for="category in categories" 
-                  :key="category.name"
-                  :index="category.name"
+                  :key="category.name" 
+                  :label="category.name"
                 >
                   {{ category.label }}
-                  <template #title>
-                    <span>({{ getCategoryCount(category.name) }})</span>
-                  </template>
-                </el-menu-item>
-              </el-menu>
-            </el-card>
-          </el-col>
-        </el-row>
+                </el-radio-button>
+              </el-radio-group>
+            </div>
+
+            <el-input
+              v-model="searchQuery"
+              placeholder="搜索文章..."
+              prefix-icon="Search"
+              clearable
+              class="search-input"
+            />
+          </div>
+
+          <el-row :gutter="30">
+            <!-- 博客列表 -->
+            <el-col :span="16">
+              <div class="post-list">
+                <el-card 
+                  v-for="post in filteredPosts" 
+                  :key="post.id"
+                  class="post-card"
+                >
+                  <div class="post-header">
+                    <h2>{{ post.title }}</h2>
+                    <div class="post-meta">
+                      <el-icon><Calendar /></el-icon>
+                      <span>{{ post.date }}</span>
+                      <el-divider direction="vertical" />
+                      <el-icon><User /></el-icon>
+                      <span>{{ post.author }}</span>
+                    </div>
+                  </div>
+                  <img :src="post.image" class="post-image" />
+                  <p class="post-excerpt">{{ post.excerpt }}</p>
+                  <div class="post-footer">
+                    <div class="post-tags">
+                      <el-tag 
+                        v-for="tag in post.tags" 
+                        :key="tag"
+                        size="small"
+                        class="post-tag"
+                      >
+                        {{ tag }}
+                      </el-tag>
+                    </div>
+                    <el-button type="primary" text @click="showPostDetail(post)">阅读更多</el-button>
+                  </div>
+                </el-card>
+
+                <el-pagination
+                  v-model:current-page="currentPage"
+                  :page-size="5"
+                  :total="totalPosts"
+                  layout="prev, pager, next"
+                  class="pagination"
+                />
+              </div>
+            </el-col>
+
+            <!-- 侧边栏 -->
+            <el-col :span="8">
+              <el-card class="sidebar-card">
+                <template #header>
+                  <div class="card-header">
+                    <span>文章分类</span>
+                  </div>
+                </template>
+                <el-menu @select="handleCategorySelect">
+                  <el-menu-item index="all">
+                    全部文章
+                    <template #title>
+                      <span>({{ posts.length }})</span>
+                    </template>
+                  </el-menu-item>
+                  <el-menu-item 
+                    v-for="category in categories" 
+                    :key="category.name"
+                    :index="category.name"
+                  >
+                    {{ category.label }}
+                    <template #title>
+                      <span>({{ getCategoryCount(category.name) }})</span>
+                    </template>
+                  </el-menu-item>
+                </el-menu>
+              </el-card>
+            </el-col>
+          </el-row>
+        </div>
+
+        <!-- 博客文章详情视图 -->
+        <div v-else class="post-container">
+          <!-- 返回按钮 -->
+          <div class="back-button">
+            <el-button @click="backToList" icon="ArrowLeft">
+              返回文章列表
+            </el-button>
+          </div>
+
+          <!-- 文章标题和元信息 -->
+          <div class="post-header" v-if="currentPost">
+            <h1>{{ currentPost.title }}</h1>
+            <div class="post-meta">
+              <el-icon><Calendar /></el-icon>
+              <span>{{ currentPost.date }}</span>
+              <el-divider direction="vertical" />
+              <el-icon><User /></el-icon>
+              <span>{{ currentPost.author }}</span>
+            </div>
+            <div class="post-tags">
+              <el-tag 
+                v-for="tag in currentPost.tags" 
+                :key="tag"
+                size="small"
+                class="post-tag"
+              >
+                {{ tag }}
+              </el-tag>
+            </div>
+          </div>
+
+          <!-- 文章封面图 -->
+          <div class="post-cover" v-if="currentPost">
+            <el-image :src="currentPost.image" fit="cover" />
+          </div>
+
+          <!-- 文章内容 -->
+          <div class="markdown-content" v-html="renderedContent"></div>
+
+          <!-- 文章底部 -->
+          <div class="post-footer">
+            <div class="post-nav">
+              <el-button 
+                v-if="prevPost" 
+                @click="loadPost(prevPost.id)"
+                icon="ArrowLeft"
+              >
+                上一篇：{{ prevPost.title }}
+              </el-button>
+              <el-button 
+                v-if="nextPost" 
+                @click="loadPost(nextPost.id)"
+                icon="ArrowRight"
+                class="next-post"
+              >
+                下一篇：{{ nextPost.title }}
+              </el-button>
+            </div>
+          </div>
+        </div>
       </el-col>
     </el-row>
-
-    <!-- 博客文章详情对话框 -->
-    <el-dialog
-      v-model="dialogVisible"
-      :title="selectedPost?.title"
-      width="70%"
-      class="post-dialog"
-    >
-      <div class="post-content" v-if="selectedPost">
-        <el-loading :value="loading" />
-        <div class="post-meta">
-          <el-icon><Calendar /></el-icon>
-          <span>{{ selectedPost.date }}</span>
-          <el-divider direction="vertical" />
-          <el-icon><User /></el-icon>
-          <span>{{ selectedPost.author }}</span>
-        </div>
-        <div class="markdown-content" v-html="renderedContent"></div>
-        <div class="post-tags">
-          <el-tag 
-            v-for="tag in selectedPost.tags" 
-            :key="tag"
-            size="small"
-            class="post-tag"
-          >
-            {{ tag }}
-          </el-tag>
-        </div>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { Calendar, User } from '@element-plus/icons-vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { Calendar, User, ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 import MarkdownIt from 'markdown-it'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useBlogStore } from '@/stores/blogStore'
 
 // 创建 markdown 解析器实例
@@ -152,11 +186,17 @@ const md = new MarkdownIt({
   linkify: true
 })
 
+// 博客列表相关状态
 const searchQuery = ref('')
 const currentPage = ref(1)
-const dialogVisible = ref(false)
-const selectedPost = ref(null)
+const selectedCategory = ref('all')
+
+// 博客详情相关状态
+const currentPostId = ref(null)
+const currentPost = ref(null)
 const renderedContent = ref('')
+const prevPost = ref(null)
+const nextPost = ref(null)
 const loading = ref(false)
 
 // 添加博客分类
@@ -168,24 +208,65 @@ const categories = [
   { name: 'sensor', label: '传感器' }
 ]
 
-const selectedCategory = ref('all')
-
 const router = useRouter()
+const route = useRoute()
 const blogStore = useBlogStore()
 const posts = computed(() => blogStore.posts)
 
-// 修改文章详情显示方法
+// 显示文章详情
 const showPostDetail = (post) => {
   const slug = Object.keys(blogStore.markdownFiles).find(
     key => blogStore.markdownFiles[key].id === post.id
   )
-  router.push({
-    name: 'BlogPost',
-    params: { 
-      id: post.id,
-      slug
-    }
-  })
+  
+  // 更新URL但不触发路由变化
+  window.history.pushState(
+    {}, 
+    '', 
+    `/blog/${post.id}/${slug}`
+  )
+  
+  // 加载文章
+  loadPost(post.id)
+}
+
+// 返回列表
+const backToList = () => {
+  currentPostId.value = null
+  currentPost.value = null
+  
+  // 更新URL但不触发路由变化
+  window.history.pushState({}, '', '/blog')
+}
+
+// 加载文章内容
+const loadPost = async (id) => {
+  loading.value = true
+  const postData = blogStore.getPostById(id)
+  if (!postData) {
+    backToList()
+    return
+  }
+
+  currentPostId.value = id
+  currentPost.value = postData
+  
+  try {
+    const response = await fetch(postData.markdownFile)
+    if (!response.ok) throw new Error('Failed to load markdown file')
+    const content = await response.text()
+    renderedContent.value = md.render(content)
+
+    // 更新上一篇和下一篇
+    const { prev, next } = blogStore.getAdjacentPosts(id)
+    prevPost.value = prev
+    nextPost.value = next
+  } catch (error) {
+    console.error('Error loading markdown:', error)
+    renderedContent.value = '加载文章内容失败...'
+  } finally {
+    loading.value = false
+  }
 }
 
 // 添加分类计数方法
@@ -198,7 +279,7 @@ const handleCategorySelect = (categoryName) => {
   selectedCategory.value = categoryName
 }
 
-// 其他计算属性保持不变
+// 过滤文章列表
 const filteredPosts = computed(() => {
   const query = searchQuery.value.toLowerCase()
   return posts.value.filter(post => {
@@ -215,6 +296,26 @@ const filteredPosts = computed(() => {
 })
 
 const totalPosts = computed(() => filteredPosts.value.length)
+
+// 处理路由参数
+onMounted(() => {
+  if (route.params.id) {
+    loadPost(route.params.id)
+  }
+})
+
+// 监听路由变化
+watch(
+  () => route.params,
+  (params) => {
+    if (params.id) {
+      loadPost(params.id)
+    } else {
+      currentPostId.value = null
+      currentPost.value = null
+    }
+  }
+)
 </script>
 
 <style scoped>
@@ -314,10 +415,46 @@ const totalPosts = computed(() => filteredPosts.value.length)
   font-size: 0.9em;
 }
 
+/* 博客详情样式 */
+.post-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.back-button {
+  margin-bottom: 2rem;
+}
+
+.post-header {
+  margin-bottom: 2rem;
+}
+
+.post-header h1 {
+  margin: 0 0 1rem 0;
+  color: #303133;
+}
+
+.post-tags {
+  margin-top: 1rem;
+}
+
+.post-cover {
+  margin: 2rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.post-cover .el-image {
+  width: 100%;
+  height: 400px;
+}
+
 /* Markdown styles */
 .markdown-content {
-  padding: 1rem;
-  line-height: 1.6;
+  padding: 2rem 0;
+  line-height: 1.8;
   color: #2c3e50;
 }
 
@@ -357,24 +494,13 @@ const totalPosts = computed(() => filteredPosts.value.length)
   font-family: monospace;
 }
 
-.post-dialog {
-  :deep(.el-dialog__body) {
-    padding: 1rem 2rem;
-  }
-  
-  .post-meta {
-    margin-bottom: 1.5rem;
-    color: #606266;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .post-tags {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eaecef;
-  }
+.post-nav {
+  display: flex;
+  justify-content: space-between;
+}
+
+.next-post {
+  margin-left: auto;
 }
 
 /* 添加分类过滤器样式 */

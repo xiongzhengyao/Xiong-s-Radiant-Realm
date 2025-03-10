@@ -1,75 +1,99 @@
 <template>
   <div class="life">
-    <el-row justify="center">
-      <el-col :span="18">
-        <h1>生活点滴</h1>
-        
-        <!-- 生活分类 -->
-        <div class="category-filter">
-          <el-radio-group v-model="selectedCategory" size="large">
-            <el-radio-button label="all">全部</el-radio-button>
-            <el-radio-button 
-              v-for="category in categories" 
-              :key="category.name" 
-              :label="category.name"
-            >
-              {{ category.label }}
-            </el-radio-button>
-          </el-radio-group>
-        </div>
+    <div class="page-header">
+      <h1 class="animated-title">生活点滴</h1>
+      <p class="subtitle">记录生活中的美好瞬间与感悟</p>
+    </div>
+    
+    <!-- 生活分类 -->
+    <div class="category-filter">
+      <el-radio-group v-model="selectedCategory" size="large">
+        <el-radio-button label="all">
+          <el-icon><Grid /></el-icon> 全部
+        </el-radio-button>
+        <el-radio-button 
+          v-for="category in categories" 
+          :key="category.name" 
+          :label="category.name"
+        >
+          <el-icon><component :is="getCategoryIcon(category.name)" /></el-icon>
+          {{ category.label }}
+        </el-radio-button>
+      </el-radio-group>
+    </div>
 
-        <!-- 时间线展示 -->
-        <el-timeline>
-          <el-timeline-item
-            v-for="post in filteredPosts"
-            :key="post.id"
-            :timestamp="formatDate(post.date)"
-            :type="getTimelineItemType(post.category)"
-            placement="top"
-            size="large"
-          >
-            <div class="timeline-date" :class="getTimelineClass(post.category)">
-              <div class="date-day">{{ getDay(post.date) }}</div>
-              <div class="date-month">{{ getMonth(post.date) }}</div>
-              <div class="date-year">{{ getYear(post.date) }}</div>
-            </div>
-            <el-card class="timeline-card">
-              <div class="card-content">
-                <div class="text-content">
-                  <h3>{{ post.title }}</h3>
-                  <div class="post-tags">
-                    <el-tag 
-                      v-for="tag in post.tags" 
-                      :key="tag"
-                      size="small"
-                      :type="getTagType(post.category)"
-                      class="post-tag"
-                    >
-                      {{ tag }}
-                    </el-tag>
-                  </div>
-                  <p class="post-description">{{ post.description }}</p>
-                  <el-button 
-                    :type="getButtonType(post.category)"
-                    text 
-                    class="read-more"
-                    @click="showPostDetail(post)"
-                  >
-                    阅读更多
-                  </el-button>
-                </div>
-                <div class="image-content">
-                  <el-image 
-                    :src="post.image" 
-                    fit="cover"
-                    class="post-image"
-                    :preview-src-list="[post.image]"
-                  />
-                </div>
+    <!-- 时间线展示 -->
+    <el-row justify="center">
+      <el-col :xs="24" :sm="22" :md="20" :lg="18">
+        <transition-group name="fade-list" tag="div" class="timeline-container">
+          <el-timeline v-if="filteredPosts.length > 0">
+            <el-timeline-item
+              v-for="post in filteredPosts"
+              :key="post.id"
+              :timestamp="formatDate(post.date)"
+              :type="getTimelineItemType(post.category)"
+              placement="top"
+              size="large"
+            >
+              <div class="timeline-date" :class="getTimelineClass(post.category)">
+                <div class="date-day">{{ getDay(post.date) }}</div>
+                <div class="date-month">{{ getMonth(post.date) }}</div>
+                <div class="date-year">{{ getYear(post.date) }}</div>
               </div>
-            </el-card>
-          </el-timeline-item>
-        </el-timeline>
+              <el-card class="timeline-card" shadow="hover">
+                <div class="card-content">
+                  <div class="text-content">
+                    <h3>{{ post.title }}</h3>
+                    <div class="post-tags">
+                      <el-tag 
+                        v-for="tag in post.tags" 
+                        :key="tag"
+                        size="small"
+                        :type="getTagType(post.category)"
+                        class="post-tag"
+                        effect="light"
+                      >
+                        {{ tag }}
+                      </el-tag>
+                    </div>
+                    <p class="post-description">{{ post.description }}</p>
+                    <el-button 
+                      :type="getButtonType(post.category)"
+                      class="read-more"
+                      @click="showPostDetail(post)"
+                    >
+                      <el-icon><ArrowRight /></el-icon> 阅读更多
+                    </el-button>
+                  </div>
+                  <div class="image-content">
+                    <el-image 
+                      :src="post.image" 
+                      fit="cover"
+                      class="post-image"
+                      :preview-src-list="[post.image]"
+                      loading="lazy"
+                    >
+                      <template #placeholder>
+                        <div class="image-placeholder">
+                          <el-icon><Picture /></el-icon>
+                        </div>
+                      </template>
+                    </el-image>
+                  </div>
+                </div>
+              </el-card>
+            </el-timeline-item>
+          </el-timeline>
+          
+          <div v-else class="empty-state">
+            <el-empty description="暂无相关内容" :image-size="200">
+              <template #image>
+                <el-icon size="100" color="#909399"><DocumentDelete /></el-icon>
+              </template>
+              <el-button type="primary" @click="selectedCategory = 'all'">查看全部内容</el-button>
+            </el-empty>
+          </div>
+        </transition-group>
       </el-col>
     </el-row>
   </div>
@@ -77,7 +101,18 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { Calendar } from '@element-plus/icons-vue'
+import { 
+  Calendar, 
+  Picture, 
+  ArrowRight, 
+  Grid, 
+  Suitcase, 
+  Fries, 
+  Reading, 
+  Camera, 
+  ChatDotRound,
+  DocumentDelete
+} from '@element-plus/icons-vue'
 
 const selectedCategory = ref('all')
 
@@ -125,6 +160,18 @@ const filteredPosts = computed(() => {
   }
   return posts.value.filter(post => post.category === selectedCategory.value)
 })
+
+// 根据分类获取图标
+const getCategoryIcon = (category) => {
+  switch (category) {
+    case 'travel': return Suitcase
+    case 'food': return Fries
+    case 'reading': return Reading
+    case 'photography': return Camera
+    case 'thoughts': return ChatDotRound
+    default: return Grid
+  }
+}
 
 // 根据分类获取时间线项的类型
 const getTimelineItemType = (category) => {
@@ -200,19 +247,74 @@ const getTimelineClass = (category) => {
   min-height: 100vh;
 }
 
-h1 {
+.page-header {
   text-align: center;
   margin-bottom: 3rem;
+  padding: 2rem 0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e7ed 100%);
+  border-radius: 0 0 50% 50% / 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.animated-title {
   color: #303133;
+  position: relative;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+}
+
+.animated-title::after {
+  content: '';
+  position: absolute;
+  width: 50%;
+  height: 3px;
+  bottom: -10px;
+  left: 25%;
+  background: linear-gradient(90deg, transparent, #409EFF, transparent);
+  animation: line-animation 3s infinite;
+}
+
+@keyframes line-animation {
+  0% { width: 0; left: 50%; }
+  50% { width: 50%; left: 25%; }
+  100% { width: 0; left: 50%; }
+}
+
+.subtitle {
+  color: #606266;
+  font-size: 1.2rem;
+  margin-top: 1rem;
 }
 
 .category-filter {
   text-align: center;
   margin-bottom: 3rem;
+  position: sticky;
+  top: 70px;
+  z-index: 10;
+  background-color: rgba(245, 247, 250, 0.9);
+  padding: 1rem 0;
+  backdrop-filter: blur(5px);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.timeline-container {
+  position: relative;
+  padding: 0 1rem;
 }
 
 .timeline-card {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.timeline-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 .card-content {
@@ -222,41 +324,69 @@ h1 {
 
 .text-content {
   flex: 1;
+  padding: 0.5rem;
 }
 
 .image-content {
   flex: 1;
+  position: relative;
 }
 
 .post-image {
   width: 100%;
   height: 250px;
-  border-radius: 4px;
+  border-radius: 8px;
   object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.post-image:hover {
+  transform: scale(1.03);
+}
+
+.image-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 250px;
+  background-color: #f0f2f5;
+  color: #909399;
 }
 
 h3 {
   margin: 0 0 1rem 0;
   color: #303133;
+  font-size: 1.5rem;
 }
 
 .post-tags {
   margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .post-tag {
   margin-right: 0.5rem;
   margin-bottom: 0.5rem;
+  border-radius: 16px;
 }
 
 .post-description {
   color: #606266;
-  margin-bottom: 1rem;
-  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+  text-align: justify;
 }
 
 .read-more {
   margin-top: 1rem;
+  border-radius: 20px;
+  padding: 8px 20px;
+  transition: all 0.3s;
+}
+
+.read-more:hover {
+  transform: translateX(5px);
 }
 
 .timeline-date {
@@ -266,20 +396,21 @@ h3 {
   width: 80px;
   text-align: center;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: transform 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .timeline-date:hover {
   transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .date-day {
   font-size: 24px;
   font-weight: bold;
-  padding: 8px 0;
+  padding: 10px 0;
   color: white;
 }
 
@@ -318,7 +449,42 @@ h3 {
   background: #909399;
 }
 
+/* 空状态样式 */
+.empty-state {
+  padding: 3rem 0;
+  text-align: center;
+}
+
+/* 列表动画 */
+.fade-list-enter-active,
+.fade-list-leave-active {
+  transition: all 0.5s ease;
+}
+.fade-list-enter-from,
+.fade-list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
 /* 响应式布局 */
+@media (max-width: 1200px) {
+  .timeline-date {
+    left: -100px;
+    width: 70px;
+  }
+}
+
+@media (max-width: 992px) {
+  .timeline-date {
+    left: -80px;
+    width: 60px;
+  }
+  
+  .date-day {
+    font-size: 20px;
+  }
+}
+
 @media (max-width: 768px) {
   .card-content {
     flex-direction: column;
@@ -353,6 +519,30 @@ h3 {
 
   .date-day {
     border-radius: 4px;
+  }
+  
+  .animated-title {
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .page-header {
+    padding: 1.5rem 0;
+  }
+  
+  .category-filter {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 0.5rem;
+  }
+  
+  .post-description {
+    line-height: 1.6;
   }
 }
 </style> 

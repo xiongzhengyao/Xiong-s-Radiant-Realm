@@ -1,16 +1,16 @@
 <template>
-  <div class="home">
+  <section class="home">
     <el-row class="hero" justify="center" align="middle">
       <el-col :span="16" class="text-center">
         <h1>{{ $t('home.welcome') }}</h1>
         <p class="subtitle">{{ $t('home.subtitle') }}</p>
-        <el-button type="primary" size="large" @click="$router.push('/projects')">
+        <el-button type="primary" size="large" @click="$router.push('/blog')">
           {{ $t('home.viewProjects') }}
         </el-button>
       </el-col>
     </el-row>
 
-    <el-row class="section" justify="center">
+    <section class="section">
       <el-col :span="20">
         <h2>{{ $t('home.skills.title') }}</h2>
         <el-row :gutter="20">
@@ -25,9 +25,9 @@
           </el-col>
         </el-row>
       </el-col>
-    </el-row>
+    </section>
 
-    <el-row class="section" justify="center">
+    <section class="section">
       <el-col :span="20">
         <h2>{{ $t('home.blog.title') }}</h2>
         <el-row :gutter="20">
@@ -44,8 +44,8 @@
           </el-col>
         </el-row>
       </el-col>
-    </el-row>
-  </div>
+    </section>
+  </section>
 </template>
 
 <script setup>
@@ -134,29 +134,20 @@ const latestPosts = ref([
   color: #333;
 }
 
-.skill-card {
+.skill-card, .blog-card {
   text-align: center;
   padding: 2rem;
   height: 100%;
   transition: transform 0.3s;
 }
 
-.skill-card:hover {
+.skill-card:hover, .blog-card:hover {
   transform: translateY(-5px);
 }
 
 .skill-icon {
   color: #409EFF;
   margin-bottom: 1rem;
-}
-
-.blog-card {
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-
-.blog-card:hover {
-  transform: translateY(-5px);
 }
 
 .blog-image {

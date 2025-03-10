@@ -20,7 +20,7 @@ const routes = [
   {
     path: '/blog/:id/:slug',
     name: 'BlogPost',
-    component: () => import('../views/BlogPost.vue'),
+    component: () => import('../views/Blog.vue'),
     props: true
   },
   {
