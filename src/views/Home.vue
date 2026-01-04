@@ -3,7 +3,9 @@
     <el-row class="hero" justify="center" align="middle">
       <el-col :span="16" class="text-center">
         <h1>{{ $t('home.welcome') }}</h1>
-        <p class="subtitle">{{ $t('home.subtitle') }}</p>
+        <p class="subtitle">
+          {{ $t('home.subtitle') }}
+        </p>
         <el-button type="primary" size="large" @click="$router.push('/blog')">
           {{ $t('home.viewProjects') }}
         </el-button>
@@ -14,7 +16,7 @@
       <el-col :span="20">
         <h2>{{ $t('home.skills.title') }}</h2>
         <el-row :gutter="20">
-          <el-col :span="8" v-for="skill in skills" :key="skill.name">
+          <el-col v-for="skill in skills" :key="skill.name" :span="8">
             <el-card class="skill-card">
               <el-icon size="40" class="skill-icon">
                 <component :is="skill.icon" />
@@ -31,14 +33,16 @@
       <el-col :span="20">
         <h2>{{ $t('home.blog.title') }}</h2>
         <el-row :gutter="20">
-          <el-col :span="8" v-for="post in latestPosts" :key="post.title">
+          <el-col v-for="post in latestPosts" :key="post.title" :span="8">
             <el-card class="blog-card" @click="$router.push('/blog')">
               <img :src="post.image" class="blog-image" />
               <h3>{{ post.title }}</h3>
               <p>{{ post.excerpt }}</p>
               <div class="blog-meta">
                 <span>{{ post.date }}</span>
-                <el-tag size="small">{{ post.category }}</el-tag>
+                <el-tag size="small">
+                  {{ post.category }}
+                </el-tag>
               </div>
             </el-card>
           </el-col>
@@ -134,19 +138,21 @@ const latestPosts = ref([
   color: #333;
 }
 
-.skill-card, .blog-card {
+.skill-card,
+.blog-card {
   text-align: center;
   padding: 2rem;
   height: 100%;
   transition: transform 0.3s;
 }
 
-.skill-card:hover, .blog-card:hover {
+.skill-card:hover,
+.blog-card:hover {
   transform: translateY(-5px);
 }
 
 .skill-icon {
-  color: #409EFF;
+  color: #409eff;
   margin-bottom: 1rem;
 }
 

@@ -1,13 +1,16 @@
 # 嵌入式开发学习资料整理
 
 ## 基础知识
+
 ### 编程语言
+
 - C/C++
   - 《C Programming Language》by K&R
   - 《C++ Primer》第五版
   - 《Modern C++》系列教程
 
 ### 操作系统
+
 - Linux 基础
   - 《鸟哥的 Linux 私房菜》
   - 《Linux 命令行大全》
@@ -16,7 +19,9 @@
   - RT-Thread 文档中心
 
 ## 硬件基础
+
 ### 微控制器
+
 - ARM 架构
   - Cortex-M 系列文档
   - STM32 参考手册
@@ -25,6 +30,7 @@
   - 开发板资料
 
 ### 通信协议
+
 - I2C
 - SPI
 - UART/USART
@@ -32,23 +38,29 @@
 - USB
 
 ## 开发工具
+
 ### IDE
+
 - MDK-ARM (Keil)
 - STM32CubeIDE
 - VSCode + PlatformIO
 
 ### 调试工具
+
 - OpenOCD
 - J-Link
 - ST-Link
 
 ## 传感器开发
+
 ### 基础知识
+
 - 传感器原理
 - 信号处理
 - 数据采集
 
 ### 常用传感器
+
 - 图像传感器
   - CMOS/CCD 工作原理
   - 图像处理基础
@@ -60,12 +72,15 @@
   - 姿态解算
 
 ## 项目实践
+
 ### 开源项目
+
 - RT-Thread
 - LittlevGL
 - FreeRTOS
 
 ### 学习路线
+
 1. 掌握 C/C++ 基础
 2. 了解硬件基础知识
 3. 熟悉开发工具使用
@@ -73,6 +88,7 @@
 5. 进行实际项目开发
 
 ## 在线资源
+
 - 文档
   - [ARM 官方文档](https://developer.arm.com/documentation)
   - [STM32 官方文档](https://www.st.com/content/st_com/en/support/documentation.html)

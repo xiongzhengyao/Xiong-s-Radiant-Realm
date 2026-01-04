@@ -2,34 +2,42 @@
   <div class="contact">
     <el-row justify="center">
       <el-col :xs="22" :sm="20" :md="18" :lg="16" :xl="14">
-        <h1 class="page-title">{{ $t('contact.title') }}</h1>
-        
+        <h1 class="page-title">
+          {{ $t('contact.title') }}
+        </h1>
+
         <el-row :gutter="30">
           <!-- 联系信息卡片 -->
           <el-col :xs="24" :sm="24" :md="10">
             <el-card class="contact-info" :body-style="{ padding: '2rem' }">
-              <h2 class="section-title">{{ $t('contact.info.title') }}</h2>
+              <h2 class="section-title">
+                {{ $t('contact.info.title') }}
+              </h2>
               <div class="info-list">
-                <div class="info-item" v-for="(item, index) in contactInfo" :key="index">
-                  <el-icon class="info-icon"><component :is="item.icon" /></el-icon>
+                <div v-for="(item, index) in contactInfo" :key="index" class="info-item">
+                  <el-icon class="info-icon">
+                    <component :is="item.icon" />
+                  </el-icon>
                   <span>{{ item.value }}</span>
                 </div>
               </div>
 
               <div class="social-links">
-                <h2 class="section-title">{{ $t('contact.info.social') }}</h2>
+                <h2 class="section-title">
+                  {{ $t('contact.info.social') }}
+                </h2>
                 <div class="social-icons">
-                  <el-tooltip 
-                    v-for="(social, index) in socialLinks" 
+                  <el-tooltip
+                    v-for="(social, index) in socialLinks"
                     :key="index"
-                    :content="social.name" 
+                    :content="social.name"
                     placement="top"
                   >
-                    <el-button 
-                      circle 
-                      :type="social.type" 
-                      @click="openLink(social.url)"
+                    <el-button
+                      circle
+                      :type="social.type"
                       class="social-button"
+                      @click="openLink(social.url)"
                     >
                       <component :is="social.icon" v-if="social.isComponent" />
                       <svg v-else :viewBox="social.viewBox" class="social-svg">
@@ -53,21 +61,18 @@
                 @submit.prevent="submitForm(formRef)"
               >
                 <el-form-item :label="$t('contact.form.name')" prop="name">
-                  <el-input 
-                    v-model="form.name"
-                    :placeholder="$t('contact.form.namePlaceholder')"
-                  />
+                  <el-input v-model="form.name" :placeholder="$t('contact.form.namePlaceholder')" />
                 </el-form-item>
 
                 <el-form-item :label="$t('contact.form.email')" prop="email">
-                  <el-input 
+                  <el-input
                     v-model="form.email"
                     :placeholder="$t('contact.form.emailPlaceholder')"
                   />
                 </el-form-item>
 
                 <el-form-item :label="$t('contact.form.subject')" prop="subject">
-                  <el-input 
+                  <el-input
                     v-model="form.subject"
                     :placeholder="$t('contact.form.subjectPlaceholder')"
                   />
@@ -83,8 +88,8 @@
                 </el-form-item>
 
                 <el-form-item>
-                  <el-button 
-                    type="primary" 
+                  <el-button
+                    type="primary"
                     native-type="submit"
                     :loading="isSubmitting"
                     class="submit-button"
@@ -100,18 +105,20 @@
         <!-- 地图区域 -->
         <el-card class="map-section">
           <template #header>
-            <h2 class="section-title">{{ $t('contact.info.location') }}</h2>
+            <h2 class="section-title">
+              {{ $t('contact.info.location') }}
+            </h2>
           </template>
           <div class="map-container">
-            <iframe 
+            <iframe
               src="https://www.google.com/maps/embed?pb=your-map-embed-url"
-              width="100%" 
-              height="400" 
-              style="border:0;" 
-              allowfullscreen="" 
+              width="100%"
+              height="400"
+              style="border: 0"
+              allowfullscreen=""
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
-            ></iframe>
+            />
           </div>
         </el-card>
       </el-col>
@@ -123,7 +130,7 @@
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
-import { Location, Message, Phone, Connection } from '@element-plus/icons-vue'
+import { Connection } from '@element-plus/icons-vue'
 
 const { t } = useI18n()
 const formRef = ref()
@@ -172,37 +179,65 @@ const form = reactive({
 
 const rules = {
   name: [
-    { required: true, message: () => t('contact.form.required') + t('contact.form.name'), trigger: 'blur' },
-    { min: 2, message: () => t('contact.form.name') + t('contact.form.minLength', { length: 2 }), trigger: 'blur' }
+    {
+      required: true,
+      message: () => t('contact.form.required') + t('contact.form.name'),
+      trigger: 'blur'
+    },
+    {
+      min: 2,
+      message: () => t('contact.form.name') + t('contact.form.minLength', { length: 2 }),
+      trigger: 'blur'
+    }
   ],
   email: [
-    { required: true, message: () => t('contact.form.required') + t('contact.form.email'), trigger: 'blur' },
+    {
+      required: true,
+      message: () => t('contact.form.required') + t('contact.form.email'),
+      trigger: 'blur'
+    },
     { type: 'email', message: () => t('contact.form.invalidEmail'), trigger: 'blur' }
   ],
   subject: [
-    { required: true, message: () => t('contact.form.required') + t('contact.form.subject'), trigger: 'blur' },
-    { min: 2, message: () => t('contact.form.subject') + t('contact.form.minLength', { length: 2 }), trigger: 'blur' }
+    {
+      required: true,
+      message: () => t('contact.form.required') + t('contact.form.subject'),
+      trigger: 'blur'
+    },
+    {
+      min: 2,
+      message: () => t('contact.form.subject') + t('contact.form.minLength', { length: 2 }),
+      trigger: 'blur'
+    }
   ],
   message: [
-    { required: true, message: () => t('contact.form.required') + t('contact.form.message'), trigger: 'blur' },
-    { min: 10, message: () => t('contact.form.message') + t('contact.form.minLength', { length: 10 }), trigger: 'blur' }
+    {
+      required: true,
+      message: () => t('contact.form.required') + t('contact.form.message'),
+      trigger: 'blur'
+    },
+    {
+      min: 10,
+      message: () => t('contact.form.message') + t('contact.form.minLength', { length: 10 }),
+      trigger: 'blur'
+    }
   ]
 }
 
-const openLink = (url) => {
+const openLink = url => {
   window.open(url, '_blank', 'noopener noreferrer')
 }
 
-const submitForm = async (formEl) => {
+const submitForm = async formEl => {
   if (!formEl) return
-  
+
   try {
     isSubmitting.value = true
     await formEl.validate()
-    
+
     // TODO: 实现表单提交逻辑
     await new Promise(resolve => setTimeout(resolve, 1000)) // 模拟API调用
-    
+
     ElMessage.success(t('contact.form.success'))
     formEl.resetFields()
   } catch (error) {

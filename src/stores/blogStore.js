@@ -9,7 +9,8 @@ export const useBlogStore = defineStore('blog', () => {
       date: '2024-02-12',
       author: '熊正耀',
       image: 'https://picsum.photos/800/405',
-      excerpt: '深入探讨 Linux 系统编程的核心概念，包括进程管理、线程编程、文件系统、网络编程等重要主题...',
+      excerpt:
+        '深入探讨 Linux 系统编程的核心概念，包括进程管理、线程编程、文件系统、网络编程等重要主题...',
       markdownFile: '/posts/linux-system-programming.md',
       tags: ['Linux', '系统编程', '进程管理', '网络编程'],
       category: 'linux'
@@ -75,7 +76,8 @@ export const useBlogStore = defineStore('blog', () => {
       date: '2024-02-14',
       author: '熊正耀',
       image: 'https://picsum.photos/800/406',
-      excerpt: '详细介绍各类传感器的计算公式，包括温度、压力、加速度、光电、湿度传感器等的数学模型和校准方法...',
+      excerpt:
+        '详细介绍各类传感器的计算公式，包括温度、压力、加速度、光电、湿度传感器等的数学模型和校准方法...',
       markdownFile: '/posts/sensor-calculations.md',
       tags: ['传感器', '公式', '校准', '信号处理'],
       category: 'sensor'
@@ -84,15 +86,15 @@ export const useBlogStore = defineStore('blog', () => {
 
   const posts = ref(Object.values(markdownFiles))
 
-  const getPostById = (id) => {
+  const getPostById = id => {
     return posts.value.find(post => post.id === Number(id))
   }
 
-  const getPostBySlug = (slug) => {
+  const getPostBySlug = slug => {
     return markdownFiles[slug]
   }
 
-  const getAdjacentPosts = (id) => {
+  const getAdjacentPosts = id => {
     const currentIndex = posts.value.findIndex(post => post.id === Number(id))
     return {
       prev: posts.value[currentIndex - 1] || null,
@@ -107,4 +109,4 @@ export const useBlogStore = defineStore('blog', () => {
     getPostBySlug,
     getAdjacentPosts
   }
-}) 
+})

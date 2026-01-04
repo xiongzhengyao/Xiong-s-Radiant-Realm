@@ -6,14 +6,14 @@
         <div v-if="!currentPostId">
           <div class="blog-header">
             <h1>技术博客</h1>
-            
+
             <!-- 添加分类过滤器 -->
             <div class="category-filter">
               <el-radio-group v-model="selectedCategory" size="large">
-                <el-radio-button label="all">全部</el-radio-button>
-                <el-radio-button 
-                  v-for="category in categories" 
-                  :key="category.name" 
+                <el-radio-button label="all"> 全部 </el-radio-button>
+                <el-radio-button
+                  v-for="category in categories"
+                  :key="category.name"
                   :label="category.name"
                 >
                   {{ category.label }}
@@ -34,11 +34,7 @@
             <!-- 博客列表 -->
             <el-col :span="16">
               <div class="post-list">
-                <el-card 
-                  v-for="post in filteredPosts" 
-                  :key="post.id"
-                  class="post-card"
-                >
+                <el-card v-for="post in filteredPosts" :key="post.id" class="post-card">
                   <div class="post-header">
                     <h2>{{ post.title }}</h2>
                     <div class="post-meta">
@@ -50,19 +46,18 @@
                     </div>
                   </div>
                   <img :src="post.image" class="post-image" />
-                  <p class="post-excerpt">{{ post.excerpt }}</p>
+                  <p class="post-excerpt">
+                    {{ post.excerpt }}
+                  </p>
                   <div class="post-footer">
                     <div class="post-tags">
-                      <el-tag 
-                        v-for="tag in post.tags" 
-                        :key="tag"
-                        size="small"
-                        class="post-tag"
-                      >
+                      <el-tag v-for="tag in post.tags" :key="tag" size="small" class="post-tag">
                         {{ tag }}
                       </el-tag>
                     </div>
-                    <el-button type="primary" text @click="showPostDetail(post)">阅读更多</el-button>
+                    <el-button type="primary" text @click="showPostDetail(post)">
+                      阅读更多
+                    </el-button>
                   </div>
                 </el-card>
 
@@ -91,8 +86,8 @@
                       <span>({{ posts.length }})</span>
                     </template>
                   </el-menu-item>
-                  <el-menu-item 
-                    v-for="category in categories" 
+                  <el-menu-item
+                    v-for="category in categories"
                     :key="category.name"
                     :index="category.name"
                   >
@@ -111,13 +106,11 @@
         <div v-else class="post-container">
           <!-- 返回按钮 -->
           <div class="back-button">
-            <el-button @click="backToList" icon="ArrowLeft">
-              返回文章列表
-            </el-button>
+            <el-button icon="ArrowLeft" @click="backToList"> 返回文章列表 </el-button>
           </div>
 
           <!-- 文章标题和元信息 -->
-          <div class="post-header" v-if="currentPost">
+          <div v-if="currentPost" class="post-header">
             <h1>{{ currentPost.title }}</h1>
             <div class="post-meta">
               <el-icon><Calendar /></el-icon>
@@ -127,40 +120,31 @@
               <span>{{ currentPost.author }}</span>
             </div>
             <div class="post-tags">
-              <el-tag 
-                v-for="tag in currentPost.tags" 
-                :key="tag"
-                size="small"
-                class="post-tag"
-              >
+              <el-tag v-for="tag in currentPost.tags" :key="tag" size="small" class="post-tag">
                 {{ tag }}
               </el-tag>
             </div>
           </div>
 
           <!-- 文章封面图 -->
-          <div class="post-cover" v-if="currentPost">
+          <div v-if="currentPost" class="post-cover">
             <el-image :src="currentPost.image" fit="cover" />
           </div>
 
           <!-- 文章内容 -->
-          <div class="markdown-content" v-html="renderedContent"></div>
+          <div class="markdown-content" v-html="renderedContent" />
 
           <!-- 文章底部 -->
           <div class="post-footer">
             <div class="post-nav">
-              <el-button 
-                v-if="prevPost" 
-                @click="loadPost(prevPost.id)"
-                icon="ArrowLeft"
-              >
+              <el-button v-if="prevPost" icon="ArrowLeft" @click="loadPost(prevPost.id)">
                 上一篇：{{ prevPost.title }}
               </el-button>
-              <el-button 
-                v-if="nextPost" 
-                @click="loadPost(nextPost.id)"
+              <el-button
+                v-if="nextPost"
                 icon="ArrowRight"
                 class="next-post"
+                @click="loadPost(nextPost.id)"
               >
                 下一篇：{{ nextPost.title }}
               </el-button>
@@ -174,17 +158,14 @@
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { Calendar, User, ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
-import MarkdownIt from 'markdown-it'
-import { useRouter, useRoute } from 'vue-router'
+import { Calendar, User } from '@element-plus/icons-vue'
+import { useRoute } from 'vue-router'
 import { useBlogStore } from '@/stores/blogStore'
+import { useMarkdown } from '@/composables/useMarkdown'
+import { BLOG_CATEGORIES } from '@/utils/constants'
 
-// 创建 markdown 解析器实例
-const md = new MarkdownIt({
-  html: true,
-  breaks: true,
-  linkify: true
-})
+// 使用 markdown composable
+const { render: renderMarkdown } = useMarkdown()
 
 // 博客列表相关状态
 const searchQuery = ref('')
@@ -199,33 +180,22 @@ const prevPost = ref(null)
 const nextPost = ref(null)
 const loading = ref(false)
 
-// 添加博客分类
-const categories = [
-  { name: 'linux', label: 'Linux 开发' },
-  { name: 'cpp', label: 'C++ 开发' },
-  { name: 'embedded', label: '嵌入式开发' },
-  { name: 'protocol', label: '通信协议' },
-  { name: 'sensor', label: '传感器' }
-]
+// 使用常量配置
+const categories = BLOG_CATEGORIES
 
-const router = useRouter()
 const route = useRoute()
 const blogStore = useBlogStore()
 const posts = computed(() => blogStore.posts)
 
 // 显示文章详情
-const showPostDetail = (post) => {
+const showPostDetail = post => {
   const slug = Object.keys(blogStore.markdownFiles).find(
     key => blogStore.markdownFiles[key].id === post.id
   )
-  
+
   // 更新URL但不触发路由变化
-  window.history.pushState(
-    {}, 
-    '', 
-    `/blog/${post.id}/${slug}`
-  )
-  
+  window.history.pushState({}, '', `/blog/${post.id}/${slug}`)
+
   // 加载文章
   loadPost(post.id)
 }
@@ -234,13 +204,13 @@ const showPostDetail = (post) => {
 const backToList = () => {
   currentPostId.value = null
   currentPost.value = null
-  
+
   // 更新URL但不触发路由变化
   window.history.pushState({}, '', '/blog')
 }
 
 // 加载文章内容
-const loadPost = async (id) => {
+const loadPost = async id => {
   loading.value = true
   const postData = blogStore.getPostById(id)
   if (!postData) {
@@ -250,12 +220,12 @@ const loadPost = async (id) => {
 
   currentPostId.value = id
   currentPost.value = postData
-  
+
   try {
     const response = await fetch(postData.markdownFile)
     if (!response.ok) throw new Error('Failed to load markdown file')
     const content = await response.text()
-    renderedContent.value = md.render(content)
+    renderedContent.value = renderMarkdown(content)
 
     // 更新上一篇和下一篇
     const { prev, next } = blogStore.getAdjacentPosts(id)
@@ -263,19 +233,19 @@ const loadPost = async (id) => {
     nextPost.value = next
   } catch (error) {
     console.error('Error loading markdown:', error)
-    renderedContent.value = '加载文章内容失败...'
+    renderedContent.value = '<p style="color: red;">加载文章内容失败，请稍后重试...</p>'
   } finally {
     loading.value = false
   }
 }
 
 // 添加分类计数方法
-const getCategoryCount = (categoryName) => {
+const getCategoryCount = categoryName => {
   return posts.value.filter(post => post.category === categoryName).length
 }
 
 // 添加分类选择处理方法
-const handleCategorySelect = (categoryName) => {
+const handleCategorySelect = categoryName => {
   selectedCategory.value = categoryName
 }
 
@@ -283,14 +253,12 @@ const handleCategorySelect = (categoryName) => {
 const filteredPosts = computed(() => {
   const query = searchQuery.value.toLowerCase()
   return posts.value.filter(post => {
-    const matchesSearch = 
-      post.title.toLowerCase().includes(query) ||
-      post.excerpt.toLowerCase().includes(query)
-    
-    const matchesCategory = 
-      selectedCategory.value === 'all' || 
-      post.category === selectedCategory.value
-    
+    const matchesSearch =
+      post.title.toLowerCase().includes(query) || post.excerpt.toLowerCase().includes(query)
+
+    const matchesCategory =
+      selectedCategory.value === 'all' || post.category === selectedCategory.value
+
     return matchesSearch && matchesCategory
   })
 })
@@ -307,7 +275,7 @@ onMounted(() => {
 // 监听路由变化
 watch(
   () => route.params,
-  (params) => {
+  params => {
     if (params.id) {
       loadPost(params.id)
     } else {

@@ -20,12 +20,12 @@
                 </template>
               </el-image>
             </div>
-            
+
             <div class="profile-info">
               <h1>熊正耀</h1>
               <p class="title">Camera驱动软件工程师</p>
               <p class="bio">专注于Camera驱动开发，热衷于探索新技术和解决复杂问题。</p>
-              
+
               <div class="profile-stats">
                 <div class="stat-item">
                   <el-icon><Timer /></el-icon>
@@ -55,22 +55,22 @@
                   <el-tag>Shell</el-tag>
                 </div>
               </div>
-              
+
               <div class="skill-group">
                 <h3>嵌入式开发</h3>
                 <div class="skill-items">
-                  <el-tag type="success">ARM</el-tag>
-                  <el-tag type="success">Linux驱动</el-tag>
-                  <el-tag type="success">RTOS</el-tag>
+                  <el-tag type="success"> ARM </el-tag>
+                  <el-tag type="success"> Linux驱动 </el-tag>
+                  <el-tag type="success"> RTOS </el-tag>
                 </div>
               </div>
-              
+
               <div class="skill-group">
                 <h3>开发工具</h3>
                 <div class="skill-items">
-                  <el-tag type="warning">Git</el-tag>
-                  <el-tag type="warning">VSCode</el-tag>
-                  <el-tag type="warning">Eclipse</el-tag>
+                  <el-tag type="warning"> Git </el-tag>
+                  <el-tag type="warning"> VSCode </el-tag>
+                  <el-tag type="warning"> Eclipse </el-tag>
                 </div>
               </div>
             </div>
@@ -109,7 +109,9 @@
                   <h3>{{ education.degree }}</h3>
                   <h4>{{ education.school }}</h4>
                   <p>{{ education.major }}</p>
-                  <p class="education-details">{{ education.details }}</p>
+                  <p class="education-details">
+                    {{ education.details }}
+                  </p>
                 </el-card>
               </el-timeline-item>
             </el-timeline>
@@ -121,7 +123,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { Picture, Timer, Location, Message } from '@element-plus/icons-vue'
 
 const workExperience = [
@@ -214,7 +215,7 @@ const educationHistory = [
 
 .profile-info .title {
   font-size: 1.2rem;
-  color: #409EFF;
+  color: #409eff;
   margin-bottom: 1rem;
 }
 
@@ -265,7 +266,7 @@ const educationHistory = [
 }
 
 :deep(.el-timeline-item__node) {
-  background-color: #409EFF;
+  background-color: #409eff;
 }
 
 :deep(.el-timeline-item__timestamp) {
@@ -294,7 +295,7 @@ const educationHistory = [
 }
 
 .education-details {
-  color: #67c23a;  /* 使用绿色突出显示研究方向/主修课程 */
+  color: #67c23a; /* 使用绿色突出显示研究方向/主修课程 */
   margin-top: 0.5rem;
   font-size: 0.9em;
 }

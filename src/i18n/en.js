@@ -38,16 +38,18 @@ export default {
       title: 'Education',
       university: 'Shanghai University',
       major: 'Mechanical Engineering - Mechanical Manufacturing and Automation',
-      degree: 'Master\'s Degree',
+      degree: "Master's Degree",
       research: 'Research Focus: Mechanical Manufacturing and Automation',
-      courses: 'Core Courses: Mechanical Manufacturing Technology, CNC Technology, Automation System Design, Advanced Mechanical Engineering, etc.'
+      courses:
+        'Core Courses: Mechanical Manufacturing Technology, CNC Technology, Automation System Design, Advanced Mechanical Engineering, etc.'
     },
     experience: {
       title: 'Work Experience',
       company: 'Xiaomi Technology',
       position: 'Mobile Camera Embedded Driver Development Engineer',
       duration: 'Aug 2022 - Present',
-      description: 'Responsible for embedded driver development of Xiaomi mobile phone camera modules, optimizing camera performance and image quality.',
+      description:
+        'Responsible for embedded driver development of Xiaomi mobile phone camera modules, optimizing camera performance and image quality.',
       skills: {
         linux: 'Linux Driver',
         embedded: 'Embedded Development',

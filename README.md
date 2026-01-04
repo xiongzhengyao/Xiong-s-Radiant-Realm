@@ -6,10 +6,7 @@
 
 - **src/**: 源代码目录，包含 Vue 组件和相关逻辑
 - **public/**: 静态资源目录，包含图片和其他静态文件
-- **Dockerfile**: Docker 镜像构建文件
-- **docker-compose.yml**: Docker Compose 配置文件
-- **.env**: 环境变量配置文件
-- **nginx.conf**: Nginx 配置文件
+- **server.js**: Express 服务器，用于生产环境部署
 - **package.json**: 项目依赖和脚本配置
 - **README.md**: 项目说明文档
 
@@ -18,119 +15,129 @@
 - **前端**: Vue 3, Vite, Element Plus
 - **后端**: Node.js, Express
 - **数据库**: 无（使用静态数据）
-- **容器化**: Docker
 
-## 部署
+## 快速开始
 
-### 使用 Docker 部署
+### 环境要求
 
-1. **克隆项目**
+- Node.js >= 16.0.0
+- npm >= 7.0.0
+
+### 安装依赖
+
+```bash
+npm install
+```
+
+### 开发模式
+
+启动开发服务器（支持热重载）：
+
+```bash
+npm run dev
+```
+
+访问 `http://localhost:8888` 查看应用。
+
+### 生产部署
+
+1. **构建生产版本**
 
    ```bash
-   git clone https://github.com/yourusername/personal-feed.git
-   cd personal-feed
+   npm run build
    ```
 
-2. **构建 Docker 镜像**
+   构建产物将输出到 `dist/` 目录。
+
+2. **启动生产服务器**
 
    ```bash
-   docker-compose build
+   npm start
    ```
 
-3. **启动服务**
+   服务器将在 `http://localhost:8888` 启动。
+
+3. **使用环境变量配置端口**
+
+   可以通过环境变量自定义端口：
 
    ```bash
-   docker-compose up
+   PORT=3000 npm start
    ```
 
-4. **访问应用**
-
-   打开浏览器，访问 `http://localhost:8888`。
-
-### 停止和删除容器
-
-- **停止服务**
-
-  ```bash
-  docker-compose down
-  ```
-
-- **删除所有停止的容器**
-
-  ```bash
-  docker container prune
-  ```
-
-### 清理未使用的镜像
-
-- **删除未使用的镜像**
-
-  ```bash
-  docker image prune
-  ```
-
-- **删除所有未使用的镜像、网络和挂载**
-
-  ```bash
-  docker system prune
-  ```
-
-### 快速更改端口配置
-
-要快速更改应用的端口配置，可以通过修改 `.env` 文件中的 `PORT` 变量来实现：
-
-1. 打开项目根目录下的 `.env` 文件。
-2. 找到 `PORT` 变量并修改为所需的端口号，例如：
+   或者创建 `.env` 文件：
 
    ```env
    PORT=3000
+   NODE_ENV=production
    ```
 
-3. 保存文件后，重新构建和启动 Docker 服务：
+### 预览构建结果
 
-   ```bash
-   docker-compose down
-   docker-compose up --build
-   ```
+在构建后，可以使用 Vite 预览功能查看构建结果：
 
-4. 访问新的端口，例如 `http://localhost:3000`。
+```bash
+npm run build
+npm run serve
+```
 
-### 本地开发
+## 其他命令
 
-1. **安装依赖**
+### 代码检查
 
-   ```bash
-   npm install
-   ```
+```bash
+# 运行 ESLint 检查并自动修复
+npm run lint
 
-2. **启动开发服务器**
+# 格式化代码
+npm run format
 
-   ```bash
-   npm run dev
-   ```
-
-3. **访问应用**
-
-   打开浏览器，访问 `http://localhost:8888`。
+# 检查代码格式
+npm run format:check
+```
 
 ## 配置
 
 ### 环境变量
 
-在项目根目录下创建一个 `.env` 文件，配置以下环境变量：
+在项目根目录下创建 `.env` 文件（可选），配置以下环境变量：
 
 ```env
 NODE_ENV=production
-PORT=3000
+PORT=8888
+HOST=0.0.0.0
 ```
-
-### Nginx 配置
-
-Nginx 配置文件 `nginx.conf` 用于配置静态文件服务和健康检查。确保在 Docker 部署时，Nginx 能够正确指向构建后的文件。
 
 ### 健康检查
 
 应用提供了健康检查接口，访问 `http://localhost:8888/health` 可以检查服务是否正常运行。
+
+### 使用 PM2 部署（推荐生产环境）
+
+如果需要更稳定的生产环境部署，可以使用 PM2：
+
+```bash
+# 安装 PM2
+npm install -g pm2
+
+# 构建项目
+npm run build
+
+# 使用 PM2 启动
+pm2 start server.js --name "xiong-radiant-realm"
+
+# 查看状态
+pm2 status
+
+# 查看日志
+pm2 logs xiong-radiant-realm
+
+# 停止服务
+pm2 stop xiong-radiant-realm
+
+# 重启服务
+pm2 restart xiong-radiant-realm
+```
 
 ## 贡献
 

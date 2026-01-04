@@ -6,7 +6,10 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "start": "node server.js"
+    "start": "node server.js",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "format": "prettier --write \"src/**/*.{js,vue,json,css,scss,md}\"",
+    "format:check": "prettier --check \"src/**/*.{js,vue,json,css,scss,md}\""
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
@@ -25,6 +28,9 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.4.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.22.0",
+    "prettier": "^3.2.5",
     "vite": "^4.5.0"
   }
 }

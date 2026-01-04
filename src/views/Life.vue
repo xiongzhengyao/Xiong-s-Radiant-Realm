@@ -4,18 +4,14 @@
       <h1 class="animated-title">生活点滴</h1>
       <p class="subtitle">记录生活中的美好瞬间与感悟</p>
     </div>
-    
+
     <!-- 生活分类 -->
     <div class="category-filter">
       <el-radio-group v-model="selectedCategory" size="large">
         <el-radio-button label="all">
           <el-icon><Grid /></el-icon> 全部
         </el-radio-button>
-        <el-radio-button 
-          v-for="category in categories" 
-          :key="category.name" 
-          :label="category.name"
-        >
+        <el-radio-button v-for="category in categories" :key="category.name" :label="category.name">
           <el-icon><component :is="getCategoryIcon(category.name)" /></el-icon>
           {{ category.label }}
         </el-radio-button>
@@ -36,17 +32,23 @@
               size="large"
             >
               <div class="timeline-date" :class="getTimelineClass(post.category)">
-                <div class="date-day">{{ getDay(post.date) }}</div>
-                <div class="date-month">{{ getMonth(post.date) }}</div>
-                <div class="date-year">{{ getYear(post.date) }}</div>
+                <div class="date-day">
+                  {{ getDay(post.date) }}
+                </div>
+                <div class="date-month">
+                  {{ getMonth(post.date) }}
+                </div>
+                <div class="date-year">
+                  {{ getYear(post.date) }}
+                </div>
               </div>
               <el-card class="timeline-card" shadow="hover">
                 <div class="card-content">
                   <div class="text-content">
                     <h3>{{ post.title }}</h3>
                     <div class="post-tags">
-                      <el-tag 
-                        v-for="tag in post.tags" 
+                      <el-tag
+                        v-for="tag in post.tags"
                         :key="tag"
                         size="small"
                         :type="getTagType(post.category)"
@@ -56,8 +58,10 @@
                         {{ tag }}
                       </el-tag>
                     </div>
-                    <p class="post-description">{{ post.description }}</p>
-                    <el-button 
+                    <p class="post-description">
+                      {{ post.description }}
+                    </p>
+                    <el-button
                       :type="getButtonType(post.category)"
                       class="read-more"
                       @click="showPostDetail(post)"
@@ -66,8 +70,8 @@
                     </el-button>
                   </div>
                   <div class="image-content">
-                    <el-image 
-                      :src="post.image" 
+                    <el-image
+                      :src="post.image"
                       fit="cover"
                       class="post-image"
                       :preview-src-list="[post.image]"
@@ -84,13 +88,15 @@
               </el-card>
             </el-timeline-item>
           </el-timeline>
-          
+
           <div v-else class="empty-state">
             <el-empty description="暂无相关内容" :image-size="200">
               <template #image>
-                <el-icon size="100" color="#909399"><DocumentDelete /></el-icon>
+                <el-icon size="100" color="#909399">
+                  <DocumentDelete />
+                </el-icon>
               </template>
-              <el-button type="primary" @click="selectedCategory = 'all'">查看全部内容</el-button>
+              <el-button type="primary" @click="selectedCategory = 'all'"> 查看全部内容 </el-button>
             </el-empty>
           </div>
         </transition-group>
@@ -101,15 +107,14 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { 
-  Calendar, 
-  Picture, 
-  ArrowRight, 
-  Grid, 
-  Suitcase, 
-  Fries, 
-  Reading, 
-  Camera, 
+import {
+  Picture,
+  ArrowRight,
+  Grid,
+  Suitcase,
+  Fries,
+  Reading,
+  Camera,
   ChatDotRound,
   DocumentDelete
 } from '@element-plus/icons-vue'
@@ -130,7 +135,8 @@ const posts = ref([
     title: '上海周末游记',
     date: '2024-02-10',
     image: 'https://picsum.photos/800/400',
-    description: '周末在上海的人文探索之旅，感受这座城市的魅力。漫步于外滩，感受黄浦江两岸的风景；穿行于田子坊，体验上海的文艺气息；夜游南京路，欣赏繁华都市的夜景...',
+    description:
+      '周末在上海的人文探索之旅，感受这座城市的魅力。漫步于外滩，感受黄浦江两岸的风景；穿行于田子坊，体验上海的文艺气息；夜游南京路，欣赏繁华都市的夜景...',
     tags: ['旅行', '城市', '文化'],
     category: 'travel'
   },
@@ -139,7 +145,8 @@ const posts = ref([
     title: '年度摄影作品集',
     date: '2024-02-08',
     image: 'https://picsum.photos/800/401',
-    description: '记录生活中的美好瞬间，分享我的摄影心得。用镜头捕捉城市的光影变化，记录四季的自然风光，定格生活中的精彩瞬间...',
+    description:
+      '记录生活中的美好瞬间，分享我的摄影心得。用镜头捕捉城市的光影变化，记录四季的自然风光，定格生活中的精彩瞬间...',
     tags: ['摄影', '艺术', '生活'],
     category: 'photography'
   },
@@ -148,7 +155,8 @@ const posts = ref([
     title: '读《人类简史》有感',
     date: '2024-02-05',
     image: 'https://picsum.photos/800/402',
-    description: '关于人类历史、文明演进的思考。从认知革命到科技革命，人类社会经历了怎样的变迁？未来又将走向何方？读完这本书，让我对人类文明有了更深的认识...',
+    description:
+      '关于人类历史、文明演进的思考。从认知革命到科技革命，人类社会经历了怎样的变迁？未来又将走向何方？读完这本书，让我对人类文明有了更深的认识...',
     tags: ['读书', '历史', '思考'],
     category: 'reading'
   }
@@ -162,80 +170,116 @@ const filteredPosts = computed(() => {
 })
 
 // 根据分类获取图标
-const getCategoryIcon = (category) => {
+const getCategoryIcon = category => {
   switch (category) {
-    case 'travel': return Suitcase
-    case 'food': return Fries
-    case 'reading': return Reading
-    case 'photography': return Camera
-    case 'thoughts': return ChatDotRound
-    default: return Grid
+    case 'travel':
+      return Suitcase
+    case 'food':
+      return Fries
+    case 'reading':
+      return Reading
+    case 'photography':
+      return Camera
+    case 'thoughts':
+      return ChatDotRound
+    default:
+      return Grid
   }
 }
 
 // 根据分类获取时间线项的类型
-const getTimelineItemType = (category) => {
+const getTimelineItemType = category => {
   switch (category) {
-    case 'travel': return 'primary'
-    case 'food': return 'success'
-    case 'reading': return 'warning'
-    case 'photography': return 'danger'
-    case 'thoughts': return 'info'
-    default: return ''
+    case 'travel':
+      return 'primary'
+    case 'food':
+      return 'success'
+    case 'reading':
+      return 'warning'
+    case 'photography':
+      return 'danger'
+    case 'thoughts':
+      return 'info'
+    default:
+      return ''
   }
 }
 
 // 根据分类获取标签类型
-const getTagType = (category) => {
+const getTagType = category => {
   switch (category) {
-    case 'travel': return ''
-    case 'food': return 'success'
-    case 'reading': return 'warning'
-    case 'photography': return 'danger'
-    case 'thoughts': return 'info'
-    default: return ''
+    case 'travel':
+      return ''
+    case 'food':
+      return 'success'
+    case 'reading':
+      return 'warning'
+    case 'photography':
+      return 'danger'
+    case 'thoughts':
+      return 'info'
+    default:
+      return ''
   }
 }
 
 // 根据分类获取按钮类型
-const getButtonType = (category) => {
+const getButtonType = category => {
   switch (category) {
-    case 'travel': return 'primary'
-    case 'food': return 'success'
-    case 'reading': return 'warning'
-    case 'photography': return 'danger'
-    case 'thoughts': return 'info'
-    default: return 'primary'
+    case 'travel':
+      return 'primary'
+    case 'food':
+      return 'success'
+    case 'reading':
+      return 'warning'
+    case 'photography':
+      return 'danger'
+    case 'thoughts':
+      return 'info'
+    default:
+      return 'primary'
   }
 }
 
-const showPostDetail = (post) => {
+const showPostDetail = post => {
   // TODO: 实现文章详情查看功能
   console.log('查看文章:', post.title)
 }
 
 // 日期格式化函数
-const formatDate = (dateStr) => {
+const formatDate = dateStr => {
   const date = new Date(dateStr)
   const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
   return weekdays[date.getDay()]
 }
 
-const getDay = (dateStr) => {
+const getDay = dateStr => {
   return new Date(dateStr).getDate().toString().padStart(2, '0')
 }
 
-const getMonth = (dateStr) => {
-  const months = ['一月', '二月', '三月', '四月', '五月', '六月', 
-                 '七月', '八月', '九月', '十月', '十一月', '十二月']
+const getMonth = dateStr => {
+  const months = [
+    '一月',
+    '二月',
+    '三月',
+    '四月',
+    '五月',
+    '六月',
+    '七月',
+    '八月',
+    '九月',
+    '十月',
+    '十一月',
+    '十二月'
+  ]
   return months[new Date(dateStr).getMonth()]
 }
 
-const getYear = (dateStr) => {
+const getYear = dateStr => {
   return new Date(dateStr).getFullYear()
 }
 
-const getTimelineClass = (category) => {
+const getTimelineClass = category => {
   return `timeline-date-${category}`
 }
 </script>
@@ -271,14 +315,23 @@ const getTimelineClass = (category) => {
   height: 3px;
   bottom: -10px;
   left: 25%;
-  background: linear-gradient(90deg, transparent, #409EFF, transparent);
+  background: linear-gradient(90deg, transparent, #409eff, transparent);
   animation: line-animation 3s infinite;
 }
 
 @keyframes line-animation {
-  0% { width: 0; left: 50%; }
-  50% { width: 50%; left: 25%; }
-  100% { width: 0; left: 50%; }
+  0% {
+    width: 0;
+    left: 50%;
+  }
+  50% {
+    width: 50%;
+    left: 25%;
+  }
+  100% {
+    width: 0;
+    left: 50%;
+  }
 }
 
 .subtitle {
@@ -399,7 +452,9 @@ h3 {
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
 }
 
 .timeline-date:hover {
@@ -430,19 +485,19 @@ h3 {
 
 /* 不同分类的日期样式 */
 .timeline-date-travel .date-day {
-  background: #409EFF;
+  background: #409eff;
 }
 
 .timeline-date-food .date-day {
-  background: #67C23A;
+  background: #67c23a;
 }
 
 .timeline-date-reading .date-day {
-  background: #E6A23C;
+  background: #e6a23c;
 }
 
 .timeline-date-photography .date-day {
-  background: #F56C6C;
+  background: #f56c6c;
 }
 
 .timeline-date-thoughts .date-day {
@@ -479,7 +534,7 @@ h3 {
     left: -80px;
     width: 60px;
   }
-  
+
   .date-day {
     font-size: 20px;
   }
@@ -489,11 +544,11 @@ h3 {
   .card-content {
     flex-direction: column;
   }
-  
+
   .image-content {
     order: -1;
   }
-  
+
   .post-image {
     height: 200px;
     margin-bottom: 1rem;
@@ -511,7 +566,9 @@ h3 {
     background: transparent;
   }
 
-  .date-day, .date-month, .date-year {
+  .date-day,
+  .date-month,
+  .date-year {
     padding: 4px 8px;
     font-size: 14px;
     background: transparent;
@@ -520,11 +577,11 @@ h3 {
   .date-day {
     border-radius: 4px;
   }
-  
+
   .animated-title {
     font-size: 2rem;
   }
-  
+
   .subtitle {
     font-size: 1rem;
   }
@@ -534,15 +591,15 @@ h3 {
   .page-header {
     padding: 1.5rem 0;
   }
-  
+
   .category-filter {
     overflow-x: auto;
     white-space: nowrap;
     padding: 0.5rem;
   }
-  
+
   .post-description {
     line-height: 1.6;
   }
 }
-</style> 
+</style>
