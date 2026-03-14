@@ -1,141 +1,126 @@
 <template>
   <div class="about">
-    <el-row justify="center">
-      <el-col :span="16">
-        <div class="profile-container">
-          <!-- 个人照片和基本信息 -->
-          <div class="profile-header">
-            <div class="profile-image-container">
-              <el-image
-                class="profile-image"
-                src="/images/profile.jpg"
-                :preview-src-list="['/images/profile.jpg']"
-                fit="cover"
-                loading="lazy"
-              >
-                <template #error>
-                  <div class="image-placeholder">
-                    <el-icon><Picture /></el-icon>
-                  </div>
-                </template>
-              </el-image>
-            </div>
-
-            <div class="profile-info">
-              <h1>熊正耀</h1>
-              <p class="title">Camera驱动软件工程师</p>
-              <p class="bio">专注于Camera驱动开发，热衷于探索新技术和解决复杂问题。</p>
-
-              <div class="profile-stats">
-                <div class="stat-item">
-                  <el-icon><Timer /></el-icon>
-                  <span>2年工作经验</span>
-                </div>
-                <div class="stat-item">
-                  <el-icon><Location /></el-icon>
-                  <span>中国，上海</span>
-                </div>
-                <div class="stat-item">
-                  <el-icon><Message /></el-icon>
-                  <span>xiongzhengyao163@163.com</span>
-                </div>
-              </div>
-            </div>
+    <!-- Profile Header -->
+    <section class="profile-hero">
+      <div class="container-narrow">
+        <div class="profile-top reveal">
+          <div class="avatar-wrapper">
+            <img
+              v-if="!imageError"
+              class="avatar"
+              src="/images/profile.jpg"
+              alt="熊正耀"
+              @error="handleImageError"
+            />
+            <div v-else class="avatar-fallback">ZY</div>
           </div>
-
-          <!-- 技能和专长 -->
-          <div class="section">
-            <h2>专业技能</h2>
-            <div class="skills-container">
-              <div class="skill-group">
-                <h3>编程语言</h3>
-                <div class="skill-items">
-                  <el-tag>C/C++</el-tag>
-                  <el-tag>Python</el-tag>
-                  <el-tag>Shell</el-tag>
-                </div>
-              </div>
-
-              <div class="skill-group">
-                <h3>嵌入式开发</h3>
-                <div class="skill-items">
-                  <el-tag type="success"> ARM </el-tag>
-                  <el-tag type="success"> Linux驱动 </el-tag>
-                  <el-tag type="success"> RTOS </el-tag>
-                </div>
-              </div>
-
-              <div class="skill-group">
-                <h3>开发工具</h3>
-                <div class="skill-items">
-                  <el-tag type="warning"> Git </el-tag>
-                  <el-tag type="warning"> VSCode </el-tag>
-                  <el-tag type="warning"> Eclipse </el-tag>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 工作经历 -->
-          <div class="section">
-            <h2>工作经历</h2>
-            <el-timeline>
-              <el-timeline-item
-                v-for="(experience, index) in workExperience"
-                :key="index"
-                :timestamp="experience.period"
-                placement="top"
-              >
-                <el-card>
-                  <h3>{{ experience.position }}</h3>
-                  <h4>{{ experience.company }}</h4>
-                  <p>{{ experience.description }}</p>
-                </el-card>
-              </el-timeline-item>
-            </el-timeline>
-          </div>
-
-          <!-- 教育经历 -->
-          <div class="section">
-            <h2>教育经历</h2>
-            <el-timeline>
-              <el-timeline-item
-                v-for="(education, index) in educationHistory"
-                :key="index"
-                :timestamp="education.period"
-                placement="top"
-              >
-                <el-card>
-                  <h3>{{ education.degree }}</h3>
-                  <h4>{{ education.school }}</h4>
-                  <p>{{ education.major }}</p>
-                  <p class="education-details">
-                    {{ education.details }}
-                  </p>
-                </el-card>
-              </el-timeline-item>
-            </el-timeline>
+          <h1>熊正耀</h1>
+          <p class="profile-title">Camera 驱动软件工程师</p>
+          <p class="profile-bio">
+            专注于 Camera 驱动开发，热衷于探索新技术和解决复杂问题。
+          </p>
+          <div class="profile-meta">
+            <span class="meta-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              上海
+            </span>
+            <span class="meta-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              2 年工作经验
+            </span>
+            <span class="meta-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              xiongzhengyao163@163.com
+            </span>
           </div>
         </div>
-      </el-col>
-    </el-row>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section class="section">
+      <div class="container-narrow">
+        <h2 class="about-section-title reveal">专业技能</h2>
+        <div class="skills-row">
+          <div v-for="(group, idx) in skillGroups" :key="group.name" class="skill-group reveal" :class="'reveal-delay-' + (idx + 1)">
+            <h4>{{ group.name }}</h4>
+            <div class="skill-tags">
+              <span class="tag" v-for="skill in group.items" :key="skill">{{ skill }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section class="section" style="background: var(--color-bg-secondary)">
+      <div class="container-narrow">
+        <h2 class="about-section-title reveal">工作经历</h2>
+        <div class="timeline">
+          <div v-for="(exp, idx) in workExperience" :key="idx" class="timeline-item reveal" :class="'reveal-delay-' + (idx + 1)">
+            <div class="timeline-marker"></div>
+            <div class="timeline-card">
+              <div class="timeline-header">
+                <div>
+                  <h3>{{ exp.position }}</h3>
+                  <p class="timeline-company">{{ exp.company }}</p>
+                </div>
+                <span class="timeline-period">{{ exp.period }}</span>
+              </div>
+              <p class="timeline-desc">{{ exp.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Education -->
+    <section class="section">
+      <div class="container-narrow">
+        <h2 class="about-section-title reveal">教育经历</h2>
+        <div class="timeline">
+          <div v-for="(edu, idx) in educationHistory" :key="idx" class="timeline-item reveal" :class="'reveal-delay-' + (idx + 1)">
+            <div class="timeline-marker"></div>
+            <div class="timeline-card">
+              <div class="timeline-header">
+                <div>
+                  <h3>{{ edu.degree }}</h3>
+                  <p class="timeline-company">{{ edu.school }} · {{ edu.major }}</p>
+                </div>
+                <span class="timeline-period">{{ edu.period }}</span>
+              </div>
+              <p class="timeline-desc">{{ edu.details }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script setup>
-import { Picture, Timer, Location, Message } from '@element-plus/icons-vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+
+const imageError = ref(false)
+const handleImageError = () => { imageError.value = true }
+
+const skillGroups = [
+  { name: '编程语言', items: ['C/C++', 'Python', 'Shell'] },
+  { name: '嵌入式开发', items: ['ARM', 'Linux 驱动', 'RTOS'] },
+  { name: '开发工具', items: ['Git', 'VSCode', 'Eclipse'] }
+]
 
 const workExperience = [
   {
     period: '2022.08 - 至今',
-    position: 'Camera驱动软件工程师',
+    position: 'Camera 驱动软件工程师',
     company: '小米',
-    description: '负责Camera驱动开发，包括Camera驱动开发、系统优化等工作。'
+    description: '负责 Camera 驱动开发，包括 Camera 驱动开发、系统优化等工作。'
   },
   {
     period: '2021.09 - 2022.03',
     position: '嵌入式软件工程师',
-    company: '博世(中国)投资有限公司',
+    company: '博世 (中国) 投资有限公司',
     description: '负责嵌入式系统开发，包括大模型部署、图像采集处理、系统优化等工作。'
   }
 ]
@@ -153,163 +138,260 @@ const educationHistory = [
     degree: '学士',
     school: '南京航空航天大学金城学院',
     major: '车辆工程',
-    details: '主修课程：C语言、C++、数字信号处理、嵌入式系统、汽车原理等'
+    details: '主修课程：C 语言、C++、数字信号处理、嵌入式系统、汽车原理等'
   }
 ]
+
+let observer = null
+
+onMounted(() => {
+  observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('is-visible')
+      })
+    },
+    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+  )
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+})
+
+onUnmounted(() => { observer?.disconnect() })
 </script>
 
 <style scoped>
 .about {
-  padding: 4rem 0;
-  background-color: #f5f7fa;
-  min-height: 100vh;
+  padding-top: var(--nav-height);
 }
 
-.profile-container {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  padding: 2rem;
+/* --- Profile Hero --- */
+.profile-hero {
+  padding: var(--space-20) 0 var(--space-12);
+  text-align: center;
+  background: var(--color-bg);
 }
 
-.profile-header {
+.profile-top {
   display: flex;
-  gap: 3rem;
-  margin-bottom: 3rem;
+  flex-direction: column;
+  align-items: center;
 }
 
-.profile-image-container {
-  flex-shrink: 0;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
+.avatar-wrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-full);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-lg);
+  border: 3px solid var(--color-bg);
+  outline: 1px solid var(--color-border);
 }
 
-.profile-image {
+.avatar {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-.image-placeholder {
+.avatar-fallback {
   width: 100%;
   height: 100%;
-  background-color: #f5f7fa;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  color: #909399;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--color-text-tertiary);
+  background: var(--color-bg-secondary);
 }
 
-.profile-info {
-  flex-grow: 1;
+.profile-top h1 {
+  font-size: 36px;
+  margin-bottom: var(--space-2);
 }
 
-.profile-info h1 {
-  margin: 0 0 0.5rem 0;
-  color: #303133;
+.profile-title {
+  font-size: 19px;
+  color: var(--color-accent);
+  font-weight: 500;
+  margin-bottom: var(--space-4);
 }
 
-.profile-info .title {
-  font-size: 1.2rem;
-  color: #409eff;
-  margin-bottom: 1rem;
+.profile-bio {
+  font-size: 17px;
+  color: var(--color-text-secondary);
+  max-width: 480px;
+  line-height: 1.58;
+  margin-bottom: var(--space-6);
 }
 
-.profile-info .bio {
-  color: #606266;
-  margin-bottom: 1.5rem;
-  line-height: 1.6;
-}
-
-.profile-stats {
-  display: flex;
-  gap: 2rem;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #606266;
-}
-
-.section {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid #ebeef5;
-}
-
-.section h2 {
-  color: #303133;
-  margin-bottom: 1.5rem;
-}
-
-.skills-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-}
-
-.skill-group h3 {
-  color: #606266;
-  margin-bottom: 1rem;
-}
-
-.skill-items {
+.profile-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: var(--space-5);
 }
 
-:deep(.el-timeline-item__node) {
-  background-color: #409eff;
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  color: var(--color-text-secondary);
 }
 
-:deep(.el-timeline-item__timestamp) {
-  color: #909399;
+.meta-item svg {
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
 }
 
-.el-card {
-  margin-bottom: 1rem;
+/* --- Section Title --- */
+.about-section-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: var(--space-8);
+  letter-spacing: -0.02em;
 }
 
-.el-card h3 {
-  color: #303133;
-  margin: 0 0 0.5rem 0;
+/* --- Skills --- */
+.skills-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
 }
 
-.el-card h4 {
-  color: #606266;
-  margin: 0 0 0.5rem 0;
-  font-weight: normal;
+.skill-group {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
 }
 
-.el-card p {
-  color: #606266;
-  margin: 0;
+.skill-group h4 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+  color: var(--color-text);
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* --- Timeline --- */
+.timeline {
+  position: relative;
+  padding-left: var(--space-8);
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: var(--color-border);
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: var(--space-8);
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: calc(-1 * var(--space-8) + 2px);
+  top: 8px;
+  width: 11px;
+  height: 11px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  border: 2px solid var(--color-bg);
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.timeline-card {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  transition: box-shadow var(--duration-base) var(--ease-out);
+}
+
+.timeline-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.timeline-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.timeline-company {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.timeline-period {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 3px;
+}
+
+.timeline-desc {
+  font-size: 15px;
+  color: var(--color-text-secondary);
   line-height: 1.6;
 }
 
-.education-details {
-  color: #67c23a; /* 使用绿色突出显示研究方向/主修课程 */
-  margin-top: 0.5rem;
-  font-size: 0.9em;
-}
+/* --- Responsive --- */
+@media (max-width: 734px) {
+  .profile-hero {
+    padding: var(--space-12) 0 var(--space-8);
+  }
 
-/* 调整卡片内容的间距 */
-.el-card h3 {
-  margin-bottom: 0.5rem;
-}
+  .avatar-wrapper {
+    width: 96px;
+    height: 96px;
+  }
 
-.el-card h4 {
-  margin-bottom: 0.5rem;
-}
+  .profile-top h1 {
+    font-size: 28px;
+  }
 
-.el-card p {
-  margin-bottom: 0.3rem;
+  .skills-row {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-meta {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .timeline-header {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
 }
 </style>

@@ -56,11 +56,29 @@ app.use((req, res, next) => {
 })
 
 // 静态文件服务
-app.use(express.static(DIST_DIR, {
-  maxAge: NODE_ENV === 'production' ? '1y' : '0',
-  etag: true,
-  lastModified: true
-}))
+// 关键策略：
+// 1) 带 hash 的静态资源可长期缓存
+// 2) index.html 禁止缓存，避免引用到旧 hash 资源导致 preload 失败
+app.use(
+  express.static(DIST_DIR, {
+    maxAge: NODE_ENV === 'production' ? '1y' : 0,
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, filePath) => {
+      const isHtml = path.extname(filePath) === '.html'
+      if (isHtml) {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+        res.setHeader('Pragma', 'no-cache')
+        res.setHeader('Expires', '0')
+        return
+      }
+
+      if (NODE_ENV === 'production') {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+      }
+    }
+  })
+)
 
 // 请求日志
 app.use(requestLogger)
@@ -77,6 +95,9 @@ app.get('/health', (req, res) => {
 // SPA 路由处理 - 所有其他路由返回 index.html
 app.get('*', (req, res) => {
   if (fs.existsSync(INDEX_FILE)) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+    res.setHeader('Pragma', 'no-cache')
+    res.setHeader('Expires', '0')
     res.sendFile(INDEX_FILE)
   } else {
     res.status(404).json({

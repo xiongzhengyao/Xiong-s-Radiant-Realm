@@ -20,13 +20,7 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // 移除 console
-        drop_debugger: true // 移除 debugger
-      }
-    },
+    minify: 'esbuild',
     // 代码分割优化
     rollupOptions: {
       output: {
@@ -46,6 +40,6 @@ export default defineConfig({
   },
   // 优化依赖预构建
   optimizeDeps: {
-    include: ['vue', 'vue-router', 'pinia', 'element-plus']
+    include: ['vue', 'vue-router', 'pinia', 'element-plus', 'markdown-it', 'markdown-it-table']
   }
 })

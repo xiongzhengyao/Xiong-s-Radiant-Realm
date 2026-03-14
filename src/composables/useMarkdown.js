@@ -1,5 +1,6 @@
 import MarkdownIt from 'markdown-it'
-import markdownItTable from 'markdown-it-table'
+// markdown-it-table 使用命名导出
+import { markdownItTable } from 'markdown-it-table'
 
 // 创建 markdown 解析器实例（单例模式）
 let mdInstance = null

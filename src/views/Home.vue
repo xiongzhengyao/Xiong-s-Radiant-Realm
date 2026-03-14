@@ -1,173 +1,308 @@
 <template>
-  <section class="home">
-    <el-row class="hero" justify="center" align="middle">
-      <el-col :span="16" class="text-center">
-        <h1>{{ $t('home.welcome') }}</h1>
-        <p class="subtitle">
-          {{ $t('home.subtitle') }}
-        </p>
-        <el-button type="primary" size="large" @click="$router.push('/blog')">
-          {{ $t('home.viewProjects') }}
-        </el-button>
-      </el-col>
-    </el-row>
-
-    <section class="section">
-      <el-col :span="20">
-        <h2>{{ $t('home.skills.title') }}</h2>
-        <el-row :gutter="20">
-          <el-col v-for="skill in skills" :key="skill.name" :span="8">
-            <el-card class="skill-card">
-              <el-icon size="40" class="skill-icon">
-                <component :is="skill.icon" />
-              </el-icon>
-              <h3>{{ skill.name }}</h3>
-              <p>{{ skill.description }}</p>
-            </el-card>
-          </el-col>
-        </el-row>
-      </el-col>
+  <div class="home">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-content">
+        <p class="hero-eyebrow animate-fade-in-up">{{ $t('home.subtitle') }}</p>
+        <h1 class="hero-title animate-fade-in-up" style="animation-delay: 0.1s">
+          {{ $t('home.welcome') }}
+        </h1>
+        <div class="hero-actions animate-fade-in-up" style="animation-delay: 0.25s">
+          <button class="btn btn-primary" @click="$router.push('/blog')">
+            {{ $t('home.viewProjects') }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+          <button class="btn btn-outline" @click="$router.push('/about')">
+            {{ $t('about.title') }}
+          </button>
+        </div>
+      </div>
+      <div class="hero-scroll-hint animate-fade-in" style="animation-delay: 0.6s">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
     </section>
 
-    <section class="section">
-      <el-col :span="20">
-        <h2>{{ $t('home.blog.title') }}</h2>
-        <el-row :gutter="20">
-          <el-col v-for="post in latestPosts" :key="post.title" :span="8">
-            <el-card class="blog-card" @click="$router.push('/blog')">
-              <img :src="post.image" class="blog-image" />
-              <h3>{{ post.title }}</h3>
-              <p>{{ post.excerpt }}</p>
-              <div class="blog-meta">
-                <span>{{ post.date }}</span>
-                <el-tag size="small">
-                  {{ post.category }}
-                </el-tag>
-              </div>
-            </el-card>
-          </el-col>
-        </el-row>
-      </el-col>
+    <!-- Skills -->
+    <section class="section skills-section">
+      <div class="container">
+        <div class="section-header reveal">
+          <h2>{{ $t('home.skills.title') }}</h2>
+        </div>
+        <div class="skills-grid">
+          <div class="skill-card reveal" v-for="(skill, index) in skills" :key="skill.key" :class="'reveal-delay-' + (index + 1)">
+            <div class="skill-icon" :style="{ background: skill.gradient }">
+              <svg v-html="skill.svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></svg>
+            </div>
+            <h3>{{ $t(`home.skills.${skill.key}.name`) }}</h3>
+            <p>{{ $t(`home.skills.${skill.key}.description`) }}</p>
+          </div>
+        </div>
+      </div>
     </section>
-  </section>
+
+    <!-- CTA -->
+    <section class="section cta-section">
+      <div class="container">
+        <div class="cta-content reveal">
+          <h2>{{ $t('home.blog.title') }}</h2>
+          <p>探索技术博客，发现嵌入式开发、Camera 驱动与 Linux 系统的深度文章。</p>
+          <button class="btn btn-primary" @click="$router.push('/blog')">
+            {{ $t('home.blog.readMore') }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { onMounted, onUnmounted } from 'vue'
 
-const { t } = useI18n()
-
-const skills = ref([
+const skills = [
   {
-    name: t('home.skills.embedded.name'),
-    icon: 'Cpu',
-    description: t('home.skills.embedded.description')
+    key: 'embedded',
+    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    svg: '<rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="9" y2="9.01"/><line x1="15" y1="9" x2="15" y2="9.01"/><path d="M9 15h6"/>'
   },
   {
-    name: t('home.skills.image.name'),
-    icon: 'Picture',
-    description: t('home.skills.image.description')
+    key: 'image',
+    gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    svg: '<circle cx="12" cy="12" r="3.5"/><path d="M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 10S2 17.52 2 12z"/>'
   },
   {
-    name: t('home.skills.linux.name'),
-    icon: 'Terminal',
-    description: t('home.skills.linux.description')
+    key: 'linux',
+    gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    svg: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>'
   }
-])
+]
 
-const latestPosts = ref([
-  {
-    title: '嵌入式 Linux 驱动开发指南',
-    excerpt: '深入探讨嵌入式 Linux 驱动的开发流程和最佳实践...',
-    image: 'https://picsum.photos/300/200',
-    date: '2024-02-01',
-    category: '驱动开发'
-  },
-  {
-    title: '相机 ISP 图像处理算法分析',
-    excerpt: '深入探讨移动相机 ISP 的图像处理算法和优化方案...',
-    image: 'https://picsum.photos/300/201',
-    date: '2024-01-28',
-    category: '图像处理'
-  },
-  {
-    title: '嵌入式系统性能优化指南',
-    excerpt: '分享嵌入式系统的性能优化策略和实践经验...',
-    image: 'https://picsum.photos/300/202',
-    date: '2024-01-25',
-    category: '系统优化'
-  }
-])
+let observer = null
+
+onMounted(() => {
+  observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible')
+        }
+      })
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+  )
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+})
+
+onUnmounted(() => {
+  observer?.disconnect()
+})
 </script>
 
 <style scoped>
 .home {
-  min-height: 100vh;
+  padding-top: var(--nav-height);
 }
 
+/* --- Hero --- */
 .hero {
-  height: 80vh;
-  background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
-  color: white;
+  min-height: calc(100vh - var(--nav-height));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 2rem;
+  background: var(--color-hero-bg);
+  color: var(--color-hero-text);
+  padding: var(--space-16) var(--space-6);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0, 113, 227, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 70% 60%, rgba(100, 80, 200, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+}
+
+.hero-eyebrow {
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-4);
+  letter-spacing: 0.02em;
+}
+
+.hero-title {
+  font-size: clamp(40px, 7vw, 72px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: var(--color-hero-text);
+  margin-bottom: var(--space-10);
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+html.dark .hero-title {
+  background: linear-gradient(180deg, #f5f5f7 0%, rgba(245, 245, 247, 0.65) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.hero-actions {
   display: flex;
   align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
 }
 
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+.hero .btn-primary {
+  font-size: 17px;
+  padding: 14px 28px;
 }
 
-.subtitle {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
+.hero .btn-outline {
+  color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.3);
+  font-size: 17px;
+  padding: 14px 28px;
 }
 
-.section {
-  padding: 4rem 0;
+.hero .btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
-.section h2 {
+.hero-scroll-hint {
+  position: absolute;
+  bottom: var(--space-8);
+  color: rgba(255, 255, 255, 0.3);
+  animation: float 2.5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* --- Skills --- */
+.skills-section {
+  background: var(--color-bg);
+}
+
+.section-header {
   text-align: center;
-  margin-bottom: 3rem;
-  font-size: 2rem;
-  color: #333;
+  margin-bottom: var(--space-12);
 }
 
-.skill-card,
-.blog-card {
+.section-header h2 {
+  margin-bottom: var(--space-3);
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+.skill-card {
   text-align: center;
-  padding: 2rem;
-  height: 100%;
-  transition: transform 0.3s;
+  padding: var(--space-10) var(--space-6);
+  background: var(--color-card-bg);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  transition: transform var(--duration-base) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
 }
 
-.skill-card:hover,
-.blog-card:hover {
-  transform: translateY(-5px);
+.skill-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
 .skill-icon {
-  color: #409eff;
-  margin-bottom: 1rem;
-}
-
-.blog-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  margin-bottom: 1rem;
-}
-
-.blog-meta {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-top: 1rem;
-  color: #666;
+  justify-content: center;
+  margin: 0 auto var(--space-5);
+}
+
+.skill-card h3 {
+  font-size: 20px;
+  margin-bottom: var(--space-2);
+}
+
+.skill-card p {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+/* --- CTA --- */
+.cta-section {
+  background: var(--color-bg-secondary);
+}
+
+.cta-content {
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.cta-content h2 {
+  margin-bottom: var(--space-4);
+}
+
+.cta-content p {
+  font-size: 17px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-8);
+  line-height: 1.58;
+}
+
+/* --- Responsive --- */
+@media (max-width: 734px) {
+  .skills-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  .skill-card {
+    padding: var(--space-6);
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .hero .btn-primary,
+  .hero .btn-outline {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+@media (min-width: 735px) and (max-width: 1068px) {
+  .skills-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
 }
 </style>
