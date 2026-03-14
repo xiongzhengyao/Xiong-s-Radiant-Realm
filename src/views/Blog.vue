@@ -63,6 +63,12 @@
                 </div>
                 <h3>{{ post.title }}</h3>
                 <p>{{ post.excerpt }}</p>
+                <div v-if="post.keywords?.length" class="post-keywords">
+                  <span class="keyword-label">关键词</span>
+                  <span class="keyword-item" v-for="keyword in post.keywords.slice(0, 5)" :key="keyword">
+                    {{ keyword }}
+                  </span>
+                </div>
                 <div class="post-card-tags">
                   <span class="tag" v-for="tag in post.tags" :key="tag">{{ tag }}</span>
                 </div>
@@ -103,7 +109,7 @@
             <img :src="currentPost.image" :alt="currentPost.title" />
           </div>
 
-          <div class="markdown-body" v-html="renderedContent" />
+          <div class="rich-markdown" v-html="renderedContent" />
 
           <footer class="article-footer">
             <div class="article-nav">
@@ -124,8 +130,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useBlogStore } from '@/stores/blogStore'
 import { useMarkdown } from '@/composables/useMarkdown'
 import { BLOG_CATEGORIES } from '@/utils/constants'
@@ -139,70 +145,110 @@ const currentPost = ref(null)
 const renderedContent = ref('')
 const prevPost = ref(null)
 const nextPost = ref(null)
+let observer = null
 
-const categories = BLOG_CATEGORIES
 const route = useRoute()
+const router = useRouter()
 const blogStore = useBlogStore()
 const posts = computed(() => blogStore.posts)
+const normalizeCategoryName = name => {
+  const value = String(name || '')
+    .trim()
+    .toLowerCase()
+  if (value === 'sensors') return 'sensor'
+  return value
+}
+const categoryLabelMap = new Map(
+  BLOG_CATEGORIES.map(item => [normalizeCategoryName(item.name), item.label])
+)
+const categories = computed(() => {
+  const used = new Set(posts.value.map(post => post.category))
+  return Array.from(used).map(name => ({
+    name: normalizeCategoryName(name),
+    label: categoryLabelMap.get(normalizeCategoryName(name)) || name
+  }))
+})
 
 const showPostDetail = post => {
-  const slug = Object.keys(blogStore.markdownFiles).find(
-    key => blogStore.markdownFiles[key].id === post.id
-  )
-  window.history.pushState({}, '', `/blog/${post.id}/${slug}`)
+  router.push(`/blog/${post.id}/${post.slug}`)
   loadPost(post.id)
 }
 
 const backToList = () => {
   currentPostId.value = null
   currentPost.value = null
-  window.history.pushState({}, '', '/blog')
+  router.push('/blog')
+  nextTick(() => {
+    observeRevealElements()
+  })
 }
 
-const loadPost = async id => {
+const loadPost = id => {
   const postData = blogStore.getPostById(id)
   if (!postData) { backToList(); return }
 
   currentPostId.value = id
   currentPost.value = postData
 
-  try {
-    const response = await fetch(postData.markdownFile)
-    if (!response.ok) throw new Error('Failed to load markdown file')
-    const content = await response.text()
-    renderedContent.value = renderMarkdown(content)
-    const { prev, next } = blogStore.getAdjacentPosts(id)
-    prevPost.value = prev
-    nextPost.value = next
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  } catch (error) {
-    console.error('Error loading markdown:', error)
-    renderedContent.value = '<p style="color: red;">加载文章内容失败，请稍后重试...</p>'
-  }
+  renderedContent.value = renderMarkdown(postData.content)
+  const { prev, next } = blogStore.getAdjacentPosts(id)
+  prevPost.value = prev
+  nextPost.value = next
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 const filteredPosts = computed(() => {
   const q = searchQuery.value.toLowerCase()
   return posts.value.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(q) || post.excerpt.toLowerCase().includes(q)
+    const searchable = [
+      post.title,
+      post.excerpt,
+      ...(post.tags || []),
+      ...(post.keywords || []),
+      post.category
+    ]
+      .join(' ')
+      .toLowerCase()
+    const matchesSearch = searchable.includes(q)
     const matchesCategory = selectedCategory.value === 'all' || post.category === selectedCategory.value
     return matchesSearch && matchesCategory
   })
 })
 
+const observeRevealElements = () => {
+  if (!observer) return
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+}
+
 onMounted(() => {
   if (route.params.id) loadPost(route.params.id)
 
-  const observer = new IntersectionObserver(
+  observer = new IntersectionObserver(
     entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible') }),
     { threshold: 0.1 }
   )
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+  observeRevealElements()
 })
 
 watch(() => route.params, params => {
   if (params.id) loadPost(params.id)
-  else { currentPostId.value = null; currentPost.value = null }
+  else {
+    currentPostId.value = null
+    currentPost.value = null
+    nextTick(() => {
+      observeRevealElements()
+    })
+  }
+})
+
+watch(filteredPosts, () => {
+  nextTick(() => {
+    observeRevealElements()
+  })
+})
+
+onUnmounted(() => {
+  observer?.disconnect()
 })
 </script>
 
@@ -377,6 +423,7 @@ watch(() => route.params, params => {
   line-height: 1.6;
   margin-bottom: var(--space-4);
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -386,6 +433,28 @@ watch(() => route.params, params => {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+}
+
+.post-keywords {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: var(--space-3);
+}
+
+.keyword-label {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
+.keyword-item {
+  font-size: 12px;
+  color: var(--color-accent);
+  background: var(--color-accent-light);
+  border-radius: var(--radius-full);
+  padding: 3px 10px;
+  line-height: 1.4;
 }
 
 .empty-state {
@@ -455,106 +524,6 @@ watch(() => route.params, params => {
   width: 100%;
   height: auto;
   display: block;
-}
-
-/* --- Markdown Body --- */
-.markdown-body {
-  font-size: 17px;
-  line-height: 1.7;
-  color: var(--color-text);
-}
-
-.markdown-body :deep(h1) {
-  font-size: 2em;
-  margin: 2.5rem 0 1rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid var(--color-divider);
-}
-
-.markdown-body :deep(h2) {
-  font-size: 1.6em;
-  margin: 2rem 0 0.8rem;
-}
-
-.markdown-body :deep(h3) {
-  font-size: 1.3em;
-  margin: 1.5rem 0 0.6rem;
-}
-
-.markdown-body :deep(p) {
-  margin: 1rem 0;
-  line-height: 1.76;
-  color: var(--color-text);
-}
-
-.markdown-body :deep(ul),
-.markdown-body :deep(ol) {
-  padding-left: 1.8rem;
-  margin: 1rem 0;
-}
-
-.markdown-body :deep(li) {
-  margin: 0.4rem 0;
-  line-height: 1.7;
-}
-
-.markdown-body :deep(code) {
-  background: var(--color-code-bg);
-  padding: 0.15em 0.4em;
-  border-radius: 4px;
-  font-family: var(--font-mono);
-  font-size: 0.88em;
-  color: var(--color-accent);
-}
-
-.markdown-body :deep(pre) {
-  background: var(--color-code-bg);
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  overflow-x: auto;
-  margin: 1.5rem 0;
-  border: 1px solid var(--color-border);
-}
-
-.markdown-body :deep(pre code) {
-  background: none;
-  padding: 0;
-  color: var(--color-text);
-}
-
-.markdown-body :deep(blockquote) {
-  border-left: 3px solid var(--color-accent);
-  padding-left: var(--space-4);
-  margin: 1.5rem 0;
-  color: var(--color-text-secondary);
-}
-
-.markdown-body :deep(a) {
-  color: var(--color-accent);
-}
-
-.markdown-body :deep(img) {
-  max-width: 100%;
-  border-radius: var(--radius-md);
-}
-
-.markdown-body :deep(table) {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1.5rem 0;
-}
-
-.markdown-body :deep(th),
-.markdown-body :deep(td) {
-  border: 1px solid var(--color-border);
-  padding: 10px 14px;
-  text-align: left;
-  font-size: 15px;
-}
-
-.markdown-body :deep(th) {
-  background: var(--color-bg-secondary);
-  font-weight: 600;
 }
 
 /* --- Article Footer / Nav --- */

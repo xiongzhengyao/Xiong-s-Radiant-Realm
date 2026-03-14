@@ -4,80 +4,55 @@
 
 ---
 
-## 文档导航（重构后）
+## 文档导航
 
-- `README.md`：快速上手 + 常用命令（本文件）
-- `DEVELOPMENT.md`：架构、代码目录、学习路径、开发规范
-- `DEPLOYMENT.md`：服务器部署、自动部署、回滚、Nginx HTTPS
+- `README.md`：项目入口（本文件）
+- `DEVELOPMENT.md`：开发学习、架构说明、博客写作
+- `DEPLOYMENT.md`：服务器部署、自动化、回滚、Nginx HTTPS
 
 ---
 
-## 快速上手
-
-### 环境要求
-
-- Node.js >= 16
-- npm >= 7
-
-### 安装依赖
+## 快速开始
 
 ```bash
+# 安装依赖
 npm install
-```
 
-### 本地开发
-
-```bash
+# 本地开发
 npm run dev
-```
 
-默认端口 `8888`（若占用会自动切换）。
-
-### 构建与运行
-
-```bash
-# 构建
+# 构建 + 预览
 npm run build
-
-# 预览构建结果
 npm run serve
-
-# 生产运行
-npm start
 ```
+
+默认开发端口 `8888`（冲突时自动切换）。
 
 ---
 
 ## 常用命令
 
 ```bash
-# 代码检查与格式化
+# 代码质量
 npm run lint
 npm run format
 npm run format:check
 
-# 远程部署
-npm run deploy:remote
+# 博客
+npm run new:post -- "文章标题"
 
-# 远程回滚
+# 部署
+npm run deploy:remote
 npm run rollback:remote
 ```
 
 ---
 
-## 环境变量（服务端）
+## 博客来源（唯一）
 
-```env
-NODE_ENV=production
-HOST=0.0.0.0
-PORT=8888
-```
-
-健康检查：
-
-```bash
-curl http://localhost:8888/health
-```
+- 文章目录：`src/assets/posts/*.md`
+- 列表/详情由系统自动从 Markdown 提取
+- 无需在 `Blog.vue` 手动二次录入
 
 ---
 

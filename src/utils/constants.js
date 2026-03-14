@@ -7,11 +7,10 @@ export const APP_CONFIG = {
 
 // 博客分类配置
 export const BLOG_CATEGORIES = [
-  { name: 'linux', label: 'Linux 开发' },
-  { name: 'cpp', label: 'C++ 开发' },
-  { name: 'embedded', label: '嵌入式开发' },
-  { name: 'protocol', label: '通信协议' },
-  { name: 'sensor', label: '传感器' }
+  { name: 'Embedded', label: '嵌入式' },
+  { name: 'Linux', label: 'Linux' },
+  { name: 'Sensor', label: 'Sensor' },
+  { name: 'Notes', label: 'Notes' }
 ]
 
 // 路由配置

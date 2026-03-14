@@ -97,3 +97,66 @@ npm run format:check
 - 增加单元测试与 E2E 测试
 - 增加 CI（PR 自动 lint/build）
 - 增加 SEO（sitemap、meta 管理）
+
+---
+
+## 7. 博客写作工作流（只写 Markdown）
+
+现在博客列表数据由 `src/stores/blogStore.js` 自动从 `src/assets/posts/*.md` 提取。
+`public/posts` 已移除，不再作为博客来源。
+
+### 7.1 最小可用写法（无 frontmatter）
+
+```md
+# 文章标题
+
+正文内容...
+```
+
+系统会自动提取：
+
+- 标题：第一个 `# ` 标题
+- 摘要：正文前几段自动截取
+- 作者：默认 `熊正耀`
+- 分类：默认 `auto`（系统自动推断）
+- 封面：自动生成占位图
+
+### 7.2 推荐写法（带 frontmatter）
+
+```md
+---
+title: I2C 与 I3C 实战经验总结
+date: 2026-03-14
+author: 熊正耀
+category: auto
+tags: [通信协议, 嵌入式, I2C, I3C]
+keywords: [i2c, i3c, 调试, 总线]
+image: https://your-cdn.example.com/cover/i2c-i3c.png
+excerpt: 一文总结 I2C/I3C 的差异、选型建议与调试技巧。
+---
+
+# I2C 与 I3C 实战经验总结
+
+正文内容...
+```
+
+### 7.3 一键生成文章模板
+
+```bash
+# 最简单
+npm run new:post -- "我的新文章标题"
+
+# 指定分类/标签/关键字/作者
+npm run new:post -- "I2C 调试技巧" --category auto --tags I2C,调试,嵌入式 --keywords i2c,i3c,总线 --author 熊正耀
+```
+
+生成位置：`src/assets/posts/<slug>.md`
+静态模板：`src/assets/posts/_template.md`（不会被博客列表加载）
+
+### 7.4 简化分类（推荐）
+
+- `auto`：默认，系统按标题/标签/关键字自动推断
+- `embedded`：嵌入式/驱动/协议
+- `linux`：Linux 系统与应用
+- `sensor`：传感器/ISP/图像相关
+- `notes`：学习笔记/资料整理/通用文章

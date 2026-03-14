@@ -453,3 +453,103 @@ a:hover {
   border-color: var(--color-accent) !important;
   box-shadow: 0 0 0 3px var(--color-input-focus) !important;
 }
+
+/* --- Rich Markdown Content --- */
+.rich-markdown {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--color-text);
+}
+
+.rich-markdown h1 {
+  font-size: 2em;
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.rich-markdown h2 {
+  font-size: 1.6em;
+  margin: 2rem 0 0.8rem;
+}
+
+.rich-markdown h3 {
+  font-size: 1.3em;
+  margin: 1.5rem 0 0.6rem;
+}
+
+.rich-markdown p {
+  margin: 1rem 0;
+  line-height: 1.76;
+  color: var(--color-text);
+}
+
+.rich-markdown ul,
+.rich-markdown ol {
+  padding-left: 1.8rem;
+  margin: 1rem 0;
+}
+
+.rich-markdown li {
+  margin: 0.4rem 0;
+  line-height: 1.7;
+}
+
+.rich-markdown code {
+  background: var(--color-code-bg);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  color: var(--color-accent);
+}
+
+.rich-markdown pre {
+  background: var(--color-code-bg);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 1px solid var(--color-border);
+}
+
+.rich-markdown pre code {
+  background: none;
+  padding: 0;
+  color: var(--color-text);
+}
+
+.rich-markdown blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: var(--space-4);
+  margin: 1.5rem 0;
+  color: var(--color-text-secondary);
+}
+
+.rich-markdown a {
+  color: var(--color-accent);
+}
+
+.rich-markdown img {
+  max-width: 100%;
+  border-radius: var(--radius-md);
+}
+
+.rich-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.rich-markdown th,
+.rich-markdown td {
+  border: 1px solid var(--color-border);
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 15px;
+}
+
+.rich-markdown th {
+  background: var(--color-bg-secondary);
+  font-weight: 600;
+}

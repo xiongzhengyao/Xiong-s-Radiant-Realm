@@ -69,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 
 const selectedCategory = ref('all')
 
@@ -125,12 +125,23 @@ const getMonth = dateStr => {
 
 let observer = null
 
+const observeRevealElements = () => {
+  if (!observer) return
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+}
+
 onMounted(() => {
   observer = new IntersectionObserver(
     entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible') }),
     { threshold: 0.1 }
   )
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+  observeRevealElements()
+})
+
+watch(filteredPosts, () => {
+  nextTick(() => {
+    observeRevealElements()
+  })
 })
 
 onUnmounted(() => { observer?.disconnect() })
@@ -301,6 +312,7 @@ onUnmounted(() => { observer?.disconnect() })
   color: var(--color-text-secondary);
   line-height: 1.6;
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;

@@ -1,101 +1,182 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
-export const useBlogStore = defineStore('blog', () => {
-  const markdownFiles = {
-    'linux-system-programming': {
-      id: 6,
-      title: 'Linux 系统编程基础指南',
-      date: '2024-02-12',
-      author: '熊正耀',
-      image: 'https://picsum.photos/800/405',
-      excerpt:
-        '深入探讨 Linux 系统编程的核心概念，包括进程管理、线程编程、文件系统、网络编程等重要主题...',
-      markdownFile: '/posts/linux-system-programming.md',
-      tags: ['Linux', '系统编程', '进程管理', '网络编程'],
-      category: 'linux'
-    },
-    'i2c-i3c-protocols': {
-      id: 1,
-      title: 'I2C 和 I3C 协议详解',
-      date: '2024-02-10',
-      author: '熊正耀',
-      image: 'https://picsum.photos/800/404',
-      excerpt: '深入分析 I2C 和 I3C 协议的工作原理、特性对比、应用场景以及开发注意事项...',
-      markdownFile: '/posts/i2c-i3c-protocols.md',
-      tags: ['通信协议', '嵌入式', '硬件开发', 'I2C'],
-      category: 'protocol'
-    },
-    'learning-resources': {
-      id: 2,
-      title: '嵌入式开发学习资料整理',
-      date: '2024-02-08',
-      author: '熊正耀',
-      image: 'https://picsum.photos/800/403',
-      excerpt: '整理了嵌入式开发相关的学习资料，包括编程语言、操作系统、硬件基础...',
-      markdownFile: '/posts/learning-resources.md',
-      tags: ['嵌入式', '学习资料', '开发工具'],
-      category: 'embedded'
-    },
-    'image-sensors': {
-      id: 3,
-      title: '图像传感器的工作原理与应用',
-      date: '2024-02-06',
-      author: '熊正耀',
-      image: 'https://picsum.photos/800/402',
-      excerpt: '本文将深入探讨图像传感器的工作原理，包括 CMOS 和 CCD 传感器的差异...',
-      markdownFile: '/posts/image-sensors.md',
-      tags: ['传感器', 'CMOS', 'CCD', '图像处理'],
-      category: 'sensor'
-    },
-    'environmental-sensors': {
-      id: 4,
-      title: '环境传感器在智能家居中的应用',
-      date: '2024-02-04',
-      author: '熊正耀',
-      image: 'https://picsum.photos/800/401',
-      excerpt: '探讨温湿度、空气质量、光线等环境传感器在智能家居场景中的应用...',
-      markdownFile: '/posts/environmental-sensors.md',
-      tags: ['传感器', '智能家居', 'IoT', '环境监测'],
-      category: 'sensor'
-    },
-    'inertial-sensors': {
-      id: 5,
-      title: '惯性传感器在手机中的应用',
-      date: '2024-02-02',
-      author: '熊正耀',
-      image: 'https://picsum.photos/800/400',
-      excerpt: '分析加速度计、陀螺仪、磁力计等惯性传感器在智能手机中的应用...',
-      markdownFile: '/posts/inertial-sensors.md',
-      tags: ['传感器', '惯性传感器', '嵌入式', '驱动开发'],
-      category: 'sensor'
-    },
-    'sensor-calculations': {
-      id: 7,
-      title: '传感器相关计算公式详解',
-      date: '2024-02-14',
-      author: '熊正耀',
-      image: 'https://picsum.photos/800/406',
-      excerpt:
-        '详细介绍各类传感器的计算公式，包括温度、压力、加速度、光电、湿度传感器等的数学模型和校准方法...',
-      markdownFile: '/posts/sensor-calculations.md',
-      tags: ['传感器', '公式', '校准', '信号处理'],
-      category: 'sensor'
+const AUTHOR_FALLBACK = '熊正耀'
+const CATEGORY_FALLBACK = 'notes'
+const CATEGORY_ALIAS = {
+  protocol: 'embedded',
+  cpp: 'embedded',
+  camera: 'embedded'
+}
+const CATEGORY_KEYWORDS = {
+  embedded: ['嵌入式', '驱动', 'i2c', 'i3c', 'spi', 'uart', 'can', '通信协议'],
+  linux: ['linux', '内核', '进程', '线程', '系统编程', 'shell', '文件系统'],
+  sensor: ['传感器', 'cmos', 'ccd', 'imu', 'isp', '图像', 'camera', '温湿度', '加速度'],
+  notes: ['学习', '笔记', '资源', '总结', '教程']
+}
+
+const postModules = import.meta.glob('../assets/posts/*.md', {
+  eager: true,
+  query: '?raw',
+  import: 'default'
+})
+
+const toSlug = path => path.split('/').pop().replace(/\.md$/i, '')
+
+const parseFrontmatter = content => {
+  const match = content.match(/^---\n([\s\S]*?)\n---\n?/)
+  if (!match) return { frontmatter: {}, body: content }
+
+  const block = match[1]
+  const frontmatter = {}
+  for (const line of block.split('\n')) {
+    const idx = line.indexOf(':')
+    if (idx === -1) continue
+    const key = line.slice(0, idx).trim()
+    const rawValue = line.slice(idx + 1).trim()
+    if (!key) continue
+
+    if (rawValue.startsWith('[') && rawValue.endsWith(']')) {
+      frontmatter[key] = rawValue
+        .slice(1, -1)
+        .split(',')
+        .map(item => item.trim().replace(/^['"]|['"]$/g, ''))
+        .filter(Boolean)
+      continue
     }
+
+    frontmatter[key] = rawValue.replace(/^['"]|['"]$/g, '')
   }
 
-  const posts = ref(Object.values(markdownFiles))
+  const body = content.slice(match[0].length)
+  return { frontmatter, body }
+}
+
+const extractTitle = (frontmatter, body, slug) => {
+  if (frontmatter.title) return frontmatter.title
+
+  const titleMatch = body.match(/^#\s+(.+)$/m)
+  if (titleMatch?.[1]) return titleMatch[1].trim()
+
+  return slug
+}
+
+const extractExcerpt = (frontmatter, body) => {
+  if (frontmatter.excerpt) return frontmatter.excerpt
+
+  const lines = body
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean)
+    .filter(line => !line.startsWith('#'))
+    .filter(line => !line.startsWith('```'))
+    .filter(line => !line.startsWith('- '))
+    .filter(line => !line.startsWith('|'))
+
+  const text = lines.join(' ').replace(/\s+/g, ' ')
+  return text.slice(0, 110) + (text.length > 110 ? '...' : '')
+}
+
+const normalizeDate = input => {
+  if (!input) return new Date().toISOString().slice(0, 10)
+  return input
+}
+
+const normalizeTags = tags => {
+  if (Array.isArray(tags)) return tags
+  if (typeof tags === 'string') {
+    return tags
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(Boolean)
+  }
+  return []
+}
+
+const normalizeKeywords = keywords => {
+  if (Array.isArray(keywords)) return keywords
+  if (typeof keywords === 'string') {
+    return keywords
+      .split(',')
+      .map(item => item.trim())
+      .filter(Boolean)
+  }
+  return []
+}
+
+const normalizeCategory = category => {
+  const value = String(category || CATEGORY_FALLBACK).trim().toLowerCase()
+  return CATEGORY_ALIAS[value] || value
+}
+
+const inferCategory = ({ title, tags, keywords, body }) => {
+  const text = [title, ...(tags || []), ...(keywords || []), body.slice(0, 600)]
+    .join(' ')
+    .toLowerCase()
+  const scores = Object.keys(CATEGORY_KEYWORDS).reduce((acc, key) => {
+    const score = CATEGORY_KEYWORDS[key].reduce((s, kw) => (text.includes(kw) ? s + 1 : s), 0)
+    acc[key] = score
+    return acc
+  }, {})
+
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1])
+  if (!sorted.length || sorted[0][1] === 0) return CATEGORY_FALLBACK
+  return sorted[0][0]
+}
+
+const slugToStableId = slug => {
+  let hash = 0
+  for (let i = 0; i < slug.length; i += 1) {
+    hash = (hash * 31 + slug.charCodeAt(i)) >>> 0
+  }
+  return hash % 1000000
+}
+
+const extractPostsFromMarkdown = () => {
+  return Object.entries(postModules)
+    .map(([path, rawContent]) => {
+      const slug = toSlug(path)
+      if (slug.startsWith('_')) return null
+      const { frontmatter, body } = parseFrontmatter(rawContent)
+      const title = extractTitle(frontmatter, body, slug)
+      const tags = normalizeTags(frontmatter.tags)
+      const keywords = normalizeKeywords(frontmatter.keywords)
+      const normalizedCategory = normalizeCategory(frontmatter.category)
+      const category =
+        !normalizedCategory || normalizedCategory === 'auto'
+          ? inferCategory({ title, tags, keywords, body })
+          : normalizedCategory
+
+      return {
+        id: slugToStableId(slug),
+        slug,
+        title,
+        date: normalizeDate(frontmatter.date),
+        author: frontmatter.author || AUTHOR_FALLBACK,
+        image: frontmatter.image || `https://picsum.photos/seed/${slug}/800/420`,
+        excerpt: extractExcerpt(frontmatter, body),
+        content: body,
+        tags,
+        keywords,
+        category
+      }
+    })
+    .filter(Boolean)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+}
+
+export const useBlogStore = defineStore('blog', () => {
+  const posts = ref(extractPostsFromMarkdown())
 
   const getPostById = id => {
-    return posts.value.find(post => post.id === Number(id))
-  }
-
-  const getPostBySlug = slug => {
-    return markdownFiles[slug]
+    return posts.value.find(post => post.id === Number(id)) || null
   }
 
   const getAdjacentPosts = id => {
     const currentIndex = posts.value.findIndex(post => post.id === Number(id))
+    if (currentIndex === -1) {
+      return { prev: null, next: null }
+    }
     return {
       prev: posts.value[currentIndex - 1] || null,
       next: posts.value[currentIndex + 1] || null
@@ -103,10 +184,8 @@ export const useBlogStore = defineStore('blog', () => {
   }
 
   return {
-    markdownFiles,
     posts,
     getPostById,
-    getPostBySlug,
     getAdjacentPosts
   }
 })
