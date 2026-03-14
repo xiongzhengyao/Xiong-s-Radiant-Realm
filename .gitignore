@@ -17,6 +17,7 @@
 .env.test.local
 .env.production.local
 .env
+.env.deploy
 
 # Debug logs
 npm-debug.log*
@@ -26,6 +27,7 @@ yarn-error.log*
 # IDE specific files
 .idea
 .vscode
+.cursor
 *.swp
 *.swo
 

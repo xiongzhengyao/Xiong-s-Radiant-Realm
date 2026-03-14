@@ -1,0 +1,65 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_BRANCH: main
+          DEPLOY_APP_NAME: ${{ secrets.DEPLOY_APP_NAME }}
+          DEPLOY_APP_PORT: ${{ secrets.DEPLOY_APP_PORT }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          envs: DEPLOY_PATH,DEPLOY_BRANCH,DEPLOY_APP_NAME,DEPLOY_APP_PORT
+          script_stop: true
+          script: |
+            set -euo pipefail
+
+            cd "${DEPLOY_PATH}"
+
+            if [[ ! -d ".git" ]]; then
+              echo "Not a git repository: ${DEPLOY_PATH}" >&2
+              exit 1
+            fi
+
+            git fetch origin "${DEPLOY_BRANCH}"
+            git checkout "${DEPLOY_BRANCH}"
+            git pull --ff-only origin "${DEPLOY_BRANCH}"
+
+            npm ci
+            npm run build
+
+            if command -v pm2 >/dev/null 2>&1; then
+              PM2_APP_NAME="${DEPLOY_APP_NAME:-xiong-radiant-realm}" \
+              PORT="${DEPLOY_APP_PORT:-8888}" \
+              HOST="0.0.0.0" NODE_ENV="production" \
+                pm2 startOrReload ecosystem.config.cjs --update-env
+              pm2 save >/dev/null 2>&1 || true
+            else
+              echo "PM2 not found on server" >&2
+              exit 1
+            fi
+
+            for i in 1 2 3 4 5; do
+              if curl -fsS "http://127.0.0.1:${DEPLOY_APP_PORT:-8888}/health" >/dev/null; then
+                echo "Health check OK"
+                exit 0
+              fi
+              sleep 2
+            done
+
+            echo "Health check failed" >&2
+            exit 1
