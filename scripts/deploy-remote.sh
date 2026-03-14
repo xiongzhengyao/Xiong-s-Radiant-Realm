@@ -46,6 +46,23 @@ set -euo pipefail
 
 echo "==> [remote] Start deploy: $(date)"
 
+retry_cmd() {
+  local max_attempts="$1"
+  shift
+  local attempt=1
+  while true; do
+    if "$@"; then
+      return 0
+    fi
+    if [[ "${attempt}" -ge "${max_attempts}" ]]; then
+      return 1
+    fi
+    echo "Command failed (attempt ${attempt}/${max_attempts}), retry in 3s: $*"
+    attempt=$((attempt + 1))
+    sleep 3
+  done
+}
+
 if [[ ! -d "${DEPLOY_PATH}" ]]; then
   echo "Deploy path not found: ${DEPLOY_PATH}" >&2
   exit 1
@@ -59,9 +76,16 @@ if [[ ! -d ".git" ]]; then
 fi
 
 echo "==> [remote] Pull latest code"
-git fetch origin "${DEPLOY_BRANCH}"
+git config --local http.version HTTP/1.1 || true
+if ! retry_cmd 3 git fetch origin "${DEPLOY_BRANCH}"; then
+  echo "Git fetch failed after retries. Please verify server can access github.com." >&2
+  echo "Quick checks on server:" >&2
+  echo "  curl -I https://github.com" >&2
+  echo "  git ls-remote https://github.com/xiongzhengyao/Xiong-s-Radiant-Realm.git" >&2
+  exit 1
+fi
 git checkout "${DEPLOY_BRANCH}"
-git pull --ff-only origin "${DEPLOY_BRANCH}"
+retry_cmd 3 git pull --ff-only origin "${DEPLOY_BRANCH}"
 
 echo "==> [remote] Install dependencies"
 npm ci
