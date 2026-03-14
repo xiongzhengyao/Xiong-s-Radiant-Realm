@@ -114,7 +114,7 @@ const workExperience = [
 {
     period: '2026.02 - 至今',
     position: 'Camera 驱动软件工程师',
-    company: '大疆',
+    company: '大疆创新',
     description: '负责 Camera 驱动开发，包括 Sensor 驱动开发、产线自动化测试等工作。'
   },
   {
