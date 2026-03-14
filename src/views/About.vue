@@ -106,16 +106,22 @@ const handleImageError = () => { imageError.value = true }
 
 const skillGroups = [
   { name: '编程语言', items: ['C/C++', 'Python', 'Shell'] },
-  { name: '嵌入式开发', items: ['ARM', 'Linux 驱动', 'RTOS'] },
-  { name: '开发工具', items: ['Git', 'VSCode', 'Eclipse'] }
+  { name: '嵌入式开发', items: ['ARM', 'Linux 驱动', 'Sensor 驱动'] },
+  { name: '开发工具', items: ['Git', 'VSCode', 'Cursor', 'Jira', 'Confluence'] }
 ]
 
 const workExperience = [
+{
+    period: '2026.02 - 至今',
+    position: 'Camera 驱动软件工程师',
+    company: '大疆',
+    description: '负责 Camera 驱动开发，包括 Sensor 驱动开发、产线自动化测试等工作。'
+  },
   {
-    period: '2022.08 - 至今',
+    period: '2022.08 - 2026.02',
     position: 'Camera 驱动软件工程师',
     company: '小米',
-    description: '负责 Camera 驱动开发，包括 Camera 驱动开发、系统优化等工作。'
+    description: '负责 Camera 驱动开发，包括 Sensor 驱动开发、性能优化等工作。'
   },
   {
     period: '2021.09 - 2022.03',
