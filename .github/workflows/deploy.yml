@@ -9,20 +9,56 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      DEPLOY_PORT: ${{ secrets.DEPLOY_PORT || '22' }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      DEPLOY_BRANCH: main
+      DEPLOY_APP_NAME: ${{ secrets.DEPLOY_APP_NAME || 'xiong-radiant-realm' }}
+      DEPLOY_APP_PORT: ${{ secrets.DEPLOY_APP_PORT || '8888' }}
 
     steps:
+      - name: Validate required secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required=(DEPLOY_HOST DEPLOY_USER DEPLOY_SSH_KEY DEPLOY_PATH)
+          missing=()
+
+          for key in "${required[@]}"; do
+            if [[ -z "${!key:-}" ]]; then
+              missing+=("${key}")
+            fi
+          done
+
+          if [[ "${#missing[@]}" -gt 0 ]]; then
+            echo "Missing required GitHub secrets: ${missing[*]}" >&2
+            echo "Please configure them in: Settings -> Secrets and variables -> Actions" >&2
+            exit 1
+          fi
+
+          if ! [[ "${DEPLOY_PORT}" =~ ^[0-9]+$ ]]; then
+            echo "DEPLOY_PORT must be a number, current: ${DEPLOY_PORT}" >&2
+            exit 1
+          fi
+
+          if ! [[ "${DEPLOY_APP_PORT}" =~ ^[0-9]+$ ]]; then
+            echo "DEPLOY_APP_PORT must be a number, current: ${DEPLOY_APP_PORT}" >&2
+            exit 1
+          fi
+
+          echo "Secret preflight validation passed."
+
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.2.0
-        env:
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
-          DEPLOY_BRANCH: main
-          DEPLOY_APP_NAME: ${{ secrets.DEPLOY_APP_NAME }}
-          DEPLOY_APP_PORT: ${{ secrets.DEPLOY_APP_PORT }}
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          port: ${{ secrets.DEPLOY_PORT }}
+          host: ${{ env.DEPLOY_HOST }}
+          username: ${{ env.DEPLOY_USER }}
+          key: ${{ env.DEPLOY_SSH_KEY }}
+          port: ${{ env.DEPLOY_PORT }}
           envs: DEPLOY_PATH,DEPLOY_BRANCH,DEPLOY_APP_NAME,DEPLOY_APP_PORT
           script_stop: true
           script: |
