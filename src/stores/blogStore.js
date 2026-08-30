@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { getReadingTimeMinutes } from '@/utils/readingTime'
 
 const AUTHOR_FALLBACK = '熊正耀'
 const CATEGORY_FALLBACK = 'notes'
@@ -16,7 +17,7 @@ const CATEGORY_KEYWORDS = {
 }
 
 const postModules = import.meta.glob('../assets/posts/*.md', {
-  eager: true,
+  eager: false,
   query: '?raw',
   import: 'default'
 })
@@ -54,16 +55,13 @@ const parseFrontmatter = content => {
 
 const extractTitle = (frontmatter, body, slug) => {
   if (frontmatter.title) return frontmatter.title
-
   const titleMatch = body.match(/^#\s+(.+)$/m)
   if (titleMatch?.[1]) return titleMatch[1].trim()
-
   return slug
 }
 
 const extractExcerpt = (frontmatter, body) => {
   if (frontmatter.excerpt) return frontmatter.excerpt
-
   const lines = body
     .split('\n')
     .map(line => line.trim())
@@ -72,23 +70,19 @@ const extractExcerpt = (frontmatter, body) => {
     .filter(line => !line.startsWith('```'))
     .filter(line => !line.startsWith('- '))
     .filter(line => !line.startsWith('|'))
-
   const text = lines.join(' ').replace(/\s+/g, ' ')
   return text.slice(0, 110) + (text.length > 110 ? '...' : '')
 }
 
 const normalizeDate = input => {
-  if (!input) return new Date().toISOString().slice(0, 10)
+  if (!input) return null
   return input
 }
 
 const normalizeTags = tags => {
   if (Array.isArray(tags)) return tags
   if (typeof tags === 'string') {
-    return tags
-      .split(',')
-      .map(tag => tag.trim())
-      .filter(Boolean)
+    return tags.split(',').map(tag => tag.trim()).filter(Boolean)
   }
   return []
 }
@@ -96,10 +90,7 @@ const normalizeTags = tags => {
 const normalizeKeywords = keywords => {
   if (Array.isArray(keywords)) return keywords
   if (typeof keywords === 'string') {
-    return keywords
-      .split(',')
-      .map(item => item.trim())
-      .filter(Boolean)
+    return keywords.split(',').map(item => item.trim()).filter(Boolean)
   }
   return []
 }
@@ -118,7 +109,6 @@ const inferCategory = ({ title, tags, keywords, body }) => {
     acc[key] = score
     return acc
   }, {})
-
   const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1])
   if (!sorted.length || sorted[0][1] === 0) return CATEGORY_FALLBACK
   return sorted[0][0]
@@ -132,60 +122,100 @@ const slugToStableId = slug => {
   return hash % 1000000
 }
 
-const extractPostsFromMarkdown = () => {
-  return Object.entries(postModules)
-    .map(([path, rawContent]) => {
-      const slug = toSlug(path)
-      if (slug.startsWith('_')) return null
-      const { frontmatter, body } = parseFrontmatter(rawContent)
-      const title = extractTitle(frontmatter, body, slug)
-      const tags = normalizeTags(frontmatter.tags)
-      const keywords = normalizeKeywords(frontmatter.keywords)
-      const normalizedCategory = normalizeCategory(frontmatter.category)
-      const category =
-        !normalizedCategory || normalizedCategory === 'auto'
-          ? inferCategory({ title, tags, keywords, body })
-          : normalizedCategory
+const parsePost = (path, rawContent) => {
+  const slug = toSlug(path)
+  if (slug.startsWith('_')) return null
+  const { frontmatter, body } = parseFrontmatter(rawContent)
+  const title = extractTitle(frontmatter, body, slug)
+  const tags = normalizeTags(frontmatter.tags)
+  const keywords = normalizeKeywords(frontmatter.keywords)
+  const normalizedCategory = normalizeCategory(frontmatter.category)
+  const category =
+    !normalizedCategory || normalizedCategory === 'auto'
+      ? inferCategory({ title, tags, keywords, body })
+      : normalizedCategory
 
-      return {
-        id: slugToStableId(slug),
-        slug,
-        title,
-        date: normalizeDate(frontmatter.date),
-        author: frontmatter.author || AUTHOR_FALLBACK,
-        image: frontmatter.image || `https://picsum.photos/seed/${slug}/800/420`,
-        excerpt: extractExcerpt(frontmatter, body),
-        content: body,
-        tags,
-        keywords,
-        category
-      }
+  return {
+    id: slugToStableId(slug),
+    slug,
+    title,
+    date: normalizeDate(frontmatter.date),
+    author: frontmatter.author || AUTHOR_FALLBACK,
+    image: frontmatter.image || null,
+    excerpt: extractExcerpt(frontmatter, body),
+    content: body,
+    tags,
+    keywords,
+    category,
+    readingTime: getReadingTimeMinutes(body)
+  }
+}
+
+const loadPostsFromModules = async () => {
+  const entries = await Promise.all(
+    Object.entries(postModules).map(async ([path, loader]) => {
+      const rawContent = await loader()
+      return parsePost(path, rawContent)
     })
+  )
+  return entries
     .filter(Boolean)
+    .filter(post => post.date)
     .sort((a, b) => new Date(b.date) - new Date(a.date))
 }
 
 export const useBlogStore = defineStore('blog', () => {
-  const posts = ref(extractPostsFromMarkdown())
+  const posts = ref([])
+  const ready = ref(false)
+  const loading = ref(false)
+  let loadPromise = null
 
-  const getPostById = id => {
-    return posts.value.find(post => post.id === Number(id)) || null
+  const ensureLoaded = async () => {
+    if (ready.value) return posts.value
+    if (!loadPromise) {
+      loading.value = true
+      loadPromise = loadPostsFromModules()
+        .then(loaded => {
+          posts.value = loaded
+          ready.value = true
+          return loaded
+        })
+        .finally(() => {
+          loading.value = false
+        })
+    }
+    return loadPromise
   }
+
+  const getPostById = id => posts.value.find(post => post.id === Number(id)) || null
 
   const getAdjacentPosts = id => {
     const currentIndex = posts.value.findIndex(post => post.id === Number(id))
-    if (currentIndex === -1) {
-      return { prev: null, next: null }
-    }
+    if (currentIndex === -1) return { prev: null, next: null }
     return {
       prev: posts.value[currentIndex - 1] || null,
       next: posts.value[currentIndex + 1] || null
     }
   }
 
+  const getRecentPosts = (limit = 3) => posts.value.slice(0, limit)
+
+  const getRelatedPosts = (id, limit = 3) => {
+    const current = getPostById(id)
+    if (!current) return []
+    return posts.value
+      .filter(post => post.id !== Number(id) && post.category === current.category)
+      .slice(0, limit)
+  }
+
   return {
     posts,
+    ready,
+    loading,
+    ensureLoaded,
     getPostById,
-    getAdjacentPosts
+    getAdjacentPosts,
+    getRecentPosts,
+    getRelatedPosts
   }
 })

@@ -2,9 +2,14 @@ import { createI18n } from 'vue-i18n'
 import en from './en.js'
 import zh from './zh.js'
 
-// 从 localStorage 读取保存的语言偏好
+// 从 localStorage 或 URL 参数读取语言偏好
 const getSavedLocale = () => {
   try {
+    const urlLang = new URLSearchParams(window.location.search).get('lang')
+    if (urlLang === 'en' || urlLang === 'zh') {
+      localStorage.setItem('locale', urlLang)
+      return urlLang
+    }
     const saved = localStorage.getItem('locale')
     if (saved && (saved === 'zh' || saved === 'en')) {
       return saved

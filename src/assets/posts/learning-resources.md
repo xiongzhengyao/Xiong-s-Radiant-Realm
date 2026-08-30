@@ -1,3 +1,13 @@
+---
+title: 嵌入式开发学习资料整理
+date: 2024-03-01
+author: 熊正耀
+category: notes
+tags: [嵌入式, 学习资源, C/C++, RTOS]
+keywords: [嵌入式, 学习, 资料, linux, freertos]
+excerpt: 嵌入式开发从编程语言、操作系统到硬件基础与通信协议的学习路径与推荐资料。
+---
+
 # 嵌入式开发学习资料整理
 
 ## 基础知识

@@ -1,3 +1,13 @@
+---
+title: I2C 和 I3C 协议详解
+date: 2024-08-20
+author: 熊正耀
+category: embedded
+tags: [I2C, I3C, 通信协议, 嵌入式]
+keywords: [i2c, i3c, 总线, 驱动]
+excerpt: 从物理层到协议层梳理 I2C 与 I3C 的差异、选型建议与嵌入式调试要点。
+---
+
 # I2C 和 I3C 协议详解
 
 ## I2C（Inter-Integrated Circuit）协议

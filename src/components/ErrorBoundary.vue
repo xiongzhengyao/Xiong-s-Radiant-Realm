@@ -1,17 +1,16 @@
 <template>
   <div v-if="hasError" class="error-boundary">
-    <el-result icon="error" title="页面加载出错" sub-title="抱歉，页面遇到了一些问题，请刷新重试">
-      <template #extra>
-        <el-button type="primary" @click="handleReset"> 重新加载 </el-button>
-        <el-button @click="goHome"> 返回首页 </el-button>
-      </template>
-    </el-result>
-    <div v-if="errorInfo" class="error-details">
-      <el-collapse>
-        <el-collapse-item title="错误详情（开发环境）" name="1">
-          <pre>{{ errorInfo }}</pre>
-        </el-collapse-item>
-      </el-collapse>
+    <div class="error-card">
+      <h1>{{ $t('error.title') }}</h1>
+      <p>{{ $t('error.subtitle') }}</p>
+      <div class="error-actions">
+        <button class="btn btn-primary" type="button" @click="handleReset">{{ $t('error.reload') }}</button>
+        <button class="btn btn-outline" type="button" @click="goHome">{{ $t('error.home') }}</button>
+      </div>
+      <details v-if="errorInfo" class="error-details">
+        <summary>{{ $t('error.details') }}</summary>
+        <pre>{{ errorInfo }}</pre>
+      </details>
     </div>
   </div>
   <slot v-else />
@@ -27,7 +26,7 @@ const errorInfo = ref('')
 
 onErrorCaptured((err, instance, info) => {
   hasError.value = true
-  errorInfo.value = `错误信息: ${err.message}\n组件: ${info}\n堆栈: ${err.stack}`
+  errorInfo.value = `${err.message}\n${info}\n${err.stack || ''}`
   console.error('ErrorBoundary caught an error:', err, info)
   return false
 })
@@ -48,24 +47,50 @@ const goHome = () => {
 .error-boundary {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 20px;
+  justify-content: center;
+  padding: var(--space-6);
+  background: var(--color-bg);
+}
+
+.error-card {
+  max-width: 480px;
+  width: 100%;
+  padding: var(--space-10);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  background: var(--color-card-bg);
+  text-align: center;
+}
+
+.error-card h1 {
+  font-size: 24px;
+  margin-bottom: var(--space-3);
+}
+
+.error-card p {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+.error-actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .error-details {
-  margin-top: 20px;
-  max-width: 800px;
-  width: 100%;
+  margin-top: var(--space-6);
+  text-align: left;
 }
 
 .error-details pre {
-  background: #f5f5f5;
-  padding: 15px;
-  border-radius: 4px;
-  overflow-x: auto;
+  margin-top: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
   font-size: 12px;
-  line-height: 1.5;
+  overflow-x: auto;
 }
 </style>

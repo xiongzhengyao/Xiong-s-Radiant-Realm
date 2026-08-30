@@ -1,17 +1,34 @@
 <template>
   <ErrorBoundary>
+    <a href="#main-content" class="skip-link">{{ $t('nav.skipToContent') }}</a>
     <div class="app" :class="{ 'is-scrolled': isScrolled }">
       <!-- Navigation -->
       <nav class="nav glass" role="navigation">
         <div class="nav-inner">
-          <router-link to="/" class="nav-logo">XZY</router-link>
+          <router-link to="/" class="nav-logo">
+            <span class="nav-logo-text">{{ $t('nav.brand') }}</span>
+          </router-link>
 
-          <button class="nav-toggle" :class="{ active: mobileMenuOpen }" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Toggle menu">
+          <button
+            class="nav-toggle"
+            :class="{ active: mobileMenuOpen }"
+            :aria-expanded="mobileMenuOpen"
+            :aria-label="$t('nav.toggleMenu')"
+            @click="mobileMenuOpen = !mobileMenuOpen"
+          >
             <span></span><span></span>
           </button>
 
           <div class="nav-links" :class="{ open: mobileMenuOpen }">
-            <router-link v-for="link in navLinks" :key="link.path" :to="link.path" class="nav-link" @click="mobileMenuOpen = false">
+            <router-link
+              v-for="link in navLinks"
+              :key="link.path"
+              :to="link.path"
+              class="nav-link"
+              :class="{ 'router-link-active': isNavActive(link.path) }"
+              @click="closeMobileMenu"
+              @mouseenter="prefetchRoute(link.path)"
+            >
               {{ $t(link.label) }}
             </router-link>
           </div>
@@ -29,51 +46,74 @@
       </nav>
 
       <!-- Main Content -->
-      <main>
-        <router-view v-slot="{ Component }">
-          <transition name="page" mode="out-in">
-            <component :is="Component" />
-          </transition>
+      <main id="main-content">
+        <router-view v-slot="{ Component, route: viewRoute }">
+          <Transition name="page" mode="out-in">
+            <component :is="Component" :key="pageTransitionKey(viewRoute)" />
+          </Transition>
         </router-view>
       </main>
 
       <!-- Footer -->
       <footer class="footer">
         <div class="footer-inner container">
+          <div class="footer-brand">
+            <router-link to="/" class="footer-logo">{{ $t('nav.brand') }}</router-link>
+            <p class="footer-tagline">{{ $t('footer.tagline') }}</p>
+            <a :href="`mailto:${email}`" class="footer-email-btn">{{ $t('footer.emailCta') }}</a>
+          </div>
           <div class="footer-grid">
             <div class="footer-col">
-              <h4 class="footer-heading">探索</h4>
+              <h4 class="footer-heading">{{ $t('footer.explore') }}</h4>
               <router-link to="/" class="footer-link">{{ $t('nav.home') }}</router-link>
               <router-link to="/blog" class="footer-link">{{ $t('nav.blog') }}</router-link>
+              <router-link to="/projects" class="footer-link">{{ $t('nav.projects') }}</router-link>
               <router-link to="/life" class="footer-link">{{ $t('nav.life') }}</router-link>
             </div>
             <div class="footer-col">
-              <h4 class="footer-heading">关于</h4>
+              <h4 class="footer-heading">{{ $t('footer.about') }}</h4>
               <router-link to="/about" class="footer-link">{{ $t('nav.about') }}</router-link>
               <router-link to="/contact" class="footer-link">{{ $t('nav.contact') }}</router-link>
             </div>
             <div class="footer-col">
-              <h4 class="footer-heading">社交</h4>
-              <a href="https://github.com/xiongzhengyao" target="_blank" rel="noopener" class="footer-link">GitHub</a>
-              <a href="https://blog.csdn.net/qq_38741583" target="_blank" rel="noopener" class="footer-link">CSDN</a>
+              <h4 class="footer-heading">{{ $t('footer.social') }}</h4>
+              <a href="https://github.com/xiongzhengyao" target="_blank" rel="noopener noreferrer" class="footer-link footer-link--external">GitHub</a>
+              <a href="https://blog.csdn.net/qq_38741583" target="_blank" rel="noopener noreferrer" class="footer-link footer-link--external">CSDN</a>
+              <a href="/rss.xml" class="footer-link" target="_blank" rel="noopener">{{ $t('footer.rss') }}</a>
+              <a href="/sitemap.xml" class="footer-link" target="_blank" rel="noopener">{{ $t('footer.sitemap') }}</a>
             </div>
           </div>
           <div class="footer-bottom">
-            <p>&copy; {{ new Date().getFullYear() }} Xiong Zhengyao. All rights reserved.</p>
+            <p>&copy; {{ new Date().getFullYear() }} Xiong Zhengyao</p>
+            <p class="footer-built">{{ $t('footer.builtWith') }}</p>
           </div>
         </div>
       </footer>
+      <BackToTop />
+      <CommandPalette />
+      <MobileTabBar />
     </div>
   </ErrorBoundary>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useTheme } from '@/composables/useTheme'
+import { usePageMeta } from '@/composables/usePageMeta'
+import { APP_CONFIG } from '@/utils/constants'
+import BackToTop from '@/components/BackToTop.vue'
+import CommandPalette from '@/components/CommandPalette.vue'
+import MobileTabBar from '@/components/MobileTabBar.vue'
+import { prefetchRoute } from '@/composables/useNavPrefetch'
 
+const route = useRoute()
+const router = useRouter()
 const { locale } = useI18n()
 const { isDark, toggleTheme } = useTheme()
+usePageMeta()
+const email = APP_CONFIG.EMAIL
 const currentLocale = computed(() => locale.value)
 const mobileMenuOpen = ref(false)
 const isScrolled = ref(false)
@@ -81,6 +121,7 @@ const isScrolled = ref(false)
 const navLinks = [
   { path: '/', label: 'nav.home' },
   { path: '/about', label: 'nav.about' },
+  { path: '/projects', label: 'nav.projects' },
   { path: '/blog', label: 'nav.blog' },
   { path: '/life', label: 'nav.life' },
   { path: '/contact', label: 'nav.contact' },
@@ -90,19 +131,54 @@ const toggleLocale = () => {
   const next = locale.value === 'zh' ? 'en' : 'zh'
   locale.value = next
   localStorage.setItem('locale', next)
+  const query = { ...route.query }
+  if (next === 'en') query.lang = 'en'
+  else delete query.lang
+  router.replace({ path: route.path, query })
 }
+
+const isNavActive = path => {
+  if (path === '/') return route.path === '/'
+  return route.path === path || route.path.startsWith(`${path}/`)
+}
+
+const pageTransitionKey = viewRoute => {
+  if (viewRoute.path.startsWith('/blog')) return 'blog'
+  return viewRoute.path
+}
+
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false
+  document.body.style.overflow = ''
+}
+
+watch(mobileMenuOpen, open => {
+  document.body.style.overflow = open ? 'hidden' : ''
+})
+
+watch(() => route.path, () => {
+  closeMobileMenu()
+})
 
 const onScroll = () => {
   isScrolled.value = window.scrollY > 8
 }
 
+const onKeydown = e => {
+  if (e.key === 'Escape' && mobileMenuOpen.value) {
+    closeMobileMenu()
+  }
+}
+
 onMounted(() => {
   window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('keydown', onKeydown)
   onScroll()
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
+  window.removeEventListener('keydown', onKeydown)
 })
 </script>
 
@@ -116,14 +192,66 @@ html, body {
 html.dark {
   color-scheme: dark;
 }
+
+/* Page route transitions */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out);
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter-active,
+  .page-leave-active {
+    transition: opacity 120ms ease;
+  }
+
+  .page-enter-from,
+  .page-leave-to {
+    transform: none;
+  }
+}
 </style>
 
 <style scoped>
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-4);
+  z-index: 2000;
+  padding: 10px 16px;
+  background: var(--color-accent);
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  text-decoration: none;
+  transition: top var(--duration-fast) var(--ease-out);
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+}
+
 .app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: var(--color-bg);
+}
+
+@media (max-width: 734px) {
+  .app {
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* --- Navigation --- */
@@ -145,7 +273,7 @@ html.dark {
 }
 
 .nav-inner {
-  max-width: var(--max-width);
+  max-width: var(--max-width-wide);
   margin: 0 auto;
   height: 100%;
   display: flex;
@@ -155,13 +283,17 @@ html.dark {
 }
 
 .nav-logo {
-  font-size: 21px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 600;
   color: var(--color-text);
   text-decoration: none;
-  letter-spacing: -0.03em;
-  margin-right: auto;
+  letter-spacing: -0.02em;
+  margin-right: var(--space-8);
   transition: opacity var(--duration-fast);
+}
+
+.nav-logo-text {
+  display: block;
 }
 
 .nav-logo:hover {
@@ -172,6 +304,8 @@ html.dark {
   display: flex;
   align-items: center;
   gap: 0;
+  flex: 1;
+  justify-content: center;
 }
 
 .nav-link {
@@ -181,18 +315,34 @@ html.dark {
   text-decoration: none;
   padding: 6px 14px;
   border-radius: var(--radius-full);
+  position: relative;
   transition: color var(--duration-fast) var(--ease-out),
               background var(--duration-fast) var(--ease-out);
   white-space: nowrap;
 }
 
-.nav-link:hover {
-  color: var(--color-text);
+@media (hover: hover) and (pointer: fine) {
+  .nav-link:hover {
+    color: var(--color-text);
+  }
 }
 
-.nav-link.router-link-exact-active {
+.nav-link.router-link-active {
   color: var(--color-text);
   font-weight: 500;
+  background: var(--color-accent-light);
+}
+
+.nav-link.router-link-active::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-accent);
 }
 
 .nav-actions {
@@ -216,12 +366,21 @@ html.dark {
   font-size: 13px;
   font-weight: 500;
   font-family: var(--font-sans);
-  transition: color var(--duration-fast), background var(--duration-fast);
+  transition: color var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out),
+              transform 0.12s var(--ease-out);
 }
 
-.nav-action-btn:hover {
-  color: var(--color-text);
-  background: var(--color-accent-light);
+.nav-action-btn:active {
+  transform: scale(0.92);
+  transition: transform 0.1s var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-action-btn:hover {
+    color: var(--color-text);
+    background: var(--color-accent-light);
+  }
 }
 
 /* Mobile menu toggle */
@@ -236,6 +395,13 @@ html.dark {
   background: transparent;
   cursor: pointer;
   padding: 8px;
+  border-radius: var(--radius-full);
+  transition: transform 0.12s var(--ease-out);
+}
+
+.nav-toggle:active {
+  transform: scale(0.92);
+  transition: transform 0.1s var(--ease-out);
 }
 
 .nav-toggle span {
@@ -256,33 +422,75 @@ html.dark {
   transform: translateY(-3.25px) rotate(-45deg);
 }
 
-/* --- Page transition --- */
-.page-enter-active,
-.page-leave-active {
-  transition: opacity var(--duration-base) var(--ease-out);
-}
-
-.page-enter-from {
-  opacity: 0;
-}
-
-.page-leave-to {
-  opacity: 0;
-}
-
 /* --- Footer --- */
 .footer {
   margin-top: auto;
+  position: relative;
   background: var(--color-bg-secondary);
-  border-top: 1px solid var(--color-border);
-  padding: var(--space-12) 0 var(--space-8);
+  border-top: none;
+  padding: var(--space-16) 0 var(--space-8);
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-accent) 50%,
+    transparent 100%
+  );
+  opacity: 0.4;
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  max-width: var(--max-width-wide);
+}
+
+.footer-brand {
+  max-width: 360px;
+}
+
+.footer-logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text);
+  text-decoration: none;
+  letter-spacing: -0.03em;
+}
+
+.footer-tagline {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: var(--space-3) 0 var(--space-4);
+  line-height: 1.5;
+}
+
+.footer-email-btn {
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .footer-email-btn:hover {
+    text-decoration: underline;
+  }
 }
 
 .footer-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-8);
-  margin-bottom: var(--space-10);
 }
 
 .footer-heading {
@@ -303,17 +511,36 @@ html.dark {
   font-size: 13px;
   color: var(--color-text-secondary);
   text-decoration: none;
-  transition: color var(--duration-fast);
+  transition: color var(--duration-fast) var(--ease-out);
   line-height: 1.5;
 }
 
-.footer-link:hover {
-  color: var(--color-accent);
+.footer-link--external::after {
+  content: ' ↗';
+  font-size: 11px;
+  opacity: 0.45;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .footer-link:hover {
+    color: var(--color-accent);
+  }
 }
 
 .footer-bottom {
   padding-top: var(--space-6);
   border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.footer-built {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+  margin: 0;
 }
 
 .footer-bottom p {
@@ -343,12 +570,16 @@ html.dark {
     -webkit-backdrop-filter: saturate(180%) blur(20px);
     opacity: 0;
     pointer-events: none;
-    transition: opacity var(--duration-base) var(--ease-out);
+    transform: translateY(-8px);
+    transform-origin: top center;
+    transition: opacity var(--duration-base) var(--ease-out),
+                transform var(--duration-base) var(--ease-out);
   }
 
   .nav-links.open {
     opacity: 1;
     pointer-events: auto;
+    transform: translateY(0);
   }
 
   .nav-link {
@@ -359,6 +590,13 @@ html.dark {
   .footer-grid {
     grid-template-columns: 1fr;
     gap: var(--space-6);
+  }
+}
+
+@media (max-width: 734px) and (prefers-reduced-motion: reduce) {
+  .nav-links {
+    transform: none;
+    transition: opacity var(--duration-fast) ease;
   }
 }
 </style>

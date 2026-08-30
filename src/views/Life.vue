@@ -1,23 +1,23 @@
 <template>
   <div class="life">
-    <!-- Header -->
     <section class="life-hero">
-      <div class="container">
-        <h1 class="reveal">生活点滴</h1>
-        <p class="life-hero-sub reveal reveal-delay-1">记录生活中的美好瞬间与感悟</p>
+      <div class="life-hero-mesh" aria-hidden="true" />
+      <div class="container-wide life-hero-inner">
+        <span class="section-eyebrow reveal">{{ $t('life.eyebrow') }}</span>
+        <h1 class="reveal reveal-delay-1">{{ $t('life.title') }}</h1>
+        <p class="life-hero-sub reveal reveal-delay-2">{{ $t('life.subtitle') }}</p>
       </div>
     </section>
 
-    <!-- Filters -->
     <section class="filter-bar">
-      <div class="container">
+      <div class="container-wide">
         <div class="filter-pills">
           <button
             class="pill"
             :class="{ active: selectedCategory === 'all' }"
             @click="selectedCategory = 'all'"
           >
-            全部
+            {{ $t('life.all') }}
           </button>
           <button
             v-for="category in categories"
@@ -26,24 +26,28 @@
             :class="{ active: selectedCategory === category.name }"
             @click="selectedCategory = category.name"
           >
-            {{ category.label }}
+            {{ $t(`life.categories.${category.name}`) }}
           </button>
         </div>
       </div>
     </section>
 
-    <!-- Content -->
     <section class="section">
       <div class="container-wide">
-        <div v-if="filteredPosts.length > 0" class="life-grid">
+        <div v-if="filteredPosts.length > 0" class="life-grid" :key="selectedCategory">
           <article
             v-for="(post, idx) in filteredPosts"
             :key="post.id"
-            class="life-card reveal"
-            :class="[`reveal-delay-${(idx % 4) + 1}`, { featured: idx === 0 }]"
+            class="life-card reveal life-card-stagger"
+            :class="{ featured: idx === 0 }"
+            :style="{ animationDelay: `${Math.min(idx, 8) * 40}ms` }"
           >
             <div class="life-card-image">
-              <img :src="post.image" :alt="post.title" loading="lazy" />
+              <CoverArt
+                :seed="post.id"
+                :category="post.category"
+                size="lg"
+              />
               <div class="life-card-date">
                 <span class="date-day">{{ getDay(post.date) }}</span>
                 <span class="date-month">{{ getMonth(post.date) }}</span>
@@ -60,8 +64,8 @@
         </div>
 
         <div v-else class="empty-state">
-          <p>暂无相关内容</p>
-          <button class="btn btn-outline" @click="selectedCategory = 'all'">查看全部</button>
+          <p>{{ $t('life.empty') }}</p>
+          <button class="btn btn-outline" @click="selectedCategory = 'all'">{{ $t('life.viewAll') }}</button>
         </div>
       </div>
     </section>
@@ -69,47 +73,27 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useReveal } from '@/composables/useReveal'
+import CoverArt from '@/components/CoverArt.vue'
 
+const { locale, tm } = useI18n()
 const selectedCategory = ref('all')
+const { observe } = useReveal()
 
 const categories = [
-  { name: 'travel', label: '旅行' },
-  { name: 'food', label: '美食' },
-  { name: 'reading', label: '读书' },
-  { name: 'photography', label: '摄影' },
-  { name: 'thoughts', label: '随想' }
+  { name: 'travel' },
+  { name: 'food' },
+  { name: 'reading' },
+  { name: 'photography' },
+  { name: 'thoughts' }
 ]
 
-const posts = ref([
-  {
-    id: 1,
-    title: '上海周末游记',
-    date: '2024-02-10',
-    image: 'https://picsum.photos/800/400',
-    description: '周末在上海的人文探索之旅，感受这座城市的魅力。漫步于外滩，感受黄浦江两岸的风景；穿行于田子坊，体验上海的文艺气息。',
-    tags: ['旅行', '城市'],
-    category: 'travel'
-  },
-  {
-    id: 2,
-    title: '年度摄影作品集',
-    date: '2024-02-08',
-    image: 'https://picsum.photos/800/401',
-    description: '记录生活中的美好瞬间，分享我的摄影心得。用镜头捕捉城市的光影变化，记录四季的自然风光。',
-    tags: ['摄影', '艺术'],
-    category: 'photography'
-  },
-  {
-    id: 3,
-    title: '读《人类简史》有感',
-    date: '2024-02-05',
-    image: 'https://picsum.photos/800/402',
-    description: '关于人类历史、文明演进的思考。从认知革命到科技革命，人类社会经历了怎样的变迁？',
-    tags: ['读书', '思考'],
-    category: 'reading'
-  }
-])
+const posts = computed(() => {
+  const items = tm('life.posts')
+  return Array.isArray(items) ? items : []
+})
 
 const filteredPosts = computed(() => {
   if (selectedCategory.value === 'all') return posts.value
@@ -118,33 +102,16 @@ const filteredPosts = computed(() => {
 
 const getDay = dateStr => new Date(dateStr).getDate().toString().padStart(2, '0')
 
-const getMonth = dateStr => {
-  const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
-  return months[new Date(dateStr).getMonth()]
-}
+const getMonth = dateStr =>
+  new Intl.DateTimeFormat(locale.value === 'zh' ? 'zh-CN' : 'en-US', {
+    month: 'short'
+  }).format(new Date(dateStr))
 
-let observer = null
-
-const observeRevealElements = () => {
-  if (!observer) return
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
-}
-
-onMounted(() => {
-  observer = new IntersectionObserver(
-    entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible') }),
-    { threshold: 0.1 }
-  )
-  observeRevealElements()
-})
+onMounted(() => observe())
 
 watch(filteredPosts, () => {
-  nextTick(() => {
-    observeRevealElements()
-  })
+  nextTick(() => observe())
 })
-
-onUnmounted(() => { observer?.disconnect() })
 </script>
 
 <style scoped>
@@ -154,23 +121,38 @@ onUnmounted(() => { observer?.disconnect() })
   background: var(--color-bg);
 }
 
-/* --- Hero --- */
 .life-hero {
-  padding: var(--space-20) 0 var(--space-8);
-  text-align: center;
+  position: relative;
+  padding: var(--space-16) 0 var(--space-8);
+  overflow: hidden;
 }
 
-.life-hero h1 {
-  font-size: clamp(32px, 5vw, 48px);
+.life-hero-mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 45% 40% at 75% 30%, var(--color-mesh-3) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 35% at 15% 70%, var(--color-mesh-1) 0%, transparent 45%);
+  pointer-events: none;
+}
+
+.life-hero-inner {
+  position: relative;
+  max-width: 640px;
+}
+
+.life-hero-inner h1 {
+  font-size: clamp(36px, 5vw, 52px);
+  letter-spacing: -0.03em;
   margin-bottom: var(--space-3);
 }
 
 .life-hero-sub {
-  font-size: 19px;
+  font-size: 18px;
   color: var(--color-text-secondary);
+  line-height: 1.58;
 }
 
-/* --- Filter Bar --- */
 .filter-bar {
   position: sticky;
   top: var(--nav-height);
@@ -186,7 +168,7 @@ onUnmounted(() => { observer?.disconnect() })
   display: flex;
   gap: var(--space-2);
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .pill {
@@ -199,13 +181,23 @@ onUnmounted(() => { observer?.disconnect() })
   color: var(--color-text-secondary);
   cursor: pointer;
   font-family: var(--font-sans);
-  transition: all var(--duration-fast) var(--ease-out);
+  transition: background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              transform 0.12s var(--ease-out);
   white-space: nowrap;
 }
 
-.pill:hover {
-  border-color: var(--color-text-tertiary);
-  color: var(--color-text);
+.pill:active {
+  transform: scale(0.97);
+  transition: transform 0.1s var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pill:hover {
+    border-color: var(--color-text-tertiary);
+    color: var(--color-text);
+  }
 }
 
 .pill.active {
@@ -214,7 +206,6 @@ onUnmounted(() => { observer?.disconnect() })
   border-color: var(--color-text);
 }
 
-/* --- Grid --- */
 .life-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -226,13 +217,24 @@ onUnmounted(() => { observer?.disconnect() })
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   overflow: hidden;
-  transition: transform var(--duration-base) var(--ease-out),
-              box-shadow var(--duration-base) var(--ease-out);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-base) var(--ease-out);
 }
 
-.life-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+@keyframes lifeStaggerIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.life-card-stagger {
+  animation: lifeStaggerIn 0.2s var(--ease-out) both;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .life-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
 }
 
 .life-card.featured {
@@ -250,21 +252,11 @@ onUnmounted(() => { observer?.disconnect() })
   overflow: hidden;
 }
 
-.life-card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform var(--duration-slow) var(--ease-out);
-}
-
-.life-card:hover .life-card-image img {
-  transform: scale(1.04);
-}
-
 .life-card-date {
   position: absolute;
   top: var(--space-4);
   left: var(--space-4);
+  z-index: 2;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(10px);
   border-radius: var(--radius-md);
@@ -318,7 +310,6 @@ onUnmounted(() => { observer?.disconnect() })
   overflow: hidden;
 }
 
-/* --- Empty --- */
 .empty-state {
   text-align: center;
   padding: var(--space-16) 0;
@@ -333,7 +324,12 @@ onUnmounted(() => { observer?.disconnect() })
   font-size: 17px;
 }
 
-/* --- Responsive --- */
+@media (prefers-reduced-motion: reduce) {
+  .life-card-stagger {
+    animation: none;
+  }
+}
+
 @media (max-width: 734px) {
   .life-grid {
     grid-template-columns: 1fr;

@@ -1,0 +1,17 @@
+{
+  "name": "Xiong's Radiant Realm",
+  "short_name": "XZY",
+  "description": "Camera driver engineer — tech blog & portfolio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#0071e3",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}

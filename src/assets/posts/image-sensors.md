@@ -1,3 +1,13 @@
+---
+title: 图像传感器的工作原理与应用
+date: 2024-07-10
+author: 熊正耀
+category: sensor
+tags: [CMOS, CCD, 图像传感器, Camera]
+keywords: [图像传感器, cmos, ccd, isp]
+excerpt: CMOS 与 CCD 的光电转换原理、特性对比，以及在手机、安防与工业检测中的典型应用。
+---
+
 # 图像传感器的工作原理与应用
 
 ## 传感器类型

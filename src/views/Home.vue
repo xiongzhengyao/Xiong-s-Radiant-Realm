@@ -1,101 +1,198 @@
 <template>
   <div class="home">
-    <!-- Hero -->
+    <!-- Hero: Editorial split -->
     <section class="hero">
-      <div class="hero-content">
-        <p class="hero-eyebrow animate-fade-in-up">{{ $t('home.subtitle') }}</p>
-        <h1 class="hero-title animate-fade-in-up" style="animation-delay: 0.1s">
-          {{ $t('home.welcome') }}
-        </h1>
-        <div class="hero-actions animate-fade-in-up" style="animation-delay: 0.25s">
-          <button class="btn btn-primary" @click="$router.push('/blog')">
-            {{ $t('home.viewProjects') }}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </button>
-          <button class="btn btn-outline" @click="$router.push('/about')">
-            {{ $t('about.title') }}
-          </button>
-        </div>
-      </div>
-      <div class="hero-scroll-hint animate-fade-in" style="animation-delay: 0.6s">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </div>
-    </section>
+      <div class="hero-noise" aria-hidden="true" />
+      <div class="hero-mesh" aria-hidden="true" />
 
-    <!-- Skills -->
-    <section class="section skills-section">
-      <div class="container">
-        <div class="section-header reveal">
-          <h2>{{ $t('home.skills.title') }}</h2>
-        </div>
-        <div class="skills-grid">
-          <div class="skill-card reveal" v-for="(skill, index) in skills" :key="skill.key" :class="'reveal-delay-' + (index + 1)">
-            <div class="skill-icon" :style="{ background: skill.gradient }">
-              <svg v-html="skill.svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></svg>
-            </div>
-            <h3>{{ $t(`home.skills.${skill.key}.name`) }}</h3>
-            <p>{{ $t(`home.skills.${skill.key}.description`) }}</p>
+      <div class="container-wide hero-grid">
+        <div class="hero-copy">
+          <p class="hero-eyebrow animate-fade-in-up">{{ $t('home.eyebrow') }}</p>
+          <h1 class="hero-title animate-fade-in-up" style="animation-delay: 0.08s">
+            {{ $t('home.welcome') }}
+          </h1>
+          <p class="hero-role animate-fade-in-up" style="animation-delay: 0.14s">
+            {{ $t('home.subtitle') }}
+          </p>
+          <p class="hero-pitch animate-fade-in-up" style="animation-delay: 0.2s">
+            {{ $t('home.pitch') }}
+          </p>
+
+          <div class="hero-actions animate-fade-in-up" style="animation-delay: 0.28s">
+            <button class="btn btn-primary btn-glow" @click="$router.push('/blog')">
+              {{ $t('home.viewBlog') }}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+            <button class="btn btn-ghost" @click="$router.push('/projects')">
+            {{ $t('nav.projects') }}
+          </button>
+          <button class="btn btn-ghost" @click="$router.push('/about')">
+              {{ $t('home.viewAbout') }}
+            </button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- CTA -->
-    <section class="section cta-section">
-      <div class="container">
-        <div class="cta-content reveal">
-          <h2>{{ $t('home.blog.title') }}</h2>
-          <p>探索技术博客，发现嵌入式开发、Camera 驱动与 Linux 系统的深度文章。</p>
-          <button class="btn btn-primary" @click="$router.push('/blog')">
+    <!-- Continue Reading -->
+    <section v-if="continuePost" class="continue-section">
+      <div class="container-wide">
+        <article class="continue-card reveal" @click="goToPost(continuePost)">
+          <div class="continue-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div class="continue-body">
+            <span class="section-eyebrow">{{ $t('home.continue.eyebrow') }}</span>
+            <h3>{{ continuePost.title }}</h3>
+            <p>{{ $t('home.continue.cta') }}</p>
+          </div>
+          <svg class="continue-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </article>
+      </div>
+    </section>
+
+    <!-- Expertise Bento -->
+    <section class="section expertise-section">
+      <div class="container-wide">
+        <div class="section-intro reveal">
+          <span class="section-eyebrow">{{ $t('home.expertise.eyebrow') }}</span>
+          <h2>{{ $t('home.skills.title') }}</h2>
+          <p class="section-desc">{{ $t('home.expertise.desc') }}</p>
+        </div>
+
+        <div class="bento-grid">
+          <article
+            v-for="(skill, index) in skills"
+            :key="skill.key"
+            class="bento-card reveal"
+            :class="['bento-card--' + skill.key, 'reveal-delay-' + (index + 1)]"
+          >
+            <span class="bento-index">0{{ index + 1 }}</span>
+            <h3>{{ $t(`home.skills.${skill.key}.name`) }}</h3>
+            <p>{{ $t(`home.skills.${skill.key}.description`) }}</p>
+            <div class="bento-glow" aria-hidden="true" />
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Editorial Journal -->
+    <section class="section journal-section" v-if="recentPosts.length">
+      <div class="container-wide">
+        <div class="section-intro section-intro--row reveal">
+          <div>
+            <span class="section-eyebrow">{{ $t('home.blog.eyebrow') }}</span>
+            <h2>{{ $t('home.blog.title') }}</h2>
+          </div>
+          <button class="btn btn-outline journal-all-btn" @click="$router.push('/blog')">
             {{ $t('home.blog.readMore') }}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
         </div>
+
+        <div class="journal-layout">
+          <article
+            v-if="featuredPost"
+            class="journal-featured reveal"
+            @click="goToPost(featuredPost)"
+          >
+            <div class="journal-cover">
+              <CoverArt
+                :seed="featuredPost.id"
+                :category="featuredPost.category"
+                :label="categoryLabel(featuredPost.category)"
+                size="lg"
+              />
+            </div>
+            <div class="journal-featured-body">
+              <time>{{ featuredPost.date }}</time>
+              <h3>{{ featuredPost.title }}</h3>
+              <p>{{ featuredPost.excerpt }}</p>
+              <span class="journal-meta">{{ $t('home.blog.readTime', { n: featuredPost.readingTime }) }}</span>
+            </div>
+          </article>
+
+          <div class="journal-list">
+            <article
+              v-for="(post, index) in sidebarPosts"
+              :key="post.id"
+              class="journal-item reveal"
+              :class="'reveal-delay-' + (index + 1)"
+              @click="goToPost(post)"
+            >
+              <div class="journal-item-cover">
+                <CoverArt
+                  :seed="post.id"
+                  :category="post.category"
+                  size="sm"
+                />
+              </div>
+              <div class="journal-item-body">
+                <span class="journal-item-cat">{{ categoryLabel(post.category) }}</span>
+                <h4>{{ post.title }}</h4>
+                <span class="journal-meta">{{ post.date }} · {{ $t('home.blog.readTime', { n: post.readingTime }) }}</span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Band -->
+    <section class="cta-band">
+      <div class="cta-band-inner container-wide reveal">
+        <div class="cta-band-copy">
+          <span class="section-eyebrow cta-eyebrow">{{ $t('home.cta.eyebrow') }}</span>
+          <h2>{{ $t('contact.title') }}</h2>
+          <p>{{ $t('contact.subtitle') }}</p>
+        </div>
+        <button class="btn btn-primary btn-glow cta-btn" @click="$router.push('/contact')">
+          {{ $t('about.contactCta') }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
       </div>
     </section>
   </div>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue'
+import { computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { useReveal } from '@/composables/useReveal'
+import { useBlogStore } from '@/stores/blogStore'
+import { getCategoryLabel } from '@/utils/categoryLabel'
+import CoverArt from '@/components/CoverArt.vue'
+import { useReadHistory } from '@/composables/useReadHistory'
+
+const router = useRouter()
+const { locale } = useI18n()
+const blogStore = useBlogStore()
+const { continueReading } = useReadHistory()
+
+useReveal()
+onMounted(() => blogStore.ensureLoaded())
+
+const continuePost = computed(() => {
+  const entry = continueReading.value
+  if (!entry) return null
+  return blogStore.getPostById(entry.id)
+})
+
+const recentPosts = computed(() => blogStore.getRecentPosts(3))
+const featuredPost = computed(() => recentPosts.value[0] || null)
+const sidebarPosts = computed(() => recentPosts.value.slice(1))
+
+const categoryLabel = category => getCategoryLabel(category, locale.value)
+
+const goToPost = post => {
+  router.push(`/blog/${post.id}/${post.slug}`)
+}
 
 const skills = [
-  {
-    key: 'embedded',
-    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    svg: '<rect x="4" y="4" width="16" height="16" rx="2"/><line x1="9" y1="9" x2="9" y2="9.01"/><line x1="15" y1="9" x2="15" y2="9.01"/><path d="M9 15h6"/>'
-  },
-  {
-    key: 'image',
-    gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    svg: '<circle cx="12" cy="12" r="3.5"/><path d="M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 10S2 17.52 2 12z"/>'
-  },
-  {
-    key: 'linux',
-    gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-    svg: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>'
-  }
+  { key: 'embedded' },
+  { key: 'image' },
+  { key: 'linux' }
 ]
-
-let observer = null
-
-onMounted(() => {
-  observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible')
-        }
-      })
-    },
-    { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
-  )
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
-})
-
-onUnmounted(() => {
-  observer?.disconnect()
-})
 </script>
 
 <style scoped>
@@ -103,206 +200,539 @@ onUnmounted(() => {
   padding-top: var(--nav-height);
 }
 
-/* --- Hero --- */
+/* ─── Hero ─── */
 .hero {
-  min-height: calc(100vh - var(--nav-height));
+  position: relative;
+  min-height: var(--hero-min-height);
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  text-align: center;
   background: var(--color-hero-bg);
   color: var(--color-hero-text);
-  padding: var(--space-16) var(--space-6);
-  position: relative;
   overflow: hidden;
+  padding: var(--space-16) 0 0;
 }
 
-.hero::before {
-  content: '';
+.hero-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+.hero-mesh {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0, 113, 227, 0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 70% 60%, rgba(100, 80, 200, 0.08) 0%, transparent 50%);
+    radial-gradient(ellipse 70% 55% at 15% 45%, var(--color-mesh-1) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 45% at 85% 25%, var(--color-mesh-2) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 35% at 70% 80%, var(--color-mesh-3) 0%, transparent 45%);
   pointer-events: none;
 }
 
-.hero-content {
+.hero-grid {
   position: relative;
   z-index: 1;
   max-width: 720px;
+  padding-bottom: var(--space-12);
 }
 
 .hero-eyebrow {
-  font-size: 17px;
-  font-weight: 400;
-  color: var(--color-text-tertiary);
-  margin-bottom: var(--space-4);
-  letter-spacing: 0.02em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: var(--space-5);
 }
 
 .hero-title {
-  font-size: clamp(40px, 7vw, 72px);
+  font-size: clamp(48px, 6.5vw, 88px);
   font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
-  color: var(--color-hero-text);
-  margin-bottom: var(--space-10);
-  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  margin-bottom: var(--space-4);
+  background: linear-gradient(165deg, #fff 30%, rgba(255, 255, 255, 0.55) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 html.dark .hero-title {
-  background: linear-gradient(180deg, #f5f5f7 0%, rgba(245, 245, 247, 0.65) 100%);
+  background: linear-gradient(165deg, #f5f5f7 30%, rgba(245, 245, 247, 0.5) 100%);
   -webkit-background-clip: text;
   background-clip: text;
+}
+
+.hero-role {
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: var(--space-4);
+  letter-spacing: -0.01em;
+}
+
+.hero-pitch {
+  font-size: 17px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+  max-width: 520px;
+  margin-bottom: var(--space-8);
 }
 
 .hero-actions {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
   flex-wrap: wrap;
+  margin-top: var(--space-6);
 }
 
 .hero .btn-primary {
+  font-size: 16px;
+  padding: 14px 26px;
+}
+
+.btn-ghost {
+  font-size: 16px;
+  padding: 14px 26px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: background var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+  }
+}
+
+/* Continue reading */
+.continue-section {
+  padding: var(--space-6) 0 0;
+}
+
+.continue-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-accent-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .continue-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+}
+
+.continue-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  color: var(--color-accent);
+}
+
+.continue-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.continue-body h3 {
   font-size: 17px;
-  padding: 14px 28px;
+  margin: var(--space-1) 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.hero .btn-outline {
-  color: rgba(255, 255, 255, 0.8);
-  border-color: rgba(255, 255, 255, 0.3);
-  font-size: 17px;
-  padding: 14px 28px;
+.continue-body p {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0;
 }
 
-.hero .btn-outline:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.5);
+.continue-arrow {
+  flex-shrink: 0;
+  color: var(--color-accent);
 }
 
-.hero-scroll-hint {
-  position: absolute;
-  bottom: var(--space-8);
-  color: rgba(255, 255, 255, 0.3);
-  animation: float 2.5s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(8px); }
-}
-
-/* --- Skills --- */
-.skills-section {
+/* ─── Expertise Bento ─── */
+.expertise-section {
   background: var(--color-bg);
 }
 
-.section-header {
-  text-align: center;
-  margin-bottom: var(--space-12);
+.section-desc {
+  font-size: 17px;
+  color: var(--color-text-secondary);
+  margin-top: var(--space-3);
+  line-height: 1.58;
+  max-width: 520px;
 }
 
-.section-header h2 {
-  margin-bottom: var(--space-3);
-}
-
-.skills-grid {
+.bento-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-6);
+  grid-template-rows: auto auto;
+  gap: var(--space-4);
 }
 
-.skill-card {
-  text-align: center;
-  padding: var(--space-10) var(--space-6);
-  background: var(--color-card-bg);
+.bento-card {
+  position: relative;
+  padding: var(--space-8);
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-border);
+  background: var(--color-card-bg);
+  overflow: hidden;
+  transition: border-color var(--duration-base) var(--ease-out),
+              transform var(--duration-base) var(--ease-out);
+}
+
+.bento-card--embedded {
+  grid-row: span 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 320px;
+}
+
+.bento-index {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+  margin-bottom: var(--space-6);
+}
+
+.bento-card h3 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-2);
+}
+
+.bento-card p {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+.bento-glow {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0;
+  transition: opacity var(--duration-slow) var(--ease-out);
+  pointer-events: none;
+}
+
+.bento-card--embedded .bento-glow { background: #667eea; top: -40px; right: -40px; }
+.bento-card--image .bento-glow { background: #f5576c; bottom: -60px; left: -20px; }
+.bento-card--linux .bento-glow { background: #4facfe; top: -30px; left: 50%; }
+
+@media (hover: hover) and (pointer: fine) {
+  .bento-card:hover {
+    border-color: rgba(0, 113, 227, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .bento-card:hover .bento-glow {
+    opacity: 0.15;
+  }
+}
+
+/* ─── Journal ─── */
+.journal-section {
+  background: var(--color-bg-secondary);
+}
+
+.section-intro--row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+  max-width: none;
+}
+
+.journal-all-btn {
+  flex-shrink: 0;
+  margin-bottom: var(--space-2);
+}
+
+.journal-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.journal-featured {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  cursor: pointer;
   transition: transform var(--duration-base) var(--ease-out),
               box-shadow var(--duration-base) var(--ease-out);
 }
 
-.skill-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+.journal-cover {
+  height: 240px;
+  position: relative;
+  overflow: hidden;
 }
 
-.skill-icon {
-  width: 56px;
-  height: 56px;
+.journal-item-cover {
+  width: 72px;
+  height: 72px;
   border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto var(--space-5);
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
-.skill-card h3 {
-  font-size: 20px;
-  margin-bottom: var(--space-2);
+.journal-featured-body {
+  padding: var(--space-6) var(--space-6) var(--space-8);
 }
 
-.skill-card p {
+.journal-featured-body time {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.journal-featured-body h3 {
+  font-size: clamp(22px, 2.5vw, 28px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: var(--space-2) 0 var(--space-3);
+  line-height: 1.2;
+}
+
+.journal-featured-body p {
   font-size: 15px;
+  line-height: 1.55;
   color: var(--color-text-secondary);
-  line-height: 1.5;
-}
-
-/* --- CTA --- */
-.cta-section {
-  background: var(--color-bg-secondary);
-}
-
-.cta-content {
-  text-align: center;
-  max-width: 560px;
-  margin: 0 auto;
-}
-
-.cta-content h2 {
   margin-bottom: var(--space-4);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.cta-content p {
-  font-size: 17px;
-  color: var(--color-text-secondary);
-  margin-bottom: var(--space-8);
-  line-height: 1.58;
+.journal-meta {
+  font-size: 13px;
+  color: var(--color-accent);
 }
 
-/* --- Responsive --- */
-@media (max-width: 734px) {
-  .skills-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
+.journal-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.journal-item {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+
+.journal-item-cover {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.journal-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.journal-item-cat {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.journal-item-body h4 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: var(--space-1) 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .journal-featured:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
   }
 
-  .skill-card {
-    padding: var(--space-6);
+  .journal-item:hover {
+    border-color: rgba(0, 113, 227, 0.2);
+    transform: translateX(4px);
+  }
+}
+
+/* ─── CTA Band ─── */
+.cta-band {
+  padding: var(--space-20) var(--space-6);
+  background: var(--color-bg);
+}
+
+.cta-band-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-10);
+  border-radius: var(--radius-xl);
+  background: var(--color-hero-bg);
+  color: var(--color-hero-text);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-band-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 100% 50%, var(--color-mesh-1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.cta-band-copy {
+  position: relative;
+  max-width: 520px;
+}
+
+.cta-eyebrow {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.cta-band-copy h2 {
+  color: #fff;
+  font-size: clamp(24px, 3vw, 36px);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-3);
+}
+
+.cta-band-copy p {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.cta-btn {
+  position: relative;
+  flex-shrink: 0;
+  font-size: 16px;
+  padding: 14px 28px;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1068px) {
+  .hero-grid {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+
+  .hero-pitch {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .journal-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .section-intro--row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 734px) {
+  .hero {
+    padding-top: var(--space-10);
+    min-height: auto;
+  }
+
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bento-card--embedded {
+    grid-row: auto;
+    min-height: auto;
+  }
+
+  .cta-band-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-8);
+  }
+
+  .cta-btn {
+    width: 100%;
+    justify-content: center;
   }
 
   .hero-actions {
     flex-direction: column;
+    width: 100%;
   }
 
   .hero .btn-primary,
-  .hero .btn-outline {
+  .btn-ghost {
     width: 100%;
-    max-width: 280px;
+    max-width: 300px;
+    justify-content: center;
   }
 }
 
-@media (min-width: 735px) and (max-width: 1068px) {
-  .skills-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-4);
-  }
+@media (prefers-reduced-motion: reduce) {
+  /* no motion-only hero effects */
 }
 </style>

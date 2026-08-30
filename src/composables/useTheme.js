@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
 const isDark = ref(false)
 
@@ -22,30 +22,41 @@ export function useTheme() {
   }
 
   // 应用主题
-  const applyTheme = () => {
+  const applyTheme = (animate = false) => {
     if (typeof document === 'undefined') return
 
+    const html = document.documentElement
+    if (animate) {
+      html.classList.add('theme-transition')
+    }
+
     if (isDark.value) {
-      document.documentElement.classList.add('dark')
+      html.classList.add('dark')
       try {
         localStorage.setItem('theme', 'dark')
       } catch (error) {
         console.warn('Failed to save theme to localStorage:', error)
       }
     } else {
-      document.documentElement.classList.remove('dark')
+      html.classList.remove('dark')
       try {
         localStorage.setItem('theme', 'light')
       } catch (error) {
         console.warn('Failed to save theme to localStorage:', error)
       }
     }
+
+    if (animate) {
+      window.setTimeout(() => {
+        html.classList.remove('theme-transition')
+      }, 250)
+    }
   }
 
   // 切换主题
   const toggleTheme = value => {
     isDark.value = value
-    applyTheme()
+    applyTheme(true)
   }
 
   // 监听系统主题变化
@@ -72,8 +83,6 @@ export function useTheme() {
     loadTheme()
     watchSystemTheme()
   }
-
-  watch(isDark, applyTheme)
 
   return {
     isDark,

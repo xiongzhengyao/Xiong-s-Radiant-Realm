@@ -2,16 +2,18 @@
   <div class="contact">
     <!-- Header -->
     <section class="contact-hero">
-      <div class="container-narrow">
-        <h1 class="reveal">{{ $t('contact.title') }}</h1>
-        <p class="contact-hero-sub reveal reveal-delay-1">
-          期待与你的交流。无论是技术讨论还是项目合作，都欢迎联系。
+      <div class="contact-hero-mesh" aria-hidden="true" />
+      <div class="container-wide contact-hero-inner">
+        <span class="section-eyebrow reveal">{{ $t('contact.eyebrow') }}</span>
+        <h1 class="reveal reveal-delay-1">{{ $t('contact.title') }}</h1>
+        <p class="contact-hero-sub reveal reveal-delay-2">
+          {{ $t('contact.subtitle') }}
         </p>
       </div>
     </section>
 
-    <section class="section">
-      <div class="container-narrow">
+    <section class="section contact-section">
+      <div class="container-wide">
         <div class="contact-grid">
           <!-- Contact Info -->
           <div class="contact-info reveal">
@@ -24,7 +26,7 @@
               </div>
               <div class="info-row">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                <span>xiongzhengyao163@163.com</span>
+                <a :href="`mailto:${email}`" class="info-link">{{ email }}</a>
               </div>
               <div class="info-row">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -50,15 +52,23 @@
 
           <!-- Contact Form -->
           <div class="contact-form-wrap reveal reveal-delay-1">
-            <h2>发送消息</h2>
-            <form @submit.prevent="submitForm" class="contact-form">
+            <h2>{{ $t('contact.formTitle') }}</h2>
+            <div class="form-dev-notice" role="status">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <p>{{ $t('contact.formDevNotice') }}</p>
+            </div>
+            <a :href="`mailto:${email}`" class="btn btn-primary mailto-btn">
+              {{ $t('contact.emailCta') }}
+            </a>
+            <p class="form-hint">{{ $t('contact.responseTime') }}</p>
+            <form class="contact-form contact-form--disabled" aria-disabled="true" @submit.prevent>
               <div class="form-group">
                 <label>{{ $t('contact.form.name') }}</label>
                 <input
                   v-model="form.name"
                   type="text"
+                  disabled
                   :placeholder="$t('contact.form.name')"
-                  required
                 />
               </div>
               <div class="form-group">
@@ -66,8 +76,8 @@
                 <input
                   v-model="form.email"
                   type="email"
+                  disabled
                   :placeholder="$t('contact.form.email')"
-                  required
                 />
               </div>
               <div class="form-group">
@@ -75,8 +85,8 @@
                 <input
                   v-model="form.subject"
                   type="text"
+                  disabled
                   :placeholder="$t('contact.form.subject')"
-                  required
                 />
               </div>
               <div class="form-group">
@@ -84,15 +94,14 @@
                 <textarea
                   v-model="form.message"
                   rows="5"
+                  disabled
                   :placeholder="$t('contact.form.message')"
-                  required
                 ></textarea>
               </div>
-              <button type="submit" class="btn btn-primary submit-btn" :disabled="isSubmitting">
-                <span v-if="isSubmitting">发送中...</span>
-                <span v-else>{{ $t('contact.form.submit') }}</span>
-                <svg v-if="!isSubmitting" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              <button type="button" class="btn btn-outline submit-btn" disabled>
+                {{ $t('contact.form.disabled') }}
               </button>
+              <p class="form-privacy">{{ $t('contact.privacy') }}</p>
             </form>
           </div>
         </div>
@@ -102,48 +111,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
-import { ElMessage } from 'element-plus'
-import { useI18n } from 'vue-i18n'
+import { reactive } from 'vue'
+import { useReveal } from '@/composables/useReveal'
+import { APP_CONFIG } from '@/utils/constants'
 
-const { t } = useI18n()
-const isSubmitting = ref(false)
+const email = APP_CONFIG.EMAIL
+const form = reactive({ name: '', email: '', subject: '', message: '' })
 
-const form = reactive({
-  name: '',
-  email: '',
-  subject: '',
-  message: ''
-})
-
-const submitForm = async () => {
-  if (!form.name || !form.email || !form.message) return
-  try {
-    isSubmitting.value = true
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    ElMessage.success(t('contact.form.success'))
-    form.name = ''
-    form.email = ''
-    form.subject = ''
-    form.message = ''
-  } catch {
-    ElMessage.error(t('contact.form.error'))
-  } finally {
-    isSubmitting.value = false
-  }
-}
-
-let observer = null
-
-onMounted(() => {
-  observer = new IntersectionObserver(
-    entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible') }),
-    { threshold: 0.1 }
-  )
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
-})
-
-onUnmounted(() => { observer?.disconnect() })
+useReveal()
 </script>
 
 <style scoped>
@@ -155,21 +130,40 @@ onUnmounted(() => { observer?.disconnect() })
 
 /* --- Hero --- */
 .contact-hero {
-  padding: var(--space-20) 0 var(--space-8);
-  text-align: center;
+  position: relative;
+  padding: var(--space-16) 0 var(--space-10);
+  overflow: hidden;
 }
 
-.contact-hero h1 {
-  font-size: clamp(32px, 5vw, 48px);
+.contact-hero-mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 40% at 80% 20%, var(--color-mesh-1) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 35% at 20% 80%, var(--color-mesh-2) 0%, transparent 45%);
+  pointer-events: none;
+}
+
+.contact-hero-inner {
+  position: relative;
+  max-width: 640px;
+}
+
+.contact-hero-inner h1 {
+  font-size: clamp(36px, 5vw, 52px);
+  letter-spacing: -0.03em;
   margin-bottom: var(--space-3);
 }
 
 .contact-hero-sub {
-  font-size: 19px;
+  font-size: 18px;
   color: var(--color-text-secondary);
-  max-width: 480px;
-  margin: 0 auto;
   line-height: 1.58;
+  max-width: 520px;
+}
+
+.contact-section {
+  background: var(--color-bg-secondary);
 }
 
 /* --- Grid --- */
@@ -182,9 +176,20 @@ onUnmounted(() => { observer?.disconnect() })
 
 .contact-info h2,
 .contact-form-wrap h2 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   margin-bottom: var(--space-6);
+}
+
+.contact-form-wrap {
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  background: var(--color-card-bg);
+}
+
+.contact-info {
+  padding: var(--space-2) 0;
 }
 
 /* --- Info --- */
@@ -205,6 +210,15 @@ onUnmounted(() => { observer?.disconnect() })
 .info-row svg {
   color: var(--color-text-tertiary);
   flex-shrink: 0;
+}
+
+.info-link {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.info-link:hover {
+  text-decoration: underline;
 }
 
 .social-section {
@@ -233,16 +247,60 @@ onUnmounted(() => { observer?.disconnect() })
   border-radius: var(--radius-md);
   background: var(--color-bg-secondary);
   color: var(--color-text-secondary);
-  transition: all var(--duration-fast) var(--ease-out);
+  transition: background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              transform 0.12s var(--ease-out);
 }
 
-.social-link:hover {
-  background: var(--color-accent);
-  color: #fff;
-  transform: translateY(-2px);
+.social-link:active {
+  transform: scale(0.95);
+  transition: transform 0.1s var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .social-link:hover {
+    background: var(--color-accent);
+    color: #fff;
+    transform: translateY(-2px);
+  }
 }
 
 /* --- Form --- */
+.form-dev-notice {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-light);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.form-dev-notice p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.form-dev-notice svg {
+  flex-shrink: 0;
+  color: var(--color-accent);
+  margin-top: 2px;
+}
+
+.mailto-btn {
+  width: 100%;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+  text-decoration: none;
+}
+
+.contact-form--disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
 .contact-form {
   display: flex;
   flex-direction: column;
@@ -287,6 +345,17 @@ onUnmounted(() => { observer?.disconnect() })
   color: var(--color-text-tertiary);
 }
 
+.form-group.has-error input,
+.form-group.has-error textarea {
+  border-color: #ff3b30;
+}
+
+.field-error {
+  font-size: 13px;
+  color: #ff3b30;
+  margin: 0;
+}
+
 .submit-btn {
   width: 100%;
   font-size: 17px;
@@ -297,6 +366,28 @@ onUnmounted(() => { observer?.disconnect() })
 .submit-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.submit-btn.is-success {
+  background: #34c759;
+  transition: background 0.2s var(--ease-out);
+}
+
+.submit-btn.is-success:hover {
+  background: #34c759;
+}
+
+.form-hint {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: calc(-1 * var(--space-2)) 0 var(--space-5);
+}
+
+.form-privacy {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+  line-height: 1.5;
+  margin: 0;
 }
 
 /* --- Responsive --- */

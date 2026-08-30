@@ -1,0 +1,47 @@
+@media print {
+  .nav,
+  .footer,
+  .skip-link,
+  .back-to-top,
+  .reading-progress,
+  .article-toc,
+  .article-toolbar,
+  .breadcrumb,
+  .article-nav,
+  .blog-filters,
+  .filter-bar,
+  .nav-toggle,
+  .nav-actions {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  main,
+  .article,
+  .rich-markdown {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .article-layout {
+    display: block !important;
+  }
+
+  .rich-markdown a {
+    color: #000 !important;
+    text-decoration: underline;
+  }
+
+  .rich-markdown pre {
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+
+  .code-copy-btn {
+    display: none !important;
+  }
+}

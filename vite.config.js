@@ -26,7 +26,6 @@ export default defineConfig({
       output: {
         manualChunks: {
           'vue-vendor': ['vue', 'vue-router', 'pinia'],
-          'element-plus': ['element-plus'],
           'markdown': ['markdown-it', 'markdown-it-table']
         },
         // 优化文件命名
@@ -40,6 +39,6 @@ export default defineConfig({
   },
   // 优化依赖预构建
   optimizeDeps: {
-    include: ['vue', 'vue-router', 'pinia', 'element-plus', 'markdown-it', 'markdown-it-table']
+    include: ['vue', 'vue-router', 'pinia', 'markdown-it', 'markdown-it-table']
   }
 })
