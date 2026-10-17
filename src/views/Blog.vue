@@ -239,7 +239,7 @@
           </header>
 
           <aside v-if="tableOfContents.length" class="article-toc" aria-label="Table of contents">
-            <details class="toc-panel">
+            <details ref="tocPanelRef" class="toc-panel" @toggle="onTocToggle">
               <summary class="toc-title">
                 {{ $t('blog.toc') }}
                 <span class="toc-count">{{ tableOfContents.length }}</span>
@@ -358,9 +358,25 @@ const markdownRef = ref(null)
 const searchInputRef = ref(null)
 const activeHeadingId = ref('')
 const moreMenuOpen = ref(false)
+const tocPanelRef = ref(null)
+let tocMq = null
 
 const updateCopyLabel = () => {
   copyLabel.value = t('blog.copyLink')
+}
+
+/** Desktop: TOC always open. Mobile: default collapsed <details>. */
+const syncTocOpenState = () => {
+  const el = tocPanelRef.value
+  if (!el) return
+  const wide = typeof window !== 'undefined' && window.matchMedia('(min-width: 981px)').matches
+  if (wide) el.open = true
+}
+
+const onTocToggle = e => {
+  if (typeof window !== 'undefined' && window.matchMedia('(min-width: 981px)').matches) {
+    e.target.open = true
+  }
 }
 
 /** Cap hero tags when lead already carries keywords */
@@ -434,6 +450,7 @@ const bindMarkdownEnhancements = () => {
     })
     enhanceTableNumericColumns(markdownRef.value)
     observeHeadings()
+    syncTocOpenState()
   })
 }
 
@@ -662,12 +679,16 @@ onMounted(async () => {
   window.addEventListener('scroll', onReadingScroll, { passive: true })
   window.addEventListener('keydown', onBlogKeydown)
   document.addEventListener('click', onDocClick)
+  tocMq = window.matchMedia('(min-width: 981px)')
+  tocMq.addEventListener('change', syncTocOpenState)
+  syncTocOpenState()
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onReadingScroll)
   window.removeEventListener('keydown', onBlogKeydown)
   document.removeEventListener('click', onDocClick)
+  tocMq?.removeEventListener('change', syncTocOpenState)
   headingObserver?.disconnect()
   clearTimeout(scrollSaveTimer)
   clearPageMetaOverride()
@@ -1449,14 +1470,15 @@ watch(filteredPosts, () => {
   }
 }
 
-/* Desktop: TOC always expanded (override closed <details>) */
+/* Desktop: TOC stays open; summary is non-interactive label */
 @media (min-width: 981px) {
-  .toc-panel > .toc-nav {
-    display: block !important;
-  }
-
   .toc-panel > .toc-title {
     pointer-events: none;
+    cursor: default;
+  }
+
+  .toc-panel > .toc-title::after {
+    display: none;
   }
 
   .toc-count {
