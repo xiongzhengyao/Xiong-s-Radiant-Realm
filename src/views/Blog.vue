@@ -163,31 +163,58 @@
     <!-- Blog post detail view — magazine / tech-doc reading layout -->
     <div v-else key="detail" class="post-detail">
       <div class="reading-progress" :style="{ width: readingProgress + '%' }" />
-      <span v-if="readingProgress > 2" class="reading-progress-label">{{ $t('blog.readingProgress', { n: Math.round(readingProgress) }) }}</span>
+      <span
+        v-if="readingProgress > 8"
+        class="reading-progress-label"
+        aria-hidden="true"
+      >{{ $t('blog.readingProgress', { n: Math.round(readingProgress) }) }}</span>
 
       <div class="article-shell" v-if="currentPost">
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-          <button class="breadcrumb-link" @click="backToList">{{ $t('blog.breadcrumbBlog') }}</button>
-          <span class="breadcrumb-sep">/</span>
-          <span class="breadcrumb-current">{{ currentPost.title }}</span>
-        </nav>
-
-        <div class="article-toolbar">
-          <button class="back-btn" @click="backToList">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-            {{ $t('blog.backToList') }}
-          </button>
+        <!-- One chrome row: blog + back | copy + more -->
+        <div class="article-chrome">
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <button class="breadcrumb-link" @click="backToList">{{ $t('blog.breadcrumbBlog') }}</button>
+            <span class="breadcrumb-sep" aria-hidden="true">·</span>
+            <button class="breadcrumb-back" @click="backToList">{{ $t('blog.backToList') }}</button>
+          </nav>
           <div class="toolbar-actions">
-            <button
-              class="toolbar-btn"
-              :class="{ 'is-active': isBookmarked(currentPost.id) }"
-              @click="toggleBookmarkAction"
-            >
-              {{ isBookmarked(currentPost.id) ? $t('blog.bookmarked') : $t('blog.bookmark') }}
-            </button>
-            <button class="toolbar-btn" @click="copyArticleLink">{{ copyLabel }}</button>
-            <button class="toolbar-btn" @click="shareArticle">{{ $t('blog.share') }}</button>
-            <button class="toolbar-btn" @click="printArticle">{{ $t('blog.print') }}</button>
+            <button class="toolbar-btn toolbar-btn-primary" @click="copyArticleLink">{{ copyLabel }}</button>
+            <div class="toolbar-more" :class="{ 'is-open': moreMenuOpen }">
+              <button
+                type="button"
+                class="toolbar-btn toolbar-more-trigger"
+                :aria-expanded="moreMenuOpen"
+                :aria-label="$t('blog.moreActions')"
+                @click="moreMenuOpen = !moreMenuOpen"
+              >⋯</button>
+              <div v-if="moreMenuOpen" class="toolbar-menu" role="menu">
+                <button
+                  type="button"
+                  class="toolbar-menu-item"
+                  :class="{ 'is-active': isBookmarked(currentPost.id) }"
+                  role="menuitem"
+                  @click="runToolbarAction(toggleBookmarkAction)"
+                >
+                  {{ isBookmarked(currentPost.id) ? $t('blog.bookmarked') : $t('blog.bookmark') }}
+                </button>
+                <button
+                  type="button"
+                  class="toolbar-menu-item"
+                  role="menuitem"
+                  @click="runToolbarAction(shareArticle)"
+                >
+                  {{ $t('blog.share') }}
+                </button>
+                <button
+                  type="button"
+                  class="toolbar-menu-item toolbar-menu-print"
+                  role="menuitem"
+                  @click="runToolbarAction(printArticle)"
+                >
+                  {{ $t('blog.print') }}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -206,34 +233,39 @@
             </div>
             <h1 class="article-title">{{ currentPost.title }}</h1>
             <p v-if="currentPost.excerpt" class="article-lead">{{ currentPost.excerpt }}</p>
-            <div v-if="currentPost.tags?.length" class="article-tags">
-              <span class="tag" v-for="tag in currentPost.tags" :key="tag">{{ tag }}</span>
+            <div v-if="heroTags.length" class="article-tags">
+              <span class="tag" v-for="tag in heroTags" :key="tag">{{ tag }}</span>
             </div>
           </header>
 
           <aside v-if="tableOfContents.length" class="article-toc" aria-label="Table of contents">
-            <p class="toc-title">{{ $t('blog.toc') }}</p>
-            <nav class="toc-nav">
-              <ul>
-                <li
-                  v-for="item in tableOfContents"
-                  :key="item.id"
-                  :class="['toc-level-' + item.level, { 'is-active': activeHeadingId === item.id }]"
-                >
-                  <a :href="'#' + item.id" @click.prevent="scrollToHeading(item.id)">{{ item.text }}</a>
-                </li>
-              </ul>
-            </nav>
+            <details class="toc-panel">
+              <summary class="toc-title">
+                {{ $t('blog.toc') }}
+                <span class="toc-count">{{ tableOfContents.length }}</span>
+              </summary>
+              <nav class="toc-nav">
+                <ul>
+                  <li
+                    v-for="item in tableOfContents"
+                    :key="item.id"
+                    :class="['toc-level-' + item.level, { 'is-active': activeHeadingId === item.id }]"
+                  >
+                    <a :href="'#' + item.id" @click.prevent="scrollToHeading(item.id)">{{ item.text }}</a>
+                  </li>
+                </ul>
+              </nav>
+            </details>
           </aside>
 
           <div class="article article-main">
-            <ArticleAuthor />
-
             <div v-if="currentPost.image" class="article-cover">
               <img :src="currentPost.image" :alt="currentPost.title" />
             </div>
 
             <div ref="markdownRef" class="rich-markdown article-prose" v-html="renderedContent" />
+
+            <ArticleAuthor compact />
 
             <section v-if="relatedPosts.length" class="related-posts">
               <h2 class="related-title">{{ $t('blog.relatedTitle') }}</h2>
@@ -267,13 +299,13 @@
         </div>
       </div>
 
-      <!-- Mobile share bar -->
+      <!-- Sole mobile bottom bar (site tabs hidden on article) -->
       <div class="mobile-share-bar" v-if="currentPost">
-        <button class="share-bar-btn" @click="backToList">
+        <button class="share-bar-btn" :aria-label="$t('blog.backToList')" @click="backToList">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
         </button>
         <span class="share-bar-title">{{ currentPost.title }}</span>
-        <button class="share-bar-btn" @click="shareArticle">
+        <button class="share-bar-btn" :aria-label="$t('blog.share')" @click="shareArticle">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         </button>
       </div>
@@ -292,7 +324,7 @@ import { useMarkdown } from '@/composables/useMarkdown'
 import { useReveal } from '@/composables/useReveal'
 import { getCategoryLabel } from '@/utils/categoryLabel'
 import { extractHeadings, injectHeadingIds } from '@/utils/headings'
-import { enhanceMarkdownHtml, bindCodeCopyButtons } from '@/utils/enhanceMarkdown'
+import { enhanceMarkdownHtml, bindCodeCopyButtons, enhanceTableNumericColumns } from '@/utils/enhanceMarkdown'
 import { setPageMetaOverride, clearPageMetaOverride } from '@/composables/usePageMeta'
 import CoverArt from '@/components/CoverArt.vue'
 import ArticleAuthor from '@/components/ArticleAuthor.vue'
@@ -325,9 +357,24 @@ const copyLabel = ref('')
 const markdownRef = ref(null)
 const searchInputRef = ref(null)
 const activeHeadingId = ref('')
+const moreMenuOpen = ref(false)
 
 const updateCopyLabel = () => {
   copyLabel.value = t('blog.copyLink')
+}
+
+/** Cap hero tags when lead already carries keywords */
+const heroTags = computed(() => (currentPost.value?.tags || []).slice(0, 3))
+
+const runToolbarAction = action => {
+  moreMenuOpen.value = false
+  action?.()
+}
+
+const onDocClick = e => {
+  if (!moreMenuOpen.value) return
+  const el = e.target?.closest?.('.toolbar-more')
+  if (!el) moreMenuOpen.value = false
 }
 
 updateCopyLabel()
@@ -385,6 +432,7 @@ const bindMarkdownEnhancements = () => {
     bindCodeCopyButtons(markdownRef.value, () => {
       toast.success(t('blog.codeCopied'))
     })
+    enhanceTableNumericColumns(markdownRef.value)
     observeHeadings()
   })
 }
@@ -433,6 +481,7 @@ const backToList = () => {
   currentPost.value = null
   tableOfContents.value = []
   readingProgress.value = 0
+  moreMenuOpen.value = false
   clearPageMetaOverride()
   router.push('/blog')
   nextTick(() => {
@@ -490,6 +539,12 @@ const loadPost = async id => {
 
 const scrollToHeading = id => {
   document.getElementById(id)?.scrollIntoView({ behavior: 'auto', block: 'start' })
+  // Collapse mobile TOC after jump
+  if (typeof window !== 'undefined' && window.matchMedia('(max-width: 980px)').matches) {
+    document.querySelectorAll('.toc-panel[open]').forEach(el => {
+      el.open = false
+    })
+  }
 }
 
 const copyArticleLink = async () => {
@@ -606,11 +661,13 @@ onMounted(async () => {
   if (route.params.id) await loadPost(route.params.id)
   window.addEventListener('scroll', onReadingScroll, { passive: true })
   window.addEventListener('keydown', onBlogKeydown)
+  document.addEventListener('click', onDocClick)
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onReadingScroll)
   window.removeEventListener('keydown', onBlogKeydown)
+  document.removeEventListener('click', onDocClick)
   headingObserver?.disconnect()
   clearTimeout(scrollSaveTimer)
   clearPageMetaOverride()
@@ -1029,9 +1086,10 @@ watch(filteredPosts, () => {
 .post-detail {
   position: relative;
   padding: 0 0 var(--space-24);
+  /* Softened teal glow — title contrast stays solid */
   background:
-    radial-gradient(ellipse 80% 40% at 20% 0%, var(--color-mesh-1), transparent 55%),
-    radial-gradient(ellipse 60% 35% at 90% 8%, var(--color-mesh-2), transparent 50%),
+    radial-gradient(ellipse 70% 28% at 18% 0%, color-mix(in srgb, var(--color-mesh-1) 45%, transparent), transparent 60%),
+    radial-gradient(ellipse 50% 24% at 92% 6%, color-mix(in srgb, var(--color-mesh-2) 40%, transparent), transparent 55%),
     var(--color-bg);
 }
 
@@ -1051,18 +1109,29 @@ watch(filteredPosts, () => {
   transition: width 80ms linear;
 }
 
+/* Vastly faded — top bar is the primary progress cue */
 .reading-progress-label {
   position: fixed;
-  top: calc(var(--nav-height) + 6px);
+  top: calc(var(--nav-height) + 8px);
   right: var(--space-4);
-  font-size: 11px;
+  font-size: 10px;
   font-family: var(--font-mono);
   color: var(--color-text-tertiary);
-  z-index: 999;
-  background: var(--color-card-bg);
-  padding: 2px 8px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
+  z-index: 998;
+  opacity: 0.28;
+  pointer-events: none;
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+
+.article-chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
 }
 
 .breadcrumb {
@@ -1071,11 +1140,12 @@ watch(filteredPosts, () => {
   gap: var(--space-2);
   font-size: 13px;
   font-family: var(--font-mono);
-  margin-bottom: var(--space-4);
   flex-wrap: wrap;
+  min-width: 0;
 }
 
-.breadcrumb-link {
+.breadcrumb-link,
+.breadcrumb-back {
   background: none;
   border: none;
   padding: 0;
@@ -1085,31 +1155,25 @@ watch(filteredPosts, () => {
   font-size: 13px;
 }
 
+.breadcrumb-back {
+  color: var(--color-text-secondary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .breadcrumb-back:hover {
+    color: var(--color-accent);
+  }
+}
+
 .breadcrumb-sep {
   color: var(--color-text-tertiary);
 }
 
-.breadcrumb-current {
-  color: var(--color-text-secondary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: min(420px, 55vw);
-}
-
-.article-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: var(--space-8);
-  flex-wrap: wrap;
-}
-
 .toolbar-actions {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-2);
+  position: relative;
 }
 
 .toolbar-btn {
@@ -1127,6 +1191,60 @@ watch(filteredPosts, () => {
               background var(--duration-fast) var(--ease-out);
 }
 
+.toolbar-btn-primary {
+  border-color: var(--color-accent-border);
+  color: var(--color-accent);
+}
+
+.toolbar-more {
+  position: relative;
+}
+
+.toolbar-more-trigger {
+  min-width: 36px;
+  padding-left: 10px;
+  padding-right: 10px;
+  letter-spacing: 0.12em;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.toolbar-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 40;
+  min-width: 148px;
+  padding: var(--space-1);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toolbar-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.toolbar-menu-item.is-active,
+.toolbar-menu-item:hover {
+  color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .toolbar-btn:hover {
     border-color: var(--color-accent);
@@ -1134,29 +1252,13 @@ watch(filteredPosts, () => {
   }
 }
 
-.toolbar-btn.is-active {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-  background: var(--color-accent-light);
-}
+@media (max-width: 734px) {
+  .toolbar-menu-print {
+    display: none;
+  }
 
-.back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 8px 0;
-  font-size: 14px;
-  font-family: var(--font-mono);
-  color: var(--color-accent);
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: opacity var(--duration-fast) var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .back-btn:hover {
-    opacity: 0.75;
+  .reading-progress-label {
+    display: none;
   }
 }
 
@@ -1234,20 +1336,21 @@ watch(filteredPosts, () => {
   display: block;
 }
 
-/* Reading grid: hero | TOC / body | TOC */
+/* Reading grid: prose ~42rem + fixed TOC; outer margins absorb large screens */
 .article-reading {
   display: grid;
   grid-template-columns: minmax(0, var(--article-prose-max, 42rem));
   grid-template-areas:
     'hero'
     'main';
-  column-gap: var(--space-12);
+  column-gap: var(--space-10);
   row-gap: 0;
   align-items: start;
+  justify-content: center;
 }
 
 .article-reading.has-toc {
-  grid-template-columns: minmax(0, var(--article-prose-max, 42rem)) minmax(180px, 1fr);
+  grid-template-columns: minmax(0, var(--article-prose-max, 42rem)) var(--article-toc-width, 240px);
   grid-template-areas:
     'hero toc'
     'main toc';
@@ -1271,11 +1374,16 @@ watch(filteredPosts, () => {
   position: sticky;
   top: calc(var(--nav-height) + var(--space-8));
   align-self: start;
+  width: var(--article-toc-width, 240px);
   max-height: calc(100vh - var(--nav-height) - var(--space-12));
   overflow-y: auto;
   padding: 0 0 0 var(--space-5);
   border-left: 1px solid var(--color-border);
   background: transparent;
+}
+
+.toc-panel {
+  border: none;
 }
 
 .toc-title {
@@ -1286,6 +1394,18 @@ watch(filteredPosts, () => {
   letter-spacing: 0.08em;
   color: var(--color-text-tertiary);
   margin: 0 0 var(--space-3);
+  list-style: none;
+  cursor: default;
+}
+
+.toc-title::-webkit-details-marker {
+  display: none;
+}
+
+.toc-count {
+  margin-left: var(--space-2);
+  font-weight: 500;
+  opacity: 0.7;
 }
 
 .toc-nav ul {
@@ -1301,7 +1421,8 @@ watch(filteredPosts, () => {
   display: block;
   font-size: 13px;
   line-height: 1.4;
-  color: var(--color-text-secondary);
+  /* Unread / inactive stay darker */
+  color: var(--color-text-tertiary);
   text-decoration: none;
   padding: 6px 0 6px 10px;
   border-left: 2px solid transparent;
@@ -1313,18 +1434,33 @@ watch(filteredPosts, () => {
 .article-toc .toc-level-3 a {
   padding-left: calc(10px + var(--space-3));
   font-size: 12px;
-  color: var(--color-text-tertiary);
+  color: color-mix(in srgb, var(--color-text-tertiary) 85%, transparent);
 }
 
 .article-toc li.is-active a {
-  color: var(--color-accent);
+  color: var(--color-accent-hover);
   border-left-color: var(--color-accent);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .article-toc a:hover {
     color: var(--color-accent);
+  }
+}
+
+/* Desktop: TOC always expanded (override closed <details>) */
+@media (min-width: 981px) {
+  .toc-panel > .toc-nav {
+    display: block !important;
+  }
+
+  .toc-panel > .toc-title {
+    pointer-events: none;
+  }
+
+  .toc-count {
+    display: none;
   }
 }
 
@@ -1429,12 +1565,12 @@ watch(filteredPosts, () => {
 .mobile-share-bar {
   display: none;
   position: fixed;
-  bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  bottom: 0;
   left: 0;
   right: 0;
   z-index: 900;
-  height: 48px;
-  padding: 0 var(--space-3);
+  height: calc(48px + env(safe-area-inset-bottom, 0px));
+  padding: 0 var(--space-3) env(safe-area-inset-bottom, 0px);
   background: var(--color-nav-bg);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
@@ -1469,7 +1605,7 @@ watch(filteredPosts, () => {
 
 @media (max-width: 980px) {
   .article-reading.has-toc {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, var(--article-prose-max, 42rem));
     grid-template-areas:
       'hero'
       'toc'
@@ -1478,31 +1614,64 @@ watch(filteredPosts, () => {
 
   .article-toc {
     position: static;
+    width: auto;
+    max-width: var(--article-prose-max, 42rem);
     max-height: none;
     overflow: visible;
-    margin: 0 0 var(--space-6);
-    padding: 0 0 var(--space-4);
+    margin: 0 0 var(--space-5);
+    padding: 0;
     border-left: none;
-    border-bottom: 1px solid var(--color-border);
+  }
+
+  .toc-panel {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+  }
+
+  .toc-panel > .toc-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    padding: 10px 12px;
+    cursor: pointer;
+  }
+
+  .toc-panel > .toc-title::after {
+    content: '+';
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--color-text-tertiary);
+  }
+
+  .toc-panel[open] > .toc-title::after {
+    content: '−';
+  }
+
+  .toc-nav {
+    padding: 0 12px 10px;
+    border-top: 1px solid var(--color-divider);
   }
 
   .toc-nav ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0 var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
   }
 
   .article-toc a {
-    border-left: none;
-    padding-left: 0;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
   }
 
   .article-toc .toc-level-3 a {
-    padding-left: var(--space-3);
+    padding-left: calc(10px + var(--space-3));
   }
 
   .article-toc li.is-active a {
-    border-left-color: transparent;
+    border-left-color: var(--color-accent);
+    color: var(--color-accent-hover);
   }
 }
 
@@ -1566,8 +1735,9 @@ watch(filteredPosts, () => {
     display: flex;
   }
 
+  /* Pad for the single mini bar only */
   .post-detail {
-    padding-bottom: calc(48px + var(--space-16));
+    padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px) + var(--space-16));
   }
 }
 </style>

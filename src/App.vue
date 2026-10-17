@@ -1,7 +1,7 @@
 <template>
   <ErrorBoundary>
     <a href="#main-content" class="skip-link">{{ $t('nav.skipToContent') }}</a>
-    <div class="app" :class="{ 'is-scrolled': isScrolled }">
+    <div class="app" :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading }">
       <!-- Navigation -->
       <nav class="nav glass" role="navigation">
         <div class="nav-inner">
@@ -117,6 +117,8 @@ const email = APP_CONFIG.EMAIL
 const currentLocale = computed(() => locale.value)
 const mobileMenuOpen = ref(false)
 const isScrolled = ref(false)
+/** Article detail hides MobileTabBar and uses a single mini share bar */
+const isArticleReading = computed(() => route.name === 'BlogPost')
 
 const navLinks = [
   { path: '/', label: 'nav.home' },
@@ -251,6 +253,11 @@ html.dark {
 @media (max-width: 734px) {
   .app {
     padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .app.is-article-reading {
+    /* One bar only: article mini share bar (48px) */
+    padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
   }
 }
 

@@ -187,6 +187,7 @@ export default {
     copyLink: 'Copy link',
     copySuccess: 'Link copied',
     breadcrumbBlog: 'Blog',
+    moreActions: 'More actions',
     relatedTitle: 'Related posts',
     share: 'Share',
     print: 'Print',

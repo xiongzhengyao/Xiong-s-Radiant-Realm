@@ -1,5 +1,9 @@
 <template>
-  <nav class="mobile-tabbar" aria-label="Mobile navigation">
+  <nav
+    v-if="!hideForArticle"
+    class="mobile-tabbar"
+    aria-label="Mobile navigation"
+  >
     <router-link
       v-for="tab in tabs"
       :key="tab.path"
@@ -14,9 +18,13 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
+
+/** Article reading uses its own mini bar — avoid double bottom chrome */
+const hideForArticle = computed(() => route.name === 'BlogPost')
 
 const tabs = [
   {

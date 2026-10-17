@@ -187,6 +187,7 @@ export default {
     copyLink: '复制链接',
     copySuccess: '链接已复制',
     breadcrumbBlog: '博客',
+    moreActions: '更多操作',
     relatedTitle: '相关文章',
     share: '分享',
     print: '打印',
