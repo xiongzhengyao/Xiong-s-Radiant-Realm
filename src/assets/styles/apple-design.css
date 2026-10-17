@@ -569,9 +569,8 @@ a[target="_blank"]:not(.footer-link)::after {
   font-size: var(--md-body-size);
   line-height: var(--md-body-lh);
   color: var(--color-text);
-  letter-spacing: 0.01em;
+  overflow-wrap: break-word;
   word-break: break-word;
-  overflow-wrap: anywhere;
 }
 
 .rich-markdown > :first-child {
