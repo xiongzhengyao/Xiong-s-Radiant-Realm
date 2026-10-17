@@ -13,8 +13,8 @@
       <p class="author-label">{{ $t('blog.author.label') }}</p>
       <p class="author-name">{{ name }}</p>
       <p class="author-bio">{{ bio }}</p>
-      <div class="author-topics">
-        <span class="author-topics-label">{{ $t('home.focusing.label') }}</span>
+      <div v-if="topics.length" class="author-topics">
+        <span class="author-topics-label">{{ $t('home.expertise.eyebrow') }}</span>
         <span v-for="topic in topics" :key="topic" class="author-topic">{{ topic }}</span>
       </div>
     </div>
@@ -31,7 +31,16 @@ const imageError = ref(false)
 
 const name = computed(() => t('about.profile.name'))
 const bio = computed(() => t('about.profile.bio'))
-const topics = computed(() => tm('home.focusing.topics').slice(0, 3))
+const topics = computed(() => {
+  // Prefer dedicated focusing topics when present; otherwise reuse skill names.
+  const focusing = tm('home.focusing.topics')
+  if (Array.isArray(focusing) && focusing.length) return focusing.slice(0, 3)
+  return [
+    t('home.skills.embedded.name'),
+    t('home.skills.image.name'),
+    t('home.skills.linux.name')
+  ]
+})
 const profileImage = APP_CONFIG.IMAGES.PROFILE
 const initials = computed(() => {
   const n = name.value || ''

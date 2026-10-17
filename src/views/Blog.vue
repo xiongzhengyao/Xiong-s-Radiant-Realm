@@ -412,9 +412,12 @@ const restoreScrollPosition = id => {
   return false
 }
 
-const showPostDetail = post => {
-  router.push(`/blog/${post.id}/${post.slug}`)
-  loadPost(post.id)
+const postPath = post => `/blog/${post.id}/${encodeURIComponent(post.slug)}`
+
+const showPostDetail = async post => {
+  await blogStore.ensureLoaded()
+  router.push(postPath(post))
+  await loadPost(post.id)
 }
 
 const backToList = () => {
@@ -429,13 +432,17 @@ const backToList = () => {
   })
 }
 
-const loadPost = id => {
+const loadPost = async id => {
+  await blogStore.ensureLoaded()
   const postData = blogStore.getPostById(id)
-  if (!postData) { backToList(); return }
+  if (!postData) {
+    backToList()
+    return
+  }
 
   currentPostId.value = id
   currentPost.value = postData
-  router.replace(`/blog/${postData.id}/${postData.slug}`)
+  router.replace(postPath(postData))
 
   const html = injectHeadingIds(enhanceCodeBlocks(renderMarkdown(postData.content)))
   renderedContent.value = html
@@ -583,10 +590,10 @@ const observeRevealElements = () => {
   observe()
 }
 
-onMounted(() => {
-  blogStore.ensureLoaded()
+onMounted(async () => {
+  await blogStore.ensureLoaded()
   if (route.query.cat) selectedCategory.value = String(route.query.cat)
-  if (route.params.id) loadPost(route.params.id)
+  if (route.params.id) await loadPost(route.params.id)
   window.addEventListener('scroll', onReadingScroll, { passive: true })
   window.addEventListener('keydown', onBlogKeydown)
 })
@@ -603,8 +610,8 @@ watch(selectedCategory, () => {
   syncCategoryToUrl()
 })
 
-watch(() => route.params, params => {
-  if (params.id) loadPost(params.id)
+watch(() => route.params, async params => {
+  if (params.id) await loadPost(params.id)
   else {
     currentPostId.value = null
     currentPost.value = null

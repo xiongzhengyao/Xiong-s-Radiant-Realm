@@ -188,7 +188,7 @@ const sidebarPosts = computed(() => recentPosts.value.slice(1))
 const categoryLabel = category => getCategoryLabel(category, locale.value)
 
 const goToPost = post => {
-  router.push(`/blog/${post.id}/${post.slug}`)
+  router.push(`/blog/${post.id}/${encodeURIComponent(post.slug)}`)
 }
 
 const skills = [
