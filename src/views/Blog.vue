@@ -284,7 +284,7 @@ import { useMarkdown } from '@/composables/useMarkdown'
 import { useReveal } from '@/composables/useReveal'
 import { getCategoryLabel } from '@/utils/categoryLabel'
 import { extractHeadings, injectHeadingIds } from '@/utils/headings'
-import { enhanceCodeBlocks, bindCodeCopyButtons } from '@/utils/enhanceMarkdown'
+import { enhanceMarkdownHtml, bindCodeCopyButtons } from '@/utils/enhanceMarkdown'
 import { setPageMetaOverride, clearPageMetaOverride } from '@/composables/usePageMeta'
 import CoverArt from '@/components/CoverArt.vue'
 import ArticleAuthor from '@/components/ArticleAuthor.vue'
@@ -444,7 +444,7 @@ const loadPost = async id => {
   currentPost.value = postData
   router.replace(postPath(postData))
 
-  const html = injectHeadingIds(enhanceCodeBlocks(renderMarkdown(postData.content)))
+  const html = injectHeadingIds(enhanceMarkdownHtml(renderMarkdown(postData.content)))
   renderedContent.value = html
   tableOfContents.value = extractHeadings(html)
   const { prev, next } = blogStore.getAdjacentPosts(id)

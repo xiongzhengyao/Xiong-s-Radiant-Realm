@@ -6,6 +6,19 @@ export function enhanceCodeBlocks(html) {
   })
 }
 
+/** Wrap tables so wide content scrolls instead of breaking layout */
+export function enhanceTables(html) {
+  if (!html) return html
+  return html.replace(/<table[\s\S]*?<\/table>/g, match => {
+    if (match.includes('table-scroll')) return match
+    return `<div class="table-scroll">${match}</div>`
+  })
+}
+
+export function enhanceMarkdownHtml(html) {
+  return enhanceTables(enhanceCodeBlocks(html))
+}
+
 export function bindCodeCopyButtons(container, onCopied) {
   if (!container) return
   container.querySelectorAll('.code-copy-btn').forEach(btn => {
