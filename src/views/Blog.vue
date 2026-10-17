@@ -239,7 +239,7 @@
           </header>
 
           <aside v-if="tableOfContents.length" class="article-toc" aria-label="Table of contents">
-            <details ref="tocPanelRef" class="toc-panel" @toggle="onTocToggle">
+            <details ref="tocPanelRef" class="toc-panel" open @toggle="onTocToggle">
               <summary class="toc-title">
                 {{ $t('blog.toc') }}
                 <span class="toc-count">{{ tableOfContents.length }}</span>
@@ -365,12 +365,15 @@ const updateCopyLabel = () => {
   copyLabel.value = t('blog.copyLink')
 }
 
-/** Desktop: TOC always open. Mobile: default collapsed <details>. */
+/**
+ * Details starts with `open` so desktop sticky TOC is visible on first paint.
+ * Narrow viewports collapse it after mount (mobile accordion default).
+ */
 const syncTocOpenState = () => {
   const el = tocPanelRef.value
-  if (!el) return
-  const wide = typeof window !== 'undefined' && window.matchMedia('(min-width: 981px)').matches
-  if (wide) el.open = true
+  if (!el || typeof window === 'undefined') return
+  const wide = window.matchMedia('(min-width: 981px)').matches
+  el.open = wide
 }
 
 const onTocToggle = e => {
