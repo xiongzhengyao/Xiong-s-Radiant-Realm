@@ -5,7 +5,14 @@
     <link>https://xiongzhengyao.dev</link>
     <description>Camera driver engineer — tech blog</description>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 17 Oct 2026 03:00:31 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 17 Oct 2026 07:20:01 GMT</lastBuildDate>
+    <item>
+      <title>高通双摄同开与 Camera NOC 带宽：从 Sensor 到 DDR 的反压与 Overflow</title>
+      <link>https://xiongzhengyao.dev/blog/216244/qualcomm-dual-cam-camnoc-bandwidth</link>
+      <guid isPermaLink="true">https://xiongzhengyao.dev/blog/216244/qualcomm-dual-cam-camnoc-bandwidth</guid>
+      <pubDate>Sat, 17 Oct 2026 00:00:00 GMT</pubDate>
+      <description>双摄同开时 Camera NOC 写 DDR 背压如何传到 FE/VFE/IFE/TFE 与 CSID；用 128/256bit 理论带宽与 30fps 双路算例说明平均通常够、峰值与投票才是坑。</description>
+    </item>
     <item>
       <title>sensor 变量及计算公式</title>
       <link>https://xiongzhengyao.dev/blog/139734/计算</link>
