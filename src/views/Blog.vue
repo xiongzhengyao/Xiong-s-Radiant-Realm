@@ -239,12 +239,7 @@
           </header>
 
           <aside v-if="tableOfContents.length" class="article-toc" aria-label="Table of contents">
-            <details
-              ref="tocPanelRef"
-              class="toc-panel"
-              :open="tocDetailsOpen"
-              @toggle="onTocToggle"
-            >
+            <details ref="tocPanelRef" class="toc-panel" @toggle="onTocToggle">
               <summary class="toc-title">
                 {{ $t('blog.toc') }}
                 <span class="toc-count">{{ tableOfContents.length }}</span>
@@ -364,8 +359,6 @@ const searchInputRef = ref(null)
 const activeHeadingId = ref('')
 const moreMenuOpen = ref(false)
 const tocPanelRef = ref(null)
-/** Desktop-first open; syncTocOpenState collapses on mobile after mount */
-const tocDetailsOpen = ref(true)
 let tocMq = null
 
 const updateCopyLabel = () => {
@@ -375,17 +368,16 @@ const updateCopyLabel = () => {
 const isWideToc = () =>
   typeof window !== 'undefined' && window.matchMedia('(min-width: 981px)').matches
 
-const syncTocOpenState = () => {
-  tocDetailsOpen.value = isWideToc()
+/** Imperative open — Vue :open on <details> is unreliable across re-renders */
+const syncTocOpenState = async () => {
+  await nextTick()
+  const el = tocPanelRef.value
+  if (!el) return
+  el.open = isWideToc()
 }
 
 const onTocToggle = e => {
-  if (isWideToc()) {
-    tocDetailsOpen.value = true
-    e.target.open = true
-    return
-  }
-  tocDetailsOpen.value = e.target.open
+  if (isWideToc()) e.target.open = true
 }
 
 /** Cap hero tags when lead already carries keywords */
@@ -1479,7 +1471,7 @@ watch(filteredPosts, () => {
   }
 }
 
-/* Desktop: TOC stays open; summary is non-interactive label */
+/* Desktop: force TOC list visible even if details lacks [open] */
 @media (min-width: 981px) {
   .toc-panel > .toc-title {
     pointer-events: none;
@@ -1488,6 +1480,10 @@ watch(filteredPosts, () => {
 
   .toc-panel > .toc-title::after {
     display: none;
+  }
+
+  .toc-panel > .toc-nav {
+    display: block !important;
   }
 
   .toc-count {
