@@ -78,8 +78,24 @@
     background: #999 !important;
   }
 
-  .article-layout {
+  .article-layout,
+  .article-reading {
     display: block !important;
+  }
+
+  .article-shell {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .article-hero {
+    border-bottom: 1px solid #ccc !important;
+    margin-bottom: 1.25rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  .post-detail {
+    background: #fff !important;
   }
 
   .rich-markdown a {

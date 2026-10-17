@@ -160,15 +160,16 @@
       </section>
     </div>
 
-    <!-- Blog post detail view -->
+    <!-- Blog post detail view — magazine / tech-doc reading layout -->
     <div v-else key="detail" class="post-detail">
       <div class="reading-progress" :style="{ width: readingProgress + '%' }" />
       <span v-if="readingProgress > 2" class="reading-progress-label">{{ $t('blog.readingProgress', { n: Math.round(readingProgress) }) }}</span>
-      <div class="container-narrow">
+
+      <div class="article-shell" v-if="currentPost">
         <nav class="breadcrumb" aria-label="Breadcrumb">
           <button class="breadcrumb-link" @click="backToList">{{ $t('blog.breadcrumbBlog') }}</button>
           <span class="breadcrumb-sep">/</span>
-          <span class="breadcrumb-current">{{ currentPost?.title }}</span>
+          <span class="breadcrumb-current">{{ currentPost.title }}</span>
         </nav>
 
         <div class="article-toolbar">
@@ -190,72 +191,79 @@
           </div>
         </div>
 
-        <div class="article-layout" v-if="currentPost">
-          <aside v-if="tableOfContents.length" class="article-toc">
-            <p class="toc-title">{{ $t('blog.toc') }}</p>
-            <ul>
-              <li
-                v-for="item in tableOfContents"
-                :key="item.id"
-                :class="['toc-level-' + item.level, { 'is-active': activeHeadingId === item.id }]"
-              >
-                <a :href="'#' + item.id" @click.prevent="scrollToHeading(item.id)">{{ item.text }}</a>
-              </li>
-            </ul>
-          </aside>
-
-          <article class="article article-main">
-          <header class="article-header">
+        <!-- Reading stage: hero | TOC ; body | TOC (sticky) -->
+        <div class="article-reading" :class="{ 'has-toc': tableOfContents.length > 0 }">
+          <header class="article-hero">
             <div class="article-meta">
               <span class="tag tag-accent">{{ categoryLabel(currentPost.category) }}</span>
-              <span>{{ currentPost.date }}</span>
-              <span class="meta-dot"></span>
-              <span>{{ $t('blog.readTime', { n: currentPost.readingTime }) }}</span>
+              <time class="meta-item" :datetime="currentPost.date">{{ currentPost.date }}</time>
+              <span class="meta-dot" aria-hidden="true" />
+              <span class="meta-item">{{ $t('blog.readTime', { n: currentPost.readingTime }) }}</span>
+              <template v-if="currentPost.author">
+                <span class="meta-dot" aria-hidden="true" />
+                <span class="meta-item meta-author">{{ currentPost.author }}</span>
+              </template>
             </div>
-            <h1>{{ currentPost.title }}</h1>
+            <h1 class="article-title">{{ currentPost.title }}</h1>
             <p v-if="currentPost.excerpt" class="article-lead">{{ currentPost.excerpt }}</p>
-            <div class="article-tags">
-              <span class="tag tag-accent" v-for="tag in currentPost.tags" :key="tag">{{ tag }}</span>
+            <div v-if="currentPost.tags?.length" class="article-tags">
+              <span class="tag" v-for="tag in currentPost.tags" :key="tag">{{ tag }}</span>
             </div>
           </header>
 
-          <ArticleAuthor />
+          <aside v-if="tableOfContents.length" class="article-toc" aria-label="Table of contents">
+            <p class="toc-title">{{ $t('blog.toc') }}</p>
+            <nav class="toc-nav">
+              <ul>
+                <li
+                  v-for="item in tableOfContents"
+                  :key="item.id"
+                  :class="['toc-level-' + item.level, { 'is-active': activeHeadingId === item.id }]"
+                >
+                  <a :href="'#' + item.id" @click.prevent="scrollToHeading(item.id)">{{ item.text }}</a>
+                </li>
+              </ul>
+            </nav>
+          </aside>
 
-          <div v-if="currentPost.image" class="article-cover">
-            <img :src="currentPost.image" :alt="currentPost.title" />
+          <div class="article article-main">
+            <ArticleAuthor />
+
+            <div v-if="currentPost.image" class="article-cover">
+              <img :src="currentPost.image" :alt="currentPost.title" />
+            </div>
+
+            <div ref="markdownRef" class="rich-markdown article-prose" v-html="renderedContent" />
+
+            <section v-if="relatedPosts.length" class="related-posts">
+              <h2 class="related-title">{{ $t('blog.relatedTitle') }}</h2>
+              <div class="related-grid">
+                <article
+                  v-for="post in relatedPosts"
+                  :key="post.id"
+                  class="related-card"
+                  @click="loadPost(post.id)"
+                >
+                  <span class="tag tag-accent">{{ categoryLabel(post.category) }}</span>
+                  <h3>{{ post.title }}</h3>
+                  <p>{{ post.excerpt }}</p>
+                </article>
+              </div>
+            </section>
+
+            <footer class="article-footer">
+              <div class="article-nav">
+                <button v-if="prevPost" class="nav-post-btn" @click="loadPost(prevPost.id)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                  <span>{{ prevPost.title }}</span>
+                </button>
+                <button v-if="nextPost" class="nav-post-btn next" @click="loadPost(nextPost.id)">
+                  <span>{{ nextPost.title }}</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+              </div>
+            </footer>
           </div>
-
-          <div ref="markdownRef" class="rich-markdown" v-html="renderedContent" />
-
-          <section v-if="relatedPosts.length" class="related-posts">
-            <h2 class="related-title">{{ $t('blog.relatedTitle') }}</h2>
-            <div class="related-grid">
-              <article
-                v-for="post in relatedPosts"
-                :key="post.id"
-                class="related-card"
-                @click="loadPost(post.id)"
-              >
-                <span class="tag tag-accent">{{ categoryLabel(post.category) }}</span>
-                <h3>{{ post.title }}</h3>
-                <p>{{ post.excerpt }}</p>
-              </article>
-            </div>
-          </section>
-
-          <footer class="article-footer">
-            <div class="article-nav">
-              <button v-if="prevPost" class="nav-post-btn" @click="loadPost(prevPost.id)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                <span>{{ prevPost.title }}</span>
-              </button>
-              <button v-if="nextPost" class="nav-post-btn next" @click="loadPost(nextPost.id)">
-                <span>{{ nextPost.title }}</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </button>
-            </div>
-          </footer>
-          </article>
         </div>
       </div>
 
@@ -444,7 +452,9 @@ const loadPost = async id => {
   currentPost.value = postData
   router.replace(postPath(postData))
 
-  const html = injectHeadingIds(enhanceMarkdownHtml(renderMarkdown(postData.content)))
+  const html = injectHeadingIds(
+    enhanceMarkdownHtml(renderMarkdown(postData.content), { title: postData.title })
+  )
   renderedContent.value = html
   tableOfContents.value = extractHeadings(html)
   const { prev, next } = blogStore.getAdjacentPosts(id)
@@ -1015,10 +1025,20 @@ watch(filteredPosts, () => {
   font-size: 17px;
 }
 
-/* --- Post Detail --- */
+/* --- Post Detail (magazine / tech-doc reading) --- */
 .post-detail {
-  padding: var(--space-12) 0 var(--space-20);
   position: relative;
+  padding: 0 0 var(--space-24);
+  background:
+    radial-gradient(ellipse 80% 40% at 20% 0%, var(--color-mesh-1), transparent 55%),
+    radial-gradient(ellipse 60% 35% at 90% 8%, var(--color-mesh-2), transparent 50%),
+    var(--color-bg);
+}
+
+.article-shell {
+  max-width: var(--article-shell-max, 1100px);
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-6) 0;
 }
 
 .reading-progress {
@@ -1036,11 +1056,12 @@ watch(filteredPosts, () => {
   top: calc(var(--nav-height) + 6px);
   right: var(--space-4);
   font-size: 11px;
+  font-family: var(--font-mono);
   color: var(--color-text-tertiary);
   z-index: 999;
   background: var(--color-card-bg);
   padding: 2px 8px;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
 }
 
@@ -1049,6 +1070,7 @@ watch(filteredPosts, () => {
   align-items: center;
   gap: var(--space-2);
   font-size: 13px;
+  font-family: var(--font-mono);
   margin-bottom: var(--space-4);
   flex-wrap: wrap;
 }
@@ -1059,7 +1081,7 @@ watch(filteredPosts, () => {
   padding: 0;
   color: var(--color-accent);
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: inherit;
   font-size: 13px;
 }
 
@@ -1072,7 +1094,7 @@ watch(filteredPosts, () => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 280px;
+  max-width: min(420px, 55vw);
 }
 
 .article-toolbar {
@@ -1080,7 +1102,7 @@ watch(filteredPosts, () => {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-8);
   flex-wrap: wrap;
 }
 
@@ -1091,21 +1113,18 @@ watch(filteredPosts, () => {
 }
 
 .toolbar-btn {
-  padding: 8px 14px;
-  font-size: 13px;
-  border-radius: var(--radius-full);
+  padding: 7px 12px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.01em;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
-  background: var(--color-card-bg);
+  background: var(--color-surface);
   color: var(--color-text-secondary);
   cursor: pointer;
-  font-family: var(--font-sans);
   transition: border-color var(--duration-fast) var(--ease-out),
               color var(--duration-fast) var(--ease-out),
-              transform 0.12s var(--ease-out);
-}
-
-.toolbar-btn:active {
-  transform: scale(0.97);
+              background var(--duration-fast) var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -1119,6 +1138,292 @@ watch(filteredPosts, () => {
   border-color: var(--color-accent);
   color: var(--color-accent);
   background: var(--color-accent-light);
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 0;
+  font-size: 14px;
+  font-family: var(--font-mono);
+  color: var(--color-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .back-btn:hover {
+    opacity: 0.75;
+  }
+}
+
+/* Masthead — sits in prose column beside TOC */
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-5);
+}
+
+.meta-item {
+  color: var(--color-text-tertiary);
+}
+
+.meta-author {
+  color: var(--color-text-secondary);
+}
+
+.meta-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.article-title {
+  font-family: var(--font-mono);
+  font-size: clamp(1.85rem, 3.6vw, 2.65rem);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+  margin: 0 0 var(--space-4);
+}
+
+.article-lead {
+  font-size: 1.125rem;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-5);
+  max-width: 54ch;
+}
+
+.article-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.article-tags .tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.article-cover {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: 0 0 var(--space-10);
+  border: 1px solid var(--color-border);
+}
+
+.article-cover img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Reading grid: hero | TOC / body | TOC */
+.article-reading {
+  display: grid;
+  grid-template-columns: minmax(0, var(--article-prose-max, 42rem));
+  grid-template-areas:
+    'hero'
+    'main';
+  column-gap: var(--space-12);
+  row-gap: 0;
+  align-items: start;
+}
+
+.article-reading.has-toc {
+  grid-template-columns: minmax(0, var(--article-prose-max, 42rem)) minmax(180px, 1fr);
+  grid-template-areas:
+    'hero toc'
+    'main toc';
+}
+
+.article-hero {
+  grid-area: hero;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.article-main {
+  grid-area: main;
+  min-width: 0;
+  max-width: var(--article-prose-max, 42rem);
+}
+
+.article-toc {
+  grid-area: toc;
+  position: sticky;
+  top: calc(var(--nav-height) + var(--space-8));
+  align-self: start;
+  max-height: calc(100vh - var(--nav-height) - var(--space-12));
+  overflow-y: auto;
+  padding: 0 0 0 var(--space-5);
+  border-left: 1px solid var(--color-border);
+  background: transparent;
+}
+
+.toc-title {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-tertiary);
+  margin: 0 0 var(--space-3);
+}
+
+.toc-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.article-toc a {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  padding: 6px 0 6px 10px;
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+  transition: color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out);
+}
+
+.article-toc .toc-level-3 a {
+  padding-left: calc(10px + var(--space-3));
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
+.article-toc li.is-active a {
+  color: var(--color-accent);
+  border-left-color: var(--color-accent);
+  font-weight: 500;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .article-toc a:hover {
+    color: var(--color-accent);
+  }
+}
+
+.related-posts {
+  margin-top: var(--space-16);
+  padding-top: var(--space-10);
+  border-top: 1px solid var(--color-divider);
+}
+
+.related-title {
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-5);
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.related-card {
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--color-border);
+  background: transparent;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.related-card h3 {
+  font-size: 15px;
+  font-family: var(--font-mono);
+  margin: var(--space-2) 0 var(--space-2);
+  line-height: 1.35;
+}
+
+.related-card p {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .related-card:hover {
+    border-top-color: var(--color-accent);
+  }
+}
+
+.article-footer {
+  margin-top: var(--space-12);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--color-divider);
+}
+
+.article-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.nav-post-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 12px 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 14px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  max-width: 45%;
+  text-align: left;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-post-btn:hover {
+    color: var(--color-accent);
+  }
+}
+
+.nav-post-btn.next {
+  margin-left: auto;
+  text-align: right;
+}
+
+.nav-post-btn span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mobile-share-bar {
@@ -1162,265 +1467,43 @@ watch(filteredPosts, () => {
   color: var(--color-text);
 }
 
-.related-posts {
-  margin-top: var(--space-12);
-  padding-top: var(--space-10);
-  border-top: 1px solid var(--color-border);
-}
-
-.related-title {
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: var(--space-6);
-}
-
-.related-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-4);
-}
-
-.related-card {
-  padding: var(--space-5);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background: var(--color-card-bg);
-  cursor: pointer;
-  transition: border-color var(--duration-fast) var(--ease-out),
-              transform 0.12s var(--ease-out);
-}
-
-.related-card h3 {
-  font-size: 17px;
-  margin: var(--space-3) 0 var(--space-2);
-}
-
-.related-card p {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.related-card:active {
-  transform: scale(0.98);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .related-card:hover {
-    border-color: var(--color-accent);
-  }
-}
-
-.article-layout {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: var(--space-10);
-  align-items: start;
-}
-
-.article-toc {
-  position: sticky;
-  top: calc(var(--nav-height) + var(--space-6));
-  padding: var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-bg-secondary);
-}
-
-.toc-title {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-tertiary);
-  margin-bottom: var(--space-3);
-}
-
-.article-toc ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.article-toc a {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  text-decoration: none;
-  line-height: 1.4;
-  display: block;
-}
-
-.article-toc .toc-level-3 a {
-  padding-left: var(--space-3);
-  font-size: 12px;
-}
-
-.article-toc li.is-active a {
-  color: var(--color-accent);
-  font-weight: 500;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .article-toc a:hover {
-    color: var(--color-accent);
-  }
-}
-
-.article-main {
-  min-width: 0;
-}
-
-@media (max-width: 900px) {
-  .article-layout {
+@media (max-width: 980px) {
+  .article-reading.has-toc {
     grid-template-columns: 1fr;
+    grid-template-areas:
+      'hero'
+      'toc'
+      'main';
   }
 
   .article-toc {
     position: static;
-    order: -1;
+    max-height: none;
+    overflow: visible;
+    margin: 0 0 var(--space-6);
+    padding: 0 0 var(--space-4);
+    border-left: none;
+    border-bottom: 1px solid var(--color-border);
   }
-}
 
-.back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 8px 0;
-  font-size: 15px;
-  color: var(--color-accent);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  margin-bottom: 0;
-  transition: opacity var(--duration-fast) var(--ease-out),
-              transform 0.12s var(--ease-out);
-}
-
-.back-btn:active {
-  transform: scale(0.97);
-  transition: transform 0.1s var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .back-btn:hover {
-    opacity: 0.7;
+  .toc-nav ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0 var(--space-4);
   }
-}
 
-.article-header {
-  margin-bottom: var(--space-8);
-}
-
-.article-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: 14px;
-  color: var(--color-text-tertiary);
-  margin-bottom: var(--space-4);
-}
-
-.article-header h1 {
-  font-size: clamp(28px, 4vw, 42px);
-  line-height: 1.15;
-  margin-bottom: var(--space-3);
-}
-
-.article-lead {
-  font-size: 18px;
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-  margin-bottom: var(--space-4);
-}
-
-.article-header .article-tags {
-  margin-bottom: 0;
-}
-
-.article-header h1 + .article-tags {
-  margin-top: var(--space-4);
-}
-
-.article-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.article-cover {
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  margin-bottom: var(--space-10);
-  box-shadow: var(--shadow-md);
-}
-
-.article-cover img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* --- Article Footer / Nav --- */
-.article-footer {
-  margin-top: var(--space-12);
-  padding-top: var(--space-8);
-  border-top: 1px solid var(--color-border);
-}
-
-.article-nav {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-.nav-post-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 12px 18px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-card-bg);
-  color: var(--color-text);
-  font-size: 14px;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  max-width: 45%;
-  transition: border-color var(--duration-fast) var(--ease-out),
-              box-shadow var(--duration-fast) var(--ease-out),
-              transform 0.12s var(--ease-out);
-  text-align: left;
-}
-
-.nav-post-btn:active {
-  transform: scale(0.98);
-  transition: transform 0.1s var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .nav-post-btn:hover {
-    border-color: var(--color-accent);
-    box-shadow: var(--shadow-sm);
+  .article-toc a {
+    border-left: none;
+    padding-left: 0;
   }
-}
 
-.nav-post-btn.next {
-  margin-left: auto;
-  text-align: right;
-}
+  .article-toc .toc-level-3 a {
+    padding-left: var(--space-3);
+  }
 
-.nav-post-btn span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  .article-toc li.is-active a {
+    border-left-color: transparent;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1463,6 +1546,14 @@ watch(filteredPosts, () => {
     padding-bottom: var(--space-2);
   }
 
+  .article-shell {
+    padding-top: var(--space-8);
+  }
+
+  .article-title {
+    max-width: none;
+  }
+
   .article-nav {
     flex-direction: column;
   }
@@ -1476,7 +1567,7 @@ watch(filteredPosts, () => {
   }
 
   .post-detail {
-    padding-bottom: 48px;
+    padding-bottom: calc(48px + var(--space-16));
   }
 }
 </style>

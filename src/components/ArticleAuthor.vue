@@ -49,23 +49,25 @@ const initials = computed(() => {
 </script>
 
 <style scoped>
+/* Compact byline — not a promo card */
 .article-author {
   display: flex;
   gap: var(--space-4);
-  padding: var(--space-5);
-  margin-bottom: var(--space-8);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-secondary);
+  align-items: flex-start;
+  max-width: var(--article-prose-max, 42rem);
+  padding: 0 0 var(--space-8);
+  margin-bottom: var(--space-2);
+  border: none;
+  background: transparent;
 }
 
 .author-avatar {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-full);
   overflow: hidden;
   flex-shrink: 0;
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
 }
 
 .author-avatar img {
@@ -80,32 +82,36 @@ const initials = computed(() => {
   justify-content: center;
   width: 100%;
   height: 100%;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
+  font-family: var(--font-mono);
   color: var(--color-text-tertiary);
-  background: var(--color-card-bg);
+  background: var(--color-bg-secondary);
 }
 
 .author-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
+  font-family: var(--font-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
-  margin: 0 0 var(--space-1);
+  margin: 0 0 2px;
 }
 
 .author-name {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
+  font-family: var(--font-mono);
   margin: 0 0 var(--space-1);
 }
 
 .author-bio {
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
   color: var(--color-text-secondary);
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-2);
+  max-width: 48ch;
 }
 
 .author-topics {
@@ -117,16 +123,18 @@ const initials = computed(() => {
 
 .author-topics-label {
   font-size: 11px;
+  font-family: var(--font-mono);
   color: var(--color-text-tertiary);
 }
 
 .author-topic {
   font-size: 11px;
   font-family: var(--font-mono);
-  padding: 3px 8px;
-  border-radius: var(--radius-full);
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-border);
+  padding: 2px 0;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-accent-border);
   color: var(--color-text-secondary);
 }
 </style>

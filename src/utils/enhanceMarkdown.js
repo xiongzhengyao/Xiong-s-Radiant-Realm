@@ -15,8 +15,24 @@ export function enhanceTables(html) {
   })
 }
 
-export function enhanceMarkdownHtml(html) {
-  return enhanceTables(enhanceCodeBlocks(html))
+/**
+ * Drop a leading H1 that duplicates the article hero title.
+ * MD files stay the source of truth; this is presentation-only.
+ */
+export function stripDuplicateTitleHeading(html, title) {
+  if (!html || !title) return html
+  const match = html.match(/^\s*<h1[^>]*>([\s\S]*?)<\/h1>\s*/i)
+  if (!match) return html
+  const headingText = match[1].replace(/<[^>]+>/g, '').trim()
+  const normalize = s => s.replace(/\s+/g, ' ').trim().toLowerCase()
+  if (normalize(headingText) !== normalize(title)) return html
+  return html.slice(match[0].length)
+}
+
+export function enhanceMarkdownHtml(html, { title } = {}) {
+  let next = html
+  if (title) next = stripDuplicateTitleHeading(next, title)
+  return enhanceTables(enhanceCodeBlocks(next))
 }
 
 export function bindCodeCopyButtons(container, onCopied) {
