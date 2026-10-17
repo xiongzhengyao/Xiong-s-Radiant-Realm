@@ -3,21 +3,20 @@ import { ref } from 'vue'
 const isDark = ref(false)
 
 export function useTheme() {
-  // 从 localStorage 读取主题设置
+  // 从 localStorage 读取主题设置（默认深色，突出技术感）
   const loadTheme = () => {
     try {
       const saved = localStorage.getItem('theme')
       if (saved) {
         isDark.value = saved === 'dark'
       } else {
-        // 检测系统主题
-        if (typeof window !== 'undefined') {
-          isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches
-        }
+        isDark.value = true
       }
       applyTheme()
     } catch (error) {
       console.warn('Failed to load theme from localStorage:', error)
+      isDark.value = true
+      applyTheme()
     }
   }
 

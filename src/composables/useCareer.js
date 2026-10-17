@@ -20,12 +20,18 @@ export function useCareer() {
         year: copy.year || (item.year === 'ongoing' ? t('career.yearOngoing') : item.year),
         title: copy.title || '',
         description: copy.description || '',
-        tags: copy.tags || item.tags
+        tags: copy.tags || item.tags,
+        group: item.group || 'company',
+        url: item.url || null,
+        private: Boolean(item.private)
       }
     })
   )
 
+  const companyProjects = computed(() => projects.value.filter(p => p.group === 'company'))
+  const personalProjects = computed(() => projects.value.filter(p => p.group === 'personal'))
+
   const companyIds = CAREER_COMPANY_IDS
 
-  return { projects, companyIds }
+  return { projects, companyProjects, personalProjects, companyIds }
 }

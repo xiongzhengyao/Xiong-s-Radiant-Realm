@@ -283,7 +283,8 @@ html.dark {
 }
 
 .nav-logo {
-  font-size: 17px;
+  font-family: var(--font-mono);
+  font-size: 15px;
   font-weight: 600;
   color: var(--color-text);
   text-decoration: none;
@@ -309,12 +310,13 @@ html.dark {
 }
 
 .nav-link {
-  font-size: 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
   font-weight: 400;
   color: var(--color-text-secondary);
   text-decoration: none;
-  padding: 6px 14px;
-  border-radius: var(--radius-full);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
   position: relative;
   transition: color var(--duration-fast) var(--ease-out),
               background var(--duration-fast) var(--ease-out);

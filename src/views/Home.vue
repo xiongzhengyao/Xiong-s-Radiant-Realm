@@ -7,7 +7,10 @@
 
       <div class="container-wide hero-grid">
         <div class="hero-copy">
-          <p class="hero-eyebrow animate-fade-in-up">{{ $t('home.eyebrow') }}</p>
+          <p class="hero-terminal animate-fade-in-up" aria-hidden="true">
+            <span class="hero-terminal-prompt">{{ $t('home.whoami') }}</span>
+          </p>
+          <p class="hero-eyebrow animate-fade-in-up" style="animation-delay: 0.04s">{{ $t('home.eyebrow') }}</p>
           <h1 class="hero-title animate-fade-in-up" style="animation-delay: 0.08s">
             {{ $t('home.welcome') }}
           </h1>
@@ -239,7 +242,26 @@ const skills = [
   padding-bottom: var(--space-12);
 }
 
+.hero-terminal {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-accent);
+  margin-bottom: var(--space-4);
+  opacity: 0.9;
+}
+
+.hero-terminal-prompt::after {
+  content: '▋';
+  margin-left: 2px;
+  animation: terminal-blink 1.1s step-end infinite;
+}
+
+@keyframes terminal-blink {
+  50% { opacity: 0; }
+}
+
 .hero-eyebrow {
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.16em;
@@ -249,27 +271,20 @@ const skills = [
 }
 
 .hero-title {
-  font-size: clamp(48px, 6.5vw, 88px);
+  font-family: var(--font-mono);
+  font-size: clamp(40px, 6vw, 72px);
   font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.04em;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
   margin-bottom: var(--space-4);
-  background: linear-gradient(165deg, #fff 30%, rgba(255, 255, 255, 0.55) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-html.dark .hero-title {
-  background: linear-gradient(165deg, #f5f5f7 30%, rgba(245, 245, 247, 0.5) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
+  color: var(--color-hero-text);
 }
 
 .hero-role {
-  font-size: clamp(18px, 2vw, 22px);
+  font-family: var(--font-mono);
+  font-size: clamp(16px, 2vw, 20px);
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.85);
   margin-bottom: var(--space-4);
   letter-spacing: -0.01em;
 }
@@ -296,14 +311,14 @@ html.dark .hero-title {
 }
 
 .btn-ghost {
-  font-size: 16px;
-  padding: 14px 26px;
-  border-radius: var(--radius-full);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 15px;
+  padding: 12px 22px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   background: transparent;
   color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   transition: background var(--duration-fast) var(--ease-out),
               border-color var(--duration-fast) var(--ease-out),
               color var(--duration-fast) var(--ease-out);
@@ -401,7 +416,7 @@ html.dark .hero-title {
 .bento-card {
   position: relative;
   padding: var(--space-8);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   background: var(--color-card-bg);
   overflow: hidden;
@@ -418,6 +433,7 @@ html.dark .hero-title {
 }
 
 .bento-index {
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -426,7 +442,8 @@ html.dark .hero-title {
 }
 
 .bento-card h3 {
-  font-size: 22px;
+  font-family: var(--font-mono);
+  font-size: 20px;
   font-weight: 600;
   letter-spacing: -0.02em;
   margin-bottom: var(--space-2);
@@ -449,18 +466,18 @@ html.dark .hero-title {
   pointer-events: none;
 }
 
-.bento-card--embedded .bento-glow { background: #667eea; top: -40px; right: -40px; }
-.bento-card--image .bento-glow { background: #f5576c; bottom: -60px; left: -20px; }
-.bento-card--linux .bento-glow { background: #4facfe; top: -30px; left: 50%; }
+.bento-card--embedded .bento-glow { background: #22d3ee; top: -40px; right: -40px; }
+.bento-card--image .bento-glow { background: #34d399; bottom: -60px; left: -20px; }
+.bento-card--linux .bento-glow { background: #67e8f9; top: -30px; left: 50%; }
 
 @media (hover: hover) and (pointer: fine) {
   .bento-card:hover {
-    border-color: rgba(0, 113, 227, 0.25);
+    border-color: var(--color-accent-border);
     transform: translateY(-2px);
   }
 
   .bento-card:hover .bento-glow {
-    opacity: 0.15;
+    opacity: 0.12;
   }
 }
 
@@ -492,7 +509,7 @@ html.dark .hero-title {
 .journal-featured {
   background: var(--color-card-bg);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   cursor: pointer;
   transition: transform var(--duration-base) var(--ease-out),
@@ -558,7 +575,7 @@ html.dark .hero-title {
   padding: var(--space-4);
   background: var(--color-card-bg);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: border-color var(--duration-fast) var(--ease-out),
               transform var(--duration-fast) var(--ease-out);
@@ -604,7 +621,7 @@ html.dark .hero-title {
   }
 
   .journal-item:hover {
-    border-color: rgba(0, 113, 227, 0.2);
+    border-color: var(--color-accent-border);
     transform: translateX(4px);
   }
 }
@@ -621,10 +638,10 @@ html.dark .hero-title {
   justify-content: space-between;
   gap: var(--space-8);
   padding: var(--space-12) var(--space-10);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   background: var(--color-hero-bg);
   color: var(--color-hero-text);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(34, 211, 238, 0.18);
   position: relative;
   overflow: hidden;
 }
@@ -733,6 +750,8 @@ html.dark .hero-title {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* no motion-only hero effects */
+  .hero-terminal-prompt::after {
+    animation: none;
+  }
 }
 </style>

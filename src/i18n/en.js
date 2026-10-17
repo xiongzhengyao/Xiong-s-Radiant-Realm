@@ -6,7 +6,7 @@ export default {
     blog: 'Blog',
     contact: 'Contact',
     life: 'Life',
-    brand: 'Zhengyao Xiong',
+    brand: 'Xiong Zhengyao',
     skipToContent: 'Skip to content',
     toggleMenu: 'Toggle navigation menu'
   },
@@ -38,15 +38,15 @@ export default {
   },
   meta: {
     homeTitle: "Xiong's Radiant Realm",
-    homeDesc: 'Personal site of Zhengyao Xiong — Camera driver engineer, tech blog & portfolio',
+    homeDesc: 'Xiong Zhengyao — Camera driver software engineer: portfolio, tech blog & résumé',
     aboutTitle: 'About',
-    aboutDesc: 'Zhengyao Xiong — Camera driver engineer, previously at DJI, Xiaomi & Bosch',
+    aboutDesc: 'Xiong Zhengyao — Camera driver software engineer, previously at DJI, Xiaomi & Bosch',
     blogTitle: 'Blog',
     blogDesc: 'Articles on embedded systems, camera drivers & Linux',
     lifeTitle: 'Life',
     lifeDesc: 'Travel, photography, reading & everyday notes',
     projectsTitle: 'Projects',
-    projectsDesc: 'Camera driver & embedded systems work at DJI, Xiaomi & Bosch',
+    projectsDesc: 'Company work and open-source projects — camera drivers, tooling & embedded systems',
     contactTitle: 'Contact',
     contactDesc: 'Open to technical discussions, collaborations & opportunities'
   },
@@ -62,9 +62,10 @@ export default {
   },
   home: {
     eyebrow: 'Shanghai · Camera Driver',
-    welcome: 'Zhengyao Xiong',
+    welcome: 'Xiong Zhengyao',
     subtitle: 'Camera Driver Software Engineer',
-    pitch: 'Bridging sensors, drivers & systems — turning hard problems into reusable engineering notes.',
+    pitch: 'Bridging sensors, drivers, and system software — turning hard problems into reusable engineering notes.',
+    whoami: '~ $ whoami',
     viewBlog: 'Read the blog',
     viewAbout: 'About my journey',
     expertise: {
@@ -108,7 +109,7 @@ export default {
     contactCta: 'Get in touch',
     resumeCta: 'Download résumé',
     profile: {
-      name: 'Zhengyao Xiong',
+      name: 'Xiong Zhengyao',
       title: 'Camera Driver Software Engineer',
       bio: 'Focused on camera driver development, passionate about solving hard systems problems.',
       location: 'Shanghai',
@@ -249,14 +250,20 @@ export default {
   projects: {
     eyebrow: 'Portfolio',
     title: 'Projects',
-    subtitle: 'Camera full-stack engineering at leading tech companies.',
+    subtitle: 'Company work and open-source tooling — from camera drivers to day-to-day engineering.',
+    groups: {
+      company: 'Company',
+      personal: 'Open Source / Personal'
+    },
+    privateRepo: 'Private repository',
+    viewOnGithub: 'View repository',
     items: [
       {
         id: 'dji-sensor',
         company: 'DJI',
         year: '2026',
         title: 'Sensor driver factory automation',
-        description: 'Led sensor driver development and automated factory test framework.',
+        description: 'Sensor driver bring-up and factory automation tests covering init, register checks, and failure paths.',
         tags: ['C/C++', 'Sensor', 'Factory']
       },
       {
@@ -264,7 +271,7 @@ export default {
         company: 'Xiaomi',
         year: '2022–2026',
         title: 'Camera cold-start optimization',
-        description: 'Reduced first-frame latency on cold boot for better UX.',
+        description: 'Mapped the first-frame path and tightened sensor / ISP init to cut cold-start latency.',
         tags: ['ISP', 'Performance', 'Linux']
       },
       {
@@ -272,16 +279,56 @@ export default {
         company: 'Bosch',
         year: '2021–2022',
         title: 'Edge AI image capture',
-        description: 'On-device model deployment with image capture pipeline.',
+        description: 'On-device model deployment with an image capture pipeline across acquire, preprocess, and infer.',
         tags: ['Embedded', 'AI', 'Python']
       },
       {
         id: 'isp-pipeline',
-        company: 'Personal',
+        company: 'Writing',
         year: 'Ongoing',
         title: 'ISP pipeline technical writing',
         description: 'Distilling camera systems experience into reusable engineering notes.',
         tags: ['V4L2', 'MIPI', 'Blog']
+      },
+      {
+        id: 'script-manager',
+        company: 'Open Source',
+        year: 'Ongoing',
+        title: 'Script-Manager',
+        description: 'TypeScript tooling to organize, run, and maintain local script workflows.',
+        tags: ['TypeScript', 'Tooling']
+      },
+      {
+        id: 'log-viewer',
+        company: 'Open Source',
+        year: 'Ongoing',
+        title: 'LogViewer',
+        description: 'A log viewer for browsing and searching logs during debugging sessions.',
+        tags: ['Logs', 'Debugging']
+      },
+      {
+        id: 'log-system',
+        company: 'Open Source',
+        year: 'Ongoing',
+        title: 'log_system',
+        description: 'A C++ logging system with structured logs and an extensible write path.',
+        tags: ['C++', 'Logging']
+      },
+      {
+        id: 'scripts-android',
+        company: 'Open Source',
+        year: 'Ongoing',
+        title: 'scripts_android',
+        description: 'Android debugging scripts for faster log capture, environment checks, and repro.',
+        tags: ['Android', 'Python']
+      },
+      {
+        id: 'cost-tracker',
+        company: 'Personal',
+        year: 'Ongoing',
+        title: 'cost-tracker',
+        description: 'Flutter expense tracker for daily spending and category stats (private repository).',
+        tags: ['Flutter', 'Mobile']
       }
     ]
   },

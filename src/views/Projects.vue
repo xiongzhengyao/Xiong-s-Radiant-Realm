@@ -11,23 +11,61 @@
 
     <section class="section">
       <div class="container-wide">
-        <div class="projects-grid">
-          <article
-            v-for="(project, index) in projectList"
-            :key="project.id"
-            class="project-card reveal"
-            :class="['reveal-delay-' + (index + 1), { 'project-card--featured': index === 0 }]"
-          >
-            <div class="project-card-header">
-              <span class="project-company">{{ project.company }}</span>
-              <span class="project-year">{{ project.year }}</span>
-            </div>
-            <h2>{{ project.title }}</h2>
-            <p class="project-desc">{{ project.description }}</p>
-            <div class="project-tags">
-              <span v-for="tag in project.tags" :key="tag" class="tag">{{ tag }}</span>
-            </div>
-          </article>
+        <div class="projects-group">
+          <h2 class="projects-group-title reveal">{{ $t('projects.groups.company') }}</h2>
+          <div class="projects-grid">
+            <article
+              v-for="(project, index) in companyProjects"
+              :key="project.id"
+              class="project-card reveal"
+              :class="['reveal-delay-' + (index + 1), { 'project-card--featured': index === 0 }]"
+            >
+              <div class="project-card-header">
+                <span class="project-company">{{ project.company }}</span>
+                <span class="project-year">{{ project.year }}</span>
+              </div>
+              <h3>{{ project.title }}</h3>
+              <p class="project-desc">{{ project.description }}</p>
+              <div class="project-tags">
+                <span v-for="tag in project.tags" :key="tag" class="tag">{{ tag }}</span>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="projects-group projects-group--personal">
+          <h2 class="projects-group-title reveal">{{ $t('projects.groups.personal') }}</h2>
+          <div class="projects-grid">
+            <article
+              v-for="(project, index) in personalProjects"
+              :key="project.id"
+              class="project-card reveal"
+              :class="'reveal-delay-' + (index + 1)"
+            >
+              <div class="project-card-header">
+                <span class="project-company">{{ project.company }}</span>
+                <span class="project-year">{{ project.year }}</span>
+              </div>
+              <h3>{{ project.title }}</h3>
+              <p class="project-desc">{{ project.description }}</p>
+              <div class="project-tags">
+                <span v-for="tag in project.tags" :key="tag" class="tag">{{ tag }}</span>
+              </div>
+              <div class="project-footer">
+                <a
+                  v-if="project.url"
+                  :href="project.url"
+                  class="project-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ $t('projects.viewOnGithub') }}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+                <span v-else-if="project.private" class="project-private">{{ $t('projects.privateRepo') }}</span>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
     </section>
@@ -38,7 +76,7 @@
 import { useReveal } from '@/composables/useReveal'
 import { useCareer } from '@/composables/useCareer'
 
-const { projects: projectList } = useCareer()
+const { companyProjects, personalProjects } = useCareer()
 useReveal()
 </script>
 
@@ -70,6 +108,7 @@ useReveal()
 }
 
 .projects-hero-inner h1 {
+  font-family: var(--font-mono);
   font-size: clamp(36px, 5vw, 52px);
   letter-spacing: -0.03em;
   margin-bottom: var(--space-3);
@@ -81,6 +120,22 @@ useReveal()
   line-height: 1.58;
 }
 
+.projects-group + .projects-group {
+  margin-top: var(--space-16);
+}
+
+.projects-group-title {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -89,7 +144,7 @@ useReveal()
 
 .project-card {
   padding: var(--space-8);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   background: var(--color-card-bg);
   transition: border-color var(--duration-base) var(--ease-out),
@@ -121,6 +176,7 @@ useReveal()
 
 .project-company {
   font-size: 11px;
+  font-family: var(--font-mono);
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -133,8 +189,9 @@ useReveal()
   color: var(--color-text-tertiary);
 }
 
-.project-card h2 {
-  font-size: 22px;
+.project-card h3 {
+  font-family: var(--font-mono);
+  font-size: 20px;
   font-weight: 600;
   letter-spacing: -0.02em;
   margin-bottom: var(--space-3);
@@ -153,10 +210,35 @@ useReveal()
   gap: var(--space-2);
 }
 
+.project-footer {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-accent);
+}
+
+.project-private {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .project-card:hover {
-    border-color: rgba(0, 113, 227, 0.25);
+    border-color: var(--color-accent-border);
     transform: translateY(-2px);
+  }
+
+  .project-link:hover {
+    color: var(--color-accent-hover);
   }
 }
 
