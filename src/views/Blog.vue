@@ -239,7 +239,12 @@
           </header>
 
           <aside v-if="tableOfContents.length" class="article-toc" aria-label="Table of contents">
-            <details ref="tocPanelRef" class="toc-panel" open @toggle="onTocToggle">
+            <details
+              ref="tocPanelRef"
+              class="toc-panel"
+              :open="tocDetailsOpen"
+              @toggle="onTocToggle"
+            >
               <summary class="toc-title">
                 {{ $t('blog.toc') }}
                 <span class="toc-count">{{ tableOfContents.length }}</span>
@@ -359,27 +364,28 @@ const searchInputRef = ref(null)
 const activeHeadingId = ref('')
 const moreMenuOpen = ref(false)
 const tocPanelRef = ref(null)
+/** Desktop-first open; syncTocOpenState collapses on mobile after mount */
+const tocDetailsOpen = ref(true)
 let tocMq = null
 
 const updateCopyLabel = () => {
   copyLabel.value = t('blog.copyLink')
 }
 
-/**
- * Details starts with `open` so desktop sticky TOC is visible on first paint.
- * Narrow viewports collapse it after mount (mobile accordion default).
- */
+const isWideToc = () =>
+  typeof window !== 'undefined' && window.matchMedia('(min-width: 981px)').matches
+
 const syncTocOpenState = () => {
-  const el = tocPanelRef.value
-  if (!el || typeof window === 'undefined') return
-  const wide = window.matchMedia('(min-width: 981px)').matches
-  el.open = wide
+  tocDetailsOpen.value = isWideToc()
 }
 
 const onTocToggle = e => {
-  if (typeof window !== 'undefined' && window.matchMedia('(min-width: 981px)').matches) {
+  if (isWideToc()) {
+    tocDetailsOpen.value = true
     e.target.open = true
+    return
   }
+  tocDetailsOpen.value = e.target.open
 }
 
 /** Cap hero tags when lead already carries keywords */
