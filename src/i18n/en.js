@@ -184,6 +184,8 @@ export default {
     readTime: '{n} min read',
     noImage: 'Post cover',
     toc: 'Contents',
+    tocCount: '{n} sections',
+    tocClose: 'Close',
     copyLink: 'Copy link',
     copySuccess: 'Link copied',
     breadcrumbBlog: 'Blog',

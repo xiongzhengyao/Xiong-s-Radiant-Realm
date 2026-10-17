@@ -184,6 +184,8 @@ export default {
     readTime: '{n} 分钟阅读',
     noImage: '文章配图',
     toc: '目录',
+    tocCount: '{n} 节',
+    tocClose: '关闭',
     copyLink: '复制链接',
     copySuccess: '链接已复制',
     breadcrumbBlog: '博客',

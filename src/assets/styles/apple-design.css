@@ -946,11 +946,12 @@ a[target="_blank"]:not(.footer-link)::after {
 
 .rich-markdown th {
   background: var(--color-bg-secondary);
-  font-weight: 600;
+  /* Slightly quieter than body so headers don't compete with H2 */
+  font-weight: 500;
   font-family: var(--font-mono);
-  font-size: 0.9em;
+  font-size: 0.82em;
   letter-spacing: -0.01em;
-  color: var(--color-text);
+  color: var(--color-text-secondary);
   white-space: nowrap;
   /* Stronger header rule — slightly brighter than cell borders */
   border-bottom: 1px solid color-mix(in srgb, var(--color-border) 55%, var(--color-text-tertiary));
@@ -966,13 +967,20 @@ a[target="_blank"]:not(.footer-link)::after {
   }
 }
 
-/* Numeric / peak / bandwidth columns — right-aligned + semibold */
+/* Numeric / peak / bandwidth columns — tabular nums; body cells semibold for scan */
 .rich-markdown th.is-numeric,
 .rich-markdown td.is-numeric {
   text-align: right;
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
   font-family: var(--font-mono);
+}
+
+.rich-markdown td.is-numeric {
+  font-weight: 600;
+}
+
+.rich-markdown th.is-numeric {
+  font-weight: 500;
 }
 
 /* Sensible CSS fallback: last column often holds peak/rate numbers */
@@ -980,8 +988,15 @@ a[target="_blank"]:not(.footer-link)::after {
 .rich-markdown table.has-numeric-last td:last-child {
   text-align: right;
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
   font-family: var(--font-mono);
+}
+
+.rich-markdown table.has-numeric-last td:last-child {
+  font-weight: 600;
+}
+
+.rich-markdown table.has-numeric-last th:last-child {
+  font-weight: 500;
 }
 
 /* Definition lists (if present) */

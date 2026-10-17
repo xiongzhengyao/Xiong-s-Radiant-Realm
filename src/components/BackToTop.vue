@@ -38,7 +38,7 @@ onUnmounted(() => {
 .back-to-top {
   position: fixed;
   right: var(--space-6);
-  bottom: var(--space-6);
+  bottom: var(--back-to-top-offset, var(--space-6));
   z-index: 900;
   width: 44px;
   height: 44px;
