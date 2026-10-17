@@ -239,7 +239,23 @@
           </header>
 
           <aside v-if="tableOfContents.length" class="article-toc" aria-label="Table of contents">
-            <details ref="tocPanelRef" class="toc-panel" @toggle="onTocToggle">
+            <!-- Desktop: always-visible sticky nav (no details) -->
+            <div v-if="tocIsWide" class="toc-panel toc-panel--desktop">
+              <p class="toc-title">{{ $t('blog.toc') }}</p>
+              <nav class="toc-nav">
+                <ul>
+                  <li
+                    v-for="item in tableOfContents"
+                    :key="'d-' + item.id"
+                    :class="['toc-level-' + item.level, { 'is-active': activeHeadingId === item.id }]"
+                  >
+                    <a :href="'#' + item.id" @click.prevent="scrollToHeading(item.id)">{{ item.text }}</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <!-- Mobile: collapsed <details> accordion -->
+            <details v-else class="toc-panel toc-panel--mobile">
               <summary class="toc-title">
                 {{ $t('blog.toc') }}
                 <span class="toc-count">{{ tableOfContents.length }}</span>
@@ -248,7 +264,7 @@
                 <ul>
                   <li
                     v-for="item in tableOfContents"
-                    :key="item.id"
+                    :key="'m-' + item.id"
                     :class="['toc-level-' + item.level, { 'is-active': activeHeadingId === item.id }]"
                   >
                     <a :href="'#' + item.id" @click.prevent="scrollToHeading(item.id)">{{ item.text }}</a>
@@ -358,26 +374,16 @@ const markdownRef = ref(null)
 const searchInputRef = ref(null)
 const activeHeadingId = ref('')
 const moreMenuOpen = ref(false)
-const tocPanelRef = ref(null)
+/** Match CSS breakpoint for sticky TOC vs mobile accordion */
+const tocIsWide = ref(typeof window !== 'undefined' ? window.matchMedia('(min-width: 981px)').matches : true)
 let tocMq = null
 
 const updateCopyLabel = () => {
   copyLabel.value = t('blog.copyLink')
 }
 
-const isWideToc = () =>
-  typeof window !== 'undefined' && window.matchMedia('(min-width: 981px)').matches
-
-/** Imperative open — Vue :open on <details> is unreliable across re-renders */
-const syncTocOpenState = async () => {
-  await nextTick()
-  const el = tocPanelRef.value
-  if (!el) return
-  el.open = isWideToc()
-}
-
-const onTocToggle = e => {
-  if (isWideToc()) e.target.open = true
+const syncTocOpenState = () => {
+  tocIsWide.value = !!(tocMq?.matches ?? window.matchMedia('(min-width: 981px)').matches)
 }
 
 /** Cap hero tags when lead already carries keywords */
@@ -451,7 +457,6 @@ const bindMarkdownEnhancements = () => {
     })
     enhanceTableNumericColumns(markdownRef.value)
     observeHeadings()
-    syncTocOpenState()
   })
 }
 
@@ -558,8 +563,8 @@ const loadPost = async id => {
 const scrollToHeading = id => {
   document.getElementById(id)?.scrollIntoView({ behavior: 'auto', block: 'start' })
   // Collapse mobile TOC after jump
-  if (typeof window !== 'undefined' && window.matchMedia('(max-width: 980px)').matches) {
-    document.querySelectorAll('.toc-panel[open]').forEach(el => {
+  if (!tocIsWide.value) {
+    document.querySelectorAll('.toc-panel--mobile[open]').forEach(el => {
       el.open = false
     })
   }
@@ -1471,24 +1476,8 @@ watch(filteredPosts, () => {
   }
 }
 
-/* Desktop: force TOC list visible even if details lacks [open] */
-@media (min-width: 981px) {
-  .toc-panel > .toc-title {
-    pointer-events: none;
-    cursor: default;
-  }
-
-  .toc-panel > .toc-title::after {
-    display: none;
-  }
-
-  .toc-panel > .toc-nav {
-    display: block !important;
-  }
-
-  .toc-count {
-    display: none;
-  }
+.toc-panel--desktop .toc-title {
+  cursor: default;
 }
 
 .related-posts {
