@@ -1,23 +1,13 @@
 <template>
   <ErrorBoundary>
     <a href="#main-content" class="skip-link">{{ $t('nav.skipToContent') }}</a>
-    <div class="app" :class="{ 'is-scrolled': isScrolled }">
+    <div class="app" :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading }">
       <!-- Navigation -->
       <nav class="nav glass" role="navigation">
         <div class="nav-inner">
           <router-link to="/" class="nav-logo">
             <span class="nav-logo-text">{{ $t('nav.brand') }}</span>
           </router-link>
-
-          <button
-            class="nav-toggle"
-            :class="{ active: mobileMenuOpen }"
-            :aria-expanded="mobileMenuOpen"
-            :aria-label="$t('nav.toggleMenu')"
-            @click="mobileMenuOpen = !mobileMenuOpen"
-          >
-            <span></span><span></span>
-          </button>
 
           <div class="nav-links" :class="{ open: mobileMenuOpen }">
             <router-link
@@ -40,6 +30,15 @@
             <button class="nav-action-btn theme-toggle" @click="toggleTheme(!isDark)" :title="isDark ? 'Light mode' : 'Dark mode'">
               <svg v-if="isDark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
               <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+            <button
+              class="nav-toggle"
+              :class="{ active: mobileMenuOpen }"
+              :aria-expanded="mobileMenuOpen"
+              :aria-label="$t('nav.toggleMenu')"
+              @click="mobileMenuOpen = !mobileMenuOpen"
+            >
+              <span></span><span></span>
             </button>
           </div>
         </div>
@@ -117,6 +116,8 @@ const email = APP_CONFIG.EMAIL
 const currentLocale = computed(() => locale.value)
 const mobileMenuOpen = ref(false)
 const isScrolled = ref(false)
+/** Article detail hides MobileTabBar and uses a single mini share bar */
+const isArticleReading = computed(() => route.name === 'BlogPost')
 
 const navLinks = [
   { path: '/', label: 'nav.home' },
@@ -246,11 +247,20 @@ html.dark {
   display: flex;
   flex-direction: column;
   background-color: var(--color-bg);
+  --back-to-top-offset: var(--space-6);
 }
 
 @media (max-width: 734px) {
   .app {
     padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    /* Tab bar height + 12px clearance */
+    --back-to-top-offset: calc(56px + env(safe-area-inset-bottom, 0px) + 12px);
+  }
+
+  .app.is-article-reading {
+    /* One bar only: article mini share bar (48px) */
+    padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
+    --back-to-top-offset: calc(48px + env(safe-area-inset-bottom, 0px) + 12px);
   }
 }
 
@@ -283,7 +293,8 @@ html.dark {
 }
 
 .nav-logo {
-  font-size: 17px;
+  font-family: var(--font-mono);
+  font-size: 15px;
   font-weight: 600;
   color: var(--color-text);
   text-decoration: none;
@@ -309,12 +320,13 @@ html.dark {
 }
 
 .nav-link {
-  font-size: 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
   font-weight: 400;
   color: var(--color-text-secondary);
   text-decoration: none;
-  padding: 6px 14px;
-  border-radius: var(--radius-full);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
   position: relative;
   transition: color var(--duration-fast) var(--ease-out),
               background var(--duration-fast) var(--ease-out);

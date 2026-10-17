@@ -38,7 +38,7 @@ export default {
   },
   meta: {
     homeTitle: "Xiong's Radiant Realm",
-    homeDesc: 'Camera 驱动工程师熊正耀的个人网站 — 技术博客、项目经历与生活记录',
+    homeDesc: '熊正耀 — Camera 驱动软件工程师的个人站：作品、技术博客与简历',
     aboutTitle: '关于我',
     aboutDesc: '熊正耀 — Camera 驱动软件工程师，曾就职于大疆、小米、博世',
     blogTitle: '技术博客',
@@ -46,7 +46,7 @@ export default {
     lifeTitle: '生活点滴',
     lifeDesc: '旅行、摄影、读书与日常感悟',
     projectsTitle: '项目经历',
-    projectsDesc: '大疆、小米、博世 — Camera 驱动与嵌入式系统项目',
+    projectsDesc: '公司项目与开源作品 — Camera 驱动、工具链与嵌入式系统',
     contactTitle: '联系我',
     contactDesc: '欢迎技术交流、项目合作或职业机会联系'
   },
@@ -65,6 +65,7 @@ export default {
     welcome: '熊正耀',
     subtitle: 'Camera 驱动软件工程师',
     pitch: '在传感器、驱动与系统层之间架桥 — 把复杂问题写成可复用的工程经验。',
+    whoami: '~ $ whoami',
     viewBlog: '阅读技术博客',
     viewAbout: '了解我的经历',
     expertise: {
@@ -183,9 +184,12 @@ export default {
     readTime: '{n} 分钟阅读',
     noImage: '文章配图',
     toc: '目录',
+    tocCount: '{n} 节',
+    tocClose: '关闭',
     copyLink: '复制链接',
     copySuccess: '链接已复制',
     breadcrumbBlog: '博客',
+    moreActions: '更多操作',
     relatedTitle: '相关文章',
     share: '分享',
     print: '打印',
@@ -249,14 +253,20 @@ export default {
   projects: {
     eyebrow: '作品集',
     title: '项目经历',
-    subtitle: '在头部科技公司参与 Camera 全栈工程 — 从驱动到产线。',
+    subtitle: '公司项目与开源工具 — 从 Camera 驱动到日常工程效率。',
+    groups: {
+      company: '公司项目',
+      personal: '开源 / 个人'
+    },
+    privateRepo: '私有仓库',
+    viewOnGithub: '查看仓库',
     items: [
       {
         id: 'dji-sensor',
         company: 'DJI',
         year: '2026',
         title: 'Sensor 驱动产线自动化',
-        description: '主导 Sensor 驱动开发与产线自动化测试框架，提升 bring-up 效率。',
+        description: 'Sensor 驱动 bring-up 与产线自动化测试框架，覆盖初始化、寄存器校验与异常路径。',
         tags: ['C/C++', 'Sensor', 'Factory']
       },
       {
@@ -264,7 +274,7 @@ export default {
         company: 'Xiaomi',
         year: '2022–2026',
         title: 'Camera 冷启动优化',
-        description: '优化首帧出图路径，降低冷启动延迟，改善用户体验。',
+        description: '梳理首帧出图链路，优化 sensor / ISP 初始化路径，降低冷启动延迟。',
         tags: ['ISP', 'Performance', 'Linux']
       },
       {
@@ -272,16 +282,56 @@ export default {
         company: 'Bosch',
         year: '2021–2022',
         title: '端侧 AI 图像采集',
-        description: '嵌入式平台大模型部署与图像采集处理流水线。',
+        description: '嵌入式平台模型部署与图像采集处理流水线，串联采集、预处理与推理。',
         tags: ['Embedded', 'AI', 'Python']
       },
       {
         id: 'isp-pipeline',
-        company: 'Personal',
+        company: 'Writing',
         year: '持续',
         title: 'ISP Pipeline 技术写作',
         description: '将 Camera 系统经验沉淀为可复用的技术博客与工程笔记。',
         tags: ['V4L2', 'MIPI', 'Blog']
+      },
+      {
+        id: 'script-manager',
+        company: 'Open Source',
+        year: '持续',
+        title: 'Script-Manager',
+        description: 'TypeScript 脚本管理工具，统一组织、运行与维护本地脚本工作流。',
+        tags: ['TypeScript', 'Tooling']
+      },
+      {
+        id: 'log-viewer',
+        company: 'Open Source',
+        year: '持续',
+        title: 'LogViewer',
+        description: '日志查看器，面向调试场景的日志浏览与检索。',
+        tags: ['Logs', 'Debugging']
+      },
+      {
+        id: 'log-system',
+        company: 'Open Source',
+        year: '持续',
+        title: 'log_system',
+        description: 'C++ 日志系统，提供结构化日志与可扩展写入路径。',
+        tags: ['C++', 'Logging']
+      },
+      {
+        id: 'scripts-android',
+        company: 'Open Source',
+        year: '持续',
+        title: 'scripts_android',
+        description: 'Android 调试脚本集合，加速日常抓 log、环境检查与问题复现。',
+        tags: ['Android', 'Python']
+      },
+      {
+        id: 'cost-tracker',
+        company: 'Personal',
+        year: '持续',
+        title: 'cost-tracker',
+        description: 'Flutter 记账 App，记录日常开销与分类统计（私有仓库）。',
+        tags: ['Flutter', 'Mobile']
       }
     ]
   },

@@ -46,7 +46,7 @@ Xiong-s-Radiant-Realm/
 |------|------|------|
 | `public/favicon.ico` | 浏览器标签页图标 | 标签页无图标 |
 | `public/images/profile.jpg` | 关于页头像 | 降级显示「ZY」占位 |
-| `public/resume.pdf` | 关于页「下载简历」 | 点击后 404 |
+| `public/resume.pdf` | （可选）PDF 简历 | 当前「下载简历」触发打印对话框，不依赖此文件 |
 
 已有资源：`public/og-default.svg`、`public/images/hero-workspace.svg`（后者当前未使用）。
 

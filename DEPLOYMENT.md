@@ -27,8 +27,8 @@ sudo apt install -y git curl
 npm i -g pm2
 
 # 4) 拉取项目
-git clone <your-repo-url> /root/Projects/Xiong-s-Radiant-Realm
-cd /root/Projects/Xiong-s-Radiant-Realm
+git clone <your-repo-url> /path/to/Xiong-s-Radiant-Realm
+cd /path/to/Xiong-s-Radiant-Realm
 
 # 5) 首次构建并启动
 npm ci
@@ -50,10 +50,10 @@ cp .env.deploy.example .env.deploy
 编辑 `.env.deploy`：
 
 ```env
-DEPLOY_HOST=101.132.61.228
+DEPLOY_HOST=your.server.ip
 DEPLOY_USER=root
 DEPLOY_PORT=22
-DEPLOY_PATH=/root/Projects/Xiong-s-Radiant-Realm
+DEPLOY_PATH=/path/to/Xiong-s-Radiant-Realm
 DEPLOY_BRANCH=main
 DEPLOY_APP_NAME=xiong-radiant-realm
 DEPLOY_APP_PORT=8888

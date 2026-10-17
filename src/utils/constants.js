@@ -1,8 +1,8 @@
 // 应用常量配置
 export const APP_CONFIG = {
   TITLE: "Xiong's Radiant Realm",
-  DESCRIPTION: '熊正耀的个人网站 — Camera 驱动工程师的技术博客与作品展示',
-  DESCRIPTION_EN: 'Personal site of Zhengyao Xiong — Camera driver engineer, tech blog & portfolio',
+  DESCRIPTION: '熊正耀 — Camera 驱动软件工程师的个人站：作品、技术博客与简历',
+  DESCRIPTION_EN: 'Xiong Zhengyao — Camera driver software engineer: portfolio, tech blog & résumé',
   EMAIL: 'xiongzhengyao163@163.com',
   SITE_URL: 'https://xiongzhengyao.dev',
   VERSION: '1.0.0',
@@ -10,8 +10,7 @@ export const APP_CONFIG = {
     PROFILE: '/images/profile.jpg',
     HERO_WORKSPACE: '/images/hero-workspace.svg',
     OG_DEFAULT: '/og-default.svg'
-  },
-  RESUME: '/resume.pdf'
+  }
 }
 
 // 博客分类配置

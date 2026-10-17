@@ -10,101 +10,163 @@ excerpt: 嵌入式开发从编程语言、操作系统到硬件基础与通信�
 
 # 嵌入式开发学习资料整理
 
+这份清单按「能动手做出东西」来组织，而不是堆书单。路径偏向 MCU / RTOS / Linux 驱动与传感器方向，和 Camera、总线协议相关的内容会单独加重。资料以公开文档与经典书籍为主，可按当前短板选读。
+
+## 如何使用这份清单
+
+建议按目标裁剪，而不是线性读完：
+
+| 目标角色 | 优先顺序 |
+| --- | --- |
+| MCU 固件 | C → 寄存器/启动 → 外设 → RTOS → 协议 |
+| Linux 驱动 | C → 内核模块基础 → 设备模型 → I2C/SPI/平台驱动 |
+| Camera / Sensor | 数字电路基础 → MIPI/I2C → V4L2/平台 pipeline → ISP 概念 |
+| 系统软件 | 操作系统概念 → 进程/线程/内存 → 网络与调试工具 |
+
+原则：**每学一块就做一个最小实验**（点灯、读温湿度、挂载字符设备、抓一段 I2C 波形）。
+
 ## 基础知识
 
 ### 编程语言
 
-- C/C++
-  - 《C Programming Language》by K&R
-  - 《C++ Primer》第五版
-  - 《Modern C++》系列教程
+- **C/C++**
+  - 《C Programming Language》by K&R — 语言内核与标准库习惯
+  - 《C++ Primer》第五版 — 语法覆盖面广，适合补现代特性前的底座
+  - 《Modern C++》系列教程 — 关注 RAII、智能指针、移动语义在嵌入式用户态/工具链中的取舍
+- 补充实践
+  - 熟练看反汇编与 map 文件（理解段、对齐、调用约定）
+  - 掌握 `volatile`、内存序、位域的正确使用边界
 
 ### 操作系统
 
-- Linux 基础
-  - 《鸟哥的 Linux 私房菜》
-  - 《Linux 命令行大全》
-- RTOS
-  - FreeRTOS 官方文档
-  - RT-Thread 文档中心
+- **Linux 基础**
+  - 《鸟哥的 Linux 私房菜》— 用户态与系统管理入门
+  - 《Linux 命令行大全》— 日常效率
+  - 进阶：进程/内存/文件系统章节可对照 `man 2` 与一次真实 strace
+- **RTOS**
+  - FreeRTOS 官方文档 — 任务、队列、临界区是核心
+  - RT-Thread 文档中心 — 组件生态与设备框架可对照学习
+  - 关键：优先级反转、栈溢出、ISR 延迟，最好在板子上复现一次
 
 ## 硬件基础
 
 ### 微控制器
 
-- ARM 架构
-  - Cortex-M 系列文档
-  - STM32 参考手册
-- RISC-V
-  - RISC-V 规范文档
-  - 开发板资料
+- **ARM 架构**
+  - Cortex-M 系列通用用户指南 / Technical Reference
+  - STM32 参考手册 + 数据手册（以一颗芯片吃透外设模型）
+- **RISC-V**
+  - RISC-V 非特权/特权规范（先抓指令与 CSR 概念）
+  - 开发板 BSP 与启动代码 — 比只读规范更有效
+
+建议亲手完成：
+
+1. 启动文件与链接脚本改一处并验证
+2. SysTick / 定时器中断打点测延迟
+3. DMA + 外设完成一次「CPU 少搬运」的采集
 
 ### 通信协议
 
-- I2C
-- SPI
-- UART/USART
-- CAN
-- USB
+总线是嵌入式的「血管」，建议按出现频率推进：
+
+| 协议 | 学习重点 |
+| --- | --- |
+| UART/USART | 波特率误差、流控、空闲检测 |
+| I2C | 开漏、上拉、时钟拉伸、地址冲突 |
+| SPI | 模式 0–3、CS 管理、DMA |
+| CAN | 仲裁、滤波、总线负载 |
+| USB | 描述符、端点、枚举失败排查 |
+
+Camera 相关可额外补：MIPI CSI-2 概念、D-PHY/C-PHY 差异、寄存器表与 mode 切换。
 
 ## 开发工具
 
-### IDE
+### IDE / 编辑器
 
-- MDK-ARM (Keil)
-- STM32CubeIDE
-- VSCode + PlatformIO
+- MDK-ARM (Keil) — 传统 MCU 工程仍常见
+- STM32CubeIDE — 外设初始化生成器 + gdb 流程
+- VSCode + PlatformIO — 轻量多平台；注意与量产工具链一致性
 
 ### 调试工具
 
-- OpenOCD
-- J-Link
-- ST-Link
+- OpenOCD / J-Link / ST-Link — SWD 连接、断点、半主机
+- 逻辑分析仪 + 解码（I2C/SPI/UART）— 比「再加 printk」更快定位总线问题
+- 示波器 — 上电时序、时钟完整性、上拉是否合理
+
+### 软件调试习惯
+
+```bash
+# 用户态快速看系统调用
+strace -f -tt -o /tmp/trace.log ./your_app
+
+# 内核侧常见：动态调试、ftrace、perf（按平台开启）
+dmesg -w
+```
 
 ## 传感器开发
 
 ### 基础知识
 
-- 传感器原理
-- 信号处理
-- 数据采集
+- 传感器原理（物理量 → 电信号 → 数字量）
+- 信号处理（滤波、标定、单位换算）
+- 数据采集（ODR、FIFO、时间戳、丢样本检测）
 
 ### 常用传感器
 
-- 图像传感器
+- **图像传感器**
   - CMOS/CCD 工作原理
-  - 图像处理基础
-- 环境传感器
+  - 图像处理基础（Bayer、黑电平、曝光/增益）
+  - 平台侧：CSI、ISP、模式表
+- **环境传感器**
   - 温湿度传感器应用
-  - 空气质量监测
-- 惯性传感器
+  - 空气质量监测（理解「估算值」与基线）
+- **惯性传感器**
   - IMU 原理
-  - 姿态解算
+  - 姿态解算与坐标系
+
+实践建议：同一颗传感器分别在「轮询 / 中断 / FIFO」三种模式下对比 CPU 占用与丢数。
 
 ## 项目实践
 
 ### 开源项目
 
-- RT-Thread
-- LittlevGL
-- FreeRTOS
+- **RT-Thread** — 设备框架与组件可借鉴分层
+- **LittlevGL (LVGL)** — UI 与输入设备模型
+- **FreeRTOS** — 内核本身小而清晰，适合读源码
+- 可选：Zephyr、Linux IIO/V4L2 子系统示例驱动
 
 ### 学习路线
 
-1. 掌握 C/C++ 基础
-2. 了解硬件基础知识
-3. 熟悉开发工具使用
-4. 学习 RTOS 原理
-5. 进行实际项目开发
+1. 掌握 C/C++ 基础（指针、内存、编译链接）
+2. 了解硬件基础知识（时钟、GPIO、中断、DMA）
+3. 熟悉开发工具使用（烧录、单步、读寄存器）
+4. 学习 RTOS 原理（或 Linux 驱动模型，二选一先打穿）
+5. 进行实际项目开发（完整闭环：需求 → 驱动 → 验证 → 文档）
+
+### 最小项目选题
+
+| 阶段 | 题目 | 验收 |
+| --- | --- | --- |
+| 入门 | 按键 + LED + UART 日志 | 稳定消抖与日志级别 |
+| 总线 | I2C 温湿度 + OLED | 异常 ACK 可恢复 |
+| RTOS | 多任务采集与队列 | 看门狗与栈水位 |
+| Linux | 字符设备或 I2C client | 用户态可读 sysfs/dev |
+| Camera | 开流出图 + 改曝光 | 帧率/分辨率符合 mode |
 
 ## 在线资源
 
-- 文档
+- **文档**
   - [ARM 官方文档](https://developer.arm.com/documentation)
   - [STM32 官方文档](https://www.st.com/content/st_com/en/support/documentation.html)
-- 社区
-  - [嵌入式开发论坛](https://www.embedded.com/)
+  - FreeRTOS / RT-Thread / Linux Kernel 文档树
+- **社区**
+  - [Embedded.com](https://www.embedded.com/)
   - [电子工程专辑](https://www.eet-china.com/)
-- 视频教程
-  - Bilibili 相关教程
-  - YouTube 技术频道
+  - 内核与驱动相关邮件列表 / 论坛（提问前先把硬件与日志准备齐）
+- **视频教程**
+  - Bilibili 相关教程（注意版本与芯片系列是否匹配）
+  - YouTube 技术频道（协议动画与示波器演示很有帮助）
+
+## 总结
+
+嵌入式学习的效率来自「理论够用 + 板级闭环」。C/C++、操作系统概念、MCU/总线、调试工具、传感器项目，按这条主线推进即可；Camera 与复杂外设只是同一套方法在更高带宽与更严时序上的延伸。把这份清单当成可勾选的 backlog，比一次性囤积资料更有用。

@@ -160,112 +160,195 @@
       </section>
     </div>
 
-    <!-- Blog post detail view -->
+    <!-- Blog post detail view — magazine / tech-doc reading layout -->
     <div v-else key="detail" class="post-detail">
       <div class="reading-progress" :style="{ width: readingProgress + '%' }" />
-      <span v-if="readingProgress > 2" class="reading-progress-label">{{ $t('blog.readingProgress', { n: Math.round(readingProgress) }) }}</span>
-      <div class="container-narrow">
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-          <button class="breadcrumb-link" @click="backToList">{{ $t('blog.breadcrumbBlog') }}</button>
-          <span class="breadcrumb-sep">/</span>
-          <span class="breadcrumb-current">{{ currentPost?.title }}</span>
-        </nav>
 
-        <div class="article-toolbar">
-          <button class="back-btn" @click="backToList">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-            {{ $t('blog.backToList') }}
-          </button>
+      <div class="article-shell" v-if="currentPost">
+        <!-- One chrome row: blog + back | copy + more -->
+        <div class="article-chrome">
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <button class="breadcrumb-link" @click="backToList">{{ $t('blog.breadcrumbBlog') }}</button>
+            <span class="breadcrumb-sep" aria-hidden="true">·</span>
+            <button class="breadcrumb-back" @click="backToList">{{ $t('blog.backToList') }}</button>
+          </nav>
           <div class="toolbar-actions">
-            <button
-              class="toolbar-btn"
-              :class="{ 'is-active': isBookmarked(currentPost.id) }"
-              @click="toggleBookmarkAction"
-            >
-              {{ isBookmarked(currentPost.id) ? $t('blog.bookmarked') : $t('blog.bookmark') }}
-            </button>
-            <button class="toolbar-btn" @click="copyArticleLink">{{ copyLabel }}</button>
-            <button class="toolbar-btn" @click="shareArticle">{{ $t('blog.share') }}</button>
-            <button class="toolbar-btn" @click="printArticle">{{ $t('blog.print') }}</button>
+            <button class="toolbar-btn toolbar-btn-primary" @click="copyArticleLink">{{ copyLabel }}</button>
+            <div class="toolbar-more" :class="{ 'is-open': moreMenuOpen }">
+              <button
+                type="button"
+                class="toolbar-btn toolbar-more-trigger"
+                :aria-expanded="moreMenuOpen"
+                :aria-label="$t('blog.moreActions')"
+                @click="moreMenuOpen = !moreMenuOpen"
+              >⋯</button>
+              <div v-if="moreMenuOpen" class="toolbar-menu" role="menu">
+                <button
+                  type="button"
+                  class="toolbar-menu-item"
+                  :class="{ 'is-active': isBookmarked(currentPost.id) }"
+                  role="menuitem"
+                  @click="runToolbarAction(toggleBookmarkAction)"
+                >
+                  {{ isBookmarked(currentPost.id) ? $t('blog.bookmarked') : $t('blog.bookmark') }}
+                </button>
+                <button
+                  type="button"
+                  class="toolbar-menu-item"
+                  role="menuitem"
+                  @click="runToolbarAction(shareArticle)"
+                >
+                  {{ $t('blog.share') }}
+                </button>
+                <button
+                  type="button"
+                  class="toolbar-menu-item toolbar-menu-print"
+                  role="menuitem"
+                  @click="runToolbarAction(printArticle)"
+                >
+                  {{ $t('blog.print') }}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="article-layout" v-if="currentPost">
-          <aside v-if="tableOfContents.length" class="article-toc">
-            <p class="toc-title">{{ $t('blog.toc') }}</p>
-            <ul>
-              <li
-                v-for="item in tableOfContents"
-                :key="item.id"
-                :class="['toc-level-' + item.level, { 'is-active': activeHeadingId === item.id }]"
-              >
-                <a :href="'#' + item.id" @click.prevent="scrollToHeading(item.id)">{{ item.text }}</a>
-              </li>
-            </ul>
-          </aside>
-
-          <article class="article article-main">
-          <header class="article-header">
+        <!-- Reading stage: hero | TOC ; body | TOC (sticky) -->
+        <div class="article-reading" :class="{ 'has-toc': tableOfContents.length > 0 }">
+          <header class="article-hero">
             <div class="article-meta">
               <span class="tag tag-accent">{{ categoryLabel(currentPost.category) }}</span>
-              <span>{{ currentPost.date }}</span>
-              <span class="meta-dot"></span>
-              <span>{{ $t('blog.readTime', { n: currentPost.readingTime }) }}</span>
+              <time class="meta-item" :datetime="currentPost.date">{{ currentPost.date }}</time>
+              <span class="meta-dot" aria-hidden="true" />
+              <span class="meta-item">{{ $t('blog.readTime', { n: currentPost.readingTime }) }}</span>
+              <template v-if="currentPost.author">
+                <span class="meta-dot" aria-hidden="true" />
+                <span class="meta-item meta-author">{{ currentPost.author }}</span>
+              </template>
             </div>
-            <h1>{{ currentPost.title }}</h1>
+            <h1 class="article-title">{{ currentPost.title }}</h1>
             <p v-if="currentPost.excerpt" class="article-lead">{{ currentPost.excerpt }}</p>
-            <div class="article-tags">
-              <span class="tag tag-accent" v-for="tag in currentPost.tags" :key="tag">{{ tag }}</span>
+            <div v-if="heroTags.length" class="article-tags">
+              <span class="tag" v-for="tag in heroTags" :key="tag">{{ tag }}</span>
             </div>
           </header>
 
-          <ArticleAuthor />
-
-          <div v-if="currentPost.image" class="article-cover">
-            <img :src="currentPost.image" :alt="currentPost.title" />
-          </div>
-
-          <div ref="markdownRef" class="rich-markdown" v-html="renderedContent" />
-
-          <section v-if="relatedPosts.length" class="related-posts">
-            <h2 class="related-title">{{ $t('blog.relatedTitle') }}</h2>
-            <div class="related-grid">
-              <article
-                v-for="post in relatedPosts"
-                :key="post.id"
-                class="related-card"
-                @click="loadPost(post.id)"
+          <aside v-if="tableOfContents.length" class="article-toc" aria-label="Table of contents">
+            <!-- Desktop: always-visible sticky nav -->
+            <div v-if="tocIsWide" class="toc-panel toc-panel--desktop">
+              <p class="toc-title">{{ $t('blog.toc') }}</p>
+              <nav class="toc-nav">
+                <ul>
+                  <li
+                    v-for="item in tableOfContents"
+                    :key="'d-' + item.id"
+                    :class="['toc-level-' + item.level, { 'is-active': activeHeadingId === item.id }]"
+                  >
+                    <a :href="'#' + item.id" @click.prevent="scrollToHeading(item.id)">{{ item.text }}</a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <!-- Mobile: collapsed trigger; expands as bottom sheet (no layout shove) -->
+            <div v-else class="toc-panel toc-panel--mobile">
+              <button
+                type="button"
+                class="toc-trigger"
+                :aria-expanded="tocSheetOpen"
+                aria-controls="article-toc-sheet"
+                @click="tocSheetOpen = true"
               >
-                <span class="tag tag-accent">{{ categoryLabel(post.category) }}</span>
-                <h3>{{ post.title }}</h3>
-                <p>{{ post.excerpt }}</p>
-              </article>
+                <span class="toc-title">{{ $t('blog.toc') }}</span>
+                <span class="toc-count">{{ $t('blog.tocCount', { n: tableOfContents.length }) }}</span>
+              </button>
             </div>
-          </section>
+          </aside>
 
-          <footer class="article-footer">
-            <div class="article-nav">
-              <button v-if="prevPost" class="nav-post-btn" @click="loadPost(prevPost.id)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                <span>{{ prevPost.title }}</span>
-              </button>
-              <button v-if="nextPost" class="nav-post-btn next" @click="loadPost(nextPost.id)">
-                <span>{{ nextPost.title }}</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </button>
+          <Teleport to="body">
+            <div
+              v-if="!tocIsWide && tocSheetOpen && tableOfContents.length"
+              id="article-toc-sheet"
+              class="toc-sheet"
+              role="dialog"
+              aria-modal="true"
+              :aria-label="$t('blog.toc')"
+            >
+              <button
+                type="button"
+                class="toc-sheet-backdrop"
+                :aria-label="$t('blog.tocClose')"
+                @click="closeTocSheet"
+              />
+              <div class="toc-sheet-panel">
+                <header class="toc-sheet-header">
+                  <p class="toc-title">{{ $t('blog.toc') }}</p>
+                  <button type="button" class="toc-sheet-close" @click="closeTocSheet">
+                    {{ $t('blog.tocClose') }}
+                  </button>
+                </header>
+                <nav class="toc-nav toc-sheet-nav">
+                  <ul>
+                    <li
+                      v-for="item in tableOfContents"
+                      :key="'s-' + item.id"
+                      :class="['toc-level-' + item.level, { 'is-active': activeHeadingId === item.id }]"
+                    >
+                      <a :href="'#' + item.id" @click.prevent="scrollToHeading(item.id)">{{ item.text }}</a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
             </div>
-          </footer>
-          </article>
+          </Teleport>
+
+          <div class="article article-main">
+            <div v-if="currentPost.image" class="article-cover">
+              <img :src="currentPost.image" :alt="currentPost.title" />
+            </div>
+
+            <div ref="markdownRef" class="rich-markdown article-prose" v-html="renderedContent" />
+
+            <ArticleAuthor compact />
+
+            <section v-if="relatedPosts.length" class="related-posts">
+              <h2 class="related-title">{{ $t('blog.relatedTitle') }}</h2>
+              <div class="related-grid">
+                <article
+                  v-for="post in relatedPosts"
+                  :key="post.id"
+                  class="related-card"
+                  @click="loadPost(post.id)"
+                >
+                  <span class="tag tag-accent">{{ categoryLabel(post.category) }}</span>
+                  <h3>{{ post.title }}</h3>
+                  <p>{{ post.excerpt }}</p>
+                </article>
+              </div>
+            </section>
+
+            <footer class="article-footer">
+              <div class="article-nav">
+                <button v-if="prevPost" class="nav-post-btn" @click="loadPost(prevPost.id)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                  <span>{{ prevPost.title }}</span>
+                </button>
+                <button v-if="nextPost" class="nav-post-btn next" @click="loadPost(nextPost.id)">
+                  <span>{{ nextPost.title }}</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+              </div>
+            </footer>
+          </div>
         </div>
       </div>
 
-      <!-- Mobile share bar -->
+      <!-- Sole mobile bottom bar (site tabs hidden on article) -->
       <div class="mobile-share-bar" v-if="currentPost">
-        <button class="share-bar-btn" @click="backToList">
+        <button class="share-bar-btn" :aria-label="$t('blog.backToList')" @click="backToList">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
         </button>
         <span class="share-bar-title">{{ currentPost.title }}</span>
-        <button class="share-bar-btn" @click="shareArticle">
+        <button class="share-bar-btn" :aria-label="$t('blog.share')" @click="shareArticle">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         </button>
       </div>
@@ -284,7 +367,7 @@ import { useMarkdown } from '@/composables/useMarkdown'
 import { useReveal } from '@/composables/useReveal'
 import { getCategoryLabel } from '@/utils/categoryLabel'
 import { extractHeadings, injectHeadingIds } from '@/utils/headings'
-import { enhanceCodeBlocks, bindCodeCopyButtons } from '@/utils/enhanceMarkdown'
+import { enhanceMarkdownHtml, bindCodeCopyButtons, enhanceTableNumericColumns } from '@/utils/enhanceMarkdown'
 import { setPageMetaOverride, clearPageMetaOverride } from '@/composables/usePageMeta'
 import CoverArt from '@/components/CoverArt.vue'
 import ArticleAuthor from '@/components/ArticleAuthor.vue'
@@ -317,9 +400,43 @@ const copyLabel = ref('')
 const markdownRef = ref(null)
 const searchInputRef = ref(null)
 const activeHeadingId = ref('')
+const moreMenuOpen = ref(false)
+const tocSheetOpen = ref(false)
+/** Match CSS breakpoint for sticky TOC vs mobile sheet */
+const tocIsWide = ref(typeof window !== 'undefined' ? window.matchMedia('(min-width: 981px)').matches : true)
+let tocMq = null
 
 const updateCopyLabel = () => {
   copyLabel.value = t('blog.copyLink')
+}
+
+const closeTocSheet = () => {
+  tocSheetOpen.value = false
+}
+
+const syncTocOpenState = () => {
+  tocIsWide.value = !!(tocMq?.matches ?? window.matchMedia('(min-width: 981px)').matches)
+  if (tocIsWide.value) tocSheetOpen.value = false
+}
+
+/** Cap hero tags when lead already carries keywords */
+const heroTags = computed(() => (currentPost.value?.tags || []).slice(0, 3))
+
+const runToolbarAction = action => {
+  moreMenuOpen.value = false
+  action?.()
+}
+
+const onDocClick = e => {
+  if (!moreMenuOpen.value) return
+  const el = e.target?.closest?.('.toolbar-more')
+  if (!el) moreMenuOpen.value = false
+}
+
+const onTocKeydown = e => {
+  if (e.key === 'Escape' && tocSheetOpen.value) {
+    closeTocSheet()
+  }
 }
 
 updateCopyLabel()
@@ -377,6 +494,7 @@ const bindMarkdownEnhancements = () => {
     bindCodeCopyButtons(markdownRef.value, () => {
       toast.success(t('blog.codeCopied'))
     })
+    enhanceTableNumericColumns(markdownRef.value)
     observeHeadings()
   })
 }
@@ -412,9 +530,12 @@ const restoreScrollPosition = id => {
   return false
 }
 
-const showPostDetail = post => {
-  router.push(`/blog/${post.id}/${post.slug}`)
-  loadPost(post.id)
+const postPath = post => `/blog/${post.id}/${encodeURIComponent(post.slug)}`
+
+const showPostDetail = async post => {
+  await blogStore.ensureLoaded()
+  router.push(postPath(post))
+  await loadPost(post.id)
 }
 
 const backToList = () => {
@@ -422,6 +543,8 @@ const backToList = () => {
   currentPost.value = null
   tableOfContents.value = []
   readingProgress.value = 0
+  moreMenuOpen.value = false
+  tocSheetOpen.value = false
   clearPageMetaOverride()
   router.push('/blog')
   nextTick(() => {
@@ -429,15 +552,21 @@ const backToList = () => {
   })
 }
 
-const loadPost = id => {
+const loadPost = async id => {
+  await blogStore.ensureLoaded()
   const postData = blogStore.getPostById(id)
-  if (!postData) { backToList(); return }
+  if (!postData) {
+    backToList()
+    return
+  }
 
   currentPostId.value = id
   currentPost.value = postData
-  router.replace(`/blog/${postData.id}/${postData.slug}`)
+  router.replace(postPath(postData))
 
-  const html = injectHeadingIds(enhanceCodeBlocks(renderMarkdown(postData.content)))
+  const html = injectHeadingIds(
+    enhanceMarkdownHtml(renderMarkdown(postData.content), { title: postData.title })
+  )
   renderedContent.value = html
   tableOfContents.value = extractHeadings(html)
   const { prev, next } = blogStore.getAdjacentPosts(id)
@@ -473,6 +602,7 @@ const loadPost = id => {
 
 const scrollToHeading = id => {
   document.getElementById(id)?.scrollIntoView({ behavior: 'auto', block: 'start' })
+  closeTocSheet()
 }
 
 const copyArticleLink = async () => {
@@ -583,28 +713,43 @@ const observeRevealElements = () => {
   observe()
 }
 
-onMounted(() => {
-  blogStore.ensureLoaded()
+onMounted(async () => {
+  await blogStore.ensureLoaded()
   if (route.query.cat) selectedCategory.value = String(route.query.cat)
-  if (route.params.id) loadPost(route.params.id)
+  if (route.params.id) await loadPost(route.params.id)
   window.addEventListener('scroll', onReadingScroll, { passive: true })
   window.addEventListener('keydown', onBlogKeydown)
+  window.addEventListener('keydown', onTocKeydown)
+  document.addEventListener('click', onDocClick)
+  tocMq = window.matchMedia('(min-width: 981px)')
+  tocMq.addEventListener('change', syncTocOpenState)
+  syncTocOpenState()
 })
 
 onUnmounted(() => {
   window.removeEventListener('scroll', onReadingScroll)
   window.removeEventListener('keydown', onBlogKeydown)
+  window.removeEventListener('keydown', onTocKeydown)
+  document.removeEventListener('click', onDocClick)
+  tocMq?.removeEventListener('change', syncTocOpenState)
   headingObserver?.disconnect()
   clearTimeout(scrollSaveTimer)
   clearPageMetaOverride()
+  tocSheetOpen.value = false
+  document.body.style.overflow = ''
 })
 
 watch(selectedCategory, () => {
   syncCategoryToUrl()
 })
 
-watch(() => route.params, params => {
-  if (params.id) loadPost(params.id)
+watch(tocSheetOpen, open => {
+  if (typeof document === 'undefined') return
+  document.body.style.overflow = open ? 'hidden' : ''
+})
+
+watch(() => route.params, async params => {
+  if (params.id) await loadPost(params.id)
   else {
     currentPostId.value = null
     currentPost.value = null
@@ -1008,10 +1153,21 @@ watch(filteredPosts, () => {
   font-size: 17px;
 }
 
-/* --- Post Detail --- */
+/* --- Post Detail (magazine / tech-doc reading) --- */
 .post-detail {
-  padding: var(--space-12) 0 var(--space-20);
   position: relative;
+  padding: 0 0 var(--space-24);
+  /* Softened teal glow — title contrast stays solid */
+  background:
+    radial-gradient(ellipse 70% 28% at 18% 0%, color-mix(in srgb, var(--color-mesh-1) 45%, transparent), transparent 60%),
+    radial-gradient(ellipse 50% 24% at 92% 6%, color-mix(in srgb, var(--color-mesh-2) 40%, transparent), transparent 55%),
+    var(--color-bg);
+}
+
+.article-shell {
+  max-width: var(--article-shell-max, 1100px);
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-6) 0;
 }
 
 .reading-progress {
@@ -1024,17 +1180,13 @@ watch(filteredPosts, () => {
   transition: width 80ms linear;
 }
 
-.reading-progress-label {
-  position: fixed;
-  top: calc(var(--nav-height) + 6px);
-  right: var(--space-4);
-  font-size: 11px;
-  color: var(--color-text-tertiary);
-  z-index: 999;
-  background: var(--color-card-bg);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--color-border);
+.article-chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
 }
 
 .breadcrumb {
@@ -1042,63 +1194,110 @@ watch(filteredPosts, () => {
   align-items: center;
   gap: var(--space-2);
   font-size: 13px;
-  margin-bottom: var(--space-4);
+  font-family: var(--font-mono);
   flex-wrap: wrap;
+  min-width: 0;
 }
 
-.breadcrumb-link {
+.breadcrumb-link,
+.breadcrumb-back {
   background: none;
   border: none;
   padding: 0;
   color: var(--color-accent);
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: inherit;
   font-size: 13px;
+}
+
+.breadcrumb-back {
+  color: var(--color-text-secondary);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .breadcrumb-back:hover {
+    color: var(--color-accent);
+  }
 }
 
 .breadcrumb-sep {
   color: var(--color-text-tertiary);
 }
 
-.breadcrumb-current {
-  color: var(--color-text-secondary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 280px;
-}
-
-.article-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: var(--space-6);
-  flex-wrap: wrap;
-}
-
 .toolbar-actions {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-2);
+  position: relative;
 }
 
 .toolbar-btn {
-  padding: 8px 14px;
-  font-size: 13px;
-  border-radius: var(--radius-full);
+  padding: 7px 12px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.01em;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
-  background: var(--color-card-bg);
+  background: var(--color-surface);
   color: var(--color-text-secondary);
   cursor: pointer;
-  font-family: var(--font-sans);
   transition: border-color var(--duration-fast) var(--ease-out),
               color var(--duration-fast) var(--ease-out),
-              transform 0.12s var(--ease-out);
+              background var(--duration-fast) var(--ease-out);
 }
 
-.toolbar-btn:active {
-  transform: scale(0.97);
+.toolbar-btn-primary {
+  border-color: var(--color-accent-border);
+  color: var(--color-accent);
+}
+
+.toolbar-more {
+  position: relative;
+}
+
+.toolbar-more-trigger {
+  min-width: 36px;
+  padding-left: 10px;
+  padding-right: 10px;
+  letter-spacing: 0.12em;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.toolbar-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 40;
+  min-width: 148px;
+  padding: var(--space-1);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toolbar-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.toolbar-menu-item.is-active,
+.toolbar-menu-item:hover {
+  color: var(--color-accent);
+  background: var(--color-accent-light);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -1108,21 +1307,308 @@ watch(filteredPosts, () => {
   }
 }
 
-.toolbar-btn.is-active {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-  background: var(--color-accent-light);
+@media (max-width: 734px) {
+  .toolbar-menu-print {
+    display: none;
+  }
+}
+
+/* Masthead — sits in prose column beside TOC */
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: 13px;
+  font-family: var(--font-mono);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-5);
+}
+
+.meta-item {
+  color: var(--color-text-tertiary);
+}
+
+.meta-author {
+  color: var(--color-text-secondary);
+}
+
+.meta-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.article-title {
+  font-family: var(--font-mono);
+  font-size: clamp(1.85rem, 3.6vw, 2.65rem);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+  margin: 0 0 var(--space-4);
+}
+
+.article-lead {
+  font-size: 1.125rem;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-5);
+  max-width: 54ch;
+}
+
+.article-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.article-tags .tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.article-cover {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: 0 0 var(--space-10);
+  border: 1px solid var(--color-border);
+}
+
+.article-cover img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Reading grid: prose ~42rem + fixed TOC; outer margins absorb large screens */
+.article-reading {
+  display: grid;
+  grid-template-columns: minmax(0, var(--article-prose-max, 42rem));
+  grid-template-areas:
+    'hero'
+    'main';
+  column-gap: var(--space-10);
+  row-gap: 0;
+  align-items: start;
+  justify-content: center;
+}
+
+.article-reading.has-toc {
+  grid-template-columns: minmax(0, var(--article-prose-max, 42rem)) var(--article-toc-width, 240px);
+  grid-template-areas:
+    'hero toc'
+    'main toc';
+}
+
+.article-hero {
+  grid-area: hero;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.article-main {
+  grid-area: main;
+  min-width: 0;
+  max-width: var(--article-prose-max, 42rem);
+}
+
+.article-toc {
+  grid-area: toc;
+  position: sticky;
+  top: calc(var(--nav-height) + var(--space-8));
+  align-self: start;
+  width: var(--article-toc-width, 240px);
+  max-height: calc(100vh - var(--nav-height) - var(--space-12));
+  overflow-y: auto;
+  padding: 0 0 0 var(--space-5);
+  border-left: 1px solid var(--color-border);
+  background: transparent;
+}
+
+.toc-panel {
+  border: none;
+}
+
+.toc-title {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-tertiary);
+  margin: 0 0 var(--space-3);
+  list-style: none;
+  cursor: default;
+}
+
+.toc-count {
+  margin-left: var(--space-2);
+  font-weight: 500;
+  opacity: 0.7;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.toc-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.article-toc a {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+  /* Unread / inactive stay darker */
+  color: var(--color-text-tertiary);
+  text-decoration: none;
+  padding: 6px 0 6px 10px;
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+  transition: color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out);
+}
+
+.article-toc .toc-level-3 a {
+  padding-left: calc(10px + var(--space-3));
+  font-size: 12px;
+  color: color-mix(in srgb, var(--color-text-tertiary) 85%, transparent);
+}
+
+.article-toc li.is-active a {
+  color: var(--color-accent-hover);
+  border-left-color: var(--color-accent);
+  font-weight: 600;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .article-toc a:hover {
+    color: var(--color-accent);
+  }
+}
+
+.toc-panel--desktop .toc-title {
+  cursor: default;
+}
+
+.related-posts {
+  margin-top: var(--space-16);
+  padding-top: var(--space-10);
+  border-top: 1px solid var(--color-divider);
+}
+
+.related-title {
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-5);
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.related-card {
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--color-border);
+  background: transparent;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.related-card h3 {
+  font-size: 15px;
+  font-family: var(--font-mono);
+  margin: var(--space-2) 0 var(--space-2);
+  line-height: 1.35;
+}
+
+.related-card p {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .related-card:hover {
+    border-top-color: var(--color-accent);
+  }
+}
+
+.article-footer {
+  margin-top: var(--space-12);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--color-divider);
+}
+
+.article-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.nav-post-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 12px 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 14px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  max-width: 45%;
+  text-align: left;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-post-btn:hover {
+    color: var(--color-accent);
+  }
+}
+
+.nav-post-btn.next {
+  margin-left: auto;
+  text-align: right;
+}
+
+.nav-post-btn span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mobile-share-bar {
   display: none;
   position: fixed;
-  bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  bottom: 0;
   left: 0;
   right: 0;
   z-index: 900;
-  height: 48px;
-  padding: 0 var(--space-3);
+  height: calc(48px + env(safe-area-inset-bottom, 0px));
+  padding: 0 var(--space-3) env(safe-area-inset-bottom, 0px);
   background: var(--color-nav-bg);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
@@ -1155,265 +1641,161 @@ watch(filteredPosts, () => {
   color: var(--color-text);
 }
 
-.related-posts {
-  margin-top: var(--space-12);
-  padding-top: var(--space-10);
-  border-top: 1px solid var(--color-border);
-}
+@media (max-width: 980px) {
+  .article-reading.has-toc {
+    grid-template-columns: minmax(0, var(--article-prose-max, 42rem));
+    grid-template-areas:
+      'hero'
+      'toc'
+      'main';
+  }
 
-.related-title {
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: var(--space-6);
-}
+  .article-toc {
+    position: static;
+    width: auto;
+    max-width: var(--article-prose-max, 42rem);
+    max-height: none;
+    overflow: visible;
+    margin: 0 0 var(--space-5);
+    padding: 0;
+    border-left: none;
+  }
 
-.related-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-4);
-}
+  .toc-panel--mobile {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+  }
 
-.related-card {
-  padding: var(--space-5);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background: var(--color-card-bg);
-  cursor: pointer;
-  transition: border-color var(--duration-fast) var(--ease-out),
-              transform 0.12s var(--ease-out);
-}
+  .toc-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+  }
 
-.related-card h3 {
-  font-size: 17px;
-  margin: var(--space-3) 0 var(--space-2);
-}
+  .toc-trigger .toc-title {
+    margin: 0;
+  }
 
-.related-card p {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
+  .toc-trigger .toc-count {
+    margin-left: var(--space-3);
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--color-text-tertiary);
+  }
 
-.related-card:active {
-  transform: scale(0.98);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .related-card:hover {
-    border-color: var(--color-accent);
+  .toc-trigger::after {
+    content: '+';
+    margin-left: var(--space-2);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--color-text-tertiary);
   }
 }
 
-.article-layout {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: var(--space-10);
-  align-items: start;
+/* Mobile TOC bottom sheet — teleported to body; does not shove article layout */
+.toc-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
-.article-toc {
-  position: sticky;
-  top: calc(var(--nav-height) + var(--space-6));
-  padding: var(--space-4);
+.toc-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: color-mix(in srgb, var(--color-bg) 35%, rgba(0, 0, 0, 0.45));
+  cursor: pointer;
+}
+
+.toc-sheet-panel {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 520px);
+  max-height: 55vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface-elevated);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-bg-secondary);
+  border-bottom: none;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  box-shadow: var(--shadow-lg);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-.toc-title {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-text-tertiary);
-  margin-bottom: var(--space-3);
+.toc-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-divider);
+  flex-shrink: 0;
 }
 
-.article-toc ul {
+.toc-sheet-header .toc-title {
+  margin: 0;
+}
+
+.toc-sheet-close {
+  border: none;
+  background: transparent;
+  color: var(--color-accent);
+  font-size: 13px;
+  font-family: var(--font-mono);
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.toc-sheet-nav {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px 12px 14px;
+  overscroll-behavior: contain;
+}
+
+.toc-sheet-nav ul {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 0;
 }
 
-.article-toc a {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  text-decoration: none;
+.toc-sheet-nav a {
+  display: block;
+  font-size: 14px;
   line-height: 1.4;
-  display: block;
-}
-
-.article-toc .toc-level-3 a {
-  padding-left: var(--space-3);
-  font-size: 12px;
-}
-
-.article-toc li.is-active a {
-  color: var(--color-accent);
-  font-weight: 500;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .article-toc a:hover {
-    color: var(--color-accent);
-  }
-}
-
-.article-main {
-  min-width: 0;
-}
-
-@media (max-width: 900px) {
-  .article-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .article-toc {
-    position: static;
-    order: -1;
-  }
-}
-
-.back-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 8px 0;
-  font-size: 15px;
-  color: var(--color-accent);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  margin-bottom: 0;
-  transition: opacity var(--duration-fast) var(--ease-out),
-              transform 0.12s var(--ease-out);
-}
-
-.back-btn:active {
-  transform: scale(0.97);
-  transition: transform 0.1s var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .back-btn:hover {
-    opacity: 0.7;
-  }
-}
-
-.article-header {
-  margin-bottom: var(--space-8);
-}
-
-.article-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: 14px;
   color: var(--color-text-tertiary);
-  margin-bottom: var(--space-4);
+  text-decoration: none;
+  padding: 10px 0 10px 10px;
+  border-left: 2px solid transparent;
 }
 
-.article-header h1 {
-  font-size: clamp(28px, 4vw, 42px);
-  line-height: 1.15;
-  margin-bottom: var(--space-3);
+.toc-sheet-nav .toc-level-3 a {
+  padding-left: calc(10px + var(--space-3));
+  font-size: 13px;
 }
 
-.article-lead {
-  font-size: 18px;
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-  margin-bottom: var(--space-4);
-}
-
-.article-header .article-tags {
-  margin-bottom: 0;
-}
-
-.article-header h1 + .article-tags {
-  margin-top: var(--space-4);
-}
-
-.article-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.article-cover {
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  margin-bottom: var(--space-10);
-  box-shadow: var(--shadow-md);
-}
-
-.article-cover img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* --- Article Footer / Nav --- */
-.article-footer {
-  margin-top: var(--space-12);
-  padding-top: var(--space-8);
-  border-top: 1px solid var(--color-border);
-}
-
-.article-nav {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-.nav-post-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 12px 18px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-card-bg);
-  color: var(--color-text);
-  font-size: 14px;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  max-width: 45%;
-  transition: border-color var(--duration-fast) var(--ease-out),
-              box-shadow var(--duration-fast) var(--ease-out),
-              transform 0.12s var(--ease-out);
-  text-align: left;
-}
-
-.nav-post-btn:active {
-  transform: scale(0.98);
-  transition: transform 0.1s var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .nav-post-btn:hover {
-    border-color: var(--color-accent);
-    box-shadow: var(--shadow-sm);
-  }
-}
-
-.nav-post-btn.next {
-  margin-left: auto;
-  text-align: right;
-}
-
-.nav-post-btn span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.toc-sheet-nav li.is-active a {
+  color: var(--color-accent-hover);
+  border-left-color: var(--color-accent);
+  font-weight: 600;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1456,6 +1838,14 @@ watch(filteredPosts, () => {
     padding-bottom: var(--space-2);
   }
 
+  .article-shell {
+    padding-top: var(--space-8);
+  }
+
+  .article-title {
+    max-width: none;
+  }
+
   .article-nav {
     flex-direction: column;
   }
@@ -1468,8 +1858,9 @@ watch(filteredPosts, () => {
     display: flex;
   }
 
+  /* Pad for the single mini bar only */
   .post-detail {
-    padding-bottom: 48px;
+    padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px) + var(--space-16));
   }
 }
 </style>

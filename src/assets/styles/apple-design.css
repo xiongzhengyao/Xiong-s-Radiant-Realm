@@ -1,52 +1,52 @@
 /* ============================================
-   Apple-Inspired Design System
+   Developer / Terminal-Inspired Design System
    ============================================ */
 
 /* --- Design Tokens --- */
 :root {
   /* Typography */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
-    'Helvetica Neue', 'PingFang SC', 'Noto Sans SC', sans-serif;
-  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  --font-sans: 'IBM Plex Sans', 'Noto Sans SC', 'PingFang SC', 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
 
   /* Light Mode Colors */
-  --color-bg: #ffffff;
-  --color-bg-secondary: #f5f5f7;
-  --color-bg-tertiary: #fafafa;
+  --color-bg: #f4f7f8;
+  --color-bg-secondary: #e8eef0;
+  --color-bg-tertiary: #f0f4f5;
   --color-surface: #ffffff;
   --color-surface-elevated: #ffffff;
-  --color-text: #1d1d1f;
-  --color-text-secondary: #86868b;
-  --color-text-tertiary: #aeaeb2;
-  --color-accent: #0071e3;
-  --color-accent-hover: #0077ed;
-  --color-accent-light: rgba(0, 113, 227, 0.08);
-  --color-border: rgba(0, 0, 0, 0.06);
-  --color-divider: rgba(0, 0, 0, 0.04);
-  --color-overlay: rgba(255, 255, 255, 0.72);
-  --color-nav-bg: rgba(251, 251, 253, 0.8);
+  --color-text: #0f1a1c;
+  --color-text-secondary: #4a5c61;
+  --color-text-tertiary: #7a8c91;
+  --color-accent: #0d9488;
+  --color-accent-hover: #0f766e;
+  --color-accent-light: rgba(13, 148, 136, 0.1);
+  --color-accent-border: rgba(13, 148, 136, 0.35);
+  --color-border: rgba(15, 26, 28, 0.12);
+  --color-divider: rgba(15, 26, 28, 0.08);
+  --color-overlay: rgba(244, 247, 248, 0.82);
+  --color-nav-bg: rgba(244, 247, 248, 0.88);
   --color-card-bg: #ffffff;
-  --color-code-bg: #f5f5f7;
-  --color-hero-bg: #000000;
-  --color-hero-text: #ffffff;
-  --color-tag-bg: #f5f5f7;
-  --color-tag-text: #1d1d1f;
-  --color-input-bg: #f5f5f7;
-  --color-input-border: rgba(0, 0, 0, 0.1);
-  --color-input-focus: rgba(0, 113, 227, 0.3);
+  --color-code-bg: #e8eef0;
+  --color-hero-bg: #0b1214;
+  --color-hero-text: #e6f1f3;
+  --color-tag-bg: #e8eef0;
+  --color-tag-text: #0f1a1c;
+  --color-input-bg: #ffffff;
+  --color-input-border: rgba(15, 26, 28, 0.14);
+  --color-input-focus: rgba(13, 148, 136, 0.28);
 
   /* Shadows */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06), 0 2px 4px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.12);
+  --shadow-xs: 0 1px 2px rgba(15, 26, 28, 0.05);
+  --shadow-sm: 0 2px 8px rgba(15, 26, 28, 0.06);
+  --shadow-md: 0 4px 16px rgba(15, 26, 28, 0.08);
+  --shadow-lg: 0 8px 28px rgba(15, 26, 28, 0.1);
+  --shadow-xl: 0 16px 40px rgba(15, 26, 28, 0.12);
 
-  /* Radii */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
+  /* Radii — sharper, less “Apple pill” */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
   --radius-full: 980px;
 
   /* Spacing */
@@ -81,51 +81,73 @@
   --max-width-wide: 1200px;
   --max-width-narrow: 720px;
 
-  /* Premium accents */
-  --color-glow: rgba(0, 113, 227, 0.35);
-  --color-mesh-1: rgba(0, 113, 227, 0.15);
-  --color-mesh-2: rgba(88, 86, 214, 0.12);
-  --color-mesh-3: rgba(175, 82, 222, 0.08);
-  --gradient-border: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.04));
+  /* Tech accents — cyan / terminal teal */
+  --color-glow: rgba(13, 148, 136, 0.35);
+  --color-mesh-1: rgba(13, 148, 136, 0.18);
+  --color-mesh-2: rgba(6, 182, 212, 0.14);
+  --color-mesh-3: rgba(52, 211, 153, 0.1);
+  --gradient-border: linear-gradient(135deg, rgba(13,148,136,0.35), rgba(255,255,255,0.04));
   --hero-min-height: min(92vh, 900px);
+
+  /* Article / markdown reading tokens — Chinese tech measure ~42rem */
+  --article-shell-max: 1100px;
+  --article-prose-max: 42rem;
+  --article-toc-width: 240px;
+  --md-body-size: 1.125rem; /* 18px */
+  --md-body-lh: 1.8;
+  --md-measure: 42rem;
+  /* Fenced blocks stay terminal-dark in both themes for clear contrast */
+  --md-code-block-bg: #0e1618;
+  --md-code-block-fg: #d7e6e9;
+  --md-code-block-border: rgba(15, 26, 28, 0.18);
+  --md-inline-code-bg: rgba(13, 148, 136, 0.1);
+  --md-table-stripe: rgba(13, 148, 136, 0.04);
+  --md-quote-bg: rgba(13, 148, 136, 0.06);
 }
 
-/* --- Dark Mode --- */
+/* --- Dark Mode (default visual language) --- */
 html.dark {
-  --color-bg: #000000;
-  --color-bg-secondary: #1c1c1e;
-  --color-bg-tertiary: #161618;
-  --color-surface: #1c1c1e;
-  --color-surface-elevated: #2c2c2e;
-  --color-text: #f5f5f7;
-  --color-text-secondary: #98989d;
-  --color-text-tertiary: #6e6e73;
-  --color-accent: #2997ff;
-  --color-accent-hover: #40a9ff;
-  --color-accent-light: rgba(41, 151, 255, 0.1);
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-divider: rgba(255, 255, 255, 0.05);
-  --color-overlay: rgba(0, 0, 0, 0.72);
-  --color-nav-bg: rgba(22, 22, 24, 0.82);
-  --color-card-bg: #1c1c1e;
-  --color-code-bg: #2c2c2e;
-  --color-hero-bg: #000000;
-  --color-hero-text: #f5f5f7;
-  --color-tag-bg: #2c2c2e;
-  --color-tag-text: #f5f5f7;
-  --color-input-bg: #1c1c1e;
-  --color-input-border: rgba(255, 255, 255, 0.12);
-  --color-input-focus: rgba(41, 151, 255, 0.4);
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.24);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.32);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.56);
-  --color-glow: rgba(41, 151, 255, 0.4);
-  --color-mesh-1: rgba(41, 151, 255, 0.18);
-  --color-mesh-2: rgba(88, 86, 214, 0.14);
-  --color-mesh-3: rgba(175, 82, 222, 0.1);
-  --gradient-border: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+  --color-bg: #0b1214;
+  --color-bg-secondary: #111a1d;
+  --color-bg-tertiary: #0e1618;
+  --color-surface: #121b1e;
+  --color-surface-elevated: #182226;
+  --color-text: #e6f1f3;
+  --color-text-secondary: #93a8ae;
+  --color-text-tertiary: #6b7f85;
+  --color-accent: #2dd4bf;
+  --color-accent-hover: #5eead4;
+  --color-accent-light: rgba(45, 212, 191, 0.12);
+  --color-accent-border: rgba(45, 212, 191, 0.4);
+  --color-border: rgba(230, 241, 243, 0.1);
+  --color-divider: rgba(230, 241, 243, 0.06);
+  --color-overlay: rgba(11, 18, 20, 0.82);
+  --color-nav-bg: rgba(11, 18, 20, 0.88);
+  --color-card-bg: #121b1e;
+  --color-code-bg: #182226;
+  --color-hero-bg: #070c0e;
+  --color-hero-text: #e6f1f3;
+  --color-tag-bg: #182226;
+  --color-tag-text: #e6f1f3;
+  --color-input-bg: #111a1d;
+  --color-input-border: rgba(230, 241, 243, 0.14);
+  --color-input-focus: rgba(45, 212, 191, 0.35);
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.36);
+  --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.42);
+  --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.5);
+  --color-glow: rgba(45, 212, 191, 0.35);
+  --color-mesh-1: rgba(45, 212, 191, 0.16);
+  --color-mesh-2: rgba(34, 211, 238, 0.12);
+  --color-mesh-3: rgba(52, 211, 153, 0.1);
+  --gradient-border: linear-gradient(135deg, rgba(45,212,191,0.25), rgba(255,255,255,0.03));
+  --md-code-block-bg: #070c0e;
+  --md-code-block-fg: #d7e6e9;
+  --md-code-block-border: rgba(230, 241, 243, 0.12);
+  --md-inline-code-bg: rgba(45, 212, 191, 0.12);
+  --md-table-stripe: rgba(45, 212, 191, 0.05);
+  --md-quote-bg: rgba(45, 212, 191, 0.08);
   color-scheme: dark;
 }
 
@@ -157,9 +179,10 @@ body {
 
 /* --- Typography --- */
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-mono);
   font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.015em;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   color: var(--color-text);
 }
 
@@ -226,6 +249,7 @@ a[target="_blank"]:not(.footer-link)::after {
 /* --- Premium utilities --- */
 .section-eyebrow {
   display: block;
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -295,33 +319,34 @@ a[target="_blank"]:not(.footer-link)::after {
   -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
-/* --- Apple-style card --- */
+/* --- Card --- */
 .card {
   background: var(--color-card-bg);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--duration-base) var(--ease-out);
+  box-shadow: none;
+  transition: transform var(--duration-base) var(--ease-out),
+              border-color var(--duration-base) var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .card:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    border-color: var(--color-accent-border);
   }
 }
 
-/* --- Apple-style button --- */
+/* --- Button --- */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  padding: 12px 22px;
-  font-size: 17px;
-  font-weight: 400;
-  line-height: 1.17648;
-  border-radius: var(--radius-full);
+  padding: 11px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  border-radius: var(--radius-md);
   border: none;
   cursor: pointer;
   transition: background var(--duration-fast) var(--ease-out),
@@ -330,8 +355,8 @@ a[target="_blank"]:not(.footer-link)::after {
               transform 0.12s var(--ease-out),
               opacity var(--duration-fast) var(--ease-out);
   white-space: nowrap;
-  min-height: 44px;
-  font-family: var(--font-sans);
+  min-height: 42px;
+  font-family: var(--font-mono);
 }
 
 .btn:active:not(:disabled) {
@@ -371,17 +396,19 @@ a[target="_blank"]:not(.footer-link)::after {
   color: #fff;
 }
 
-/* --- Tag / Pill --- */
+/* --- Tag --- */
 .tag {
   display: inline-flex;
   align-items: center;
-  padding: 4px 14px;
-  font-size: 13px;
+  padding: 3px 10px;
+  font-size: 12px;
   font-weight: 500;
-  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
   background: var(--color-tag-bg);
   color: var(--color-tag-text);
-  line-height: 1.6;
+  line-height: 1.5;
   letter-spacing: 0;
 }
 
@@ -499,7 +526,7 @@ a[target="_blank"]:not(.footer-link)::after {
 .el-button--primary {
   --el-button-bg-color: var(--color-accent) !important;
   --el-button-border-color: var(--color-accent) !important;
-  border-radius: var(--radius-full) !important;
+  border-radius: var(--radius-md) !important;
 }
 
 .el-button--primary:hover {
@@ -508,7 +535,7 @@ a[target="_blank"]:not(.footer-link)::after {
 }
 
 .el-tag {
-  --el-tag-border-radius: var(--radius-full) !important;
+  --el-tag-border-radius: var(--radius-sm) !important;
   border: none !important;
 }
 
@@ -541,92 +568,215 @@ a[target="_blank"]:not(.footer-link)::after {
   box-shadow: 0 0 0 3px var(--color-input-focus) !important;
 }
 
-/* --- Rich Markdown Content --- */
+/* --- Rich Markdown Content (tech-doc typesetting) --- */
 .rich-markdown {
-  font-size: 17px;
-  line-height: 1.7;
+  font-family: var(--font-sans);
+  font-size: var(--md-body-size);
+  line-height: var(--md-body-lh);
   color: var(--color-text);
+  overflow-wrap: break-word;
+  word-break: break-word;
+  letter-spacing: 0.005em;
+}
+
+.rich-markdown > :first-child {
+  margin-top: 0;
+}
+
+.rich-markdown > :last-child {
+  margin-bottom: 0;
+}
+
+/* After hero title strip, first section should sit flush */
+.rich-markdown > h2:first-child,
+.rich-markdown > h3:first-child,
+.rich-markdown > p:first-child {
+  margin-top: 0;
+}
+
+/* Headings — mono display hierarchy, clear section breaks */
+.rich-markdown h1,
+.rich-markdown h2,
+.rich-markdown h3,
+.rich-markdown h4,
+.rich-markdown h5,
+.rich-markdown h6 {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.28;
+  letter-spacing: -0.025em;
+  scroll-margin-top: calc(var(--nav-height) + var(--space-6));
+  max-width: var(--md-measure);
 }
 
 .rich-markdown h1 {
-  font-size: 2em;
-  margin: 2.5rem 0 1rem;
-  padding-bottom: 0.4rem;
+  font-size: clamp(1.5rem, 2.2vw, 1.75rem);
+  margin: 2.5rem 0 0.9rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--color-divider);
 }
 
 .rich-markdown h2 {
-  font-size: 1.6em;
-  margin: 2rem 0 0.8rem;
+  font-size: clamp(1.25rem, 1.8vw, 1.4rem);
+  margin: 2.75rem 0 0.85rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .rich-markdown h3 {
-  font-size: 1.3em;
-  margin: 1.5rem 0 0.6rem;
-}
-
-.rich-markdown p {
-  margin: 1rem 0;
-  line-height: 1.76;
+  font-size: 1.1rem;
+  margin: 2rem 0 0.6rem;
   color: var(--color-text);
 }
 
+.rich-markdown h4 {
+  font-size: 1rem;
+  margin: 1.6rem 0 0.5rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.rich-markdown h5,
+.rich-markdown h6 {
+  font-size: 0.95rem;
+  margin: 1.35rem 0 0.4rem;
+  color: var(--color-text-tertiary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.rich-markdown h1 + h2,
+.rich-markdown h2 + h3,
+.rich-markdown h3 + h4 {
+  margin-top: 1.1rem;
+}
+
+/* Body copy — magazine measure */
+.rich-markdown p {
+  margin: 0 0 1.2em;
+  line-height: var(--md-body-lh);
+  color: var(--color-text);
+  max-width: var(--md-measure);
+}
+
+.rich-markdown strong {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.rich-markdown em {
+  font-style: italic;
+  color: var(--color-text);
+}
+
+/* Lists */
 .rich-markdown ul,
 .rich-markdown ol {
-  padding-left: 1.8rem;
-  margin: 1rem 0;
+  padding-left: 1.45rem;
+  margin: 0 0 1.25em;
+  max-width: var(--md-measure);
+}
+
+.rich-markdown ul {
+  list-style-type: disc;
+}
+
+.rich-markdown ol {
+  list-style-type: decimal;
 }
 
 .rich-markdown li {
-  margin: 0.4rem 0;
+  margin: 0.4em 0;
   line-height: 1.7;
+  padding-left: 0.2em;
 }
 
-.rich-markdown code {
-  background: var(--color-code-bg);
-  padding: 0.15em 0.4em;
-  border-radius: 4px;
-  font-family: var(--font-mono);
-  font-size: 0.88em;
+.rich-markdown li::marker {
   color: var(--color-accent);
 }
 
+.rich-markdown li > ul,
+.rich-markdown li > ol {
+  margin: 0.35em 0 0.5em;
+}
+
+.rich-markdown li > p {
+  margin: 0.35em 0;
+}
+
+/* Task-style / nested rhythm */
+.rich-markdown ul ul,
+.rich-markdown ol ol,
+.rich-markdown ul ol,
+.rich-markdown ol ul {
+  margin-bottom: 0.25em;
+}
+
+/* Inline code / proper nouns — mono + weight; reserve teal for links/numbers/progress */
+.rich-markdown :not(pre) > code {
+  background: var(--color-bg-secondary);
+  padding: 0.1em 0.36em;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: break-spaces;
+}
+
 .rich-markdown pre {
-  background: var(--color-code-bg);
-  padding: var(--space-4);
+  background: var(--md-code-block-bg);
+  color: var(--md-code-block-fg);
+  padding: var(--space-5);
   border-radius: var(--radius-md);
   overflow-x: auto;
   margin: 0;
-  border: none;
+  border: 1px solid var(--md-code-block-border);
+  font-size: 0.875em;
+  line-height: 1.65;
+  tab-size: 2;
+  -webkit-overflow-scrolling: touch;
 }
 
 .code-block-wrap {
   position: relative;
-  margin: 1.5rem 0;
+  margin: 1.75rem 0;
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  background: var(--color-code-bg);
+  border: 1px solid var(--md-code-block-border);
+  background: var(--md-code-block-bg);
   overflow: hidden;
+  box-shadow: var(--shadow-xs);
+  /* Code may use full prose column */
+  max-width: 100%;
 }
 
 .code-block-wrap pre {
   margin: 0;
   border: none;
   border-radius: 0;
+  background: transparent;
+  padding: var(--space-5);
+  padding-top: calc(var(--space-5) + 4px);
 }
 
 .code-copy-btn {
   position: absolute;
   top: var(--space-2);
   right: var(--space-2);
+  z-index: 1;
   padding: 4px 10px;
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
-  background: var(--color-card-bg);
+  background: var(--color-surface-elevated);
   color: var(--color-text-secondary);
   cursor: pointer;
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   opacity: 0;
   transition: opacity var(--duration-fast) var(--ease-out),
               border-color var(--duration-fast) var(--ease-out),
@@ -634,8 +784,15 @@ a[target="_blank"]:not(.footer-link)::after {
 }
 
 .code-block-wrap:hover .code-copy-btn,
-.code-copy-btn:focus {
+.code-copy-btn:focus,
+.code-copy-btn:focus-visible {
   opacity: 1;
+}
+
+@media (hover: none) {
+  .code-copy-btn {
+    opacity: 0.85;
+  }
 }
 
 .code-copy-btn:hover {
@@ -645,47 +802,241 @@ a[target="_blank"]:not(.footer-link)::after {
 
 .rich-markdown pre code {
   background: none;
+  border: none;
   padding: 0;
+  color: inherit;
+  font-size: inherit;
+  font-weight: 400;
+  white-space: inherit;
+  border-radius: 0;
+}
+
+/* Blockquotes — pull-quote rhythm */
+.rich-markdown blockquote {
+  border-left: 3px solid var(--color-accent);
+  margin: 1.75rem 0;
+  padding: var(--space-4) var(--space-5);
+  background: var(--md-quote-bg);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  color: var(--color-text-secondary);
+  max-width: var(--md-measure);
+  font-size: 0.98em;
+}
+
+.rich-markdown blockquote p {
+  margin-bottom: 0.65em;
+  color: inherit;
+  max-width: none;
+}
+
+.rich-markdown blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.rich-markdown blockquote strong {
   color: var(--color-text);
 }
 
-.rich-markdown blockquote {
-  border-left: 3px solid var(--color-accent);
-  padding-left: var(--space-4);
-  margin: 1.5rem 0;
-  color: var(--color-text-secondary);
+/* Horizontal rules */
+.rich-markdown hr {
+  border: none;
+  height: 1px;
+  margin: 2.25rem 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-accent-border),
+    var(--color-divider),
+    var(--color-accent-border),
+    transparent
+  );
 }
 
+/* Links */
 .rich-markdown a {
   color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent-border);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+  transition: color var(--duration-fast) var(--ease-out),
+              text-decoration-color var(--duration-fast) var(--ease-out);
+}
+
+.rich-markdown a:hover {
+  color: var(--color-accent-hover);
+  text-decoration-color: var(--color-accent);
 }
 
 .rich-markdown :target {
   scroll-margin-top: calc(var(--nav-height) + var(--space-4));
 }
 
+/* Images */
 .rich-markdown img {
+  display: block;
   max-width: 100%;
+  height: auto;
+  margin: 1.75rem auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.rich-markdown p > img {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.rich-markdown figure {
+  margin: 1.75rem 0;
+}
+
+.rich-markdown figcaption {
+  margin-top: var(--space-2);
+  font-size: 0.875em;
+  color: var(--color-text-tertiary);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Tables — scannable, zebra, horizontal scroll, breathing room */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 2.25rem 0;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.table-scroll table {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  min-width: 100%;
 }
 
 .rich-markdown table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1.5rem 0;
+  margin: 2.25rem 0;
+  font-size: 0.94em;
+  line-height: 1.5;
 }
 
 .rich-markdown th,
 .rich-markdown td {
-  border: 1px solid var(--color-border);
-  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-divider);
+  padding: 0.7rem 1rem;
   text-align: left;
-  font-size: 15px;
+  vertical-align: top;
+}
+
+.rich-markdown th:last-child,
+.rich-markdown td:last-child {
+  border-right: none;
+}
+
+.rich-markdown tr:last-child td {
+  border-bottom: none;
 }
 
 .rich-markdown th {
   background: var(--color-bg-secondary);
+  /* Slightly quieter than body so headers don't compete with H2 */
+  font-weight: 500;
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  letter-spacing: -0.01em;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  /* Stronger header rule — slightly brighter than cell borders */
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 55%, var(--color-text-tertiary));
+}
+
+.rich-markdown tbody tr:nth-child(even) {
+  background: var(--md-table-stripe);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .rich-markdown tbody tr:hover {
+    background: color-mix(in srgb, var(--color-accent-light) 70%, var(--color-surface));
+  }
+}
+
+/* Numeric / peak / bandwidth columns — tabular nums; body cells semibold for scan */
+.rich-markdown th.is-numeric,
+.rich-markdown td.is-numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+.rich-markdown td.is-numeric {
   font-weight: 600;
+}
+
+.rich-markdown th.is-numeric {
+  font-weight: 500;
+}
+
+/* Sensible CSS fallback: last column often holds peak/rate numbers */
+.rich-markdown table.has-numeric-last th:last-child,
+.rich-markdown table.has-numeric-last td:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+.rich-markdown table.has-numeric-last td:last-child {
+  font-weight: 600;
+}
+
+.rich-markdown table.has-numeric-last th:last-child {
+  font-weight: 500;
+}
+
+/* Definition lists (if present) */
+.rich-markdown dl {
+  margin: 0 0 1.25em;
+}
+
+.rich-markdown dt {
+  font-weight: 600;
+  font-family: var(--font-mono);
+  margin-top: 0.75em;
+}
+
+.rich-markdown dd {
+  margin-left: 1.25rem;
+  color: var(--color-text-secondary);
+}
+
+/* Mobile reading comfort */
+@media (max-width: 734px) {
+  .rich-markdown {
+    font-size: 1.0625rem; /* ~17px */
+    letter-spacing: 0.005em;
+    line-height: 1.78;
+  }
+
+  .rich-markdown h2 {
+    margin-top: 2.25rem;
+  }
+
+  .rich-markdown pre,
+  .code-block-wrap pre {
+    padding: var(--space-4);
+    font-size: 0.8125em;
+  }
+
+  .rich-markdown th,
+  .rich-markdown td {
+    padding: 0.55rem 0.75rem;
+  }
 }
 
 /* --- Theme transition --- */

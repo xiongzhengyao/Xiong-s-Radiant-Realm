@@ -41,18 +41,16 @@
                 </a>
               </div>
 
-              <button class="btn btn-primary btn-glow profile-cta" @click="$router.push('/contact')">
+              <button class="btn btn-primary btn-glow profile-cta no-print" @click="$router.push('/contact')">
                 {{ $t('about.contactCta') }}
               </button>
-              <a
-                :href="resumeUrl"
-                class="btn btn-outline resume-btn"
-                download
-                target="_blank"
-                rel="noopener"
+              <button
+                type="button"
+                class="btn btn-outline resume-btn no-print"
+                @click="printResume"
               >
                 {{ $t('about.resumeCta') }}
-              </a>
+              </button>
             </div>
 
             <div class="skills-panel">
@@ -142,13 +140,16 @@ import { APP_CONFIG } from '@/utils/constants'
 
 const { tm } = useI18n()
 const email = APP_CONFIG.EMAIL
-const resumeUrl = APP_CONFIG.RESUME
 const imageError = ref(false)
 const handleImageError = () => { imageError.value = true }
 
 const skillGroups = computed(() => tm('about.skillGroups'))
 const workExperience = computed(() => tm('about.work'))
 const educationHistory = computed(() => tm('about.education'))
+
+const printResume = () => {
+  window.print()
+}
 
 useReveal()
 </script>
@@ -181,6 +182,7 @@ useReveal()
 }
 
 .about-intro h1 {
+  font-family: var(--font-mono);
   font-size: clamp(36px, 5vw, 56px);
   letter-spacing: -0.03em;
   margin-bottom: var(--space-3);
@@ -210,7 +212,7 @@ useReveal()
 
 .profile-card {
   padding: var(--space-8);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   background: var(--color-card-bg);
   text-align: center;
@@ -245,12 +247,14 @@ useReveal()
 }
 
 .profile-card h2 {
+  font-family: var(--font-mono);
   font-size: 22px;
   margin-bottom: var(--space-1);
 }
 
 .profile-title {
-  font-size: 15px;
+  font-family: var(--font-mono);
+  font-size: 14px;
   color: var(--color-accent);
   font-weight: 500;
   margin-bottom: var(--space-4);
@@ -307,11 +311,13 @@ useReveal()
   display: inline-flex;
   align-items: center;
   padding: 12px 20px;
-  font-size: 15px;
-  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-family: var(--font-mono);
+  border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   color: var(--color-text-secondary);
-  text-decoration: none;
+  background: transparent;
+  cursor: pointer;
   transition: border-color var(--duration-fast) var(--ease-out),
               color var(--duration-fast) var(--ease-out);
 }
@@ -325,7 +331,7 @@ useReveal()
 
 .skills-panel {
   padding: var(--space-6);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   background: var(--color-card-bg);
 }
@@ -413,7 +419,7 @@ useReveal()
 
 .timeline-card {
   padding: var(--space-6);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   background: var(--color-card-bg);
   transition: border-color var(--duration-base) var(--ease-out),
@@ -422,7 +428,7 @@ useReveal()
 
 @media (hover: hover) and (pointer: fine) {
   .timeline-card:hover {
-    border-color: rgba(0, 113, 227, 0.2);
+    border-color: var(--color-accent-border);
     transform: translateX(4px);
   }
 }
@@ -458,8 +464,9 @@ useReveal()
   white-space: nowrap;
   flex-shrink: 0;
   padding: 4px 10px;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-sm);
   background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
 }
 
 .timeline-desc {
