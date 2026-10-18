@@ -4,6 +4,8 @@
     <section class="hero">
       <div class="hero-noise" aria-hidden="true" />
       <div class="hero-mesh" aria-hidden="true" />
+      <!-- Hero band stays dark via --color-hero-bg in both themes; particles use dark-bottom
+           params so light site chrome (nav/page) can switch without faking a light hero. -->
       <HeroParticleField />
 
       <div class="container-wide hero-grid">
@@ -222,7 +224,8 @@ const skills = [
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0.22;
+  /* Softened ~25% so lattice / title stay primary */
+  opacity: 0.16;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   pointer-events: none;
   mix-blend-mode: overlay;
@@ -232,7 +235,8 @@ const skills = [
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0.55;
+  /* Softened ~25% vs prior 0.55 */
+  opacity: 0.4;
   background:
     radial-gradient(ellipse 70% 55% at 15% 45%, var(--color-mesh-1) 0%, transparent 55%),
     radial-gradient(ellipse 50% 45% at 85% 25%, var(--color-mesh-2) 0%, transparent 50%),

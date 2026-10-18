@@ -5,12 +5,10 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue'
-import { useTheme } from '@/composables/useTheme'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 const rootRef = ref(null)
 const canvasRef = ref(null)
-const { isDark } = useTheme()
 
 /** @type {Particle[]} */
 let particles = []
@@ -23,10 +21,19 @@ let reducedMotion = false
 let width = 0
 let height = 0
 let dpr = 1
+let spacing = 100
 let pointerX = 0
 let pointerY = 0
 let pointerActive = false
+/** ms since pointer left the hero (for delayed idle breath) */
+let idleSinceLeave = 0
+let idleArmed = true
 let idleT = 0
+/** one-shot first-visit ripple */
+let rippleX = 0
+let rippleY = 0
+let rippleAge = -1
+let rippleDone = false
 let resizeObserver = null
 let intersectionObserver = null
 let mediaQuery = null
@@ -35,32 +42,43 @@ let mediaQuery = null
  * @typedef {{ homeX: number, homeY: number, x: number, y: number, vx: number, vy: number, r: number }} Particle
  */
 
-const SPRING = 14
-const DAMPING = 0.88
-const REPULSE_RADIUS = 120
-const REPULSE_STRENGTH = 2800
-const MAX_DISPLACEMENT = 38
-const IDLE_AMP = 42
+// Stiffer spring + slightly lower damping → readable snap-back ~300–500ms
+const SPRING = 28
+const DAMPING = 0.82
+const REPULSE_RADIUS = 140
+const REPULSE_STRENGTH = 5200
+/** Max dent in px; also capped at ~0.62× spacing in rebuild */
+const MAX_DISPLACEMENT_PX = 56
+const MAX_DISPLACEMENT_FRAC = 0.62
+/** Highlight only the nearest handful so the dent reads as a focal cluster */
+const NEAR_COUNT = 8
+const IDLE_DELAY_S = 2.4
+const IDLE_AMP = 3.2
+const RIPPLE_DURATION = 0.85
+const RIPPLE_RADIUS = 160
+const FIRST_VISIT_KEY = 'hero-particle-ripple-v1'
 
+/**
+ * Hero band stays dark in both site themes (see --color-hero-bg).
+ * Always paint with dark-bottom params so light chrome never washes the lattice.
+ * Hierarchy: resting faint ≪ near teal < terminal accent < white title.
+ */
 function themeColors() {
-  if (isDark.value) {
-    return {
-      rest: 'rgba(125, 211, 220, 0.36)',
-      near: 'rgba(94, 234, 212, 0.85)'
-    }
-  }
-  // Light page: hero still dark, but keep particles paler / lower-contrast
   return {
-    rest: 'rgba(148, 180, 188, 0.2)',
-    near: 'rgba(125, 200, 210, 0.48)'
+    rest: 'rgba(125, 211, 220, 0.12)',
+    near: 'rgba(94, 234, 212, 0.55)',
+    nearCore: 'rgba(94, 234, 212, 0.72)'
   }
 }
 
-function spacingForArea(w, h) {
+function spacingForArea(w) {
   const mobile = w < 734
   // Desktop ~one node per 80–120px; mobile ~30–40% sparser
-  const base = mobile ? 130 : 100
-  return base
+  return mobile ? 130 : 100
+}
+
+function maxDisplacement() {
+  return Math.min(MAX_DISPLACEMENT_PX, spacing * MAX_DISPLACEMENT_FRAC)
 }
 
 function rebuildGrid() {
@@ -81,7 +99,7 @@ function rebuildGrid() {
   const ctx = canvas.getContext('2d')
   if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-  const spacing = spacingForArea(width, height)
+  spacing = spacingForArea(width)
   const cols = Math.max(2, Math.floor(width / spacing))
   const rows = Math.max(2, Math.floor(height / spacing))
   const padX = (width - (cols - 1) * spacing) / 2
@@ -112,27 +130,23 @@ function rebuildGrid() {
   }
 }
 
-function getPointerTargets(dt) {
-  if (pointerActive) {
-    return { x: pointerX, y: pointerY, strength: 1 }
-  }
-  // Slow Lissajous “virtual pointer” when idle — gentle lattice breath
-  idleT += dt
-  const cx = width * 0.5
-  const cy = height * 0.45
-  return {
-    x: cx + Math.sin(idleT * 0.35) * IDLE_AMP * 1.4,
-    y: cy + Math.sin(idleT * 0.55 + 1.2) * IDLE_AMP,
-    strength: 0.35
-  }
+/**
+ * Steeper near / flatter far: use falloff^3 so the dent is local.
+ * @param {number} dist
+ * @param {number} radius
+ */
+function falloffNear(dist, radius) {
+  const t = 1 - dist / radius
+  if (t <= 0) return 0
+  return t * t * t
 }
 
-function step(dt) {
-  const { x: px, y: py, strength } = getPointerTargets(dt)
+function applyForceAt(px, py, strength, dt) {
   const radius = REPULSE_RADIUS
   const radiusSq = radius * radius
   const spring = SPRING
   const damp = Math.pow(DAMPING, dt * 60)
+  const maxD = maxDisplacement()
 
   for (let i = 0; i < particles.length; i++) {
     const p = particles[i]
@@ -145,8 +159,7 @@ function step(dt) {
 
     if (distSq < radiusSq && distSq > 0.01) {
       const dist = Math.sqrt(distSq)
-      const falloff = 1 - dist / radius
-      const force = (REPULSE_STRENGTH * falloff * falloff * strength) / dist
+      const force = (REPULSE_STRENGTH * falloffNear(dist, radius) * strength) / dist
       ax += (dx / dist) * force
       ay += (dy / dist) * force
     }
@@ -160,18 +173,95 @@ function step(dt) {
     p.x += p.vx * dt
     p.y += p.vy * dt
 
-    // Soft clamp displacement so lattice never wanders into title wash
+    // Soft clamp so lattice never washes the title
     const ox = p.x - p.homeX
     const oy = p.y - p.homeY
     const od = Math.hypot(ox, oy)
-    if (od > MAX_DISPLACEMENT) {
-      const s = MAX_DISPLACEMENT / od
+    if (od > maxD) {
+      const s = maxD / od
       p.x = p.homeX + ox * s
       p.y = p.homeY + oy * s
-      p.vx *= 0.5
-      p.vy *= 0.5
+      p.vx *= 0.45
+      p.vy *= 0.45
     }
   }
+}
+
+function getIdleTarget() {
+  // Slow Lissajous / weak breath after leave delay — amp < 4px
+  const cx = width * 0.62
+  const cy = height * 0.42
+  return {
+    x: cx + Math.sin(idleT * 0.28) * IDLE_AMP * 1.1,
+    y: cy + Math.sin(idleT * 0.41 + 1.1) * IDLE_AMP
+  }
+}
+
+function injectRippleImpulse(dt) {
+  if (rippleAge < 0) return
+  if (rippleAge >= RIPPLE_DURATION) {
+    rippleAge = -1
+    return
+  }
+  rippleAge += dt
+  const t = Math.min(1, rippleAge / RIPPLE_DURATION)
+  const waveR = 24 + t * RIPPLE_RADIUS
+  const strength = (1 - t) * (1 - t) * 0.55
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i]
+    const dx = p.x - rippleX
+    const dy = p.y - rippleY
+    const dist = Math.hypot(dx, dy)
+    const band = Math.abs(dist - waveR)
+    if (band < 36 && dist > 0.01) {
+      const f = falloffNear(band, 36) * strength * 2200
+      p.vx += (dx / dist) * f * dt
+      p.vy += (dy / dist) * f * dt
+    }
+  }
+}
+
+function step(dt) {
+  // Impulse first so spring integration below damps it in the same frame
+  injectRippleImpulse(dt)
+
+  if (pointerActive) {
+    idleSinceLeave = 0
+    idleArmed = false
+    applyForceAt(pointerX, pointerY, 1, dt)
+  } else {
+    idleSinceLeave += dt
+    if (idleSinceLeave >= IDLE_DELAY_S) {
+      if (!idleArmed) {
+        idleArmed = true
+        idleT = 0
+      }
+      idleT += dt
+      const { x, y } = getIdleTarget()
+      // Very weak virtual pointer — breath only, not a second dent
+      applyForceAt(x, y, 0.12, dt)
+    } else {
+      // Pure spring settle after release
+      applyForceAt(-1e6, -1e6, 0, dt)
+    }
+  }
+}
+
+function nearestIndices(px, py, count) {
+  const scored = []
+  for (let i = 0; i < particles.length; i++) {
+    const p = particles[i]
+    const dSq = (p.x - px) ** 2 + (p.y - py) ** 2
+    scored.push({ i, dSq })
+  }
+  scored.sort((a, b) => a.dSq - b.dSq)
+  const set = new Set()
+  const list = []
+  for (let k = 0; k < Math.min(count, scored.length); k++) {
+    set.add(scored[k].i)
+    list.push(scored[k])
+  }
+  return { set, list }
 }
 
 function draw() {
@@ -182,39 +272,48 @@ function draw() {
 
   ctx.clearRect(0, 0, width, height)
   const colors = themeColors()
-  const { x: px, y: py } = getPointerTargets(0)
-  const nearR = REPULSE_RADIUS * 0.95
-  const nearRSq = nearR * nearR
 
-  // Batch resting dots
+  let focusX = pointerX
+  let focusY = pointerY
+  let highlight = pointerActive
+  if (!highlight && idleArmed && idleSinceLeave >= IDLE_DELAY_S) {
+    const idle = getIdleTarget()
+    focusX = idle.x
+    focusY = idle.y
+    highlight = true
+  }
+
+  const near = highlight ? nearestIndices(focusX, focusY, NEAR_COUNT) : { set: new Set(), list: [] }
+
+  // Resting lattice — very faint so near cluster pops
   ctx.fillStyle = colors.rest
   ctx.beginPath()
   for (let i = 0; i < particles.length; i++) {
+    if (near.set.has(i)) continue
     const p = particles[i]
-    const dx = p.x - px
-    const dy = p.y - py
-    if (dx * dx + dy * dy < nearRSq) continue
     ctx.moveTo(p.x + p.r, p.y)
     ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
   }
   ctx.fill()
 
-  // Near-pointer tinted separately (teal brighten, not full wash)
-  ctx.fillStyle = colors.near
-  ctx.beginPath()
-  for (let i = 0; i < particles.length; i++) {
-    const p = particles[i]
-    const dx = p.x - px
-    const dy = p.y - py
-    const dSq = dx * dx + dy * dy
-    if (dSq >= nearRSq) continue
-    const falloff = 1 - Math.sqrt(dSq) / nearR
-    const boost = 1 + falloff * 0.75
-    const rr = p.r * boost
-    ctx.moveTo(p.x + rr, p.y)
-    ctx.arc(p.x, p.y, rr, 0, Math.PI * 2)
+  // Near-pointer cluster: larger radius + opacity jump (still under terminal teal)
+  if (near.list.length) {
+    for (let k = 0; k < near.list.length; k++) {
+      const { i, dSq } = near.list[k]
+      const p = particles[i]
+      const dist = Math.sqrt(dSq)
+      const closeness = 1 - Math.min(1, dist / (REPULSE_RADIUS * 0.85))
+      const boost = 1.35 + closeness * 1.1
+      const rr = p.r * boost
+      const core = k < 3
+      ctx.fillStyle = core ? colors.nearCore : colors.near
+      ctx.globalAlpha = pointerActive ? 0.85 + closeness * 0.15 : 0.35 + closeness * 0.25
+      ctx.beginPath()
+      ctx.arc(p.x, p.y, rr, 0, Math.PI * 2)
+      ctx.fill()
+    }
+    ctx.globalAlpha = 1
   }
-  ctx.fill()
 }
 
 function drawStatic() {
@@ -241,7 +340,6 @@ function frame(ts) {
   if (!lastTs) lastTs = ts
   let dt = (ts - lastTs) / 1000
   lastTs = ts
-  // Normalize / clamp dt for tab switches
   if (dt > 0.05) dt = 0.05
   if (dt < 0) dt = 0
 
@@ -279,23 +377,37 @@ function syncLifecycle() {
   else stop()
 }
 
-function onPointerMove(e) {
+function pointerInHero(clientX, clientY) {
   const root = rootRef.value
-  if (!root) return
+  if (!root) return null
   const rect = root.getBoundingClientRect()
-  const x = e.clientX - rect.left
-  const y = e.clientY - rect.top
-  if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
-    pointerActive = false
+  const x = clientX - rect.left
+  const y = clientY - rect.top
+  if (x < 0 || y < 0 || x > rect.width || y > rect.height) return null
+  return { x, y }
+}
+
+function onPointerMove(e) {
+  const hit = pointerInHero(e.clientX, e.clientY)
+  if (!hit) {
+    if (pointerActive) {
+      pointerActive = false
+      idleSinceLeave = 0
+      idleArmed = false
+    }
     return
   }
-  pointerX = x
-  pointerY = y
+  pointerX = hit.x
+  pointerY = hit.y
   pointerActive = true
 }
 
 function onPointerLeave() {
-  pointerActive = false
+  if (pointerActive) {
+    pointerActive = false
+    idleSinceLeave = 0
+    idleArmed = false
+  }
 }
 
 function onVisibility() {
@@ -308,9 +420,22 @@ function onReducedMotionChange() {
   syncLifecycle()
 }
 
-watch(isDark, () => {
-  if (reducedMotion) drawStatic()
-})
+function maybeStartFirstVisitRipple() {
+  if (reducedMotion || rippleDone) return
+  try {
+    if (sessionStorage.getItem(FIRST_VISIT_KEY)) {
+      rippleDone = true
+      return
+    }
+    sessionStorage.setItem(FIRST_VISIT_KEY, '1')
+  } catch {
+    // sessionStorage blocked — still fire once this session
+  }
+  rippleDone = true
+  rippleX = width * 0.55
+  rippleY = height * 0.4
+  rippleAge = 0
+}
 
 onMounted(() => {
   mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -318,6 +443,7 @@ onMounted(() => {
   mediaQuery.addEventListener('change', onReducedMotionChange)
 
   rebuildGrid()
+  maybeStartFirstVisitRipple()
 
   resizeObserver = new ResizeObserver(() => {
     rebuildGrid()
@@ -334,7 +460,7 @@ onMounted(() => {
   if (rootRef.value) intersectionObserver.observe(rootRef.value)
 
   document.addEventListener('visibilitychange', onVisibility)
-  // Listen on window so canvas can stay pointer-events: none
+  // pointermove covers mouse + touch-drag; canvas stays pointer-events: none
   window.addEventListener('pointermove', onPointerMove, { passive: true })
   window.addEventListener('pointerleave', onPointerLeave)
   window.addEventListener('blur', onPointerLeave)
