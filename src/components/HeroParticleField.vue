@@ -45,15 +45,19 @@ let mediaQuery = null
 // Stiffer spring + slightly lower damping → readable snap-back ~300–500ms
 const SPRING = 28
 const DAMPING = 0.82
-const REPULSE_RADIUS = 140
-const REPULSE_STRENGTH = 5200
+const REPULSE_RADIUS = 150
+const REPULSE_STRENGTH = 5600
 /** Max dent in px; also capped at ~0.62× spacing in rebuild */
 const MAX_DISPLACEMENT_PX = 56
 const MAX_DISPLACEMENT_FRAC = 0.62
-/** Highlight only the nearest handful so the dent reads as a focal cluster */
-const NEAR_COUNT = 8
+/** Near-home ring size so the hollow reads as a shape, not 2–3 dots */
+const NEAR_COUNT = 14
+/** Visual highlight radius (home-space) — slightly wider than force for a fuller rim */
+const HIGHLIGHT_RADIUS = 175
 const IDLE_DELAY_S = 2.4
-const IDLE_AMP = 3.2
+/** Soft breath only — must not read as a second dent */
+const IDLE_AMP = 1.8
+const IDLE_FORCE = 0.06
 const RIPPLE_DURATION = 0.85
 const RIPPLE_RADIUS = 160
 const FIRST_VISIT_KEY = 'hero-particle-ripple-v1'
@@ -61,13 +65,14 @@ const FIRST_VISIT_KEY = 'hero-particle-ripple-v1'
 /**
  * Hero band stays dark in both site themes (see --color-hero-bg).
  * Always paint with dark-bottom params so light chrome never washes the lattice.
- * Hierarchy: resting faint ≪ near teal < terminal accent < white title.
+ * Hierarchy: resting lattice (visible outline) ≪ near teal rim < terminal accent < white title.
  */
 function themeColors() {
   return {
-    rest: 'rgba(125, 211, 220, 0.12)',
-    near: 'rgba(94, 234, 212, 0.55)',
-    nearCore: 'rgba(94, 234, 212, 0.72)'
+    // ~0.20 so the hollow outline is legible at a glance (was 0.12)
+    rest: 'rgba(125, 211, 220, 0.20)',
+    near: 'rgba(94, 234, 212, 0.70)',
+    nearCore: 'rgba(94, 234, 212, 0.88)'
   }
 }
 
@@ -228,7 +233,9 @@ function step(dt) {
   if (pointerActive) {
     idleSinceLeave = 0
     idleArmed = false
-    applyForceAt(pointerX, pointerY, 1, dt)
+    // Mobile: slightly softer dent, still a clear hollow (not a static lattice)
+    const strength = width < 734 ? 0.82 : 1
+    applyForceAt(pointerX, pointerY, strength, dt)
   } else {
     idleSinceLeave += dt
     if (idleSinceLeave >= IDLE_DELAY_S) {
@@ -239,7 +246,7 @@ function step(dt) {
       idleT += dt
       const { x, y } = getIdleTarget()
       // Very weak virtual pointer — breath only, not a second dent
-      applyForceAt(x, y, 0.12, dt)
+      applyForceAt(x, y, IDLE_FORCE, dt)
     } else {
       // Pure spring settle after release
       applyForceAt(-1e6, -1e6, 0, dt)
@@ -247,11 +254,17 @@ function step(dt) {
   }
 }
 
+/**
+ * Rank by home-space distance so the rim tracks the hollow shape
+ * (displaced positions alone collapse to a few bright tip dots).
+ */
 function nearestIndices(px, py, count) {
   const scored = []
+  const hlSq = HIGHLIGHT_RADIUS * HIGHLIGHT_RADIUS
   for (let i = 0; i < particles.length; i++) {
     const p = particles[i]
-    const dSq = (p.x - px) ** 2 + (p.y - py) ** 2
+    const dSq = (p.homeX - px) ** 2 + (p.homeY - py) ** 2
+    if (dSq > hlSq) continue
     scored.push({ i, dSq })
   }
   scored.sort((a, b) => a.dSq - b.dSq)
@@ -296,18 +309,25 @@ function draw() {
   }
   ctx.fill()
 
-  // Near-pointer cluster: larger radius + opacity jump (still under terminal teal)
+  // Near-pointer rim: larger radius + opacity so the dent reads as a form
   if (near.list.length) {
     for (let k = 0; k < near.list.length; k++) {
       const { i, dSq } = near.list[k]
       const p = particles[i]
       const dist = Math.sqrt(dSq)
-      const closeness = 1 - Math.min(1, dist / (REPULSE_RADIUS * 0.85))
-      const boost = 1.35 + closeness * 1.1
+      const closeness = 1 - Math.min(1, dist / (HIGHLIGHT_RADIUS * 0.9))
+      // Outer rim slightly larger than inner tip — reads as a ring around the hollow
+      const rim = Math.min(1, dist / (spacing * 0.55))
+      const boost = pointerActive
+        ? 1.7 + closeness * 1.15 + rim * 0.35
+        : 1.15 + closeness * 0.55
       const rr = p.r * boost
-      const core = k < 3
+      const core = k < 5
       ctx.fillStyle = core ? colors.nearCore : colors.near
-      ctx.globalAlpha = pointerActive ? 0.85 + closeness * 0.15 : 0.35 + closeness * 0.25
+      // Idle highlight stays soft so breath ≠ dent
+      ctx.globalAlpha = pointerActive
+        ? 0.92 + closeness * 0.08
+        : 0.18 + closeness * 0.16
       ctx.beginPath()
       ctx.arc(p.x, p.y, rr, 0, Math.PI * 2)
       ctx.fill()
@@ -460,8 +480,9 @@ onMounted(() => {
   if (rootRef.value) intersectionObserver.observe(rootRef.value)
 
   document.addEventListener('visibilitychange', onVisibility)
-  // pointermove covers mouse + touch-drag; canvas stays pointer-events: none
+  // pointermove + pointerdown: mouse + touch (mobile must not be a static lattice)
   window.addEventListener('pointermove', onPointerMove, { passive: true })
+  window.addEventListener('pointerdown', onPointerMove, { passive: true })
   window.addEventListener('pointerleave', onPointerLeave)
   window.addEventListener('blur', onPointerLeave)
 
@@ -476,6 +497,7 @@ onUnmounted(() => {
   if (mediaQuery) mediaQuery.removeEventListener('change', onReducedMotionChange)
   document.removeEventListener('visibilitychange', onVisibility)
   window.removeEventListener('pointermove', onPointerMove)
+  window.removeEventListener('pointerdown', onPointerMove)
   window.removeEventListener('pointerleave', onPointerLeave)
   window.removeEventListener('blur', onPointerLeave)
 })
