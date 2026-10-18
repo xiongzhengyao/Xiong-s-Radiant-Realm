@@ -4,6 +4,9 @@
     <section class="hero">
       <div class="hero-noise" aria-hidden="true" />
       <div class="hero-mesh" aria-hidden="true" />
+      <!-- Hero band stays dark via --color-hero-bg in both themes; particles use dark-bottom
+           params so light site chrome (nav/page) can switch without faking a light hero. -->
+      <HeroParticleField />
 
       <div class="container-wide hero-grid">
         <div class="hero-copy">
@@ -165,6 +168,7 @@ import { useReveal } from '@/composables/useReveal'
 import { useBlogStore } from '@/stores/blogStore'
 import { getCategoryLabel } from '@/utils/categoryLabel'
 import CoverArt from '@/components/CoverArt.vue'
+import HeroParticleField from '@/components/HeroParticleField.vue'
 import { useReadHistory } from '@/composables/useReadHistory'
 
 const router = useRouter()
@@ -219,7 +223,9 @@ const skills = [
 .hero-noise {
   position: absolute;
   inset: 0;
-  opacity: 0.35;
+  z-index: 0;
+  /* Softened ~25% so lattice / title stay primary */
+  opacity: 0.16;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   pointer-events: none;
   mix-blend-mode: overlay;
@@ -228,6 +234,9 @@ const skills = [
 .hero-mesh {
   position: absolute;
   inset: 0;
+  z-index: 0;
+  /* Softened ~25% vs prior 0.55 */
+  opacity: 0.4;
   background:
     radial-gradient(ellipse 70% 55% at 15% 45%, var(--color-mesh-1) 0%, transparent 55%),
     radial-gradient(ellipse 50% 45% at 85% 25%, var(--color-mesh-2) 0%, transparent 50%),
@@ -237,7 +246,7 @@ const skills = [
 
 .hero-grid {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   max-width: 720px;
   padding-bottom: var(--space-12);
 }
