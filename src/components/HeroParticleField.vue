@@ -43,21 +43,21 @@ let mediaQuery = null
  */
 
 // Stiffer spring + slightly lower damping → readable snap-back ~300–500ms
-const SPRING = 28
-const DAMPING = 0.82
-const REPULSE_RADIUS = 150
-const REPULSE_STRENGTH = 5600
+const SPRING = 30
+const DAMPING = 0.84
+/** Home-space radius for the dent bowl (must cover ≥1 grid cell) */
+const REPULSE_RADIUS = 165
 /** Max dent in px; also capped at ~0.62× spacing in rebuild */
 const MAX_DISPLACEMENT_PX = 56
 const MAX_DISPLACEMENT_FRAC = 0.62
 /** Near-home ring size so the hollow reads as a shape, not 2–3 dots */
-const NEAR_COUNT = 14
+const NEAR_COUNT = 16
 /** Visual highlight radius (home-space) — slightly wider than force for a fuller rim */
-const HIGHLIGHT_RADIUS = 175
+const HIGHLIGHT_RADIUS = 190
 const IDLE_DELAY_S = 2.4
 /** Soft breath only — must not read as a second dent */
-const IDLE_AMP = 1.8
-const IDLE_FORCE = 0.06
+const IDLE_AMP = 1.6
+const IDLE_FORCE = 0.05
 const RIPPLE_DURATION = 0.85
 const RIPPLE_RADIUS = 160
 const FIRST_VISIT_KEY = 'hero-particle-ripple-v1'
@@ -69,10 +69,10 @@ const FIRST_VISIT_KEY = 'hero-particle-ripple-v1'
  */
 function themeColors() {
   return {
-    // ~0.20 so the hollow outline is legible at a glance (was 0.12)
-    rest: 'rgba(125, 211, 220, 0.20)',
-    near: 'rgba(94, 234, 212, 0.70)',
-    nearCore: 'rgba(94, 234, 212, 0.88)'
+    // ~0.22 so the hollow outline is legible at a glance (was 0.12)
+    rest: 'rgba(125, 211, 220, 0.22)',
+    near: 'rgba(94, 234, 212, 0.74)',
+    nearCore: 'rgba(167, 243, 208, 0.92)'
   }
 }
 
@@ -115,8 +115,8 @@ function rebuildGrid() {
     for (let col = 0; col < cols; col++) {
       const homeX = padX + col * spacing
       const homeY = padY + row * spacing
-      // Slight radius variation keeps lattice from looking stamped
-      const r = 0.85 + ((col * 7 + row * 13) % 5) * 0.18
+      // Larger nodes so the lattice + hollow outline read at full-hero scale
+      const r = 1.85 + ((col * 7 + row * 13) % 5) * 0.28
       next.push({
         homeX,
         homeY,
@@ -136,7 +136,7 @@ function rebuildGrid() {
 }
 
 /**
- * Steeper near / flatter far: use falloff^3 so the dent is local.
+ * Steep local falloff (ripple bands).
  * @param {number} dist
  * @param {number} radius
  */
@@ -146,32 +146,53 @@ function falloffNear(dist, radius) {
   return t * t * t
 }
 
+/**
+ * Wide dent bowl: 1 − smoothstep so nodes across the first grid cell
+ * still reach near-max displacement (falloff³ was ~19px on a 100px lattice).
+ * @param {number} dist
+ * @param {number} radius
+ */
+function falloffBowl(dist, radius) {
+  const t = Math.min(1, Math.max(0, dist / radius))
+  return 1 - t * t * (3 - 2 * t)
+}
+
+/**
+ * Dent via home-space targets (not live-position impulses).
+ * Live impulses barely moved particles between 100px grid nodes (~1–2px);
+ * springing each node toward an outward target up to maxD makes the hollow
+ * read as a shape at a glance while keeping the same spring snap-back.
+ */
 function applyForceAt(px, py, strength, dt) {
   const radius = REPULSE_RADIUS
-  const radiusSq = radius * radius
   const spring = SPRING
   const damp = Math.pow(DAMPING, dt * 60)
   const maxD = maxDisplacement()
+  const active = strength > 0.001
 
   for (let i = 0; i < particles.length; i++) {
     const p = particles[i]
-    const dx = p.x - px
-    const dy = p.y - py
-    const distSq = dx * dx + dy * dy
+    let targetX = p.homeX
+    let targetY = p.homeY
 
-    let ax = 0
-    let ay = 0
-
-    if (distSq < radiusSq && distSq > 0.01) {
-      const dist = Math.sqrt(distSq)
-      const force = (REPULSE_STRENGTH * falloffNear(dist, radius) * strength) / dist
-      ax += (dx / dist) * force
-      ay += (dy / dist) * force
+    if (active) {
+      const hdx = p.homeX - px
+      const hdy = p.homeY - py
+      const homeDist = Math.hypot(hdx, hdy)
+      if (homeDist < radius && homeDist > 0.01) {
+        // Bowl: near nodes push hard (→maxD); far edge eases out
+        const push = maxD * falloffBowl(homeDist, radius) * strength
+        targetX = p.homeX + (hdx / homeDist) * push
+        targetY = p.homeY + (hdy / homeDist) * push
+      } else if (homeDist <= 0.01) {
+        // Pointer dead-center on a node — nudge along +x so a void still opens
+        targetX = p.homeX + maxD * strength
+        targetY = p.homeY
+      }
     }
 
-    // Spring back to home
-    ax += (p.homeX - p.x) * spring
-    ay += (p.homeY - p.y) * spring
+    let ax = (targetX - p.x) * spring
+    let ay = (targetY - p.y) * spring
 
     p.vx = (p.vx + ax * dt) * damp
     p.vy = (p.vy + ay * dt) * damp
@@ -212,14 +233,16 @@ function injectRippleImpulse(dt) {
   const t = Math.min(1, rippleAge / RIPPLE_DURATION)
   const waveR = 24 + t * RIPPLE_RADIUS
   const strength = (1 - t) * (1 - t) * 0.55
+  const maxD = maxDisplacement()
   for (let i = 0; i < particles.length; i++) {
     const p = particles[i]
-    const dx = p.x - rippleX
-    const dy = p.y - rippleY
+    const dx = p.homeX - rippleX
+    const dy = p.homeY - rippleY
     const dist = Math.hypot(dx, dy)
     const band = Math.abs(dist - waveR)
     if (band < 36 && dist > 0.01) {
-      const f = falloffNear(band, 36) * strength * 2200
+      // Brief outward nudge in velocity; spring integration damps it
+      const f = falloffNear(band, 36) * strength * maxD * 18
       p.vx += (dx / dist) * f * dt
       p.vy += (dy / dist) * f * dt
     }
@@ -309,25 +332,28 @@ function draw() {
   }
   ctx.fill()
 
-  // Near-pointer rim: larger radius + opacity so the dent reads as a form
+  // Near-pointer rim: emphasize displaced ring so the hollow reads as a shape
   if (near.list.length) {
     for (let k = 0; k < near.list.length; k++) {
       const { i, dSq } = near.list[k]
       const p = particles[i]
       const dist = Math.sqrt(dSq)
       const closeness = 1 - Math.min(1, dist / (HIGHLIGHT_RADIUS * 0.9))
-      // Outer rim slightly larger than inner tip — reads as a ring around the hollow
-      const rim = Math.min(1, dist / (spacing * 0.55))
+      const offset = Math.hypot(p.x - p.homeX, p.y - p.homeY)
+      const maxD = maxDisplacement()
+      const pushed = Math.min(1, offset / Math.max(8, maxD * 0.55))
+      // Prefer the pushed rim over the tip — form a ring around the void
       const boost = pointerActive
-        ? 1.7 + closeness * 1.15 + rim * 0.35
-        : 1.15 + closeness * 0.55
+        ? 1.45 + closeness * 0.55 + pushed * 1.55
+        : 1.08 + closeness * 0.4
       const rr = p.r * boost
-      const core = k < 5
+      // Even rim weight so the hollow reads as a ring, not one hotspot
+      const core = pointerActive ? pushed > 0.25 : k < 3
       ctx.fillStyle = core ? colors.nearCore : colors.near
       // Idle highlight stays soft so breath ≠ dent
       ctx.globalAlpha = pointerActive
-        ? 0.92 + closeness * 0.08
-        : 0.18 + closeness * 0.16
+        ? 0.62 + pushed * 0.35 + closeness * 0.08
+        : 0.14 + closeness * 0.12
       ctx.beginPath()
       ctx.arc(p.x, p.y, rr, 0, Math.PI * 2)
       ctx.fill()
