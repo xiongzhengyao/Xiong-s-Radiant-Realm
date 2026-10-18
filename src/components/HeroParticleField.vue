@@ -35,24 +35,24 @@ let mediaQuery = null
  * @typedef {{ homeX: number, homeY: number, x: number, y: number, vx: number, vy: number, r: number }} Particle
  */
 
-const SPRING = 18
-const DAMPING = 0.86
-const REPULSE_RADIUS = 110
-const REPULSE_STRENGTH = 2200
-const MAX_DISPLACEMENT = 36
-const IDLE_AMP = 48
+const SPRING = 14
+const DAMPING = 0.88
+const REPULSE_RADIUS = 120
+const REPULSE_STRENGTH = 2800
+const MAX_DISPLACEMENT = 38
+const IDLE_AMP = 42
 
 function themeColors() {
   if (isDark.value) {
     return {
-      rest: 'rgba(125, 211, 220, 0.34)',
-      near: 'rgba(94, 234, 212, 0.72)'
+      rest: 'rgba(125, 211, 220, 0.36)',
+      near: 'rgba(94, 234, 212, 0.85)'
     }
   }
   // Light page: hero still dark, but keep particles paler / lower-contrast
   return {
-    rest: 'rgba(148, 180, 188, 0.18)',
-    near: 'rgba(125, 200, 210, 0.4)'
+    rest: 'rgba(148, 180, 188, 0.2)',
+    near: 'rgba(125, 200, 210, 0.48)'
   }
 }
 
@@ -206,10 +206,13 @@ function draw() {
     const p = particles[i]
     const dx = p.x - px
     const dy = p.y - py
-    if (dx * dx + dy * dy >= nearRSq) continue
-    const boost = 1 + Math.min(0.55, p.r * 0.15)
-    ctx.moveTo(p.x + p.r * boost, p.y)
-    ctx.arc(p.x, p.y, p.r * boost, 0, Math.PI * 2)
+    const dSq = dx * dx + dy * dy
+    if (dSq >= nearRSq) continue
+    const falloff = 1 - Math.sqrt(dSq) / nearR
+    const boost = 1 + falloff * 0.75
+    const rr = p.r * boost
+    ctx.moveTo(p.x + rr, p.y)
+    ctx.arc(p.x, p.y, rr, 0, Math.PI * 2)
   }
   ctx.fill()
 }
