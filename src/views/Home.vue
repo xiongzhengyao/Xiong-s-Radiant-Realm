@@ -444,9 +444,9 @@ const skills = [
   pointer-events: none;
 }
 
-.bento-card--camera .bento-glow { background: #A8C5D4; top: -40px; right: -40px; }
-.bento-card--embedded .bento-glow { background: #8B969E; bottom: -60px; left: -20px; }
-.bento-card--writing .bento-glow { background: #A8C5D4; top: -30px; left: 50%; }
+.bento-card--camera .bento-glow { background: var(--color-cta-bg); top: -40px; right: -40px; }
+.bento-card--embedded .bento-glow { background: var(--color-mist); bottom: -60px; left: -20px; }
+.bento-card--writing .bento-glow { background: var(--color-cta-bg); top: -30px; left: 50%; }
 
 @media (hover: hover) and (pointer: fine) {
   .bento-card:hover {
@@ -638,7 +638,8 @@ const skills = [
 }
 
 .cta-eyebrow {
-  color: rgba(255, 255, 255, 0.5);
+  /* Align with Hero mist labels (not ad-hoc white/50) */
+  color: var(--color-mist);
 }
 
 .cta-band-copy h2 {
