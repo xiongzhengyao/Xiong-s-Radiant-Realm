@@ -174,7 +174,7 @@ watch(filteredPosts, () => {
 .pill {
   padding: 8px 18px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: var(--radius-full);
   border: 1px solid var(--color-border);
   background: transparent;
@@ -269,7 +269,7 @@ watch(filteredPosts, () => {
 
 .date-day {
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 600;
   color: #fff;
   line-height: 1.2;
 }
@@ -277,7 +277,7 @@ watch(filteredPosts, () => {
 .date-month {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.7);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .life-card-body {

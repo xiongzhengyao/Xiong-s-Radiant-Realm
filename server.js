@@ -10,6 +10,24 @@ const NODE_ENV = process.env.NODE_ENV || 'development'
 const DIST_DIR = path.join(__dirname, 'dist')
 const INDEX_FILE = path.join(DIST_DIR, 'index.html')
 
+// 边缘可缓存的 SPA HTML（浏览器不长期缓存，CF 可短时缓存）
+// 发布后需 purge CF 上的 `/`（见 DEPLOYMENT.md）
+const HTML_CACHE_CONTROL =
+  'public, max-age=0, s-maxage=120, stale-while-revalidate=60'
+const FEED_CACHE_CONTROL =
+  'public, max-age=0, s-maxage=300, stale-while-revalidate=60'
+const FEED_BASENAMES = new Set(['manifest.json', 'rss.xml', 'sitemap.xml'])
+
+const setHtmlCacheHeaders = (res) => {
+  if (NODE_ENV === 'production') {
+    res.setHeader('Cache-Control', HTML_CACHE_CONTROL)
+  } else {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+    res.setHeader('Pragma', 'no-cache')
+    res.setHeader('Expires', '0')
+  }
+}
+
 // 日志工具函数
 const logger = {
   info: (msg) => console.log(`[INFO] ${new Date().toISOString()} - ${msg}`),
@@ -56,9 +74,10 @@ app.use((req, res, next) => {
 })
 
 // 静态文件服务
-// 关键策略：
-// 1) 带 hash 的静态资源可长期缓存
-// 2) index.html 禁止缓存，避免引用到旧 hash 资源导致 preload 失败
+// 缓存策略：
+// 1) 带 hash 的 /assets/* 长期 immutable
+// 2) index.html / SPA HTML：edge 短缓存（s-maxage），浏览器 max-age=0
+// 3) manifest / rss / sitemap：edge 短缓存
 app.use(
   express.static(DIST_DIR, {
     maxAge: NODE_ENV === 'production' ? '1y' : 0,
@@ -67,9 +86,15 @@ app.use(
     setHeaders: (res, filePath) => {
       const isHtml = path.extname(filePath) === '.html'
       if (isHtml) {
-        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
-        res.setHeader('Pragma', 'no-cache')
-        res.setHeader('Expires', '0')
+        setHtmlCacheHeaders(res)
+        return
+      }
+
+      const base = path.basename(filePath)
+      if (FEED_BASENAMES.has(base)) {
+        if (NODE_ENV === 'production') {
+          res.setHeader('Cache-Control', FEED_CACHE_CONTROL)
+        }
         return
       }
 
@@ -125,9 +150,7 @@ app.get('*', (req, res, next) => {
 // SPA 路由处理 - 无扩展名的客户端路由返回 index.html
 app.get('*', (req, res) => {
   if (fs.existsSync(INDEX_FILE)) {
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
-    res.setHeader('Pragma', 'no-cache')
-    res.setHeader('Expires', '0')
+    setHtmlCacheHeaders(res)
     res.sendFile(INDEX_FILE)
   } else {
     res.status(404).json({
@@ -199,4 +222,4 @@ process.on('unhandledRejection', (reason, promise) => {
 })
 
 // 启动服务器
-startServer() 
+startServer()

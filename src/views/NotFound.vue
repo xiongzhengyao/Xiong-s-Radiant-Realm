@@ -78,7 +78,7 @@ onUnmounted(() => {
 
 .not-found-code {
   font-size: clamp(80px, 15vw, 120px);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.06em;
   background: linear-gradient(180deg, var(--color-text-tertiary) 0%, transparent 100%);
   -webkit-background-clip: text;

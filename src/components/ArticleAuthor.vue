@@ -134,7 +134,7 @@ const initials = computed(() => {
   width: 100%;
   height: 100%;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   font-family: var(--font-mono);
   color: var(--color-text-tertiary);
   background: var(--color-bg-secondary);

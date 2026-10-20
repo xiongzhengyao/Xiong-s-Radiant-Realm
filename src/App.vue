@@ -341,7 +341,7 @@ html.dark {
 
 .nav-link.router-link-active {
   color: var(--color-text);
-  font-weight: 500;
+  font-weight: 600;
   background: transparent;
 }
 
@@ -378,7 +378,7 @@ html.dark {
   cursor: pointer;
   border-radius: var(--radius-full);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   font-family: var(--font-sans);
   transition: color var(--duration-fast) var(--ease-out),
               background var(--duration-fast) var(--ease-out),
@@ -474,7 +474,7 @@ html.dark {
 
 .footer-logo {
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-text);
   text-decoration: none;
   letter-spacing: -0.03em;
@@ -490,7 +490,7 @@ html.dark {
 .footer-email-btn {
   display: inline-flex;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-accent);
   text-decoration: none;
 }

@@ -825,7 +825,7 @@ watch(filteredPosts, () => {
 .pill {
   padding: 8px 18px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: var(--radius-full);
   border: 1px solid var(--color-border);
   background: transparent;
@@ -1017,7 +1017,7 @@ watch(filteredPosts, () => {
 
 .read-more-link {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-accent);
   margin-top: auto;
 }
@@ -1345,7 +1345,7 @@ watch(filteredPosts, () => {
 .article-title {
   font-family: var(--font-mono);
   font-size: clamp(1.85rem, 3.6vw, 2.65rem);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.18;
   letter-spacing: -0.03em;
   color: var(--color-text);
@@ -1451,7 +1451,7 @@ watch(filteredPosts, () => {
 
 .toc-count {
   margin-left: var(--space-2);
-  font-weight: 500;
+  font-weight: 600;
   opacity: 0.7;
   text-transform: none;
   letter-spacing: 0;
@@ -1634,7 +1634,7 @@ watch(filteredPosts, () => {
 .share-bar-title {
   flex: 1;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
