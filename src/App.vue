@@ -231,7 +231,7 @@ html.dark {
   z-index: 2000;
   padding: 10px 16px;
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-accent-contrast);
   border-radius: var(--radius-md);
   font-size: 14px;
   text-decoration: none;
@@ -342,19 +342,21 @@ html.dark {
 .nav-link.router-link-active {
   color: var(--color-text);
   font-weight: 500;
-  background: var(--color-accent-light);
+  background: transparent;
 }
 
 .nav-link.router-link-active::after {
   content: '';
   position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--color-accent);
+  bottom: 2px;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  width: auto;
+  transform: none;
+  border-radius: 0;
+  background: var(--color-nav-current);
+  opacity: 0.9;
 }
 
 .nav-actions {

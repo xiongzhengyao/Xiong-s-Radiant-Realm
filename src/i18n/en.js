@@ -6,7 +6,7 @@ export default {
     blog: 'Blog',
     contact: 'Contact',
     life: 'Life',
-    brand: 'Xiong Zhengyao',
+    brand: 'snowhush',
     skipToContent: 'Skip to content',
     toggleMenu: 'Toggle navigation menu'
   },
@@ -37,65 +37,66 @@ export default {
     quickLinks: 'Quick links'
   },
   meta: {
-    homeTitle: "Xiong's Radiant Realm",
-    homeDesc: 'Xiong Zhengyao — Camera driver software engineer: portfolio, tech blog & résumé',
+    homeTitle: 'snowhush',
+    homeDesc: 'Quiet as fresh snow. Camera systems · photography & posters',
     aboutTitle: 'About',
     aboutDesc: 'Xiong Zhengyao — Camera driver software engineer, previously at DJI, Xiaomi & Bosch',
-    blogTitle: 'Blog',
-    blogDesc: 'Articles on embedded systems, camera drivers & Linux',
+    blogTitle: 'Notes',
+    blogDesc: 'Notes on embedded systems, camera drivers & everyday seeing',
     lifeTitle: 'Life',
     lifeDesc: 'Travel, photography, reading & everyday notes',
-    projectsTitle: 'Projects',
-    projectsDesc: 'Company work and open-source projects — camera drivers, tooling & embedded systems',
-    contactTitle: 'Contact',
-    contactDesc: 'Open to technical discussions, collaborations & opportunities'
+    projectsTitle: 'Work',
+    projectsDesc: 'Camera systems, tools & embedded work',
+    contactTitle: 'Say hello',
+    contactDesc: 'Write about tech, work, or anything else'
   },
   footer: {
     explore: 'Explore',
     about: 'About',
     social: 'Social',
-    tagline: 'Camera drivers · Embedded systems · Technical writing',
-    emailCta: 'Email me',
+    tagline: 'Quiet as fresh snow.',
+    emailCta: 'Write a letter',
     builtWith: 'Built with Vue 3',
     rss: 'RSS Feed',
     sitemap: 'Sitemap'
   },
   home: {
-    eyebrow: 'Shanghai · Camera Driver',
-    welcome: 'Xiong Zhengyao',
-    subtitle: 'Camera Driver Software Engineer',
-    pitch: 'Bridging sensors, drivers, and system software — turning hard problems into reusable engineering notes.',
-    whoami: '~ $ whoami',
-    viewBlog: 'Read the blog',
-    viewAbout: 'About my journey',
+    eyebrow: 'snowhush · Shanghai',
+    welcome: 'Write light into systems; leave quiet on the page.',
+    slogan: 'Quiet as fresh snow.',
+    viewBlog: 'Read notes',
+    viewProjects: 'See work',
     expertise: {
-      eyebrow: 'Expertise',
-      desc: 'Full-stack camera systems — from silicon to userspace.'
+      eyebrow: 'Lately',
+      desc: 'Camera systems · photography & posters — between systems and frames, carefully and quietly.'
     },
     cta: {
-      eyebrow: 'Get in touch'
+      eyebrow: 'Contact',
+      title: 'Say hello',
+      subtitle: 'Tech, work, or just a hello — write a letter.',
+      button: 'Write a letter'
     },
     skills: {
-      title: 'Expertise',
+      title: 'What I do',
+      camera: {
+        name: 'Camera systems',
+        description: 'Sensors, ISP, and imaging paths — from chip to frame.'
+      },
       embedded: {
-        name: 'Embedded Development',
-        description: 'ARM drivers, bus protocols & factory bring-up'
+        name: 'Embedded & drivers',
+        description: 'ARM, buses, and kernel-side debugging that sticks.'
       },
-      image: {
-        name: 'Camera Systems',
-        description: 'Sensor drivers, ISP pipeline & image quality'
-      },
-      linux: {
-        name: 'Linux Systems',
-        description: 'Kernel/userspace, performance & systems programming'
+      writing: {
+        name: 'Write & see',
+        description: 'Notes, photography, and posters — keeping observation.'
       }
     },
     blog: {
-      eyebrow: 'Writing',
-      title: 'Latest Posts',
-      readMore: 'View all posts',
+      eyebrow: 'Journal',
+      title: 'Notes',
+      readMore: 'All notes',
       readTime: '{n} min read',
-      empty: 'No posts yet'
+      empty: 'No notes yet'
     },
     continue: {
       eyebrow: 'Continue reading',

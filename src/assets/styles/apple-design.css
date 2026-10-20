@@ -1,5 +1,5 @@
 /* ============================================
-   Developer / Terminal-Inspired Design System
+   雪夜静默 — Quiet Snow Night Design System
    ============================================ */
 
 /* --- Design Tokens --- */
@@ -8,39 +8,48 @@
   --font-sans: 'IBM Plex Sans', 'Noto Sans SC', 'PingFang SC', 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
 
-  /* Light Mode Colors */
-  --color-bg: #f4f7f8;
-  --color-bg-secondary: #e8eef0;
-  --color-bg-tertiary: #f0f4f5;
+  /* Light Mode Colors — cool mist */
+  --color-bg: #f2f5f7;
+  --color-bg-secondary: #e8eef2;
+  --color-bg-tertiary: #eef2f5;
   --color-surface: #ffffff;
   --color-surface-elevated: #ffffff;
-  --color-text: #0f1a1c;
-  --color-text-secondary: #4a5c61;
-  --color-text-tertiary: #7a8c91;
-  --color-accent: #0d9488;
-  --color-accent-hover: #0f766e;
-  --color-accent-light: rgba(13, 148, 136, 0.1);
-  --color-accent-border: rgba(13, 148, 136, 0.35);
-  --color-border: rgba(15, 26, 28, 0.12);
-  --color-divider: rgba(15, 26, 28, 0.08);
-  --color-overlay: rgba(244, 247, 248, 0.82);
-  --color-nav-bg: rgba(244, 247, 248, 0.88);
+  --color-text: #0B0F12;
+  --color-text-secondary: #5E7A8A;
+  --color-text-tertiary: #8B969E;
+  --color-accent: #5E7A8A;
+  --color-accent-hover: #4a6574;
+  --color-accent-contrast: #ffffff;
+  --color-accent-light: rgba(94, 122, 138, 0.1);
+  --color-accent-border: rgba(94, 122, 138, 0.35);
+  /* Primary CTA — always ice-blue fill + near-black text (≥4.5:1), both themes */
+  --color-cta-bg: #A8C5D4;
+  --color-cta-bg-hover: #b8d1dd;
+  --color-cta-text: #0B0F12;
+  /* Mist gray for quiet labels / slogans (not accent) */
+  --color-mist: #8B969E;
+  /* Nav current underline — soft ice-blue in both themes */
+  --color-nav-current: #A8C5D4;
+  --color-border: rgba(11, 15, 18, 0.1);
+  --color-divider: rgba(11, 15, 18, 0.07);
+  --color-overlay: rgba(242, 245, 247, 0.84);
+  --color-nav-bg: rgba(242, 245, 247, 0.9);
   --color-card-bg: #ffffff;
-  --color-code-bg: #e8eef0;
-  --color-hero-bg: #0b1214;
-  --color-hero-text: #e6f1f3;
-  --color-tag-bg: #e8eef0;
-  --color-tag-text: #0f1a1c;
+  --color-code-bg: #e8eef2;
+  --color-hero-bg: #0B0F12;
+  --color-hero-text: #E8EEF2;
+  --color-tag-bg: #e8eef2;
+  --color-tag-text: #0B0F12;
   --color-input-bg: #ffffff;
-  --color-input-border: rgba(15, 26, 28, 0.14);
-  --color-input-focus: rgba(13, 148, 136, 0.28);
+  --color-input-border: rgba(11, 15, 18, 0.12);
+  --color-input-focus: rgba(94, 122, 138, 0.28);
 
   /* Shadows */
-  --shadow-xs: 0 1px 2px rgba(15, 26, 28, 0.05);
-  --shadow-sm: 0 2px 8px rgba(15, 26, 28, 0.06);
-  --shadow-md: 0 4px 16px rgba(15, 26, 28, 0.08);
-  --shadow-lg: 0 8px 28px rgba(15, 26, 28, 0.1);
-  --shadow-xl: 0 16px 40px rgba(15, 26, 28, 0.12);
+  --shadow-xs: 0 1px 2px rgba(11, 15, 18, 0.05);
+  --shadow-sm: 0 2px 8px rgba(11, 15, 18, 0.06);
+  --shadow-md: 0 4px 16px rgba(11, 15, 18, 0.08);
+  --shadow-lg: 0 8px 28px rgba(11, 15, 18, 0.1);
+  --shadow-xl: 0 16px 40px rgba(11, 15, 18, 0.12);
 
   /* Radii — sharper, less “Apple pill” */
   --radius-sm: 4px;
@@ -81,12 +90,12 @@
   --max-width-wide: 1200px;
   --max-width-narrow: 720px;
 
-  /* Tech accents — cyan / terminal teal */
-  --color-glow: rgba(13, 148, 136, 0.35);
-  --color-mesh-1: rgba(13, 148, 136, 0.18);
-  --color-mesh-2: rgba(6, 182, 212, 0.14);
-  --color-mesh-3: rgba(52, 211, 153, 0.1);
-  --gradient-border: linear-gradient(135deg, rgba(13,148,136,0.35), rgba(255,255,255,0.04));
+  /* 雪夜静默 — ice-blue accent / cool mist mesh */
+  --color-glow: rgba(94, 122, 138, 0.28);
+  --color-mesh-1: rgba(168, 197, 212, 0.16);
+  --color-mesh-2: rgba(94, 122, 138, 0.12);
+  --color-mesh-3: rgba(139, 150, 158, 0.1);
+  --gradient-border: linear-gradient(135deg, rgba(94,122,138,0.32), rgba(255,255,255,0.04));
   --hero-min-height: min(92vh, 900px);
 
   /* Article / markdown reading tokens — Chinese tech measure ~42rem */
@@ -96,58 +105,64 @@
   --md-body-size: 1.125rem; /* 18px */
   --md-body-lh: 1.8;
   --md-measure: 42rem;
-  /* Fenced blocks stay terminal-dark in both themes for clear contrast */
-  --md-code-block-bg: #0e1618;
-  --md-code-block-fg: #d7e6e9;
-  --md-code-block-border: rgba(15, 26, 28, 0.18);
-  --md-inline-code-bg: rgba(13, 148, 136, 0.1);
-  --md-table-stripe: rgba(13, 148, 136, 0.04);
-  --md-quote-bg: rgba(13, 148, 136, 0.06);
+  /* Fenced blocks stay night-dark in both themes for clear contrast */
+  --md-code-block-bg: #12181c;
+  --md-code-block-fg: #E8EEF2;
+  --md-code-block-border: rgba(11, 15, 18, 0.16);
+  --md-inline-code-bg: rgba(94, 122, 138, 0.1);
+  --md-table-stripe: rgba(94, 122, 138, 0.04);
+  --md-quote-bg: rgba(94, 122, 138, 0.06);
 }
 
-/* --- Dark Mode (default visual language) --- */
+/* --- Dark Mode (default — 雪夜静默) --- */
 html.dark {
-  --color-bg: #0b1214;
-  --color-bg-secondary: #111a1d;
-  --color-bg-tertiary: #0e1618;
-  --color-surface: #121b1e;
-  --color-surface-elevated: #182226;
-  --color-text: #e6f1f3;
-  --color-text-secondary: #93a8ae;
-  --color-text-tertiary: #6b7f85;
-  --color-accent: #2dd4bf;
-  --color-accent-hover: #5eead4;
-  --color-accent-light: rgba(45, 212, 191, 0.12);
-  --color-accent-border: rgba(45, 212, 191, 0.4);
-  --color-border: rgba(230, 241, 243, 0.1);
-  --color-divider: rgba(230, 241, 243, 0.06);
-  --color-overlay: rgba(11, 18, 20, 0.82);
-  --color-nav-bg: rgba(11, 18, 20, 0.88);
-  --color-card-bg: #121b1e;
-  --color-code-bg: #182226;
-  --color-hero-bg: #070c0e;
-  --color-hero-text: #e6f1f3;
-  --color-tag-bg: #182226;
-  --color-tag-text: #e6f1f3;
-  --color-input-bg: #111a1d;
-  --color-input-border: rgba(230, 241, 243, 0.14);
-  --color-input-focus: rgba(45, 212, 191, 0.35);
+  --color-bg: #0B0F12;
+  --color-bg-secondary: #12181c;
+  --color-bg-tertiary: #0e1418;
+  --color-surface: #141a1f;
+  --color-surface-elevated: #1a2127;
+  --color-text: #E8EEF2;
+  --color-text-secondary: #8B969E;
+  --color-text-tertiary: #6d7880;
+  --color-accent: #A8C5D4;
+  --color-accent-hover: #c2d8e3;
+  --color-accent-contrast: #0B0F12;
+  --color-accent-light: rgba(168, 197, 212, 0.1);
+  --color-accent-border: rgba(168, 197, 212, 0.32);
+  --color-cta-bg: #A8C5D4;
+  --color-cta-bg-hover: #b8d1dd;
+  --color-cta-text: #0B0F12;
+  --color-mist: #8B969E;
+  --color-nav-current: #A8C5D4;
+  --color-border: rgba(232, 238, 242, 0.1);
+  --color-divider: rgba(232, 238, 242, 0.06);
+  --color-overlay: rgba(11, 15, 18, 0.84);
+  --color-nav-bg: rgba(11, 15, 18, 0.9);
+  --color-card-bg: #141a1f;
+  --color-code-bg: #1a2127;
+  --color-hero-bg: #0B0F12;
+  --color-hero-text: #E8EEF2;
+  --color-tag-bg: #1a2127;
+  --color-tag-text: #E8EEF2;
+  --color-input-bg: #12181c;
+  --color-input-border: rgba(232, 238, 242, 0.12);
+  --color-input-focus: rgba(168, 197, 212, 0.32);
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.25);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.36);
   --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.42);
   --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.5);
-  --color-glow: rgba(45, 212, 191, 0.35);
-  --color-mesh-1: rgba(45, 212, 191, 0.16);
-  --color-mesh-2: rgba(34, 211, 238, 0.12);
-  --color-mesh-3: rgba(52, 211, 153, 0.1);
-  --gradient-border: linear-gradient(135deg, rgba(45,212,191,0.25), rgba(255,255,255,0.03));
-  --md-code-block-bg: #070c0e;
-  --md-code-block-fg: #d7e6e9;
-  --md-code-block-border: rgba(230, 241, 243, 0.12);
-  --md-inline-code-bg: rgba(45, 212, 191, 0.12);
-  --md-table-stripe: rgba(45, 212, 191, 0.05);
-  --md-quote-bg: rgba(45, 212, 191, 0.08);
+  --color-glow: rgba(168, 197, 212, 0.28);
+  --color-mesh-1: rgba(168, 197, 212, 0.14);
+  --color-mesh-2: rgba(139, 150, 158, 0.1);
+  --color-mesh-3: rgba(94, 122, 138, 0.1);
+  --gradient-border: linear-gradient(135deg, rgba(168,197,212,0.22), rgba(255,255,255,0.03));
+  --md-code-block-bg: #080c0e;
+  --md-code-block-fg: #E8EEF2;
+  --md-code-block-border: rgba(232, 238, 242, 0.1);
+  --md-inline-code-bg: rgba(168, 197, 212, 0.1);
+  --md-table-stripe: rgba(168, 197, 212, 0.05);
+  --md-quote-bg: rgba(168, 197, 212, 0.07);
   color-scheme: dark;
 }
 
@@ -254,7 +269,7 @@ a[target="_blank"]:not(.footer-link)::after {
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-mist);
   margin-bottom: var(--space-3);
 }
 
@@ -365,12 +380,13 @@ a[target="_blank"]:not(.footer-link)::after {
 }
 
 .btn-primary {
-  background: var(--color-accent);
-  color: #fff;
+  background: var(--color-cta-bg);
+  color: var(--color-cta-text);
 }
 
 .btn-primary:hover {
-  background: var(--color-accent-hover);
+  background: var(--color-cta-bg-hover);
+  color: var(--color-cta-text);
 }
 
 .btn-secondary {
@@ -392,8 +408,8 @@ a[target="_blank"]:not(.footer-link)::after {
 }
 
 .btn-outline:hover {
-  background: var(--color-accent);
-  color: #fff;
+  background: var(--color-cta-bg);
+  color: var(--color-cta-text);
 }
 
 /* --- Tag --- */
@@ -714,7 +730,7 @@ a[target="_blank"]:not(.footer-link)::after {
   margin-bottom: 0.25em;
 }
 
-/* Inline code / proper nouns — mono + weight; reserve teal for links/numbers/progress */
+/* Inline code / proper nouns — mono + weight; reserve ice-blue for links/numbers/progress */
 .rich-markdown :not(pre) > code {
   background: var(--color-bg-secondary);
   padding: 0.1em 0.36em;

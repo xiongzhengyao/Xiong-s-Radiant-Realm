@@ -6,7 +6,7 @@ export default {
     blog: '博客',
     contact: '联系',
     life: '生活',
-    brand: '熊正耀',
+    brand: 'snowhush',
     skipToContent: '跳到主要内容',
     toggleMenu: '切换导航菜单'
   },
@@ -37,65 +37,66 @@ export default {
     quickLinks: '快速导航'
   },
   meta: {
-    homeTitle: "Xiong's Radiant Realm",
-    homeDesc: '熊正耀 — Camera 驱动软件工程师的个人站：作品、技术博客与简历',
+    homeTitle: 'snowhush',
+    homeDesc: '把光写进系统，把安静留在页面。Camera 驱动 · 摄影与海报',
     aboutTitle: '关于我',
     aboutDesc: '熊正耀 — Camera 驱动软件工程师，曾就职于大疆、小米、博世',
-    blogTitle: '技术博客',
-    blogDesc: '嵌入式开发、Camera 驱动与 Linux 系统的技术文章',
+    blogTitle: '笔记',
+    blogDesc: '嵌入式、Camera 驱动与日常记录',
     lifeTitle: '生活点滴',
     lifeDesc: '旅行、摄影、读书与日常感悟',
-    projectsTitle: '项目经历',
-    projectsDesc: '公司项目与开源作品 — Camera 驱动、工具链与嵌入式系统',
-    contactTitle: '联系我',
-    contactDesc: '欢迎技术交流、项目合作或职业机会联系'
+    projectsTitle: '作品',
+    projectsDesc: 'Camera 系统、工具与嵌入式作品',
+    contactTitle: '有事说一声',
+    contactDesc: '写信聊聊技术、作品或任何事'
   },
   footer: {
     explore: '探索',
     about: '关于',
     social: '社交',
-    tagline: 'Camera 驱动 · 嵌入式系统 · 技术写作',
-    emailCta: '发邮件给我',
+    tagline: 'Quiet as fresh snow.',
+    emailCta: '写一封信',
     builtWith: '用 Vue 3 构建',
     rss: 'RSS 订阅',
     sitemap: '网站地图'
   },
   home: {
-    eyebrow: '上海 · Camera 驱动',
-    welcome: '熊正耀',
-    subtitle: 'Camera 驱动软件工程师',
-    pitch: '在传感器、驱动与系统层之间架桥 — 把复杂问题写成可复用的工程经验。',
-    whoami: '~ $ whoami',
-    viewBlog: '阅读技术博客',
-    viewAbout: '了解我的经历',
+    eyebrow: 'snowhush · 上海',
+    welcome: '把光写进系统，把安静留在页面。',
+    slogan: 'Quiet as fresh snow.',
+    viewBlog: '读笔记',
+    viewProjects: '看作品',
     expertise: {
-      eyebrow: '专业领域',
-      desc: '从硅片到用户态，覆盖 Camera 系统全栈关键路径。'
+      eyebrow: '近况',
+      desc: 'Camera 驱动 · 摄影与海报 — 在系统与画面之间，慢慢把事情做清楚。'
     },
     cta: {
-      eyebrow: '保持联系'
+      eyebrow: '联络',
+      title: '有事说一声',
+      subtitle: '技术、作品，或只是随便聊聊 — 写一封信即可。',
+      button: '写一封信'
     },
     skills: {
-      title: '技能专长',
-      embedded: {
-        name: '嵌入式开发',
-        description: 'ARM 平台驱动、总线协议与产线调试'
-      },
-      image: {
+      title: '在做的事',
+      camera: {
         name: 'Camera 系统',
-        description: 'Sensor 驱动、ISP 链路与图像质量优化'
+        description: 'Sensor、ISP 与成像链路 — 让画面从芯片走到用户。'
       },
-      linux: {
-        name: 'Linux 系统',
-        description: '内核/用户态协同、性能分析与系统编程'
+      embedded: {
+        name: '嵌入式与驱动',
+        description: 'ARM、总线与内核侧调试，把底层问题钉住。'
+      },
+      writing: {
+        name: '写与看',
+        description: '笔记、摄影与海报 — 把观察留成文字和画面。'
       }
     },
     blog: {
-      eyebrow: '技术写作',
-      title: '最新文章',
-      readMore: '查看全部文章',
+      eyebrow: 'Journal',
+      title: '笔记',
+      readMore: '全部笔记',
       readTime: '{n} 分钟阅读',
-      empty: '暂无文章，敬请期待'
+      empty: '暂无笔记，敬请期待'
     },
     continue: {
       eyebrow: '继续阅读',

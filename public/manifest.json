@@ -1,11 +1,11 @@
 {
-  "name": "Xiong's Radiant Realm",
-  "short_name": "XZY",
-  "description": "Camera driver engineer — tech blog & portfolio",
+  "name": "snowhush",
+  "short_name": "snowhush",
+  "description": "Quiet as fresh snow. Camera systems · photography & posters",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#0071e3",
+  "background_color": "#0B0F12",
+  "theme_color": "#A8C5D4",
   "lang": "zh-CN",
   "icons": [
     {

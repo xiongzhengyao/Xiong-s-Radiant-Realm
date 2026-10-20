@@ -65,14 +65,15 @@ const FIRST_VISIT_KEY = 'hero-particle-ripple-v1'
 /**
  * Hero band stays dark in both site themes (see --color-hero-bg).
  * Always paint with dark-bottom params so light chrome never washes the lattice.
- * Hierarchy: resting lattice (visible outline) ≪ near teal rim < terminal accent < white title.
+ * Hierarchy: resting lattice ≪ near ice-blue rim < accent < cool-white title.
+ * Palette: 雪夜静默 — paler ice-blue, not cyan-green.
  */
 function themeColors() {
   return {
-    // ~0.22 so the hollow outline is legible at a glance (was 0.12)
-    rest: 'rgba(125, 211, 220, 0.22)',
-    near: 'rgba(94, 234, 212, 0.74)',
-    nearCore: 'rgba(167, 243, 208, 0.92)'
+    // Idle lattice biased to #A8C5D4 so rest reads cold ice, not gray terminal
+    rest: 'rgba(168, 197, 212, 0.32)',
+    near: 'rgba(168, 197, 212, 0.78)',
+    nearCore: 'rgba(232, 238, 242, 0.9)'
   }
 }
 
