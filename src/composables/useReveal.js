@@ -11,8 +11,10 @@ export function useReveal(options = {}) {
   let observer = null
 
   const observe = (root = document) => {
-    if (!observer) return
+    if (!observer || typeof root?.querySelectorAll !== 'function') return
     root.querySelectorAll(config.selector).forEach(el => {
+      // Skip nodes already revealed; re-bind late-mounted journal/cards
+      if (el.classList.contains('is-visible')) return
       observer.observe(el)
     })
   }

@@ -43,21 +43,21 @@ export function coverGradientStyle(art, options = {}) {
   const theme = options.theme ?? (options.boosted ? 'dark' : 'light')
 
   if (theme === 'light') {
-    // Cool mist — base ~#E8EEF2, soft ice washes, low sat
-    const sat = 10
-    const lightA = 82
-    const lightB = 76
-    const baseLight = 93
-    const baseLightEnd = 88
+    // Cool mist — base ~#E8EEF2 / L≳200; never near-black on white cards
+    const sat = 8
+    const lightA = 88
+    const lightB = 84
+    const baseLight = 94
+    const baseLightEnd = 91
     return {
       background: `
         radial-gradient(ellipse 80% 70% at ${20 + art.variant * 15}% ${30 + art.variant * 10}%,
-          hsla(${art.hue}, ${sat}%, ${lightA}%, 0.85) 0%, transparent 55%),
+          hsla(${art.hue}, ${sat}%, ${lightA}%, 0.7) 0%, transparent 55%),
         radial-gradient(ellipse 60% 50% at ${75 - art.variant * 10}% ${65}%,
-          hsla(${art.hue2}, ${Math.max(sat - 2, 6)}%, ${lightB}%, 0.7) 0%, transparent 50%),
+          hsla(${art.hue2}, ${Math.max(sat - 2, 5)}%, ${lightB}%, 0.55) 0%, transparent 50%),
         linear-gradient(155deg,
-          hsl(${art.hue}, 8%, ${baseLight}%) 0%,
-          hsl(${art.hue2}, 6%, ${baseLightEnd}%) 100%)
+          hsl(${art.hue}, 7%, ${baseLight}%) 0%,
+          hsl(${art.hue2}, 5%, ${baseLightEnd}%) 100%)
       `
     }
   }
@@ -93,15 +93,15 @@ export function coverShapeStyle(art, index, options = {}) {
   const transform = `rotate(${art.rotate + index * 18}deg) scale(${art.scale})`
 
   if (theme === 'light') {
-    const shapeAlpha = 0.22
-    const borderAlpha = 0.1
+    const shapeAlpha = 0.18
+    const borderAlpha = 0.08
     return {
       left: o.x,
       top: o.y,
       width: o.w,
       height: o.h,
       transform,
-      background: `linear-gradient(135deg, hsla(${art.hue2}, 12%, 72%, ${shapeAlpha}), hsla(${art.hue}, 8%, 78%, ${shapeAlpha * 0.4}))`,
+      background: `linear-gradient(135deg, hsla(${art.hue2}, 10%, 78%, ${shapeAlpha}), hsla(${art.hue}, 7%, 86%, ${shapeAlpha * 0.4}))`,
       borderColor: `rgba(94, 122, 138, ${borderAlpha})`
     }
   }

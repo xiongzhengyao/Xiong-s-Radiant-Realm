@@ -152,7 +152,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, nextTick, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
@@ -167,8 +167,7 @@ const { locale } = useI18n()
 const blogStore = useBlogStore()
 const { continueReading } = useReadHistory()
 
-useReveal()
-onMounted(() => blogStore.ensureLoaded())
+const { observe } = useReveal()
 
 const continuePost = computed(() => {
   const entry = continueReading.value
@@ -179,6 +178,18 @@ const continuePost = computed(() => {
 const recentPosts = computed(() => blogStore.getRecentPosts(3))
 const featuredPost = computed(() => recentPosts.value[0] || null)
 const sidebarPosts = computed(() => recentPosts.value.slice(1))
+
+// Journal / continue cards mount after ensureLoaded — re-observe late .reveal nodes
+onMounted(async () => {
+  await blogStore.ensureLoaded()
+  await nextTick()
+  observe()
+})
+
+watch([recentPosts, continuePost], () => {
+  nextTick(() => observe())
+})
+
 
 const categoryLabel = category => getCategoryLabel(category, locale.value)
 
@@ -288,13 +299,14 @@ const skills = [
   color: var(--color-cta-text);
 }
 
+/* Secondary CTA on dark Hero — ice (#A8C5D4), not washed white / muddy gray */
 .btn-ghost {
   font-size: 15px;
   padding: 12px 22px;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(168, 197, 212, 0.4);
   background: transparent;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(168, 197, 212, 0.88);
   cursor: pointer;
   font-family: var(--font-mono);
   transition: background var(--duration-fast) var(--ease-out),
@@ -304,9 +316,9 @@ const skills = [
 
 @media (hover: hover) and (pointer: fine) {
   .btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.3);
-    color: #fff;
+    background: rgba(168, 197, 212, 0.08);
+    border-color: rgba(168, 197, 212, 0.62);
+    color: #c5dae6;
   }
 }
 

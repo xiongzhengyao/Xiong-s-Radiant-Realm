@@ -1,7 +1,7 @@
 <template>
   <div
     class="cover-art"
-    :class="[`cover-art--${size}`, isDark ? 'cover-art--dark' : 'cover-art--light']"
+    :class="[`cover-art--${size}`, theme === 'dark' ? 'cover-art--dark' : 'cover-art--light']"
   >
     <img
       v-if="image"
@@ -45,12 +45,15 @@ const props = defineProps({
 
 const { isDark } = useTheme()
 const art = computed(() => getCoverArt(props.seed, props.category))
+// Drive from isDark (reactive); align with html.dark / --color-cover-bg after applyTheme
 const theme = computed(() => (isDark.value ? 'dark' : 'light'))
 const bgStyle = computed(() =>
   coverGradientStyle(art.value, { theme: theme.value, boosted: isDark.value })
 )
 const shapeStyles = computed(() =>
-  [0, 1, 2].map(i => coverShapeStyle(art.value, i, { theme: theme.value, boosted: isDark.value }))
+  [0, 1, 2].map(i =>
+    coverShapeStyle(art.value, i, { theme: theme.value, boosted: isDark.value })
+  )
 )
 </script>
 
@@ -86,9 +89,10 @@ const shapeStyles = computed(() =>
 .cover-art-noise {
   position: absolute;
   inset: 0;
-  opacity: 0.28;
+  /* Light: soft grain only — multiply used to crush mist toward near-black */
+  opacity: 0.12;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
-  mix-blend-mode: multiply;
+  mix-blend-mode: soft-light;
   pointer-events: none;
 }
 
