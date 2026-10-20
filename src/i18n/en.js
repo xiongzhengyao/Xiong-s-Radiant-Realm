@@ -224,32 +224,7 @@ export default {
       photography: 'Photography',
       thoughts: 'Thoughts'
     },
-    posts: [
-      {
-        id: 1,
-        title: 'Weekend in Shanghai',
-        date: '2024-02-10',
-        description: 'A cultural walk through Shanghai — the Bund, Tianzifang, and the city rhythm between old lanes and new towers.',
-        tags: ['Travel', 'City'],
-        category: 'travel'
-      },
-      {
-        id: 2,
-        title: 'Annual photo collection',
-        date: '2024-02-08',
-        description: 'Moments from everyday life and notes on how I chase light across seasons and cityscapes.',
-        tags: ['Photography', 'Art'],
-        category: 'photography'
-      },
-      {
-        id: 3,
-        title: 'Notes on Sapiens',
-        date: '2024-02-05',
-        description: 'Reflections on human history — from the cognitive revolution to the scientific age.',
-        tags: ['Reading', 'Thoughts'],
-        category: 'reading'
-      }
-    ]
+    posts: []
   },
   projects: {
     eyebrow: 'Portfolio',
