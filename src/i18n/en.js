@@ -6,7 +6,7 @@ export default {
     blog: 'Blog',
     contact: 'Contact',
     life: 'Life',
-    brand: 'snowhush',
+    brand: 'Snowhush',
     skipToContent: 'Skip to content',
     toggleMenu: 'Toggle navigation menu'
   },
@@ -37,7 +37,7 @@ export default {
     quickLinks: 'Quick links'
   },
   meta: {
-    homeTitle: 'snowhush',
+    homeTitle: 'Snowhush',
     homeDesc: 'Quiet as fresh snow. Camera systems · photography & posters',
     aboutTitle: 'About',
     aboutDesc: 'Xiong Zhengyao — Camera driver software engineer, previously at DJI, Xiaomi & Bosch',
@@ -61,7 +61,7 @@ export default {
     sitemap: 'Sitemap'
   },
   home: {
-    eyebrow: 'snowhush · Shanghai',
+    eyebrow: 'Snowhush · Shanghai',
     welcome: 'Write light into systems; leave quiet on the page.',
     slogan: 'Quiet as fresh snow.',
     viewBlog: 'Read notes',

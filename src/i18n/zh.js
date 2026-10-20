@@ -6,7 +6,7 @@ export default {
     blog: '博客',
     contact: '联系',
     life: '生活',
-    brand: 'snowhush',
+    brand: 'Snowhush',
     skipToContent: '跳到主要内容',
     toggleMenu: '切换导航菜单'
   },
@@ -37,7 +37,7 @@ export default {
     quickLinks: '快速导航'
   },
   meta: {
-    homeTitle: 'snowhush',
+    homeTitle: 'Snowhush',
     homeDesc: '把光写进系统，把安静留在页面。Camera 驱动 · 摄影与海报',
     aboutTitle: '关于我',
     aboutDesc: '熊正耀 — Camera 驱动软件工程师，曾就职于大疆、小米、博世',
@@ -61,7 +61,7 @@ export default {
     sitemap: '网站地图'
   },
   home: {
-    eyebrow: 'snowhush · 上海',
+    eyebrow: 'Snowhush · 上海',
     welcome: '把光写进系统，把安静留在页面。',
     slogan: 'Quiet as fresh snow.',
     viewBlog: '读笔记',

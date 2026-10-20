@@ -71,7 +71,7 @@ const generateRss = posts => {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>snowhush</title>
+    <title>Snowhush</title>
     <link>${SITE_URL}</link>
     <description>Quiet as fresh snow. Camera systems · notes</description>
     <language>zh-CN</language>
