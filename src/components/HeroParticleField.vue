@@ -70,9 +70,10 @@ const FIRST_VISIT_KEY = 'hero-particle-ripple-v1'
  */
 function themeColors() {
   return {
-    rest: 'rgba(168, 197, 212, 0.2)',
-    near: 'rgba(168, 197, 212, 0.7)',
-    nearCore: 'rgba(232, 238, 242, 0.88)'
+    // Idle lattice biased to #A8C5D4 so rest reads cold ice, not gray terminal
+    rest: 'rgba(168, 197, 212, 0.32)',
+    near: 'rgba(168, 197, 212, 0.78)',
+    nearCore: 'rgba(232, 238, 242, 0.9)'
   }
 }
 

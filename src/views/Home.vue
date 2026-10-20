@@ -14,17 +14,11 @@
           <h1 class="hero-title animate-fade-in-up" style="animation-delay: 0.08s">
             {{ $t('home.welcome') }}
           </h1>
-          <p class="hero-pitch animate-fade-in-up" style="animation-delay: 0.14s">
-            {{ $t('home.pitch') }}
-          </p>
-          <p class="hero-slogan animate-fade-in-up" style="animation-delay: 0.18s">
+          <p class="hero-slogan animate-fade-in-up" style="animation-delay: 0.14s">
             {{ $t('home.slogan') }}
           </p>
-          <p class="hero-role animate-fade-in-up" style="animation-delay: 0.22s">
-            {{ $t('home.subtitle') }}
-          </p>
 
-          <div class="hero-actions animate-fade-in-up" style="animation-delay: 0.28s">
+          <div class="hero-actions animate-fade-in-up" style="animation-delay: 0.22s">
             <button class="btn btn-primary btn-glow" @click="$router.push('/blog')">
               {{ $t('home.viewBlog') }}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -214,7 +208,8 @@ const skills = [
   background: var(--color-hero-bg);
   color: var(--color-hero-text);
   overflow: hidden;
-  padding: var(--space-16) 0 0;
+  /* ~96px bottom so next section title sits 80–120px below first screen */
+  padding: var(--space-16) 0 var(--space-24);
 }
 
 .hero-noise {
@@ -245,52 +240,35 @@ const skills = [
   position: relative;
   z-index: 2;
   max-width: 720px;
-  padding-bottom: var(--space-12);
 }
 
 .hero-eyebrow {
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-accent);
   margin-bottom: var(--space-5);
 }
 
 .hero-title {
-  font-family: var(--font-mono);
-  font-size: clamp(40px, 6vw, 72px);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  font-family: var(--font-sans);
+  font-size: clamp(28px, 4.2vw, 44px);
+  font-weight: 600;
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+  max-width: 18em;
   margin-bottom: var(--space-4);
   color: var(--color-hero-text);
 }
 
-.hero-pitch {
-  font-size: clamp(17px, 2vw, 20px);
-  line-height: 1.55;
-  color: rgba(232, 238, 242, 0.78);
-  max-width: 520px;
-  margin-bottom: var(--space-2);
-}
-
 .hero-slogan {
   font-family: var(--font-mono);
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  color: rgba(168, 197, 212, 0.72);
-  margin-bottom: var(--space-5);
-}
-
-.hero-role {
-  font-family: var(--font-mono);
   font-size: 14px;
-  font-weight: 400;
-  color: rgba(139, 150, 158, 0.95);
-  margin-bottom: var(--space-8);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  color: rgba(168, 197, 212, 0.78);
+  margin-bottom: 0;
 }
 
 .hero-actions {
@@ -298,12 +276,15 @@ const skills = [
   align-items: center;
   gap: var(--space-3);
   flex-wrap: wrap;
-  margin-top: var(--space-6);
+  margin-top: var(--space-8);
 }
 
 .hero .btn-primary {
-  font-size: 16px;
-  padding: 14px 26px;
+  font-size: 15px;
+  padding: 12px 22px;
+  border-radius: var(--radius-md);
+  /* #0B0F12 on #A8C5D4 ≈ 9.5:1 — locked ice-blue fill + dark contrast */
+  color: var(--color-accent-contrast);
 }
 
 .btn-ghost {
@@ -330,7 +311,7 @@ const skills = [
 
 /* Continue reading */
 .continue-section {
-  padding: var(--space-6) 0 0;
+  padding: var(--space-8) 0 0;
 }
 
 .continue-card {
@@ -687,7 +668,7 @@ const skills = [
     text-align: center;
   }
 
-  .hero-pitch {
+  .hero-title {
     margin-left: auto;
     margin-right: auto;
   }

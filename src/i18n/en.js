@@ -61,16 +61,14 @@ export default {
     sitemap: 'Sitemap'
   },
   home: {
-    eyebrow: 'Snow · Shanghai',
-    welcome: 'snowhush',
-    subtitle: 'Camera systems engineer · Photography & posters',
-    pitch: 'Write light into systems; leave quiet on the page.',
+    eyebrow: 'snowhush · Shanghai',
+    welcome: 'Write light into systems; leave quiet on the page.',
     slogan: 'Quiet as fresh snow.',
     viewBlog: 'Read notes',
     viewProjects: 'See work',
     expertise: {
       eyebrow: 'Lately',
-      desc: 'Between systems and frames — doing things carefully, quietly.'
+      desc: 'Camera systems · photography & posters — between systems and frames, carefully and quietly.'
     },
     cta: {
       eyebrow: 'Contact',

@@ -61,16 +61,14 @@ export default {
     sitemap: '网站地图'
   },
   home: {
-    eyebrow: '雪意 · 上海',
-    welcome: 'snowhush',
-    subtitle: 'Camera 驱动工程师 · 摄影与海报',
-    pitch: '把光写进系统，把安静留在页面。',
+    eyebrow: 'snowhush · 上海',
+    welcome: '把光写进系统，把安静留在页面。',
     slogan: 'Quiet as fresh snow.',
     viewBlog: '读笔记',
     viewProjects: '看作品',
     expertise: {
       eyebrow: '近况',
-      desc: '在系统与画面之间，慢慢把事情做清楚。'
+      desc: 'Camera 驱动 · 摄影与海报 — 在系统与画面之间，慢慢把事情做清楚。'
     },
     cta: {
       eyebrow: '联络',
