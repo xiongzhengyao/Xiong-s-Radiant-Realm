@@ -92,7 +92,37 @@ app.get('/health', (req, res) => {
   })
 })
 
-// SPA 路由处理 - 所有其他路由返回 index.html
+// 静态资源扩展名：express.static 未命中时返回真实 404，绝不回退到 index.html
+const STATIC_ASSET_EXT =
+  /\.(js|css|map|ico|png|svg|woff2?|jpe?g|webp|gif|txt|xml|json)$/i
+
+// Vite / 源码路径：生产环境不应命中，避免被 SPA 吞成 200 HTML
+const DEV_ONLY_PREFIXES = ['/@vite/', '/src/', '/node_modules/']
+
+const sendNotFound = (req, res) => {
+  res.status(404).type('application/json').json({
+    error: 'Not Found',
+    message: `Cannot ${req.method} ${req.path}`
+  })
+}
+
+// 在 SPA fallback 之前：开发路径与缺失静态资源一律 404（非 HTML）
+app.get('*', (req, res, next) => {
+  const requestPath = req.path
+
+  if (DEV_ONLY_PREFIXES.some((prefix) => requestPath.startsWith(prefix))) {
+    return sendNotFound(req, res)
+  }
+
+  // 带静态扩展名的请求若落到此处，说明 dist 中无对应文件
+  if (STATIC_ASSET_EXT.test(requestPath)) {
+    return sendNotFound(req, res)
+  }
+
+  return next()
+})
+
+// SPA 路由处理 - 无扩展名的客户端路由返回 index.html
 app.get('*', (req, res) => {
   if (fs.existsSync(INDEX_FILE)) {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
