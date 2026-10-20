@@ -6,7 +6,7 @@ export default {
     blog: 'Blog',
     contact: 'Contact',
     life: 'Life',
-    brand: 'snowhush',
+    brand: 'Snowhush',
     skipToContent: 'Skip to content',
     toggleMenu: 'Toggle navigation menu'
   },
@@ -37,7 +37,7 @@ export default {
     quickLinks: 'Quick links'
   },
   meta: {
-    homeTitle: 'snowhush',
+    homeTitle: 'Snowhush',
     homeDesc: 'Quiet as fresh snow. Camera systems · photography & posters',
     aboutTitle: 'About',
     aboutDesc: 'Xiong Zhengyao — Camera driver software engineer, previously at DJI, Xiaomi & Bosch',
@@ -61,7 +61,7 @@ export default {
     sitemap: 'Sitemap'
   },
   home: {
-    eyebrow: 'snowhush · Shanghai',
+    eyebrow: 'Snowhush · Shanghai',
     welcome: 'Write light into systems; leave quiet on the page.',
     slogan: 'Quiet as fresh snow.',
     viewBlog: 'Read notes',
@@ -224,32 +224,7 @@ export default {
       photography: 'Photography',
       thoughts: 'Thoughts'
     },
-    posts: [
-      {
-        id: 1,
-        title: 'Weekend in Shanghai',
-        date: '2024-02-10',
-        description: 'A cultural walk through Shanghai — the Bund, Tianzifang, and the city rhythm between old lanes and new towers.',
-        tags: ['Travel', 'City'],
-        category: 'travel'
-      },
-      {
-        id: 2,
-        title: 'Annual photo collection',
-        date: '2024-02-08',
-        description: 'Moments from everyday life and notes on how I chase light across seasons and cityscapes.',
-        tags: ['Photography', 'Art'],
-        category: 'photography'
-      },
-      {
-        id: 3,
-        title: 'Notes on Sapiens',
-        date: '2024-02-05',
-        description: 'Reflections on human history — from the cognitive revolution to the scientific age.',
-        tags: ['Reading', 'Thoughts'],
-        category: 'reading'
-      }
-    ]
+    posts: []
   },
   projects: {
     eyebrow: 'Portfolio',

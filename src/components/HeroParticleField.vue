@@ -70,8 +70,9 @@ const FIRST_VISIT_KEY = 'hero-particle-ripple-v1'
  */
 function themeColors() {
   return {
-    // Idle lattice biased to #A8C5D4 so rest reads cold ice, not gray terminal
-    rest: 'rgba(168, 197, 212, 0.32)',
+    // Idle lattice biased to #A8C5D4 so rest reads cold ice, not gray terminal.
+    // Slightly softer alpha than pre-density bump so denser grid doesn’t steal the title.
+    rest: 'rgba(168, 197, 212, 0.28)',
     near: 'rgba(168, 197, 212, 0.78)',
     nearCore: 'rgba(232, 238, 242, 0.9)'
   }
@@ -79,8 +80,9 @@ function themeColors() {
 
 function spacingForArea(w) {
   const mobile = w < 734
-  // Desktop ~one node per 80–120px; mobile ~30–40% sparser
-  return mobile ? 130 : 100
+  // Denser rest lattice (desktop ~72px ≈ +90% nodes vs 100px); mobile stays
+  // a bit sparser for scroll/jank headroom while still richer than before.
+  return mobile ? 112 : 72
 }
 
 function maxDisplacement() {
@@ -116,8 +118,8 @@ function rebuildGrid() {
     for (let col = 0; col < cols; col++) {
       const homeX = padX + col * spacing
       const homeY = padY + row * spacing
-      // Larger nodes so the lattice + hollow outline read at full-hero scale
-      const r = 1.85 + ((col * 7 + row * 13) % 5) * 0.28
+      // Slightly tighter dots so denser lattice stays quiet, not speckled
+      const r = 1.55 + ((col * 7 + row * 13) % 5) * 0.22
       next.push({
         homeX,
         homeY,

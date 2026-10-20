@@ -34,8 +34,35 @@ export function getCoverArt(seed, category = '') {
   }
 }
 
+/**
+ * Cover gradient — theme-aware.
+ * Light: high-lightness cool mist (#E8EEF2 base + soft ice washes).
+ * Dark: quiet night ramp (boosted = slightly lifted stops for dark surfaces).
+ */
 export function coverGradientStyle(art, options = {}) {
-  const { boosted = false } = options
+  const theme = options.theme ?? (options.boosted ? 'dark' : 'light')
+
+  if (theme === 'light') {
+    // Cool mist — base ~#E8EEF2 / L≳200; never near-black on white cards
+    const sat = 8
+    const lightA = 88
+    const lightB = 84
+    const baseLight = 94
+    const baseLightEnd = 91
+    return {
+      background: `
+        radial-gradient(ellipse 80% 70% at ${20 + art.variant * 15}% ${30 + art.variant * 10}%,
+          hsla(${art.hue}, ${sat}%, ${lightA}%, 0.7) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at ${75 - art.variant * 10}% ${65}%,
+          hsla(${art.hue2}, ${Math.max(sat - 2, 5)}%, ${lightB}%, 0.55) 0%, transparent 50%),
+        linear-gradient(155deg,
+          hsl(${art.hue}, 7%, ${baseLight}%) 0%,
+          hsl(${art.hue2}, 5%, ${baseLightEnd}%) 100%)
+      `
+    }
+  }
+
+  const { boosted = true } = options
   // Quieter mist — lower sat so covers don’t read as terminal glow
   const sat = boosted ? 18 : 14
   const lightA = boosted ? 42 : 36
@@ -56,13 +83,30 @@ export function coverGradientStyle(art, options = {}) {
 }
 
 export function coverShapeStyle(art, index, options = {}) {
-  const { boosted = false } = options
+  const theme = options.theme ?? (options.boosted ? 'dark' : 'light')
   const offsets = [
     { x: '65%', y: '20%', w: '45%', h: '45%' },
     { x: '10%', y: '55%', w: '35%', h: '35%' },
     { x: '40%', y: '70%', w: '28%', h: '28%' }
   ]
   const o = offsets[index % 3]
+  const transform = `rotate(${art.rotate + index * 18}deg) scale(${art.scale})`
+
+  if (theme === 'light') {
+    const shapeAlpha = 0.18
+    const borderAlpha = 0.08
+    return {
+      left: o.x,
+      top: o.y,
+      width: o.w,
+      height: o.h,
+      transform,
+      background: `linear-gradient(135deg, hsla(${art.hue2}, 10%, 78%, ${shapeAlpha}), hsla(${art.hue}, 7%, 86%, ${shapeAlpha * 0.4}))`,
+      borderColor: `rgba(94, 122, 138, ${borderAlpha})`
+    }
+  }
+
+  const { boosted = true } = options
   const shapeAlpha = boosted ? 0.14 : 0.1
   const borderAlpha = boosted ? 0.1 : 0.06
   return {
@@ -70,7 +114,7 @@ export function coverShapeStyle(art, index, options = {}) {
     top: o.y,
     width: o.w,
     height: o.h,
-    transform: `rotate(${art.rotate + index * 18}deg) scale(${art.scale})`,
+    transform,
     background: `linear-gradient(135deg, hsla(${art.hue2}, 14%, 58%, ${shapeAlpha}), hsla(${art.hue}, 10%, 44%, ${shapeAlpha * 0.35}))`,
     borderColor: `rgba(232, 238, 242, ${borderAlpha})`
   }

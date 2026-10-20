@@ -1,6 +1,6 @@
 // 应用常量配置
 export const APP_CONFIG = {
-  TITLE: 'snowhush',
+  TITLE: 'Snowhush',
   DESCRIPTION: '把光写进系统，把安静留在页面。Camera 驱动 · 摄影与海报',
   DESCRIPTION_EN: 'Quiet as fresh snow. Camera systems · photography & posters',
   EMAIL: 'xiongzhengyao163@163.com',

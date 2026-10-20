@@ -6,7 +6,7 @@ export default {
     blog: '博客',
     contact: '联系',
     life: '生活',
-    brand: 'snowhush',
+    brand: 'Snowhush',
     skipToContent: '跳到主要内容',
     toggleMenu: '切换导航菜单'
   },
@@ -37,7 +37,7 @@ export default {
     quickLinks: '快速导航'
   },
   meta: {
-    homeTitle: 'snowhush',
+    homeTitle: 'Snowhush',
     homeDesc: '把光写进系统，把安静留在页面。Camera 驱动 · 摄影与海报',
     aboutTitle: '关于我',
     aboutDesc: '熊正耀 — Camera 驱动软件工程师，曾就职于大疆、小米、博世',
@@ -61,7 +61,7 @@ export default {
     sitemap: '网站地图'
   },
   home: {
-    eyebrow: 'snowhush · 上海',
+    eyebrow: 'Snowhush · 上海',
     welcome: '把光写进系统，把安静留在页面。',
     slogan: 'Quiet as fresh snow.',
     viewBlog: '读笔记',
@@ -224,32 +224,7 @@ export default {
       photography: '摄影',
       thoughts: '随想'
     },
-    posts: [
-      {
-        id: 1,
-        title: '上海周末游记',
-        date: '2024-02-10',
-        description: '周末在上海的人文探索之旅，感受这座城市的魅力。漫步于外滩，穿行于田子坊，体验上海的文艺气息。',
-        tags: ['旅行', '城市'],
-        category: 'travel'
-      },
-      {
-        id: 2,
-        title: '年度摄影作品集',
-        date: '2024-02-08',
-        description: '记录生活中的美好瞬间，分享摄影心得。用镜头捕捉城市的光影变化，记录四季的自然风光。',
-        tags: ['摄影', '艺术'],
-        category: 'photography'
-      },
-      {
-        id: 3,
-        title: '读《人类简史》有感',
-        date: '2024-02-05',
-        description: '关于人类历史、文明演进的思考。从认知革命到科技革命，人类社会经历了怎样的变迁？',
-        tags: ['读书', '思考'],
-        category: 'reading'
-      }
-    ]
+    posts: []
   },
   projects: {
     eyebrow: '作品集',

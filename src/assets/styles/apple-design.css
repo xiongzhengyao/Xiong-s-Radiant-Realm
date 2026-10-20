@@ -40,6 +40,8 @@
   --color-code-bg: #e8eef2;
   --color-hero-bg: #0B0F12;
   --color-hero-text: #E8EEF2;
+  /* CoverArt procedural strip — cool mist in light, near-black night in dark */
+  --color-cover-bg: #e8eef2;
   --color-tag-bg: #e8eef2;
   --color-tag-text: #0B0F12;
   --color-input-bg: #ffffff;
@@ -144,6 +146,7 @@ html.dark {
   --color-code-bg: #1a2127;
   --color-hero-bg: #0B0F12;
   --color-hero-text: #E8EEF2;
+  --color-cover-bg: #0a0a0c;
   --color-tag-bg: #1a2127;
   --color-tag-text: #E8EEF2;
   --color-input-bg: #12181c;
