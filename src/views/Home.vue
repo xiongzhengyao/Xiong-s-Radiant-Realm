@@ -4,8 +4,7 @@
     <section class="hero">
       <div class="hero-noise" aria-hidden="true" />
       <div class="hero-mesh" aria-hidden="true" />
-      <!-- Hero band stays dark via --color-hero-bg in both themes; particles use dark-bottom
-           params so light site chrome (nav/page) can switch without faking a light hero. -->
+      <!-- Hero follows theme via --color-hero-bg: cool mist in light, snow-night in dark. -->
       <HeroParticleField />
 
       <div class="container-wide hero-grid">
@@ -227,10 +226,15 @@ const skills = [
   position: absolute;
   inset: 0;
   z-index: 0;
-  /* Softened ~25% so lattice / title stay primary */
-  opacity: 0.16;
+  /* Soft grain — lighter on mist so lattice / title stay primary */
+  opacity: 0.1;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+:global(html.dark) .hero-noise {
+  opacity: 0.16;
   mix-blend-mode: overlay;
 }
 
@@ -299,14 +303,14 @@ const skills = [
   color: var(--color-cta-text);
 }
 
-/* Secondary CTA on dark Hero — ice (#A8C5D4), not washed white / muddy gray */
+/* Secondary CTA — theme tokens: mist-readable on light, ice on snow-night */
 .btn-ghost {
   font-size: 15px;
   padding: 12px 22px;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(168, 197, 212, 0.4);
+  border: 1px solid var(--color-hero-ghost-border);
   background: transparent;
-  color: rgba(168, 197, 212, 0.88);
+  color: var(--color-hero-ghost-text);
   cursor: pointer;
   font-family: var(--font-mono);
   transition: background var(--duration-fast) var(--ease-out),
@@ -316,9 +320,9 @@ const skills = [
 
 @media (hover: hover) and (pointer: fine) {
   .btn-ghost:hover {
-    background: rgba(168, 197, 212, 0.08);
-    border-color: rgba(168, 197, 212, 0.62);
-    color: #c5dae6;
+    background: var(--color-hero-ghost-hover-bg);
+    border-color: var(--color-hero-ghost-hover-border);
+    color: var(--color-hero-ghost-hover-text);
   }
 }
 
@@ -631,7 +635,7 @@ const skills = [
   border-radius: var(--radius-lg);
   background: var(--color-hero-bg);
   color: var(--color-hero-text);
-  border: 1px solid rgba(168, 197, 212, 0.18);
+  border: 1px solid var(--color-hero-cta-border);
   position: relative;
   overflow: hidden;
 }
@@ -655,14 +659,14 @@ const skills = [
 }
 
 .cta-band-copy h2 {
-  color: #fff;
+  color: var(--color-hero-text);
   font-size: clamp(24px, 3vw, 36px);
   letter-spacing: -0.02em;
   margin-bottom: var(--space-3);
 }
 
 .cta-band-copy p {
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--color-hero-muted);
   font-size: 16px;
   line-height: 1.55;
 }

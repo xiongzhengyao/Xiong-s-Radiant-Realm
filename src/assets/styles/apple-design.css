@@ -38,8 +38,17 @@
   --color-nav-bg: rgba(242, 245, 247, 0.9);
   --color-card-bg: #ffffff;
   --color-code-bg: #e8eef2;
-  --color-hero-bg: #0B0F12;
-  --color-hero-text: #E8EEF2;
+  /* Light Hero / CTA band — cool mist continuous with nav + page chrome */
+  --color-hero-bg: #eef2f5;
+  --color-hero-text: #0B0F12;
+  /* Ghost CTA on Hero — readable on light mist (dark theme overrides) */
+  --color-hero-ghost-border: rgba(94, 122, 138, 0.55);
+  --color-hero-ghost-text: #4a6574;
+  --color-hero-ghost-hover-bg: rgba(94, 122, 138, 0.08);
+  --color-hero-ghost-hover-border: rgba(94, 122, 138, 0.62);
+  --color-hero-ghost-hover-text: #4a6574;
+  --color-hero-cta-border: rgba(94, 122, 138, 0.16);
+  --color-hero-muted: #5E7A8A;
   /* CoverArt procedural strip — cool mist in light, near-black night in dark */
   --color-cover-bg: #e8eef2;
   --color-tag-bg: #e8eef2;
@@ -144,8 +153,16 @@ html.dark {
   --color-nav-bg: rgba(11, 15, 18, 0.9);
   --color-card-bg: #141a1f;
   --color-code-bg: #1a2127;
+  /* Dark Hero — snow-night (unchanged quiet night look) */
   --color-hero-bg: #0B0F12;
   --color-hero-text: #E8EEF2;
+  --color-hero-ghost-border: rgba(168, 197, 212, 0.4);
+  --color-hero-ghost-text: rgba(168, 197, 212, 0.88);
+  --color-hero-ghost-hover-bg: rgba(168, 197, 212, 0.08);
+  --color-hero-ghost-hover-border: rgba(168, 197, 212, 0.62);
+  --color-hero-ghost-hover-text: #c5dae6;
+  --color-hero-cta-border: rgba(168, 197, 212, 0.18);
+  --color-hero-muted: rgba(232, 238, 242, 0.55);
   --color-cover-bg: #0a0a0c;
   --color-tag-bg: #1a2127;
   --color-tag-text: #E8EEF2;

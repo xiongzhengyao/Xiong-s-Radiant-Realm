@@ -5,7 +5,10 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { useTheme } from '@/composables/useTheme'
+
+const { isDark } = useTheme()
 
 const rootRef = ref(null)
 const canvasRef = ref(null)
@@ -63,15 +66,21 @@ const RIPPLE_RADIUS = 160
 const FIRST_VISIT_KEY = 'hero-particle-ripple-v1'
 
 /**
- * Hero band stays dark in both site themes (see --color-hero-bg).
- * Always paint with dark-bottom params so light chrome never washes the lattice.
- * Hierarchy: resting lattice ≪ near ice-blue rim < accent < cool-white title.
- * Palette: 雪夜静默 — paler ice-blue, not cyan-green.
+ * Lattice follows site theme (see --color-hero-bg).
+ * Light: softer slate dots on cool mist; ice accent only on near rim.
+ * Dark: snow-night ice lattice (unchanged quiet night look).
+ * Hierarchy: resting lattice ≪ near rim < accent < title.
  */
 function themeColors() {
+  if (!isDark.value) {
+    return {
+      rest: 'rgba(94, 122, 138, 0.2)',
+      near: 'rgba(94, 122, 138, 0.52)',
+      nearCore: 'rgba(168, 197, 212, 0.82)'
+    }
+  }
   return {
     // Idle lattice biased to #A8C5D4 so rest reads cold ice, not gray terminal.
-    // Slightly softer alpha than pre-density bump so denser grid doesn’t steal the title.
     rest: 'rgba(168, 197, 212, 0.28)',
     near: 'rgba(168, 197, 212, 0.78)',
     nearCore: 'rgba(232, 238, 242, 0.9)'
@@ -485,6 +494,10 @@ function maybeStartFirstVisitRipple() {
   rippleY = height * 0.4
   rippleAge = 0
 }
+
+watch(isDark, () => {
+  if (reducedMotion || !running) drawStatic()
+})
 
 onMounted(() => {
   mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
