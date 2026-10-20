@@ -241,7 +241,7 @@ useReveal()
   align-items: center;
   justify-content: center;
   font-size: 36px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-text-tertiary);
   background: var(--color-bg-secondary);
 }
@@ -256,7 +256,7 @@ useReveal()
   font-family: var(--font-mono);
   font-size: 14px;
   color: var(--color-accent);
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: var(--space-4);
 }
 
@@ -454,7 +454,7 @@ useReveal()
   font-size: 14px;
   color: var(--color-accent);
   margin-top: 2px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .timeline-period {

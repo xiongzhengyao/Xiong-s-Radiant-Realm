@@ -5,8 +5,10 @@
 /* --- Design Tokens --- */
 :root {
   /* Typography */
-  --font-sans: 'IBM Plex Sans', 'Noto Sans SC', 'PingFang SC', 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  /* Latin: self-hosted IBM Plex Sans (400/600). CJK: system stack — no Google CJK. */
+  --font-sans: 'IBM Plex Sans', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC',
+    'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
   /* Light Mode Colors — cool mist */
   --color-bg: #f2f5f7;
@@ -201,7 +203,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-text);
 }
 
-h1 { font-size: clamp(32px, 5vw, 56px); font-weight: 700; letter-spacing: -0.025em; }
+h1 { font-size: clamp(32px, 5vw, 56px); font-weight: 600; letter-spacing: -0.025em; }
 h2 { font-size: clamp(24px, 3.5vw, 40px); font-weight: 600; letter-spacing: -0.02em; }
 h3 { font-size: clamp(20px, 2.5vw, 28px); }
 h4 { font-size: clamp(17px, 2vw, 22px); }
@@ -359,7 +361,7 @@ a[target="_blank"]:not(.footer-link)::after {
   gap: var(--space-2);
   padding: 11px 18px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.2;
   border-radius: var(--radius-md);
   border: none;
@@ -418,7 +420,7 @@ a[target="_blank"]:not(.footer-link)::after {
   align-items: center;
   padding: 3px 10px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   font-family: var(--font-mono);
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
@@ -650,7 +652,7 @@ a[target="_blank"]:not(.footer-link)::after {
   font-size: 1rem;
   margin: 1.6rem 0 0.5rem;
   color: var(--color-text-secondary);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .rich-markdown h5,
@@ -658,7 +660,7 @@ a[target="_blank"]:not(.footer-link)::after {
   font-size: 0.95rem;
   margin: 1.35rem 0 0.4rem;
   color: var(--color-text-tertiary);
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -785,7 +787,7 @@ a[target="_blank"]:not(.footer-link)::after {
   z-index: 1;
   padding: 4px 10px;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.02em;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
@@ -963,7 +965,7 @@ a[target="_blank"]:not(.footer-link)::after {
 .rich-markdown th {
   background: var(--color-bg-secondary);
   /* Slightly quieter than body so headers don't compete with H2 */
-  font-weight: 500;
+  font-weight: 600;
   font-family: var(--font-mono);
   font-size: 0.82em;
   letter-spacing: -0.01em;
@@ -996,7 +998,7 @@ a[target="_blank"]:not(.footer-link)::after {
 }
 
 .rich-markdown th.is-numeric {
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* Sensible CSS fallback: last column often holds peak/rate numbers */
@@ -1012,7 +1014,7 @@ a[target="_blank"]:not(.footer-link)::after {
 }
 
 .rich-markdown table.has-numeric-last th:last-child {
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* Definition lists (if present) */

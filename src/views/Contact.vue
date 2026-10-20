@@ -315,7 +315,7 @@ useReveal()
 
 .form-group label {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-text);
 }
 

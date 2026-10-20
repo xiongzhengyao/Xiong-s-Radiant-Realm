@@ -86,7 +86,7 @@ const isActive = path => {
   text-decoration: none;
   color: var(--color-text-tertiary);
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 600;
   transition: color var(--duration-fast) var(--ease-out);
 }
 
