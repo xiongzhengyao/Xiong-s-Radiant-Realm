@@ -10,7 +10,8 @@ export default defineConfig({
     }
   },
   server: {
-    port: 8888,
+    // Local Vite uses 5174; Cloudflare Tunnel points at production :8888
+    port: 5174,
     host: '0.0.0.0',
     open: true
   },

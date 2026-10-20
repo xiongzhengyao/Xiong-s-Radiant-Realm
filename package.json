@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 5174 --host",
     "build": "node scripts/generate-feeds.js && vite build",
-    "serve": "vite preview",
+    "serve": "vite preview --port 8890 --host 127.0.0.1",
     "start": "node server.js",
     "new:post": "node scripts/new-post.js",
     "deploy:remote": "bash scripts/deploy-remote.sh",
     "rollback:remote": "bash scripts/rollback-remote.sh",
+    "release:local": "npm run build && launchctl kickstart -k gui/$(id -u)/com.snowhush.site",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "format": "prettier --write \"src/**/*.{js,vue,json,css,scss,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,vue,json,css,scss,md}\""
