@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://xiongzhengyao.dev/</loc><changefreq>weekly</changefreq></url>
-  <url><loc>https://xiongzhengyao.dev/about</loc><changefreq>weekly</changefreq></url>
-  <url><loc>https://xiongzhengyao.dev/projects</loc><changefreq>weekly</changefreq></url>
-  <url><loc>https://xiongzhengyao.dev/blog</loc><changefreq>weekly</changefreq></url>
-  <url><loc>https://xiongzhengyao.dev/life</loc><changefreq>weekly</changefreq></url>
-  <url><loc>https://xiongzhengyao.dev/contact</loc><changefreq>weekly</changefreq></url>
-  <url><loc>https://xiongzhengyao.dev/blog/216244/qualcomm-dual-cam-camnoc-bandwidth</loc><lastmod>2026-10-17</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://xiongzhengyao.dev/blog/139734/计算</loc><lastmod>2026-03-14</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://xiongzhengyao.dev/blog/92852/linux-system-programming</loc><lastmod>2024-09-12</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://xiongzhengyao.dev/blog/830804/i2c-i3c-protocols</loc><lastmod>2024-08-20</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://xiongzhengyao.dev/blog/80775/image-sensors</loc><lastmod>2024-07-10</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://xiongzhengyao.dev/blog/429226/environmental-sensors</loc><lastmod>2024-06-15</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://xiongzhengyao.dev/blog/739870/inertial-sensors</loc><lastmod>2024-05-22</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://xiongzhengyao.dev/blog/806838/learning-resources</loc><lastmod>2024-03-01</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://snowhush.com/about</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://snowhush.com/projects</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://snowhush.com/blog</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://snowhush.com/life</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://snowhush.com/contact</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://snowhush.com/blog/216244/qualcomm-dual-cam-camnoc-bandwidth</loc><lastmod>2026-10-17</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/blog/139734/计算</loc><lastmod>2026-03-14</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/blog/92852/linux-system-programming</loc><lastmod>2024-09-12</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/blog/830804/i2c-i3c-protocols</loc><lastmod>2024-08-20</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/blog/80775/image-sensors</loc><lastmod>2024-07-10</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/blog/429226/environmental-sensors</loc><lastmod>2024-06-15</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/blog/739870/inertial-sensors</loc><lastmod>2024-05-22</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/blog/806838/learning-resources</loc><lastmod>2024-03-01</lastmod><changefreq>monthly</changefreq></url>
 </urlset>

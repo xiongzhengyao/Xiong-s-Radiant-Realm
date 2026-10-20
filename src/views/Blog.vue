@@ -1157,7 +1157,7 @@ watch(filteredPosts, () => {
 .post-detail {
   position: relative;
   padding: 0 0 var(--space-24);
-  /* Softened teal glow — title contrast stays solid */
+  /* Softened ice-blue glow — title contrast stays solid */
   background:
     radial-gradient(ellipse 70% 28% at 18% 0%, color-mix(in srgb, var(--color-mesh-1) 45%, transparent), transparent 60%),
     radial-gradient(ellipse 50% 24% at 92% 6%, color-mix(in srgb, var(--color-mesh-2) 40%, transparent), transparent 55%),

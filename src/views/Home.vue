@@ -10,18 +10,18 @@
 
       <div class="container-wide hero-grid">
         <div class="hero-copy">
-          <p class="hero-terminal animate-fade-in-up" aria-hidden="true">
-            <span class="hero-terminal-prompt">{{ $t('home.whoami') }}</span>
-          </p>
           <p class="hero-eyebrow animate-fade-in-up" style="animation-delay: 0.04s">{{ $t('home.eyebrow') }}</p>
           <h1 class="hero-title animate-fade-in-up" style="animation-delay: 0.08s">
             {{ $t('home.welcome') }}
           </h1>
-          <p class="hero-role animate-fade-in-up" style="animation-delay: 0.14s">
-            {{ $t('home.subtitle') }}
-          </p>
-          <p class="hero-pitch animate-fade-in-up" style="animation-delay: 0.2s">
+          <p class="hero-pitch animate-fade-in-up" style="animation-delay: 0.14s">
             {{ $t('home.pitch') }}
+          </p>
+          <p class="hero-slogan animate-fade-in-up" style="animation-delay: 0.18s">
+            {{ $t('home.slogan') }}
+          </p>
+          <p class="hero-role animate-fade-in-up" style="animation-delay: 0.22s">
+            {{ $t('home.subtitle') }}
           </p>
 
           <div class="hero-actions animate-fade-in-up" style="animation-delay: 0.28s">
@@ -30,10 +30,7 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
             <button class="btn btn-ghost" @click="$router.push('/projects')">
-            {{ $t('nav.projects') }}
-          </button>
-          <button class="btn btn-ghost" @click="$router.push('/about')">
-              {{ $t('home.viewAbout') }}
+              {{ $t('home.viewProjects') }}
             </button>
           </div>
         </div>
@@ -148,11 +145,11 @@
       <div class="cta-band-inner container-wide reveal">
         <div class="cta-band-copy">
           <span class="section-eyebrow cta-eyebrow">{{ $t('home.cta.eyebrow') }}</span>
-          <h2>{{ $t('contact.title') }}</h2>
-          <p>{{ $t('contact.subtitle') }}</p>
+          <h2>{{ $t('home.cta.title') }}</h2>
+          <p>{{ $t('home.cta.subtitle') }}</p>
         </div>
         <button class="btn btn-primary btn-glow cta-btn" @click="$router.push('/contact')">
-          {{ $t('about.contactCta') }}
+          {{ $t('home.cta.button') }}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </button>
       </div>
@@ -196,9 +193,9 @@ const goToPost = post => {
 }
 
 const skills = [
+  { key: 'camera' },
   { key: 'embedded' },
-  { key: 'image' },
-  { key: 'linux' }
+  { key: 'writing' }
 ]
 </script>
 
@@ -251,24 +248,6 @@ const skills = [
   padding-bottom: var(--space-12);
 }
 
-.hero-terminal {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  color: var(--color-accent);
-  margin-bottom: var(--space-4);
-  opacity: 0.9;
-}
-
-.hero-terminal-prompt::after {
-  content: '▋';
-  margin-left: 2px;
-  animation: terminal-blink 1.1s step-end infinite;
-}
-
-@keyframes terminal-blink {
-  50% { opacity: 0; }
-}
-
 .hero-eyebrow {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -289,21 +268,29 @@ const skills = [
   color: var(--color-hero-text);
 }
 
-.hero-role {
-  font-family: var(--font-mono);
-  font-size: clamp(16px, 2vw, 20px);
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
-  margin-bottom: var(--space-4);
-  letter-spacing: -0.01em;
+.hero-pitch {
+  font-size: clamp(17px, 2vw, 20px);
+  line-height: 1.55;
+  color: rgba(232, 238, 242, 0.78);
+  max-width: 520px;
+  margin-bottom: var(--space-2);
 }
 
-.hero-pitch {
-  font-size: 17px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.55);
-  max-width: 520px;
+.hero-slogan {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: rgba(168, 197, 212, 0.72);
+  margin-bottom: var(--space-5);
+}
+
+.hero-role {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(139, 150, 158, 0.95);
   margin-bottom: var(--space-8);
+  letter-spacing: 0.02em;
 }
 
 .hero-actions {
@@ -433,11 +420,11 @@ const skills = [
               transform var(--duration-base) var(--ease-out);
 }
 
-.bento-card--embedded {
+.bento-card--camera {
   grid-row: span 2;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
   min-height: 320px;
 }
 
@@ -475,9 +462,9 @@ const skills = [
   pointer-events: none;
 }
 
-.bento-card--embedded .bento-glow { background: #22d3ee; top: -40px; right: -40px; }
-.bento-card--image .bento-glow { background: #34d399; bottom: -60px; left: -20px; }
-.bento-card--linux .bento-glow { background: #67e8f9; top: -30px; left: 50%; }
+.bento-card--camera .bento-glow { background: #A8C5D4; top: -40px; right: -40px; }
+.bento-card--embedded .bento-glow { background: #8B969E; bottom: -60px; left: -20px; }
+.bento-card--writing .bento-glow { background: #A8C5D4; top: -30px; left: 50%; }
 
 @media (hover: hover) and (pointer: fine) {
   .bento-card:hover {
@@ -650,7 +637,7 @@ const skills = [
   border-radius: var(--radius-lg);
   background: var(--color-hero-bg);
   color: var(--color-hero-text);
-  border: 1px solid rgba(34, 211, 238, 0.18);
+  border: 1px solid rgba(168, 197, 212, 0.18);
   position: relative;
   overflow: hidden;
 }
@@ -729,7 +716,7 @@ const skills = [
     grid-template-columns: 1fr;
   }
 
-  .bento-card--embedded {
+  .bento-card--camera {
     grid-row: auto;
     min-height: auto;
   }
@@ -758,9 +745,4 @@ const skills = [
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-terminal-prompt::after {
-    animation: none;
-  }
-}
 </style>

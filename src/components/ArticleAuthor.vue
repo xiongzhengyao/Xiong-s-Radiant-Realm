@@ -52,9 +52,9 @@ const topics = computed(() => {
   const focusing = tm('home.focusing.topics')
   if (Array.isArray(focusing) && focusing.length) return focusing.slice(0, 3)
   return [
+    t('home.skills.camera.name'),
     t('home.skills.embedded.name'),
-    t('home.skills.image.name'),
-    t('home.skills.linux.name')
+    t('home.skills.writing.name')
   ]
 })
 const profileImage = APP_CONFIG.IMAGES.PROFILE

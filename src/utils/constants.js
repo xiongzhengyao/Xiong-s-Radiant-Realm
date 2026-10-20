@@ -1,10 +1,10 @@
 // 应用常量配置
 export const APP_CONFIG = {
-  TITLE: "Xiong's Radiant Realm",
-  DESCRIPTION: '熊正耀 — Camera 驱动软件工程师的个人站：作品、技术博客与简历',
-  DESCRIPTION_EN: 'Xiong Zhengyao — Camera driver software engineer: portfolio, tech blog & résumé',
+  TITLE: 'snowhush',
+  DESCRIPTION: '把光写进系统，把安静留在页面。Camera 驱动 · 摄影与海报',
+  DESCRIPTION_EN: 'Quiet as fresh snow. Camera systems · photography & posters',
   EMAIL: 'xiongzhengyao163@163.com',
-  SITE_URL: 'https://xiongzhengyao.dev',
+  SITE_URL: 'https://snowhush.com',
   VERSION: '1.0.0',
   IMAGES: {
     PROFILE: '/images/profile.jpg',

@@ -4,7 +4,7 @@ const path = require('path')
 const ROOT = path.join(__dirname, '..')
 const POSTS_DIR = path.join(ROOT, 'src/assets/posts')
 const PUBLIC_DIR = path.join(ROOT, 'public')
-const SITE_URL = process.env.SITE_URL || 'https://xiongzhengyao.dev'
+const SITE_URL = process.env.SITE_URL || 'https://snowhush.com'
 
 const parseFrontmatter = content => {
   const match = content.match(/^---\n([\s\S]*?)\n---\n?/)
@@ -71,9 +71,9 @@ const generateRss = posts => {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>Xiong's Radiant Realm</title>
+    <title>snowhush</title>
     <link>${SITE_URL}</link>
-    <description>Camera driver engineer — tech blog</description>
+    <description>Quiet as fresh snow. Camera systems · notes</description>
     <language>zh-CN</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
 ${items}
