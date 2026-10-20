@@ -36,21 +36,21 @@ export function getCoverArt(seed, category = '') {
 
 export function coverGradientStyle(art, options = {}) {
   const { boosted = false } = options
-  // Low-sat cool tones — mist / ice, not neon
-  const sat = boosted ? 28 : 22
-  const lightA = boosted ? 48 : 42
-  const lightB = boosted ? 38 : 32
-  const baseLight = boosted ? 14 : 11
-  const baseLightEnd = boosted ? 10 : 8
+  // Quieter mist — lower sat so covers don’t read as terminal glow
+  const sat = boosted ? 18 : 14
+  const lightA = boosted ? 42 : 36
+  const lightB = boosted ? 32 : 28
+  const baseLight = boosted ? 13 : 10
+  const baseLightEnd = boosted ? 9 : 7
   return {
     background: `
       radial-gradient(ellipse 80% 70% at ${20 + art.variant * 15}% ${30 + art.variant * 10}%,
-        hsla(${art.hue}, ${sat}%, ${lightA}%, ${boosted ? 0.9 : 0.82}) 0%, transparent 55%),
+        hsla(${art.hue}, ${sat}%, ${lightA}%, ${boosted ? 0.78 : 0.7}) 0%, transparent 55%),
       radial-gradient(ellipse 60% 50% at ${75 - art.variant * 10}% ${65}%,
-        hsla(${art.hue2}, ${sat - 4}%, ${lightB}%, ${boosted ? 0.75 : 0.65}) 0%, transparent 50%),
+        hsla(${art.hue2}, ${Math.max(sat - 4, 8)}%, ${lightB}%, ${boosted ? 0.58 : 0.5}) 0%, transparent 50%),
       linear-gradient(155deg,
-        hsl(${art.hue}, 18%, ${baseLight}%) 0%,
-        hsl(${art.hue2}, 14%, ${baseLightEnd}%) 100%)
+        hsl(${art.hue}, 12%, ${baseLight}%) 0%,
+        hsl(${art.hue2}, 10%, ${baseLightEnd}%) 100%)
     `
   }
 }
@@ -63,15 +63,15 @@ export function coverShapeStyle(art, index, options = {}) {
     { x: '40%', y: '70%', w: '28%', h: '28%' }
   ]
   const o = offsets[index % 3]
-  const shapeAlpha = boosted ? 0.22 : 0.16
-  const borderAlpha = boosted ? 0.12 : 0.07
+  const shapeAlpha = boosted ? 0.14 : 0.1
+  const borderAlpha = boosted ? 0.1 : 0.06
   return {
     left: o.x,
     top: o.y,
     width: o.w,
     height: o.h,
     transform: `rotate(${art.rotate + index * 18}deg) scale(${art.scale})`,
-    background: `linear-gradient(135deg, hsla(${art.hue2}, 24%, 62%, ${shapeAlpha}), hsla(${art.hue}, 18%, 48%, ${shapeAlpha * 0.35}))`,
+    background: `linear-gradient(135deg, hsla(${art.hue2}, 14%, 58%, ${shapeAlpha}), hsla(${art.hue}, 10%, 44%, ${shapeAlpha * 0.35}))`,
     borderColor: `rgba(232, 238, 242, ${borderAlpha})`
   }
 }

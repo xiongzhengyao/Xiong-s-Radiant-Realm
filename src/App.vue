@@ -355,8 +355,8 @@ html.dark {
   width: auto;
   transform: none;
   border-radius: 0;
-  background: var(--color-accent);
-  opacity: 0.85;
+  background: var(--color-nav-current);
+  opacity: 0.9;
 }
 
 .nav-actions {

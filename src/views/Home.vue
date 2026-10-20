@@ -248,7 +248,7 @@ const skills = [
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: var(--color-mist);
   margin-bottom: var(--space-5);
 }
 
@@ -267,7 +267,7 @@ const skills = [
   font-family: var(--font-mono);
   font-size: 14px;
   letter-spacing: 0.04em;
-  color: rgba(168, 197, 212, 0.78);
+  color: var(--color-mist);
   margin-bottom: 0;
 }
 
@@ -283,8 +283,9 @@ const skills = [
   font-size: 15px;
   padding: 12px 22px;
   border-radius: var(--radius-md);
-  /* #0B0F12 on #A8C5D4 ≈ 9.5:1 — locked ice-blue fill + dark contrast */
-  color: var(--color-accent-contrast);
+  /* CTA tokens: ice-blue fill + near-black text in both themes */
+  background: var(--color-cta-bg);
+  color: var(--color-cta-text);
 }
 
 .btn-ghost {
@@ -454,7 +455,7 @@ const skills = [
   }
 
   .bento-card:hover .bento-glow {
-    opacity: 0.12;
+    opacity: 0.07;
   }
 }
 
