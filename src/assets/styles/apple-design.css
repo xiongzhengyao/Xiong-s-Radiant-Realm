@@ -153,13 +153,13 @@
 /* --- Dark Mode (default — 雪夜静默) --- */
 html.dark {
   --color-bg: #0B0F12;
-  --color-bg-secondary: #12181c;
+  --color-bg-secondary: #151c22;
   --color-bg-tertiary: #0e1418;
-  --color-surface: #141a1f;
-  --color-surface-elevated: #1a2127;
-  --color-text: #E8EEF2;
-  --color-text-secondary: #8B969E;
-  --color-text-tertiary: #6d7880;
+  --color-surface: #181f25;
+  --color-surface-elevated: #1e262e;
+  --color-text: #F0F4F7;
+  --color-text-secondary: #B8C4CC;
+  --color-text-tertiary: #8B969E;
   --color-accent: #A8C5D4;
   --color-accent-hover: #c2d8e3;
   --color-accent-contrast: #0B0F12;
@@ -168,24 +168,24 @@ html.dark {
   --color-cta-bg: #A8C5D4;
   --color-cta-bg-hover: #b8d1dd;
   --color-cta-text: #0B0F12;
-  --color-mist: #8B969E;
+  --color-mist: #B8C4CC;
   --color-nav-current: #A8C5D4;
-  --color-border: rgba(232, 238, 242, 0.1);
-  --color-divider: rgba(232, 238, 242, 0.06);
+  --color-border: rgba(232, 238, 242, 0.18);
+  --color-divider: rgba(232, 238, 242, 0.10);
   --color-overlay: rgba(11, 15, 18, 0.84);
   --color-nav-bg: rgba(11, 15, 18, 0.9);
-  --color-card-bg: #141a1f;
+  --color-card-bg: #181f25;
   --color-code-bg: #1a2127;
   /* Dark Hero — snow-night (unchanged quiet night look) */
   --color-hero-bg: #0B0F12;
   --color-hero-text: #E8EEF2;
   --color-hero-ghost-border: rgba(168, 197, 212, 0.4);
-  --color-hero-ghost-text: rgba(168, 197, 212, 0.88);
+  --color-hero-ghost-text: #C5DAE6;
   --color-hero-ghost-hover-bg: rgba(168, 197, 212, 0.08);
   --color-hero-ghost-hover-border: rgba(168, 197, 212, 0.62);
   --color-hero-ghost-hover-text: #c5dae6;
   --color-hero-cta-border: rgba(168, 197, 212, 0.18);
-  --color-hero-muted: rgba(232, 238, 242, 0.55);
+  --color-hero-muted: rgba(232, 238, 242, 0.72);
   --color-cover-bg: #0a0a0c;
   --color-tag-bg: #1a2127;
   --color-tag-text: #E8EEF2;
