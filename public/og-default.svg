@@ -2,6 +2,6 @@
   <rect width="1200" height="630" fill="#0B0F12"/>
   <circle cx="900" cy="200" r="220" fill="#A8C5D4" fill-opacity="0.14"/>
   <circle cx="280" cy="500" r="180" fill="#5E7A8A" fill-opacity="0.12"/>
-  <text x="80" y="280" fill="#E8EEF2" font-family="IBM Plex Sans, Noto Sans SC, system-ui, sans-serif" font-size="72" font-weight="700">Snowhush</text>
-  <text x="80" y="360" fill="#8B969E" font-family="IBM Plex Sans, Noto Sans SC, system-ui, sans-serif" font-size="28">Quiet as fresh snow.</text>
+  <text x="80" y="280" fill="#E8EEF2" font-family="system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, Hiragino Sans GB, Noto Sans SC, Microsoft YaHei, sans-serif" font-size="72" font-weight="700">Snowhush</text>
+  <text x="80" y="360" fill="#8B969E" font-family="system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, Hiragino Sans GB, Noto Sans SC, Microsoft YaHei, sans-serif" font-size="28">Quiet as fresh snow.</text>
 </svg>

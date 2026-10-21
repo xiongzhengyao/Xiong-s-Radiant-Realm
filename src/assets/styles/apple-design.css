@@ -5,9 +5,9 @@
 /* --- Design Tokens --- */
 :root {
   /* Typography */
-  /* Latin: self-hosted IBM Plex Sans (400/600). CJK: system stack — no Google CJK. */
-  --font-sans: 'IBM Plex Sans', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC',
-    'Microsoft YaHei', sans-serif;
+  /* System-first UI stack: CJK + Latin share one face (no web body font mismatch). */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
   /* Light Mode Colors — cool mist */
