@@ -234,7 +234,7 @@ const skills = [
 }
 
 :global(html.dark) .hero-noise {
-  opacity: 0.16;
+  opacity: 0.10;
   mix-blend-mode: overlay;
 }
 
