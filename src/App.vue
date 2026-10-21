@@ -194,20 +194,22 @@ html.dark {
   color-scheme: dark;
 }
 
-/* Page route transitions */
+/* Page route transitions — ~280ms, displacement ≤8px, out-in (no circular expand) */
 .page-enter-active,
 .page-leave-active {
-  transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out);
+  transition: opacity var(--duration-page) var(--ease-out),
+              transform var(--duration-page) var(--ease-out);
 }
 
 .page-enter-from {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(var(--page-enter-y));
 }
 
 .page-leave-to {
-  opacity: 0;
-  transform: translateY(-6px);
+  /* Keep faint residual opacity so out-in mid-frame isn't a black void */
+  opacity: var(--page-leave-opacity);
+  transform: translateY(var(--page-leave-y));
 }
 
 @media (prefers-reduced-motion: reduce) {

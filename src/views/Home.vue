@@ -313,9 +313,7 @@ const skills = [
   color: var(--color-hero-ghost-text);
   cursor: pointer;
   font-family: var(--font-mono);
-  transition: background var(--duration-fast) var(--ease-out),
-              border-color var(--duration-fast) var(--ease-out),
-              color var(--duration-fast) var(--ease-out);
+  /* Color + light press: shared .btn-ghost motion in apple-design.css */
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -340,15 +338,7 @@ const skills = [
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: border-color var(--duration-fast) var(--ease-out),
-              transform var(--duration-fast) var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .continue-card:hover {
-    border-color: var(--color-accent);
-    transform: translateY(-2px);
-  }
+  /* Hover / press: shared .continue-card motion in apple-design.css */
 }
 
 .continue-icon {
@@ -414,8 +404,7 @@ const skills = [
   border: 1px solid var(--color-border);
   background: var(--color-card-bg);
   overflow: hidden;
-  transition: border-color var(--duration-base) var(--ease-out),
-              transform var(--duration-base) var(--ease-out);
+  /* Hover / press: shared .bento-card motion in apple-design.css */
 }
 
 .bento-card--camera {
@@ -465,11 +454,6 @@ const skills = [
 .bento-card--writing .bento-glow { background: var(--color-cta-bg); top: -30px; left: 50%; }
 
 @media (hover: hover) and (pointer: fine) {
-  .bento-card:hover {
-    border-color: var(--color-accent-border);
-    transform: translateY(-2px);
-  }
-
   .bento-card:hover .bento-glow {
     opacity: 0.07;
   }
@@ -506,8 +490,7 @@ const skills = [
   border-radius: var(--radius-lg);
   overflow: hidden;
   cursor: pointer;
-  transition: transform var(--duration-base) var(--ease-out),
-              box-shadow var(--duration-base) var(--ease-out);
+  /* Hover / press: shared .journal-featured motion in apple-design.css */
 }
 
 .journal-cover {
@@ -571,8 +554,7 @@ const skills = [
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: border-color var(--duration-fast) var(--ease-out),
-              transform var(--duration-fast) var(--ease-out);
+  /* Hover / press: shared .journal-item motion in apple-design.css */
 }
 
 .journal-item-cover {
@@ -608,17 +590,6 @@ const skills = [
   overflow: hidden;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .journal-featured:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .journal-item:hover {
-    border-color: var(--color-accent-border);
-    transform: translateX(4px);
-  }
-}
 
 /* ─── CTA Band ─── */
 .cta-band {

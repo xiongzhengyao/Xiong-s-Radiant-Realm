@@ -147,8 +147,7 @@ useReveal()
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   background: var(--color-card-bg);
-  transition: border-color var(--duration-base) var(--ease-out),
-              transform var(--duration-base) var(--ease-out);
+  /* Hover / press: shared .project-card motion in apple-design.css */
 }
 
 .project-card--featured {
@@ -232,11 +231,6 @@ useReveal()
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .project-card:hover {
-    border-color: var(--color-accent-border);
-    transform: translateY(-2px);
-  }
-
   .project-link:hover {
     color: var(--color-accent-hover);
   }
