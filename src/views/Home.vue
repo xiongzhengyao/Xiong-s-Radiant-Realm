@@ -233,7 +233,8 @@ const skills = [
   mix-blend-mode: multiply;
 }
 
-:global(html.dark) .hero-noise {
+/* Must stay compound — bare html.dark { opacity } washes the whole page */
+html.dark .hero-noise {
   opacity: 0.10;
   mix-blend-mode: overlay;
 }
@@ -384,7 +385,7 @@ const skills = [
 
 .section-desc {
   font-size: 17px;
-  color: var(--color-text-secondary);
+  color: var(--color-text);
   margin-top: var(--space-3);
   line-height: 1.58;
   max-width: 520px;
@@ -435,7 +436,7 @@ const skills = [
 .bento-card p {
   font-size: 15px;
   line-height: 1.55;
-  color: var(--color-text-secondary);
+  color: var(--color-text);
 }
 
 .bento-glow {
@@ -527,7 +528,7 @@ const skills = [
 .journal-featured-body p {
   font-size: 15px;
   line-height: 1.55;
-  color: var(--color-text-secondary);
+  color: var(--color-text);
   margin-bottom: var(--space-4);
   display: -webkit-box;
   -webkit-line-clamp: 3;
