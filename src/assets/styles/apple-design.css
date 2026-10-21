@@ -1249,6 +1249,7 @@ html.theme-transition *::after {
   .project-card:active {
     transform: none;
     box-shadow: none;
+    background-color: inherit;
   }
 
   .card:hover,
@@ -1262,6 +1263,7 @@ html.theme-transition *::after {
   .life-card:hover,
   .project-card:hover {
     border-color: var(--motion-card-border-hover);
+    background-color: inherit;
   }
 
   .btn,
