@@ -207,7 +207,8 @@ html.dark {
 }
 
 .page-leave-to {
-  opacity: 0;
+  /* Keep faint residual opacity so out-in mid-frame isn't a black void */
+  opacity: var(--page-leave-opacity);
   transform: translateY(var(--page-leave-y));
 }
 
