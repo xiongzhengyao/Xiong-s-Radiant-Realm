@@ -86,16 +86,36 @@
   --space-24: 96px;
   --space-32: 128px;
 
-  /* Animation */
+  /* Animation — Motion Phase 1 (snow-night quiet physics)
+     Constraints: spring overshoot ≤~1.05 (NOT Motion Lab y≈1.35);
+     rebound 280–320ms; route/reveal 280–400ms (NOT 650–750ms);
+     no flowing glow borders / circular expand / 3D tilts / sparkles / scale(0.7) pop-in. */
   --duration-fast: 0.15s;
   --duration-base: 0.25s;
   --duration-slow: 0.4s;
   --duration-slower: 0.6s;
+  --duration-press: 0.1s;          /* 80–120ms press-in */
+  --duration-rebound: 0.3s;        /* 280–320ms spring release */
+  --duration-page: 0.28s;          /* site-wide route transition (~280ms) */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  /* Tiny overshoot only (y≈1.05). Do not raise toward 1.35. */
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1.05);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  --reveal-offset: 16px;
+  /* Scroll reveal — 250–320ms, offset ~12px, stagger 40–60ms */
+  --reveal-offset: 12px;
+  --reveal-stagger: 0.05s;
+  --reveal-duration: 0.28s;
+  --reveal-duration-title: 0.36s;  /* titles slightly slower; still <400ms */
+  /* Route page transition — displacement ≤8px */
+  --page-enter-y: 8px;
+  --page-leave-y: -6px;
+  /* Interactive cards — lift / press / ice-blue border / soft shadow */
+  --motion-card-lift: -5px;
+  --motion-card-press-scale: 0.985;
+  --motion-card-border-hover: rgba(168, 197, 212, 0.3);
+  /* Light: mist-gray shadow ≈8% @ blur 24px */
+  --motion-card-shadow-hover: 0 8px 24px rgba(139, 150, 158, 0.08);
 
   /* Layout */
   --nav-height: 52px;
@@ -185,6 +205,8 @@ html.dark {
   --md-inline-code-bg: rgba(168, 197, 212, 0.1);
   --md-table-stripe: rgba(168, 197, 212, 0.05);
   --md-quote-bg: rgba(168, 197, 212, 0.07);
+  /* Dark: near-black shadow ≈8% @ blur 24px */
+  --motion-card-shadow-hover: 0 8px 24px rgba(11, 15, 18, 0.08);
   color-scheme: dark;
 }
 
@@ -335,8 +357,8 @@ a[target="_blank"]:not(.footer-link)::after {
 .reveal {
   opacity: 0;
   transform: translateY(var(--reveal-offset));
-  transition: opacity var(--duration-base) var(--ease-out),
-              transform var(--duration-base) var(--ease-out);
+  transition: opacity var(--reveal-duration) var(--ease-out),
+              transform var(--reveal-duration) var(--ease-out);
 }
 
 .reveal.is-visible {
@@ -344,10 +366,18 @@ a[target="_blank"]:not(.footer-link)::after {
   transform: translateY(0);
 }
 
-.reveal-delay-1 { transition-delay: 0.05s; }
-.reveal-delay-2 { transition-delay: 0.1s; }
-.reveal-delay-3 { transition-delay: 0.15s; }
-.reveal-delay-4 { transition-delay: 0.2s; }
+/* Titles / section intros: slightly slower than cards */
+.section-intro.reveal,
+h1.reveal,
+.reveal-title {
+  transition-duration: var(--reveal-duration-title);
+}
+
+/* Sibling stagger ≈50ms (within 40–60ms) */
+.reveal-delay-1 { transition-delay: calc(var(--reveal-stagger) * 1); }
+.reveal-delay-2 { transition-delay: calc(var(--reveal-stagger) * 2); }
+.reveal-delay-3 { transition-delay: calc(var(--reveal-stagger) * 3); }
+.reveal-delay-4 { transition-delay: calc(var(--reveal-stagger) * 4); }
 
 /* --- Frosted glass --- */
 .glass {
@@ -362,15 +392,63 @@ a[target="_blank"]:not(.footer-link)::after {
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   box-shadow: none;
-  transition: transform var(--duration-base) var(--ease-out),
-              border-color var(--duration-base) var(--ease-out);
+}
+
+/*
+  Motion Phase 1 — interactive cards
+  Targets: Home expertise (bento), journal/note cards, blog/life/project cards.
+  Hover: gentle lift + ice-blue border (~30%) + soft 24px/8% shadow.
+  Press: scale(0.985), rebound ~300ms with tiny spring (overshoot ≤1.05).
+  Explicitly NOT: flowing glow borders, 3D tilts, sparkles, scale(0.7) pop-in.
+*/
+.card,
+.motion-card,
+.bento-card,
+.journal-featured,
+.journal-item,
+.continue-card,
+.post-card,
+.post-featured,
+.life-card,
+.project-card {
+  transition:
+    transform var(--duration-rebound) var(--ease-spring),
+    border-color var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .card:hover {
-    transform: translateY(-2px);
-    border-color: var(--color-accent-border);
+  .card:hover,
+  .motion-card:hover,
+  .bento-card:hover,
+  .journal-featured:hover,
+  .journal-item:hover,
+  .continue-card:hover,
+  .post-card:hover,
+  .post-featured:hover,
+  .life-card:hover,
+  .project-card:hover {
+    transform: translateY(var(--motion-card-lift));
+    border-color: var(--motion-card-border-hover);
+    box-shadow: var(--motion-card-shadow-hover);
   }
+}
+
+.card:active,
+.motion-card:active,
+.bento-card:active,
+.journal-featured:active,
+.journal-item:active,
+.continue-card:active,
+.post-card:active,
+.post-featured:active,
+.life-card:active,
+.project-card:active {
+  transform: scale(var(--motion-card-press-scale));
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    border-color var(--duration-press) var(--ease-out),
+    box-shadow var(--duration-press) var(--ease-out);
 }
 
 /* --- Button --- */
@@ -389,16 +467,21 @@ a[target="_blank"]:not(.footer-link)::after {
   transition: background var(--duration-fast) var(--ease-out),
               color var(--duration-fast) var(--ease-out),
               border-color var(--duration-fast) var(--ease-out),
-              transform 0.12s var(--ease-out),
+              transform var(--duration-rebound) var(--ease-spring),
               opacity var(--duration-fast) var(--ease-out);
   white-space: nowrap;
   min-height: 42px;
   font-family: var(--font-mono);
 }
 
-.btn:active:not(:disabled) {
-  transform: scale(0.97);
-  transition: transform 0.1s var(--ease-out);
+/* Light press (80–120ms) then spring rebound — primary + outline/ghost */
+.btn:active:not(:disabled),
+.btn-ghost:active:not(:disabled) {
+  transform: scale(0.985);
+  transition: transform var(--duration-press) var(--ease-out),
+              background var(--duration-press) var(--ease-out),
+              border-color var(--duration-press) var(--ease-out),
+              color var(--duration-press) var(--ease-out);
 }
 
 .btn-primary {
@@ -406,6 +489,7 @@ a[target="_blank"]:not(.footer-link)::after {
   color: var(--color-cta-text);
 }
 
+/* Ice-blue slightly brighter on hover; near-black text kept (≥4.5) */
 .btn-primary:hover {
   background: var(--color-cta-bg-hover);
   color: var(--color-cta-text);
@@ -432,6 +516,14 @@ a[target="_blank"]:not(.footer-link)::after {
 .btn-outline:hover {
   background: var(--color-cta-bg);
   color: var(--color-cta-text);
+}
+
+/* Ghost / secondary outline: light press only, no big displacement */
+.btn-ghost {
+  transition: background var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              transform var(--duration-rebound) var(--ease-spring);
 }
 
 /* --- Tag --- */
@@ -499,6 +591,9 @@ a[target="_blank"]:not(.footer-link)::after {
 @media (max-width: 734px) {
   :root {
     --nav-height: 48px;
+    /* Slightly less scroll-reveal displacement on mobile */
+    --reveal-offset: 8px;
+    --motion-card-lift: -4px;
   }
   .container,
   .container-wide,
@@ -1112,18 +1207,67 @@ html.theme-transition *::after {
     animation: fadeIn var(--duration-fast) ease both;
   }
 
-  .card {
-    transition: none;
+  /* Cards: border color only — no translate / scale */
+  .card,
+  .motion-card,
+  .bento-card,
+  .journal-featured,
+  .journal-item,
+  .continue-card,
+  .post-card,
+  .post-featured,
+  .life-card,
+  .project-card {
+    transition: border-color var(--duration-fast) ease;
   }
 
-  .btn {
+  .card:hover,
+  .motion-card:hover,
+  .bento-card:hover,
+  .journal-featured:hover,
+  .journal-item:hover,
+  .continue-card:hover,
+  .post-card:hover,
+  .post-featured:hover,
+  .life-card:hover,
+  .project-card:hover,
+  .card:active,
+  .motion-card:active,
+  .bento-card:active,
+  .journal-featured:active,
+  .journal-item:active,
+  .continue-card:active,
+  .post-card:active,
+  .post-featured:active,
+  .life-card:active,
+  .project-card:active {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .card:hover,
+  .motion-card:hover,
+  .bento-card:hover,
+  .journal-featured:hover,
+  .journal-item:hover,
+  .continue-card:hover,
+  .post-card:hover,
+  .post-featured:hover,
+  .life-card:hover,
+  .project-card:hover {
+    border-color: var(--motion-card-border-hover);
+  }
+
+  .btn,
+  .btn-ghost {
     transition: background var(--duration-fast) ease,
                 color var(--duration-fast) ease,
                 border-color var(--duration-fast) ease,
                 opacity var(--duration-fast) ease;
   }
 
-  .btn:active:not(:disabled) {
+  .btn:active:not(:disabled),
+  .btn-ghost:active:not(:disabled) {
     transform: none;
   }
 }

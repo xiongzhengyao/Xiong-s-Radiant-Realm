@@ -218,7 +218,7 @@ watch(filteredPosts, () => {
   border-radius: var(--radius-xl);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  transition: transform var(--duration-base) var(--ease-out);
+  /* Hover / press: shared .life-card motion in apple-design.css */
 }
 
 @keyframes lifeStaggerIn {
@@ -228,13 +228,6 @@ watch(filteredPosts, () => {
 
 .life-card-stagger {
   animation: lifeStaggerIn 0.2s var(--ease-out) both;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .life-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-  }
 }
 
 .life-card.featured {

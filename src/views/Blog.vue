@@ -981,8 +981,7 @@ watch(filteredPosts, () => {
   border-radius: var(--radius-xl);
   overflow: hidden;
   cursor: pointer;
-  transition: transform var(--duration-base) var(--ease-out),
-              box-shadow var(--duration-base) var(--ease-out);
+  /* Hover / press: shared .post-featured motion in apple-design.css */
 }
 
 .post-featured-cover {
@@ -1022,13 +1021,6 @@ watch(filteredPosts, () => {
   margin-top: auto;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .post-featured:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
-  }
-}
-
 /* --- Post Grid --- */
 .post-grid {
   display: grid;
@@ -1052,15 +1044,10 @@ watch(filteredPosts, () => {
   overflow: hidden;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
-  transition: transform var(--duration-base) var(--ease-out);
+  /* Hover / press: shared .post-card motion in apple-design.css */
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .post-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-  }
-
   .post-card:hover .post-card-image img {
     transform: scale(1.04);
   }
