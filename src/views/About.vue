@@ -1,132 +1,109 @@
 <template>
   <div class="about">
-    <section class="about-hero">
-      <div class="about-hero-mesh" aria-hidden="true" />
-      <div class="container-wide">
-        <div class="about-intro reveal">
-          <span class="section-eyebrow">{{ $t('about.eyebrow') }}</span>
-          <h1>{{ $t('about.title') }}</h1>
-          <p class="about-intro-desc">{{ $t('about.intro') }}</p>
+    <div
+      class="about-atmosphere"
+      aria-hidden="true"
+    >
+      <div class="about-mesh" />
+      <div class="about-stars" />
+    </div>
+
+    <section class="about-editorial">
+      <div class="about-left reveal">
+        <h1 class="about-name">
+          <template
+            v-for="(ch, i) in nameChars"
+            :key="i"
+          >
+            <span :class="{ accent: ch === accentChar }">{{ ch }}</span>
+          </template>
+        </h1>
+        <p class="about-title">
+          {{ $t('about.profile.title') }}
+        </p>
+        <p class="about-eyebrow">
+          {{ $t('about.eyebrow') }}
+        </p>
+        <p class="about-bio">
+          {{ $t('about.intro') }}
+        </p>
+
+        <div class="skill-row">
+          <span
+            v-for="skill in skillsFlat"
+            :key="skill"
+            class="tag tag-accent"
+          >{{ skill }}</span>
         </div>
 
-        <div class="about-grid">
-          <aside class="about-sidebar reveal">
-            <div class="profile-card">
-              <div class="avatar-wrapper">
-                <img
-                  v-if="!imageError"
-                  class="avatar"
-                  src="/images/profile.jpg"
-                  :alt="$t('about.profile.name')"
-                  @error="handleImageError"
-                />
-                <div v-else class="avatar-fallback">ZY</div>
-              </div>
-              <h2>{{ $t('about.profile.name') }}</h2>
-              <p class="profile-title">{{ $t('about.profile.title') }}</p>
-              <p class="profile-bio">{{ $t('about.profile.bio') }}</p>
-
-              <div class="profile-meta">
-                <span class="meta-item">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  {{ $t('about.profile.location') }}
-                </span>
-                <span class="meta-item">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-                  {{ $t('about.profile.years') }}
-                </span>
-                <a class="meta-item meta-link" :href="`mailto:${email}`">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                  {{ email }}
-                </a>
-              </div>
-
-              <button class="btn btn-primary btn-glow profile-cta no-print" @click="$router.push('/contact')">
-                {{ $t('about.contactCta') }}
-              </button>
-              <button
-                type="button"
-                class="btn btn-outline resume-btn no-print"
-                @click="printResume"
-              >
-                {{ $t('about.resumeCta') }}
-              </button>
-            </div>
-
-            <div class="skills-panel">
-              <h3>{{ $t('about.sections.skills') }}</h3>
-              <div
-                v-for="(group, idx) in skillGroups"
-                :key="group.name"
-                class="skill-group reveal"
-                :class="'reveal-delay-' + (idx + 1)"
-              >
-                <h4>{{ group.name }}</h4>
-                <div class="skill-tags">
-                  <span class="tag" v-for="skill in group.items" :key="skill">{{ skill }}</span>
-                </div>
-              </div>
-            </div>
-          </aside>
-
-          <main class="about-main">
-            <section class="timeline-section reveal">
-              <div class="timeline-header-row">
-                <span class="section-eyebrow">{{ $t('about.experience.eyebrow') }}</span>
-                <h2>{{ $t('about.sections.experience') }}</h2>
-              </div>
-              <div class="timeline">
-                <div
-                  v-for="(exp, idx) in workExperience"
-                  :key="idx"
-                  class="timeline-item reveal"
-                  :class="'reveal-delay-' + (idx + 1)"
-                >
-                  <div class="timeline-marker" />
-                  <div class="timeline-card">
-                    <div class="timeline-card-top">
-                      <div>
-                        <div class="timeline-title-row">
-                          <h3>{{ exp.position }}</h3>
-                        </div>
-                        <p class="timeline-company">{{ exp.company }}</p>
-                      </div>
-                      <span class="timeline-period">{{ exp.period }}</span>
-                    </div>
-                    <p class="timeline-desc">{{ exp.description }}</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <section class="timeline-section reveal">
-              <div class="timeline-header-row">
-                <span class="section-eyebrow">{{ $t('about.education.eyebrow') }}</span>
-                <h2>{{ $t('about.sections.education') }}</h2>
-              </div>
-              <div class="timeline">
-                <div
-                  v-for="(edu, idx) in educationHistory"
-                  :key="idx"
-                  class="timeline-item reveal"
-                  :class="'reveal-delay-' + (idx + 1)"
-                >
-                  <div class="timeline-marker timeline-marker--muted" />
-                  <div class="timeline-card">
-                    <div class="timeline-card-top">
-                      <div>
-                        <h3>{{ edu.degree }}</h3>
-                        <p class="timeline-company">{{ edu.school }} · {{ edu.major }}</p>
-                      </div>
-                      <span class="timeline-period">{{ edu.period }}</span>
-                    </div>
-                    <p class="timeline-desc">{{ edu.details }}</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </main>
+        <div class="education-block">
+          <h3>{{ $t('about.educationLabel') }}</h3>
+          <p>{{ $t('about.educationSummary') }}</p>
         </div>
+
+        <div class="about-actions no-print">
+          <button
+            class="btn btn-primary"
+            type="button"
+            @click="$router.push('/contact')"
+          >
+            {{ $t('about.contactCta') }}
+          </button>
+          <button
+            class="btn btn-ghost about-ghost"
+            type="button"
+            @click="printResume"
+          >
+            {{ $t('about.resumeCta') }}
+          </button>
+        </div>
+      </div>
+
+      <div class="about-right">
+        <div
+          class="resume-rail"
+          aria-hidden="true"
+        />
+        <article
+          v-for="(job, idx) in workExperience"
+          :key="`${job.company}-${job.period}`"
+          class="resume-card reveal"
+          :class="'reveal-delay-' + (idx + 1)"
+          :style="{ '--offset': `${(idx % 2 === 0 ? -12 : 18)}px` }"
+        >
+          <button
+            type="button"
+            class="resume-card-toggle"
+            :aria-expanded="expandedId === job.company + job.period"
+            @click="toggleExpand(job)"
+          >
+            <div class="resume-card-top">
+              <h3>{{ job.company }} <span class="resume-years">{{ job.period }}</span></h3>
+              <svg
+                class="resume-chevron"
+                :class="{ open: expandedId === job.company + job.period }"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+            <p class="resume-duty">
+              {{ job.position }}
+            </p>
+          </button>
+          <div
+            v-show="expandedId === job.company + job.period"
+            class="resume-detail"
+          >
+            <p>{{ job.description }}</p>
+          </div>
+        </article>
       </div>
     </section>
   </div>
@@ -136,363 +113,282 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
-import { APP_CONFIG } from '@/utils/constants'
 
-const { tm } = useI18n()
-const email = APP_CONFIG.EMAIL
-const imageError = ref(false)
-const handleImageError = () => { imageError.value = true }
+const { t, tm } = useI18n()
+useReveal()
 
-const skillGroups = computed(() => tm('about.skillGroups'))
-const workExperience = computed(() => tm('about.work'))
-const educationHistory = computed(() => tm('about.education'))
+const expandedId = ref(null)
+
+const nameFull = computed(() => t('about.profile.name'))
+const accentChar = computed(() => t('about.profile.nameAccent'))
+const nameChars = computed(() => Array.from(nameFull.value))
+
+const skillsFlat = computed(() => {
+  const items = tm('about.skillsFlat')
+  return Array.isArray(items) ? items : ['C/C++', 'Python', 'ARM', 'Sensor', 'Linux']
+})
+
+const workExperience = computed(() => {
+  const items = tm('about.work')
+  return Array.isArray(items) ? items : []
+})
+
+const toggleExpand = job => {
+  const id = job.company + job.period
+  expandedId.value = expandedId.value === id ? null : id
+}
 
 const printResume = () => {
   window.print()
 }
-
-useReveal()
 </script>
 
 <style scoped>
 .about {
-  padding-top: var(--nav-height);
-  background: var(--color-bg);
-}
-
-.about-hero {
   position: relative;
-  padding: var(--space-16) 0 var(--space-20);
+  padding-top: var(--nav-height);
+  min-height: 100vh;
+  background: var(--color-hero-bg);
   overflow: hidden;
 }
 
-.about-hero-mesh {
+.about-atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.about-mesh {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 50% 40% at 10% 20%, var(--color-mesh-1) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 35% at 90% 10%, var(--color-mesh-2) 0%, transparent 45%);
-  pointer-events: none;
+    radial-gradient(ellipse 50% 40% at 20% 25%, var(--color-mesh-1) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 35% at 80% 70%, var(--color-mesh-2) 0%, transparent 55%);
 }
 
-.about-intro {
+.about-stars {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 10% 20%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 30% 55%, #fff 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 70% 30%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 85% 65%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 80%, #fff 0%, transparent 100%);
+}
+
+html.dark .about-stars {
+  opacity: 0.45;
+}
+
+.about-editorial {
   position: relative;
-  max-width: 640px;
-  margin-bottom: var(--space-12);
-}
-
-.about-intro h1 {
-  font-family: var(--font-mono);
-  font-size: clamp(36px, 5vw, 56px);
-  letter-spacing: -0.03em;
-  margin-bottom: var(--space-3);
-}
-
-.about-intro-desc {
-  font-size: 18px;
-  line-height: 1.58;
-  color: var(--color-text-secondary);
-}
-
-.about-grid {
-  position: relative;
+  z-index: 1;
+  max-width: var(--max-width-wide);
+  margin: 0 auto;
+  padding: clamp(40px, 8vh, 80px) 24px 96px;
   display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: var(--space-10);
+  grid-template-columns: minmax(280px, 1fr) minmax(300px, 1fr);
+  gap: clamp(40px, 6vw, 80px);
   align-items: start;
 }
 
-.about-sidebar {
-  position: sticky;
-  top: calc(var(--nav-height) + var(--space-6));
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
+.about-name {
+  font-size: clamp(48px, 8vw, 72px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  margin-bottom: 12px;
 }
 
-.profile-card {
-  padding: var(--space-8);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background: var(--color-card-bg);
-  text-align: center;
-}
-
-.avatar-wrapper {
-  width: 112px;
-  height: 112px;
-  border-radius: var(--radius-full);
-  overflow: hidden;
-  margin: 0 auto var(--space-5);
-  box-shadow: var(--shadow-md);
-  border: 2px solid var(--color-border);
-}
-
-.avatar {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.avatar-fallback {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 36px;
-  font-weight: 600;
-  color: var(--color-text-tertiary);
-  background: var(--color-bg-secondary);
-}
-
-.profile-card h2 {
-  font-family: var(--font-mono);
-  font-size: 22px;
-  margin-bottom: var(--space-1);
-}
-
-.profile-title {
-  font-family: var(--font-mono);
-  font-size: 14px;
+.about-name .accent {
   color: var(--color-accent);
-  font-weight: 600;
-  margin-bottom: var(--space-4);
 }
 
-.profile-bio {
-  font-size: 14px;
+.about-title {
+  font-size: 16px;
   color: var(--color-text-secondary);
-  line-height: 1.55;
-  margin-bottom: var(--space-5);
+  margin-bottom: 8px;
 }
 
-.profile-meta {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  margin-bottom: var(--space-6);
-  text-align: left;
-}
-
-.meta-item {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-.meta-link {
-  text-decoration: none;
-  transition: color var(--duration-fast) var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .meta-link:hover {
-    color: var(--color-accent);
-  }
-}
-
-.meta-item svg {
-  color: var(--color-text-tertiary);
-  flex-shrink: 0;
-}
-
-.profile-cta {
-  width: 100%;
-  justify-content: center;
-  margin-bottom: var(--space-3);
-}
-
-.resume-btn {
-  width: 100%;
-  justify-content: center;
-  display: inline-flex;
-  align-items: center;
-  padding: 12px 20px;
-  font-size: 14px;
-  font-family: var(--font-mono);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
-  background: transparent;
-  cursor: pointer;
-  transition: border-color var(--duration-fast) var(--ease-out),
-              color var(--duration-fast) var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .resume-btn:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
-  }
-}
-
-.skills-panel {
-  padding: var(--space-6);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background: var(--color-card-bg);
-}
-
-.skills-panel > h3 {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: var(--space-5);
-}
-
-.skill-group + .skill-group {
-  margin-top: var(--space-5);
-  padding-top: var(--space-5);
-  border-top: 1px solid var(--color-border);
-}
-
-.skill-group h4 {
+.about-eyebrow {
   font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-text-tertiary);
-  margin-bottom: var(--space-2);
+  color: var(--color-mist);
+  margin-bottom: 18px;
 }
 
-.skill-tags {
+.about-bio {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+  max-width: 28em;
+  margin-bottom: 24px;
+}
+
+.skill-row {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--color-accent-light);
+  margin-bottom: 28px;
+  max-width: 420px;
 }
 
-.about-main {
+.education-block h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  margin-bottom: 6px;
+}
+
+.education-block p {
+  font-size: 15px;
+  color: var(--color-text);
+  margin-bottom: 28px;
+}
+
+.about-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.about-ghost {
+  border: 1px solid var(--color-hero-ghost-border);
+  color: var(--color-hero-ghost-text);
+  background: transparent;
+  min-height: 42px;
+  padding: 11px 18px;
+}
+
+.about-right {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: 20px;
+  padding-left: 28px;
 }
 
-.timeline-section h2 {
-  font-size: clamp(24px, 3vw, 32px);
-  letter-spacing: -0.02em;
-  margin-top: var(--space-2);
-  margin-bottom: var(--space-8);
+.resume-rail {
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  bottom: 12px;
+  width: 0;
+  border-left: 1.5px dashed var(--color-accent-border);
 }
 
-.timeline {
+.resume-card {
   position: relative;
-  padding-left: var(--space-8);
+  margin-left: var(--offset, 0);
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md), var(--color-card-glow);
+  padding: 0;
+  overflow: hidden;
 }
 
-.timeline::before {
+.resume-card::before {
   content: '';
   position: absolute;
-  left: 7px;
-  top: 8px;
-  bottom: 8px;
-  width: 1px;
-  background: linear-gradient(180deg, var(--color-accent), var(--color-border));
-}
-
-.timeline-item {
-  position: relative;
-  padding-bottom: var(--space-6);
-}
-
-.timeline-item:last-child {
-  padding-bottom: 0;
-}
-
-.timeline-marker {
-  position: absolute;
-  left: calc(-1 * var(--space-8) + 2px);
-  top: 10px;
-  width: 11px;
-  height: 11px;
-  border-radius: var(--radius-full);
+  left: -24px;
+  top: 22px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
   background: var(--color-accent);
-  border: 2px solid var(--color-bg);
-  box-shadow: 0 0 0 2px var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-light);
 }
 
-.timeline-marker--muted {
-  background: var(--color-text-tertiary);
-  box-shadow: 0 0 0 2px var(--color-text-tertiary);
+.resume-card-toggle {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 18px 20px;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
 }
 
-.timeline-card {
-  padding: var(--space-6);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  background: var(--color-card-bg);
-  transition: border-color var(--duration-base) var(--ease-out),
-              transform var(--duration-base) var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .timeline-card:hover {
-    border-color: var(--color-accent-border);
-    transform: translateX(4px);
-  }
-}
-
-.timeline-card-top {
+.resume-card-top {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: var(--space-4);
-  margin-bottom: var(--space-3);
+  gap: 12px;
+  margin-bottom: 6px;
 }
 
-.timeline-card-top h3 {
-  font-size: 18px;
+.resume-card-top h3 {
+  font-size: 17px;
   font-weight: 600;
 }
 
-.timeline-title-row h3 {
+.resume-years {
+  font-weight: 400;
+  color: var(--color-text-tertiary);
+  font-size: 14px;
+}
+
+.resume-duty {
+  font-size: 14px;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
-.timeline-company {
-  font-size: 14px;
-  color: var(--color-accent);
-  margin-top: 2px;
-  font-weight: 600;
-}
-
-.timeline-period {
-  font-size: 12px;
-  font-family: var(--font-mono);
-  color: var(--color-text-tertiary);
-  white-space: nowrap;
+.resume-chevron {
   flex-shrink: 0;
-  padding: 4px 10px;
-  border-radius: var(--radius-sm);
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
+  color: var(--color-text-tertiary);
+  transition: transform var(--duration-base) var(--ease-out);
 }
 
-.timeline-desc {
-  font-size: 15px;
+.resume-chevron.open {
+  transform: rotate(180deg);
+}
+
+.resume-detail {
+  padding: 0 20px 18px;
+  border-top: 1px solid var(--color-divider);
+}
+
+.resume-detail p {
+  margin: 12px 0 0;
+  font-size: 14px;
   color: var(--color-text-secondary);
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
-@media (max-width: 968px) {
-  .about-grid {
+@media (max-width: 860px) {
+  .about-editorial {
     grid-template-columns: 1fr;
+    gap: 48px;
   }
 
-  .about-sidebar {
-    position: static;
+  .about-right {
+    padding-left: 24px;
+  }
+
+  .resume-card {
+    margin-left: 0 !important;
   }
 }
 
-@media (max-width: 734px) {
-  .about-hero {
-    padding: var(--space-10) 0 var(--space-12);
+@media print {
+  .about-atmosphere,
+  .about-actions,
+  .resume-chevron {
+    display: none !important;
   }
 
-  .timeline-card-top {
-    flex-direction: column;
-    gap: var(--space-2);
+  .resume-detail {
+    display: block !important;
   }
 }
 </style>

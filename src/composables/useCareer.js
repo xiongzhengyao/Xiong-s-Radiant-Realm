@@ -20,6 +20,8 @@ export function useCareer() {
         year: copy.year || (item.year === 'ongoing' ? t('career.yearOngoing') : item.year),
         title: copy.title || '',
         description: copy.description || '',
+        role: copy.role || '',
+        chip: copy.chip || 'tools',
         tags: copy.tags || item.tags,
         group: item.group || 'company',
         url: item.url || null,

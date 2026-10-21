@@ -1,10 +1,37 @@
 <template>
   <Teleport to="body">
     <Transition name="cmd-palette">
-      <div v-if="open" class="cmd-overlay" @click.self="close">
-        <div class="cmd-panel" role="dialog" aria-modal="true" :aria-label="$t('command.title')">
+      <div
+        v-if="open"
+        class="cmd-overlay"
+        @click.self="close"
+      >
+        <div
+          class="cmd-panel"
+          role="dialog"
+          aria-modal="true"
+          :aria-label="$t('command.title')"
+        >
           <div class="cmd-input-wrap">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ><circle
+              cx="11"
+              cy="11"
+              r="8"
+            /><line
+              x1="21"
+              y1="21"
+              x2="16.65"
+              y2="16.65"
+            /></svg>
             <input
               ref="inputRef"
               v-model="query"
@@ -15,10 +42,13 @@
               @keydown.up.prevent="moveSelection(-1)"
               @keydown.enter.prevent="selectCurrent"
               @keydown.esc.prevent="close"
-            />
+            >
             <kbd class="cmd-kbd">esc</kbd>
           </div>
-          <ul class="cmd-list" role="listbox">
+          <ul
+            class="cmd-list"
+            role="listbox"
+          >
             <li
               v-for="(item, index) in filteredItems"
               :key="item.path"
@@ -30,7 +60,12 @@
               <span class="cmd-item-label">{{ $t(item.label) }}</span>
               <span class="cmd-item-hint">{{ item.hint }}</span>
             </li>
-            <li v-if="!filteredItems.length" class="cmd-empty">{{ $t('command.empty') }}</li>
+            <li
+              v-if="!filteredItems.length"
+              class="cmd-empty"
+            >
+              {{ $t('command.empty') }}
+            </li>
           </ul>
         </div>
       </div>

@@ -3,7 +3,7 @@ export default {
     home: '首页',
     about: '关于',
     projects: '项目',
-    blog: '博客',
+    blog: '笔记',
     contact: '联系',
     life: '生活',
     brand: 'Snowhush',
@@ -61,61 +61,42 @@ export default {
     sitemap: '网站地图'
   },
   home: {
-    eyebrow: 'Snowhush · 上海',
-    welcome: '把光写进系统，把安静留在页面。',
-    slogan: 'Quiet as fresh snow.',
-    viewBlog: '读笔记',
-    viewProjects: '看作品',
-    expertise: {
-      eyebrow: '近况',
-      desc: 'Camera 驱动 · 摄影与海报 — 在系统与画面之间，慢慢把事情做清楚。'
-    },
-    cta: {
-      eyebrow: '联络',
-      title: '有事说一声',
-      subtitle: '技术、作品，或只是随便聊聊 — 写一封信即可。',
-      button: '写一封信'
-    },
-    skills: {
-      title: '在做的事',
-      camera: {
-        name: 'Camera 系统',
-        description: 'Sensor、ISP 与成像链路 — 让画面从芯片走到用户。'
-      },
-      embedded: {
-        name: '嵌入式与驱动',
-        description: 'ARM、总线与内核侧调试，把底层问题钉住。'
-      },
-      writing: {
-        name: '写与看',
-        description: '笔记、摄影与海报 — 把观察留成文字和画面。'
-      }
-    },
-    blog: {
-      eyebrow: 'Journal',
-      title: '笔记',
-      readMore: '全部笔记',
-      readTime: '{n} 分钟阅读',
-      empty: '暂无笔记，敬请期待'
-    },
+    hello: '你好，我是 Snowhush。',
+    headline: '今天也在记录与创造。',
+    sub: '在 DJI 做 Camera Driver，专注于影像工具与飞行系统的创造。',
+    roleLine: "Camera Driver {'@'} DJI · 上海",
+    exploreWork: '探索我的工作',
+    readNotes: '阅读最新笔记',
+    latestNotes: '最新笔记',
+    projectProgress: '项目进展',
+    lifeMoments: '生活瞬间',
+    daysAgo: '{n} 天前',
+    lastWeek: '上周',
+    progressLabel: '进度 {n}%',
+    coreContribution: '核心贡献',
+    lifeCaption: '海边走走，换换脑子。',
+    lifeTag: '生活碎片',
+    noteTag: '工作思考',
     continue: {
       eyebrow: '继续阅读',
       cta: '从上次离开的地方继续'
     }
   },
   about: {
-    title: '关于我',
-    eyebrow: '个人履历',
-    intro: '从博世到小米、大疆 — 在 Camera 系统全栈持续深耕。',
+    title: '关于',
+    eyebrow: 'A LIGHT',
+    intro: '从博世到小米、大疆，在 Camera 系统里把一件事做深。',
     contactCta: '联系我',
     resumeCta: '下载简历',
     profile: {
       name: '熊正耀',
-      title: 'Camera 驱动软件工程师',
-      bio: '专注于 Camera 驱动开发，热衷于探索新技术和解决复杂问题。',
+      nameAccent: '耀',
+      title: "Camera 驱动软件工程师 {'@'} 大疆 · 上海",
+      bio: '从博世到小米、大疆，在 Camera 系统里把一件事做深。',
       location: '上海',
       years: '3 年+工作经验'
     },
+    skillsFlat: ['C/C++', 'Python', 'ARM', 'Sensor', 'Linux'],
     sections: {
       skills: '专业技能',
       experience: '工作经历',
@@ -124,9 +105,8 @@ export default {
     experience: {
       eyebrow: '职业路径'
     },
-    education: {
-      eyebrow: '学术背景'
-    },
+    educationLabel: '教育经历',
+    educationSummary: '上大硕·机械 · 南航金城学士·车辆',
     skillGroups: [
       { name: '编程语言', items: ['C/C++', 'Python', 'Shell'] },
       { name: '嵌入式开发', items: ['ARM', 'Linux 驱动', 'Sensor 驱动'] },
@@ -134,34 +114,34 @@ export default {
     ],
     work: [
       {
-        period: '2026.02 - 至今',
-        position: 'Camera 驱动软件工程师',
-        company: '大疆创新',
-        description: '负责 Camera 驱动开发，包括 Sensor 驱动开发、产线自动化测试等工作。'
+        period: '2026.02–',
+        position: '相机驱动研发',
+        company: '大疆',
+        description: '负责影像链路驱动与相机软件栈'
       },
       {
-        period: '2022.08 - 2026.02',
-        position: 'Camera 驱动软件工程师',
+        period: '2022.08–2026.02',
+        position: '影像系统优化',
         company: '小米',
-        description: '负责 Camera 驱动开发，包括 Sensor 驱动开发、性能优化等工作。'
+        description: '影像系统优化'
       },
       {
-        period: '2021.09 - 2022.03',
-        position: '嵌入式软件工程师',
-        company: '博世 (中国) 投资有限公司',
-        description: '负责嵌入式系统开发，包括大模型部署、图像采集处理、系统优化等工作。'
+        period: '2021.09–2022.03',
+        position: '嵌入式软件开发',
+        company: '博世',
+        description: '嵌入式软件开发'
       }
     ],
     education: [
       {
-        period: '2019.09 - 2022.06',
+        period: '2019.09–2022.06',
         degree: '硕士研究生',
         school: '上海大学',
         major: '机械工程',
         details: '研究方向：机械制造及其自动化'
       },
       {
-        period: '2015.09 - 2019.06',
+        period: '2015.09–2019.06',
         degree: '学士',
         school: '南京航空航天大学金城学院',
         major: '车辆工程',
@@ -170,12 +150,15 @@ export default {
     ]
   },
   blog: {
-    eyebrow: '技术写作',
-    title: '技术博客',
-    subtitle: '嵌入式开发、Camera 驱动与 Linux 系统的技术探索',
+    eyebrow: '记录与创造。',
+    title: '笔记',
+    subtitle: '记录与创造。',
     all: '全部',
-    searchPlaceholder: '搜索文章...',
+    searchPlaceholder: '搜索...',
     clearSearch: '清除搜索',
+    yearLabel: '年份',
+    tagLabel: '标签',
+    loadMore: '加载更多',
     latest: '最新',
     readingProgress: '已读 {n}%',
     readMore: '阅读全文',
@@ -189,7 +172,7 @@ export default {
     tocClose: '关闭',
     copyLink: '复制链接',
     copySuccess: '链接已复制',
-    breadcrumbBlog: '博客',
+    breadcrumbBlog: '笔记',
     moreActions: '更多操作',
     relatedTitle: '相关文章',
     share: '分享',
@@ -212,9 +195,10 @@ export default {
   },
   life: {
     eyebrow: '生活记录',
-    title: '生活点滴',
+    title: '生活相册',
     subtitle: '记录生活中的美好瞬间与感悟',
     all: '全部',
+    searchPlaceholder: '搜索...',
     empty: '暂无相关内容',
     viewAll: '查看全部',
     categories: {
@@ -228,86 +212,113 @@ export default {
   },
   projects: {
     eyebrow: '作品集',
-    title: '项目经历',
+    title: '项目',
     subtitle: '公司项目与开源工具 — 从 Camera 驱动到日常工程效率。',
+    all: '全部',
+    searchPlaceholder: '搜索项目...',
+    chips: {
+      firmware: '固件',
+      tools: '工具',
+      app: 'App'
+    },
+    rolePrefix: '核心角色',
     groups: {
       company: '公司项目',
       personal: '开源 / 个人'
     },
     privateRepo: '私有仓库',
     viewOnGithub: '查看仓库',
+    empty: '没有找到匹配的项目',
     items: [
       {
         id: 'dji-sensor',
         company: 'DJI',
         year: '2026',
         title: 'Sensor 驱动产线自动化',
+        role: 'Camera Driver 系统开发',
+        chip: 'firmware',
         description: 'Sensor 驱动 bring-up 与产线自动化测试框架，覆盖初始化、寄存器校验与异常路径。',
-        tags: ['C/C++', 'Sensor', 'Factory']
+        tags: ['固件优化']
       },
       {
         id: 'xiaomi-perf',
         company: 'Xiaomi',
         year: '2022–2026',
         title: 'Camera 冷启动优化',
+        role: '影像工具主程',
+        chip: 'firmware',
         description: '梳理首帧出图链路，优化 sensor / ISP 初始化路径，降低冷启动延迟。',
-        tags: ['ISP', 'Performance', 'Linux']
+        tags: ['固件优化']
       },
       {
         id: 'bosch-edge',
         company: 'Bosch',
         year: '2021–2022',
         title: '端侧 AI 图像采集',
+        role: '嵌入式开发',
+        chip: 'firmware',
         description: '嵌入式平台模型部署与图像采集处理流水线，串联采集、预处理与推理。',
-        tags: ['Embedded', 'AI', 'Python']
+        tags: ['稳定性']
       },
       {
         id: 'isp-pipeline',
         company: 'Writing',
         year: '持续',
         title: 'ISP Pipeline 技术写作',
+        role: '技术写作',
+        chip: 'tools',
         description: '将 Camera 系统经验沉淀为可复用的技术博客与工程笔记。',
-        tags: ['V4L2', 'MIPI', 'Blog']
+        tags: ['效率工具']
       },
       {
         id: 'script-manager',
         company: 'Open Source',
         year: '持续',
         title: 'Script-Manager',
+        role: '工具主程',
+        chip: 'tools',
         description: 'TypeScript 脚本管理工具，统一组织、运行与维护本地脚本工作流。',
-        tags: ['TypeScript', 'Tooling']
+        tags: ['效率工具']
       },
       {
         id: 'log-viewer',
         company: 'Open Source',
         year: '持续',
         title: 'LogViewer',
+        role: '工具开发',
+        chip: 'tools',
         description: '日志查看器，面向调试场景的日志浏览与检索。',
-        tags: ['Logs', 'Debugging']
+        tags: ['效率工具']
       },
       {
         id: 'log-system',
         company: 'Open Source',
         year: '持续',
         title: 'log_system',
+        role: '底层驱动',
+        chip: 'firmware',
         description: 'C++ 日志系统，提供结构化日志与可扩展写入路径。',
-        tags: ['C++', 'Logging']
+        tags: ['固件']
       },
       {
         id: 'scripts-android',
         company: 'Open Source',
         year: '持续',
         title: 'scripts_android',
+        role: '调试工具',
+        chip: 'tools',
         description: 'Android 调试脚本集合，加速日常抓 log、环境检查与问题复现。',
-        tags: ['Android', 'Python']
+        tags: ['效率工具']
       },
       {
         id: 'cost-tracker',
         company: 'Personal',
         year: '持续',
         title: 'cost-tracker',
+        role: 'UI/UX 设计与开发',
+        chip: 'app',
         description: 'Flutter 记账 App，记录日常开销与分类统计（私有仓库）。',
-        tags: ['Flutter', 'Mobile']
+        tags: ['跨平台']
       }
     ]
   },

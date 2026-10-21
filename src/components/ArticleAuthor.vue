@@ -1,9 +1,15 @@
 <template>
-  <aside class="article-author" :class="{ 'is-compact': compact }">
+  <aside
+    class="article-author"
+    :class="{ 'is-compact': compact }"
+  >
     <template v-if="compact">
       <p class="author-byline">
         <span class="author-name">{{ name }}</span>
-        <span class="author-sep" aria-hidden="true">·</span>
+        <span
+          class="author-sep"
+          aria-hidden="true"
+        >·</span>
         <span class="author-role">{{ shortRole }}</span>
       </p>
     </template>
@@ -14,16 +20,32 @@
           :src="profileImage"
           :alt="name"
           @error="imageError = true"
-        />
-        <span v-else class="author-fallback">{{ initials }}</span>
+        >
+        <span
+          v-else
+          class="author-fallback"
+        >{{ initials }}</span>
       </div>
       <div class="author-body">
-        <p class="author-label">{{ $t('blog.author.label') }}</p>
-        <p class="author-name">{{ name }}</p>
-        <p class="author-bio">{{ bio }}</p>
-        <div v-if="topics.length" class="author-topics">
-          <span class="author-topics-label">{{ $t('home.expertise.eyebrow') }}</span>
-          <span v-for="topic in topics" :key="topic" class="author-topic">{{ topic }}</span>
+        <p class="author-label">
+          {{ $t('blog.author.label') }}
+        </p>
+        <p class="author-name">
+          {{ name }}
+        </p>
+        <p class="author-bio">
+          {{ bio }}
+        </p>
+        <div
+          v-if="topics.length"
+          class="author-topics"
+        >
+          <span class="author-topics-label">{{ $t('about.sections.skills') }}</span>
+          <span
+            v-for="topic in topics"
+            :key="topic"
+            class="author-topic"
+          >{{ topic }}</span>
         </div>
       </div>
     </template>
@@ -49,13 +71,9 @@ const shortRole = computed(() =>
   locale.value === 'zh' ? 'Camera 驱动' : t('about.profile.title')
 )
 const topics = computed(() => {
-  const focusing = tm('home.focusing.topics')
-  if (Array.isArray(focusing) && focusing.length) return focusing.slice(0, 3)
-  return [
-    t('home.skills.camera.name'),
-    t('home.skills.embedded.name'),
-    t('home.skills.writing.name')
-  ]
+  const flat = tm('about.skillsFlat')
+  if (Array.isArray(flat) && flat.length) return flat.slice(0, 5)
+  return ['C/C++', 'Python', 'ARM', 'Sensor', 'Linux']
 })
 const profileImage = APP_CONFIG.IMAGES.PROFILE
 const initials = computed(() => {
