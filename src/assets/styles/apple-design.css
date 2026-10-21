@@ -150,35 +150,35 @@
   --md-quote-bg: rgba(94, 122, 138, 0.06);
 }
 
-/* --- Dark Mode (default — 雪夜静默) --- */
+/* --- Dark Mode (default — 雪夜静默, gallery pass #2) --- */
 html.dark {
-  --color-bg: #0B0F12;
-  --color-bg-secondary: #151c22;
-  --color-bg-tertiary: #0e1418;
-  --color-surface: #181f25;
-  --color-surface-elevated: #1e262e;
-  --color-text: #F0F4F7;
-  --color-text-secondary: #B8C4CC;
-  --color-text-tertiary: #8B969E;
-  --color-accent: #A8C5D4;
-  --color-accent-hover: #c2d8e3;
+  --color-bg: #141B22;
+  --color-bg-secondary: #1A222B;
+  --color-bg-tertiary: #121920;
+  --color-surface: #222B34;
+  --color-surface-elevated: #2A3440;
+  --color-text: #F5F8FA;
+  --color-text-secondary: #D2DBE2;
+  --color-text-tertiary: #A8B4BC;
+  --color-accent: #B7CFDC;
+  --color-accent-hover: #D0DCE6;
   --color-accent-contrast: #0B0F12;
   --color-accent-light: rgba(168, 197, 212, 0.1);
   --color-accent-border: rgba(168, 197, 212, 0.32);
   --color-cta-bg: #A8C5D4;
   --color-cta-bg-hover: #b8d1dd;
   --color-cta-text: #0B0F12;
-  --color-mist: #B8C4CC;
+  --color-mist: #C5D0D8;
   --color-nav-current: #A8C5D4;
-  --color-border: rgba(232, 238, 242, 0.18);
-  --color-divider: rgba(232, 238, 242, 0.10);
+  --color-border: rgba(232, 238, 242, 0.26);
+  --color-divider: rgba(232, 238, 242, 0.14);
   --color-overlay: rgba(11, 15, 18, 0.84);
-  --color-nav-bg: rgba(11, 15, 18, 0.9);
-  --color-card-bg: #181f25;
+  --color-nav-bg: rgba(20, 27, 34, 0.92);
+  --color-card-bg: #222B34;
   --color-code-bg: #1a2127;
-  /* Dark Hero — snow-night (unchanged quiet night look) */
-  --color-hero-bg: #0B0F12;
-  --color-hero-text: #E8EEF2;
+  /* Dark Hero — snow-night gallery lift (not Apple #1c1c1e) */
+  --color-hero-bg: #141B22;
+  --color-hero-text: #F5F8FA;
   --color-hero-ghost-border: rgba(168, 197, 212, 0.4);
   --color-hero-ghost-text: #C5DAE6;
   --color-hero-ghost-hover-bg: rgba(168, 197, 212, 0.08);
@@ -186,9 +186,9 @@ html.dark {
   --color-hero-ghost-hover-text: #c5dae6;
   --color-hero-cta-border: rgba(168, 197, 212, 0.18);
   --color-hero-muted: rgba(232, 238, 242, 0.72);
-  --color-cover-bg: #0a0a0c;
+  --color-cover-bg: #121820;
   --color-tag-bg: #1a2127;
-  --color-tag-text: #E8EEF2;
+  --color-tag-text: #F5F8FA;
   --color-input-bg: #12181c;
   --color-input-border: rgba(232, 238, 242, 0.12);
   --color-input-focus: rgba(168, 197, 212, 0.32);
@@ -208,7 +208,7 @@ html.dark {
   --md-inline-code-bg: rgba(168, 197, 212, 0.1);
   --md-table-stripe: rgba(168, 197, 212, 0.05);
   --md-quote-bg: rgba(168, 197, 212, 0.07);
-  /* Dark: ice-blue shadow (near-black 8% is invisible on #0B0F12) */
+  /* Dark: ice-blue shadow (near-black 8% is invisible on snow-night bg) */
   --motion-card-shadow-hover: 0 10px 28px rgba(168, 197, 212, 0.12);
   --motion-card-bg-hover: color-mix(in srgb, var(--color-card-bg) 97%, #E8EEF2 3%);
   color-scheme: dark;
@@ -256,7 +256,7 @@ h4 { font-size: clamp(17px, 2vw, 22px); }
 
 p {
   line-height: 1.58824;
-  color: var(--color-text-secondary);
+  color: var(--color-text);
 }
 
 a {
