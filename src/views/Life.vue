@@ -10,19 +10,11 @@
 
     <section class="life-header">
       <div class="container-wide life-header-row">
-        <h1 class="reveal">
-          {{ $t('life.title') }}
-        </h1>
-        <div class="life-controls reveal reveal-delay-1">
+        <div class="life-title-row reveal">
+          <h1>
+            {{ $t('life.title') }}
+          </h1>
           <div class="filter-chips">
-            <button
-              type="button"
-              class="chip"
-              :class="{ active: selectedCategory === 'all' }"
-              @click="selectedCategory = 'all'"
-            >
-              {{ $t('life.all') }}
-            </button>
             <button
               v-for="year in years"
               :key="year"
@@ -34,16 +26,26 @@
               {{ year }}
             </button>
             <button
-              v-for="category in categories"
-              :key="category.name"
               type="button"
               class="chip"
-              :class="{ active: selectedCategory === category.name }"
-              @click="selectedCategory = category.name"
+              :class="{ active: !selectedYear && !selectedMonth }"
+              @click="resetFilters"
             >
-              {{ $t(`life.categories.${category.name}`) }}
+              {{ $t('life.all') }}
+            </button>
+            <button
+              v-for="month in monthChips"
+              :key="month.value"
+              type="button"
+              class="chip"
+              :class="{ active: selectedMonth === month.value }"
+              @click="selectedMonth = selectedMonth === month.value ? null : month.value"
+            >
+              {{ month.label }}
             </button>
           </div>
+        </div>
+        <div class="life-controls reveal reveal-delay-1">
           <div class="search-wrap">
             <svg
               width="16"
@@ -78,7 +80,7 @@
       <div class="container-wide">
         <div
           v-if="filteredPosts.length > 0"
-          :key="`${selectedCategory}-${selectedYear}-${searchQuery}`"
+          :key="`${selectedCategory}-${selectedYear}-${selectedMonth}-${searchQuery}`"
           class="life-grid"
         >
           <article
@@ -97,6 +99,12 @@
             </div>
             <p class="life-caption">
               {{ post.title || post.description }}
+            </p>
+            <p
+              v-if="archiveOn"
+              class="life-date"
+            >
+              {{ post.date }}
             </p>
           </article>
         </div>
@@ -121,25 +129,21 @@
 
 <script setup>
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import CoverArt from '@/components/CoverArt.vue'
 
-const { tm } = useI18n()
+const route = useRoute()
+const { tm, locale } = useI18n()
 const selectedCategory = ref('all')
 const selectedYear = ref(null)
+const selectedMonth = ref(null)
+const archiveOn = computed(() => route.query.archive === '1')
 const searchInput = ref('')
 const searchQuery = useDebouncedRef(searchInput, 200)
 const { observe } = useReveal()
-
-const categories = [
-  { name: 'travel' },
-  { name: 'food' },
-  { name: 'reading' },
-  { name: 'photography' },
-  { name: 'thoughts' }
-]
 
 const posts = computed(() => {
   const items = tm('life.posts')
@@ -155,12 +159,19 @@ const years = computed(() => {
   return list.length ? list : ['2024', '2023']
 })
 
+const monthChips = computed(() => {
+  const labels = locale.value === 'en' ? ['Mar', 'Feb', 'Jan'] : ['3月', '2月', '1月']
+  return [3, 2, 1].map((value, index) => ({ value, label: labels[index] }))
+})
+
 const filteredPosts = computed(() => {
   const q = String(searchQuery.value || '').toLowerCase().trim()
   return posts.value.filter(post => {
     const catOk = selectedCategory.value === 'all' || post.category === selectedCategory.value
-    const yearOk = !selectedYear.value || String(new Date(post.date).getFullYear()) === selectedYear.value
-    if (!catOk || !yearOk) return false
+    const postDate = post.date ? new Date(post.date) : null
+    const yearOk = !selectedYear.value || (postDate && String(postDate.getFullYear()) === selectedYear.value)
+    const monthOk = !selectedMonth.value || (postDate && postDate.getMonth() + 1 === selectedMonth.value)
+    if (!catOk || !yearOk || !monthOk) return false
     if (!q) return true
     const hay = [post.title, post.description, ...(post.tags || [])].join(' ').toLowerCase()
     return hay.includes(q)
@@ -170,6 +181,7 @@ const filteredPosts = computed(() => {
 const resetFilters = () => {
   selectedCategory.value = 'all'
   selectedYear.value = null
+  selectedMonth.value = null
   searchInput.value = ''
 }
 
@@ -185,7 +197,7 @@ watch(filteredPosts, () => {
   position: relative;
   padding-top: var(--nav-height);
   min-height: 100vh;
-  background: var(--color-bg);
+  background: transparent;
   overflow: hidden;
 }
 
@@ -224,26 +236,41 @@ html.dark .life-snow {
   z-index: 1;
 }
 
+.life .section {
+  padding-top: 28px;
+  padding-bottom: 80px;
+}
+
 .life-header {
   padding: var(--space-12) 0 var(--space-6);
 }
 
 .life-header-row {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   gap: 20px;
 }
 
+.life-title-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
 .life-header h1 {
-  font-size: clamp(32px, 5vw, 44px);
+  font-size: clamp(32px, 4vw, 40px);
+  font-weight: 700;
+  margin: 0;
 }
 
 .life-controls {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
-  justify-content: space-between;
+  flex: 0 0 auto;
 }
 
 .filter-chips {
@@ -255,20 +282,20 @@ html.dark .life-snow {
 .chip {
   padding: 8px 14px;
   border-radius: var(--radius-full);
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-secondary);
+  border: none;
+  background: var(--color-pill-bg);
   color: var(--color-text-secondary);
   font-size: 13px;
   font-weight: 500;
   font-family: var(--font-sans);
   cursor: pointer;
+  box-shadow: var(--shadow-xs);
 }
 
 .chip.active {
   background: var(--color-surface);
-  border-color: var(--color-border);
   color: var(--color-text);
-  box-shadow: var(--shadow-xs);
+  box-shadow: var(--shadow-sm);
 }
 
 html.dark .chip.active {
@@ -315,7 +342,9 @@ html.dark .chip.active {
 }
 
 .life-card-image {
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 10;
+  margin: 10px 10px 0;
+  border-radius: 16px;
   overflow: hidden;
 }
 
@@ -325,6 +354,12 @@ html.dark .chip.active {
   font-size: 14px;
   color: var(--color-text);
   line-height: 1.4;
+}
+
+.life-date {
+  margin: -6px 14px 14px;
+  font-size: 12px;
+  color: var(--color-text-tertiary);
 }
 
 .empty-state {
@@ -349,6 +384,7 @@ html.dark .chip.active {
     gap: 14px;
   }
 
+  .life-header-row,
   .life-controls {
     flex-direction: column;
     align-items: stretch;

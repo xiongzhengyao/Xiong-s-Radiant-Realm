@@ -1,4 +1,11 @@
-/* Self-hosted mono only. Body text uses system UI stack in --font-sans. */
+/* Self-hosted mono for code. Serif is only used for the about-page name. */
+@font-face {
+  font-family: 'Noto Serif SC';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/noto-serif-sc-700.woff2') format('woff2');
+}
 @font-face {
   font-family: 'JetBrains Mono';
   font-style: normal;

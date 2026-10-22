@@ -8,9 +8,34 @@
       class="app"
       :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading }"
     >
+      <div
+        class="studio-bg"
+        aria-hidden="true"
+      >
+        <div class="studio-beams" />
+        <div class="studio-stars" />
+        <div class="studio-ridge" />
+        <div class="studio-snow">
+          <svg
+            v-for="flake in flakes"
+            :key="flake.id"
+            class="snowflake"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            :style="flake.style"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-width="1.2"
+              d="M12 2.5v19M4.8 6.8l14.4 10.4M4.8 17.2l14.4-10.4M12 6.2l-1.6-2.4M12 6.2l1.6-2.4M12 17.8l-1.6 2.4M12 17.8l1.6 2.4"
+            />
+          </svg>
+        </div>
+      </div>
       <!-- Navigation -->
       <nav
-        class="nav glass"
+        class="nav"
         role="navigation"
       >
         <div class="nav-inner">
@@ -79,6 +104,11 @@
           </div>
 
           <div class="nav-actions">
+            <span
+              v-if="!showArchiveNav"
+              class="nav-rule"
+              aria-hidden="true"
+            />
             <button
               class="nav-action-btn theme-toggle"
               :title="isDark ? 'Light mode' : 'Dark mode'"
@@ -151,6 +181,21 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               ><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+            </button>
+            <span
+              v-if="showArchiveNav"
+              class="nav-rule"
+              aria-hidden="true"
+            />
+            <button
+              v-if="showArchiveNav"
+              type="button"
+              class="nav-archive"
+              :class="{ active: isArchiveOn }"
+              :aria-pressed="isArchiveOn"
+              @click="toggleArchive"
+            >
+              {{ $t('nav.archive') }}
             </button>
             <button
               class="nav-toggle"
@@ -320,6 +365,27 @@ const mobileMenuOpen = ref(false)
 const isScrolled = ref(false)
 /** Article detail hides MobileTabBar and uses a single mini share bar */
 const isArticleReading = computed(() => route.name === 'BlogPost')
+const showArchiveNav = computed(() => route.path === '/projects' || route.path === '/life')
+const isArchiveOn = computed(() => route.query.archive === '1')
+const flakes = Array.from({ length: 14 }, (_, i) => ({
+  id: i,
+  style: {
+    left: `${(i * 17 + 4) % 96}%`,
+    top: `${(i * 23 + 6) % 92}%`,
+    width: `${12 + (i % 4) * 5}px`,
+    height: `${12 + (i % 4) * 5}px`,
+    opacity: 0.28 + (i % 5) * 0.1,
+    animationDuration: `${16 + (i % 7) * 3}s`,
+    animationDelay: `${-i * 1.3}s`
+  }
+}))
+
+const toggleArchive = () => {
+  const query = { ...route.query }
+  if (query.archive === '1') delete query.archive
+  else query.archive = '1'
+  router.replace({ path: route.path, query })
+}
 
 /* IA lock: 首页 · 笔记 · 项目 · 生活 · 关于 — no 存档 / contact in primary nav */
 const navLinks = [
@@ -447,11 +513,18 @@ html.dark {
 }
 
 .app {
+  isolation: isolate;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: var(--color-bg);
   --back-to-top-offset: var(--space-6);
+}
+
+main,
+.footer {
+  position: relative;
+  z-index: 1;
 }
 
 @media (max-width: 734px) {
@@ -476,23 +549,26 @@ html.dark {
   right: 0;
   z-index: 1000;
   height: var(--nav-height);
-  border-bottom: 1px solid var(--color-divider);
-  transition: border-color var(--duration-base) var(--ease-out),
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background var(--duration-base) var(--ease-out),
+              border-color var(--duration-base) var(--ease-out),
               box-shadow var(--duration-base) var(--ease-out);
 }
 
 .is-scrolled .nav {
-  border-bottom-color: var(--color-border);
-  box-shadow: var(--shadow-xs);
+  background: var(--color-nav-bg);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border-bottom-color: var(--color-divider);
 }
 
 .nav-inner {
-  max-width: var(--max-width-wide);
-  margin: 0 auto;
   height: 100%;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 0 22px;
+  padding: 0 28px;
   gap: var(--space-1);
 }
 
@@ -506,13 +582,14 @@ html.dark {
   color: var(--color-text);
   text-decoration: none;
   letter-spacing: -0.02em;
-  margin-right: var(--space-8);
+  margin-right: 0;
+  justify-self: start;
   transition: opacity var(--duration-fast);
 }
 
 .nav-logo-mark {
   flex-shrink: 0;
-  color: var(--color-accent);
+  color: currentColor;
 }
 
 .nav-logo-text {
@@ -526,8 +603,7 @@ html.dark {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 0;
-  flex: 1;
+  gap: 4px;
   justify-content: center;
 }
 
@@ -574,8 +650,31 @@ html.dark {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
-  margin-left: auto;
+  gap: 4px;
+  justify-self: end;
+}
+
+.nav-rule {
+  width: 1px;
+  height: 16px;
+  margin: 0 8px;
+  background: var(--color-divider);
+}
+
+.nav-archive {
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 14px;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.nav-archive.active {
+  color: var(--color-text);
+  font-weight: 600;
 }
 
 .nav-action-btn {
@@ -652,7 +751,7 @@ html.dark {
 .footer {
   margin-top: auto;
   position: relative;
-  background: var(--color-bg-secondary);
+  background: transparent;
   border-top: none;
   padding: var(--space-16) 0 var(--space-8);
 }

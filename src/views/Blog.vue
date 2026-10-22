@@ -80,32 +80,14 @@
               <h4>{{ $t('blog.tagLabel') }}</h4>
               <div class="filter-pills">
                 <button
-                  type="button"
-                  class="pill"
-                  :class="{ active: selectedCategory === 'all' && !selectedTag }"
-                  @click="selectedCategory = 'all'; selectedTag = ''"
-                >
-                  {{ $t('blog.all') }}
-                </button>
-                <button
-                  v-for="category in categories"
-                  :key="category.name"
+                  v-for="tag in designTags"
+                  :key="tag.id"
                   type="button"
                   class="pill pill-accent"
-                  :class="{ active: selectedCategory === category.name }"
-                  @click="selectedCategory = category.name; selectedTag = ''"
+                  :class="{ active: selectedDesignTag === tag.id }"
+                  @click="selectedDesignTag = selectedDesignTag === tag.id ? '' : tag.id"
                 >
-                  {{ category.label }}
-                </button>
-                <button
-                  v-for="tag in popularTags.slice(0, 6)"
-                  :key="tag.name"
-                  type="button"
-                  class="pill pill-accent"
-                  :class="{ active: selectedTag === tag.name }"
-                  @click="selectedTag = selectedTag === tag.name ? '' : tag.name"
-                >
-                  {{ tag.name }}
+                  {{ tag.label }}
                 </button>
               </div>
             </div>
@@ -127,7 +109,7 @@
                   <CoverArt
                     :seed="post.id"
                     :category="post.category"
-                    :image="post.image"
+                    :image="coverOf(post)"
                     size="md"
                   />
                 </div>
@@ -135,8 +117,8 @@
                   <h3>{{ post.title }}</h3>
                   <p>{{ post.excerpt }}</p>
                   <div class="post-card-foot">
-                    <span class="post-date">{{ post.date }}</span>
-                    <span class="tag tag-accent">{{ categoryLabel(post.category) }}</span>
+                    <span class="post-date">{{ cardDate(post) }}</span>
+                    <span class="tag tag-accent">{{ designTag(post).label }}</span>
                   </div>
                 </div>
               </article>
@@ -563,7 +545,8 @@ import { toast } from '@/utils/toast'
 import { useBlogStore } from '@/stores/blogStore'
 import { useMarkdown } from '@/composables/useMarkdown'
 import { useReveal } from '@/composables/useReveal'
-import { getCategoryLabel } from '@/utils/categoryLabel'
+import { getCategoryLabel, getDesignTag } from '@/utils/categoryLabel'
+import { formatRelativeDate } from '@/utils/relativeTime'
 import { extractHeadings, injectHeadingIds } from '@/utils/headings'
 import { enhanceMarkdownHtml, bindCodeCopyButtons, enhanceTableNumericColumns } from '@/utils/enhanceMarkdown'
 import { setPageMetaOverride, clearPageMetaOverride } from '@/composables/usePageMeta'
@@ -580,16 +563,17 @@ let scrollSaveTimer = null
 
 const { render: renderMarkdown } = useMarkdown()
 const { observe } = useReveal()
-const { locale, t } = useI18n()
+const { locale, t, tm } = useI18n()
 
 const searchInput = ref('')
 const searchQuery = useDebouncedRef(searchInput, 200)
 const selectedCategory = ref('all')
 const selectedTag = ref('')
 const selectedYear = ref(null)
+const selectedDesignTag = ref('')
 const sortBy = ref('newest')
-const visibleCount = ref(6)
-const PAGE_SIZE = 6
+const visibleCount = ref(4)
+const PAGE_SIZE = 4
 const currentPostId = ref(null)
 const currentPost = ref(null)
 const renderedContent = ref('')
@@ -649,35 +633,31 @@ const blogStore = useBlogStore()
 const { updateProgress, markRead } = useReadHistory()
 const { isBookmarked, toggleBookmark } = useBookmarks()
 const posts = computed(() => blogStore.posts)
-const normalizeCategoryName = name => {
-  const value = String(name || '')
-    .trim()
-    .toLowerCase()
-  if (value === 'sensors') return 'sensor'
-  return value
-}
-const categories = computed(() => {
-  const used = new Set(posts.value.map(post => post.category))
-  return Array.from(used).map(name => ({
-    name: normalizeCategoryName(name),
-    label: getCategoryLabel(normalizeCategoryName(name), locale.value)
-  }))
+const designTags = computed(() => {
+  const items = tm('blog.designTags')
+  if (Array.isArray(items) && items.length) return items
+  return [
+    { id: 'work', label: locale.value === 'en' ? 'Work notes' : '工作思考' },
+    { id: 'imaging', label: locale.value === 'en' ? 'Imaging' : '影像' },
+    { id: 'life', label: locale.value === 'en' ? 'Life' : '生活' }
+  ]
 })
+
+const designTag = post => getDesignTag(post, locale.value)
+
+const cardDate = post => post.dateLabel || formatRelativeDate(post.date, locale.value)
+
+const coverOf = post => {
+  if (post.image) return post.image
+  const cat = String(post.category || '').toLowerCase()
+  if (cat === 'linux') return '/images/laptop.jpg'
+  if (cat === 'sensor' || cat === 'camera') return '/images/drone-studio.jpg'
+  if (cat === 'embedded') return '/images/desk.jpg'
+  if (cat === 'life') return '/images/beach.jpg'
+  return '/images/mountains.jpg'
+}
 
 const categoryLabel = category => getCategoryLabel(category, locale.value)
-
-const popularTags = computed(() => {
-  const counts = {}
-  posts.value.forEach(post => {
-    (post.tags || []).forEach(tag => {
-      counts[tag] = (counts[tag] || 0) + 1
-    })
-  })
-  return Object.entries(counts)
-    .map(([name, count]) => ({ name, count }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 12)
-})
 
 const availableYears = computed(() => {
   const years = new Set()
@@ -896,9 +876,10 @@ const filteredPosts = computed(() => {
     const matchesSearch = searchable.includes(q)
     const matchesCategory = selectedCategory.value === 'all' || post.category === selectedCategory.value
     const matchesTag = !selectedTag.value || (post.tags || []).includes(selectedTag.value)
+    const matchesDesign = !selectedDesignTag.value || designTag(post).id === selectedDesignTag.value
     const matchesYear =
       !selectedYear.value || String(new Date(post.date).getFullYear()) === selectedYear.value
-    return matchesSearch && matchesCategory && matchesTag && matchesYear
+    return matchesSearch && matchesCategory && matchesTag && matchesDesign && matchesYear
   })
 
   if (sortBy.value === 'oldest') {
@@ -906,7 +887,12 @@ const filteredPosts = computed(() => {
   } else if (sortBy.value === 'title') {
     result = [...result].sort((a, b) => a.title.localeCompare(b.title, locale.value))
   } else {
-    result = [...result].sort((a, b) => new Date(b.date) - new Date(a.date))
+    result = [...result].sort((a, b) => {
+      if (a.pin && b.pin && a.pin !== b.pin) return a.pin - b.pin
+      if (a.pin && !b.pin) return -1
+      if (!a.pin && b.pin) return 1
+      return new Date(b.date) - new Date(a.date)
+    })
   }
   return result
 })
@@ -952,7 +938,7 @@ watch(selectedCategory, () => {
   visibleCount.value = PAGE_SIZE
 })
 
-watch([selectedTag, selectedYear, searchQuery], () => {
+watch([selectedTag, selectedYear, selectedDesignTag, searchQuery], () => {
   visibleCount.value = PAGE_SIZE
 })
 
@@ -983,7 +969,7 @@ watch(filteredPosts, () => {
 .blog {
   padding-top: var(--nav-height);
   min-height: 100vh;
-  background: var(--color-bg);
+  background: transparent;
 }
 
 .blog-view-enter-active,
@@ -1028,7 +1014,8 @@ watch(filteredPosts, () => {
 }
 
 .notes-sidebar h1 {
-  font-size: clamp(36px, 5vw, 48px);
+  font-size: clamp(40px, 4vw, 52px);
+  font-weight: 700;
   margin-bottom: 8px;
 }
 
@@ -1043,11 +1030,11 @@ watch(filteredPosts, () => {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 14px;
-  border-radius: var(--radius-lg);
-  background: var(--color-input-bg);
-  border: 1px solid var(--color-input-border);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04), var(--color-card-glow);
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-sm), var(--color-card-glow);
   color: var(--color-text-tertiary);
   margin-bottom: 28px;
 }
@@ -1085,11 +1072,12 @@ watch(filteredPosts, () => {
   font-size: 13px;
   font-weight: 500;
   border-radius: var(--radius-full);
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-secondary);
+  border: none;
+  background: var(--color-pill-bg);
   color: var(--color-text-secondary);
   cursor: pointer;
   font-family: var(--font-sans);
+  box-shadow: var(--shadow-xs);
   transition: background var(--duration-fast) var(--ease-out),
               color var(--duration-fast) var(--ease-out),
               border-color var(--duration-fast) var(--ease-out);
@@ -1097,9 +1085,10 @@ watch(filteredPosts, () => {
 }
 
 .pill.pill-accent {
-  background: var(--color-accent-light);
+  background: var(--color-pill-accent-bg);
   border-color: transparent;
-  color: var(--color-tag-text);
+  color: var(--color-pill-accent-text);
+  box-shadow: none;
 }
 
 .pill.active {
@@ -1124,11 +1113,10 @@ watch(filteredPosts, () => {
   flex-shrink: 0;
 }
 
-/* --- Post Grid — prefer ~3 columns, wide gutters --- */
 .post-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
 }
 
 @keyframes postStaggerIn {
@@ -1173,6 +1161,10 @@ watch(filteredPosts, () => {
   font-size: 17px;
   line-height: 1.35;
   margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .post-card-body > p {
@@ -1207,8 +1199,9 @@ watch(filteredPosts, () => {
 }
 
 .load-more-btn {
-  min-width: min(320px, 100%);
-  padding: 14px 32px;
+  min-width: 0;
+  padding: 12px 28px;
+  border-radius: 999px;
 }
 
 .empty-state {
@@ -1217,9 +1210,15 @@ watch(filteredPosts, () => {
   color: var(--color-text-secondary);
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
   .post-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .post-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

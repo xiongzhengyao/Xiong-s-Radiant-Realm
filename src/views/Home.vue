@@ -10,9 +10,8 @@
 
     <section class="home-stage">
       <div
-        v-if="latestNote"
         class="float-card float-card--notes reveal"
-        @click="goToPost(latestNote)"
+        @click="openLatest"
       >
         <header class="float-card-head">
           <span class="float-card-title">
@@ -31,20 +30,21 @@
         </header>
         <div class="float-card-cover">
           <CoverArt
-            :seed="latestNote.id"
-            :category="latestNote.category"
-            :image="latestNote.image"
+            :seed="latestNote?.id || 'note'"
+            :category="latestNote?.category || 'notes'"
+            :image="noteImage"
             size="md"
           />
         </div>
-        <h3>{{ latestNote.title }}</h3>
-        <p>{{ latestNote.excerpt }}</p>
+        <h3>{{ latestNote?.title || $t('home.fallbackNoteTitle') }}</h3>
+        <p>{{ latestNote?.excerpt || $t('home.fallbackNoteExcerpt') }}</p>
         <span class="tag tag-accent">{{ $t('home.noteTag') }}</span>
       </div>
 
       <article class="float-card float-card--hero reveal reveal-delay-1">
         <p class="hero-hello">
-          {{ $t('home.hello') }}
+          {{ $t('home.helloPrefix') }}
+          <span class="hero-name">{{ $t('home.helloName') }}</span>{{ $t('home.helloSuffix') }}
         </p>
         <h1 class="hero-headline">
           {{ $t('home.headline') }}
@@ -120,12 +120,13 @@
             ><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /></svg>
             {{ $t('home.projectProgress') }}
           </span>
-          <span class="float-card-meta">{{ featuredProject.year }} ›</span>
+          <span class="float-card-meta">{{ $t('home.projectMeta') }} ›</span>
         </header>
         <div class="float-card-cover">
           <CoverArt
             :seed="featuredProject.id"
             category="sensor"
+            :image="featuredProject.image || '/images/drone-studio.jpg'"
             size="md"
           />
         </div>
@@ -173,6 +174,7 @@
           <CoverArt
             seed="life-home"
             category="notes"
+            image="/images/beach.jpg"
             size="md"
           />
         </div>
@@ -243,7 +245,10 @@ const continuePost = computed(() => {
 const latestNote = computed(() => blogStore.getRecentPosts(1)[0] || null)
 const featuredProject = computed(() => companyProjects.value[0] || null)
 
+const noteImage = computed(() => latestNote.value?.image || '/images/mountains.jpg')
+
 const noteRelative = computed(() => {
+  if (latestNote.value?.dateLabel) return latestNote.value.dateLabel
   if (!latestNote.value?.date) return t('home.daysAgo', { n: 2 })
   const days = Math.max(1, Math.round((Date.now() - new Date(latestNote.value.date).getTime()) / 86400000))
   return t('home.daysAgo', { n: Math.min(days, 99) })
@@ -251,6 +256,11 @@ const noteRelative = computed(() => {
 
 const goToPost = post => {
   router.push(`/blog/${post.id}/${encodeURIComponent(post.slug)}`)
+}
+
+const openLatest = () => {
+  if (latestNote.value) goToPost(latestNote.value)
+  else router.push('/blog')
 }
 
 onMounted(async () => {
@@ -269,7 +279,7 @@ watch([latestNote, continuePost, featuredProject], () => {
   position: relative;
   padding-top: var(--nav-height);
   min-height: calc(100vh - var(--nav-height));
-  background: var(--color-hero-bg);
+  background: transparent;
   overflow: hidden;
 }
 
@@ -318,22 +328,20 @@ html:not(.dark) .home-snow {
 }
 
 .home-stage {
-  /* Soft-studio F scatter: air between hero & sides (gap > kiss) */
-  --stage-side-w: clamp(220px, 21vw, 240px);
-  --stage-hero-w: clamp(340px, 38vw, 440px);
-  --stage-hero-shift: 24px; /* hero slightly left-of-center */
-  --stage-hero-top: calc(50% - 200px);
-  /* negative = gap from hero edge; keeps soft float without covering content */
-  --stage-gap-notes: 20px;
-  --stage-gap-project: 16px;
-  --stage-gap-life: 28px;
+  --stage-side-w: clamp(230px, 20vw, 268px);
+  --stage-hero-w: clamp(500px, 44vw, 640px);
+  --stage-hero-shift: 18px;
+  --stage-hero-top: calc(50% - 230px);
+  --stage-gap-notes: 28px;
+  --stage-gap-project: 22px;
+  --stage-gap-life: 36px;
   position: relative;
   z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
   padding: clamp(28px, 5vh, 56px) clamp(12px, 2vw, 24px) 72px;
-  min-height: var(--hero-min-height);
-  height: var(--hero-min-height);
+  min-height: calc(100vh - var(--nav-height));
+  height: calc(100vh - var(--nav-height));
 }
 
 .float-card {
@@ -348,15 +356,14 @@ html:not(.dark) .home-snow {
 }
 
 .float-card--hero {
-  /* Slightly left-of-center — lowest layer so side edges stay readable */
   left: 50%;
   top: var(--stage-hero-top);
   margin-left: calc(var(--stage-hero-w) / -2 - var(--stage-hero-shift));
   width: var(--stage-hero-w);
-  min-height: 380px;
+  min-height: 420px;
   z-index: 2;
   cursor: default;
-  padding: clamp(28px, 4vw, 40px);
+  padding: 40px 44px 36px;
   overflow: hidden;
   box-shadow: var(--shadow-xl), var(--color-card-glow);
 }
@@ -440,26 +447,36 @@ html:not(.dark) .home-snow {
 }
 
 .hero-hello {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--color-text-secondary);
-  margin-bottom: 10px;
+  margin-bottom: 16px;
+  padding-right: 140px;
+}
+
+.hero-name {
+  color: #8f7dcf;
+  font-weight: 600;
+}
+
+html.dark .hero-name {
+  color: #d2c2ff;
 }
 
 .hero-headline {
-  font-size: clamp(28px, 4vw, 40px);
+  font-size: clamp(30px, 2.5vw, 38px);
   font-weight: 700;
   letter-spacing: -0.03em;
-  line-height: 1.2;
-  margin-bottom: 14px;
-  max-width: 14em;
+  line-height: 1.25;
+  margin-bottom: 16px;
+  padding-right: 130px;
 }
 
 .hero-sub {
   font-size: 15px;
   color: var(--color-text-secondary);
-  line-height: 1.6;
-  max-width: 28em;
-  margin-bottom: 14px;
+  line-height: 1.65;
+  max-width: 22em;
+  margin-bottom: 16px;
   -webkit-line-clamp: unset;
   display: block;
 }
@@ -484,11 +501,19 @@ html:not(.dark) .home-snow {
 }
 
 .hero-ghost {
-  background: transparent;
-  color: var(--color-hero-ghost-text);
-  border: 1px solid var(--color-hero-ghost-border);
-  min-height: 42px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid rgba(26, 26, 34, 0.08);
+  box-shadow: var(--shadow-xs);
+  min-height: 44px;
   padding: 11px 18px;
+}
+
+html.dark .hero-ghost {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-text);
+  border-color: rgba(196, 181, 253, 0.28);
+  box-shadow: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -501,40 +526,49 @@ html:not(.dark) .home-snow {
 
 .hero-orb {
   position: absolute;
-  right: -20px;
-  bottom: -20px;
-  width: 180px;
-  height: 180px;
+  right: 36px;
+  top: 46%;
+  transform: translateY(-50%);
+  width: 128px;
+  height: 128px;
   border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, var(--color-mesh-1), transparent 68%);
+  background: #efe8ff;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  opacity: 0.9;
+  gap: 8px;
   pointer-events: none;
 }
 
+html.dark .hero-orb {
+  background: radial-gradient(circle at 40% 35%, #3a2c62, #221838 72%);
+  box-shadow: inset 0 0 0 1px rgba(196, 170, 255, 0.28), 0 0 24px rgba(140, 80, 255, 0.2);
+}
+
 .hero-orb span {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: var(--color-accent);
-  opacity: 0.55;
+  background: #9b87e8;
+}
+
+html.dark .hero-orb span {
+  background: #d7c6ff;
+  box-shadow: 0 0 8px rgba(196, 170, 255, 0.8);
 }
 
 .progress-track {
-  height: 4px;
-  border-radius: 4px;
-  background: var(--color-bg-secondary);
-  margin: 8px 0 8px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(183, 164, 243, 0.22);
+  margin: 10px 0 8px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  border-radius: 4px;
-  background: var(--color-accent);
+  border-radius: 999px;
+  background: linear-gradient(90deg, #c4b2f6, #9b87e8);
 }
 
 .progress-row {
@@ -611,10 +645,15 @@ html:not(.dark) .home-snow {
     width: 100%;
   }
 
+  .hero-hello,
+  .hero-headline,
+  .hero-sub {
+    padding-right: 0;
+    max-width: none;
+  }
+
   .hero-orb {
-    width: 120px;
-    height: 120px;
-    opacity: 0.55;
+    display: none;
   }
 }
 
