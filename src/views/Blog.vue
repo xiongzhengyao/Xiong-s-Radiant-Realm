@@ -4,7 +4,6 @@
       name="blog-view"
       mode="out-in"
     >
-      <!-- Blog list view — 疏-卡 airy notes (mock lock) -->
       <div
         v-if="!currentPostId"
         key="list"
@@ -15,136 +14,132 @@
           aria-hidden="true"
         >
           <div class="notes-mesh" />
+          <div class="notes-snow" />
         </div>
-        <div class="notes-layout container-wide">
-          <aside class="notes-sidebar reveal">
-            <h1>{{ $t('blog.title') }}</h1>
-            <p class="notes-sub">
-              {{ $t('blog.subtitle') }}
-            </p>
 
-            <div class="notes-search">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                aria-hidden="true"
-              ><circle
-                cx="11"
-                cy="11"
-                r="8"
-              /><line
-                x1="21"
-                y1="21"
-                x2="16.65"
-                y2="16.65"
-              /></svg>
-              <input
-                ref="searchInputRef"
-                v-model="searchInput"
-                type="search"
-                :placeholder="$t('blog.searchPlaceholder')"
-                class="notes-search-input"
+        <section class="notes-header">
+          <div class="container-wide">
+            <h1 class="reveal">
+              {{ $t('blog.title') }}
+            </h1>
+            <div class="notes-controls reveal reveal-delay-1">
+              <div
+                class="filter-chips"
+                role="tablist"
               >
-              <button
-                v-if="searchInput"
-                type="button"
-                class="search-clear"
-                :aria-label="$t('blog.clearSearch')"
-                @click="searchInput = ''"
-              >
-                ×
-              </button>
-            </div>
-
-            <div class="notes-filter-block">
-              <h4>{{ $t('blog.yearLabel') }}</h4>
-              <div class="filter-pills">
+                <button
+                  type="button"
+                  class="chip"
+                  :class="{ active: !selectedDesignTag }"
+                  @click="selectedDesignTag = ''"
+                >
+                  {{ $t('blog.all') }}
+                </button>
+                <button
+                  v-for="tag in designTags"
+                  :key="tag.id"
+                  type="button"
+                  class="chip"
+                  :class="{ active: selectedDesignTag === tag.id }"
+                  @click="selectedDesignTag = selectedDesignTag === tag.id ? '' : tag.id"
+                >
+                  {{ tag.label }}
+                </button>
                 <button
                   v-for="year in availableYears"
                   :key="year"
                   type="button"
-                  class="pill"
+                  class="chip"
                   :class="{ active: selectedYear === year }"
                   @click="selectedYear = selectedYear === year ? null : year"
                 >
                   {{ year }}
                 </button>
               </div>
-            </div>
-
-            <div class="notes-filter-block">
-              <h4>{{ $t('blog.tagLabel') }}</h4>
-              <div class="filter-pills">
-                <button
-                  v-for="tag in designTags"
-                  :key="tag.id"
-                  type="button"
-                  class="pill pill-accent"
-                  :class="{ active: selectedDesignTag === tag.id }"
-                  @click="selectedDesignTag = selectedDesignTag === tag.id ? '' : tag.id"
+              <div class="search-wrap">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                ><circle
+                  cx="11"
+                  cy="11"
+                  r="8"
+                /><line
+                  x1="21"
+                  y1="21"
+                  x2="16.65"
+                  y2="16.65"
+                /></svg>
+                <input
+                  ref="searchInputRef"
+                  v-model="searchInput"
+                  type="search"
+                  class="search-input"
+                  :placeholder="$t('blog.searchPlaceholder')"
                 >
-                  {{ tag.label }}
+                <button
+                  v-if="searchInput"
+                  type="button"
+                  class="search-clear"
+                  :aria-label="$t('blog.clearSearch')"
+                  @click="searchInput = ''"
+                >
+                  ×
                 </button>
               </div>
             </div>
-          </aside>
+          </div>
+        </section>
 
-          <section class="notes-main">
+        <section class="section notes-body">
+          <div class="container-wide">
             <div
-              :key="`${selectedCategory}-${selectedYear}-${selectedTag}-${searchQuery}`"
-              class="post-grid"
+              v-if="filteredPosts.length"
+              :key="`${selectedCategory}-${selectedYear}-${selectedTag}-${selectedDesignTag}-${searchQuery}`"
+              class="notes-grid"
             >
               <article
-                v-for="(post, index) in visiblePosts"
+                v-for="(post, index) in filteredPosts"
                 :key="post.id"
-                class="post-card post-card-stagger reveal"
-                :style="{ animationDelay: `${Math.min(index, 8) * 40}ms` }"
+                class="note-card reveal"
+                :class="'reveal-delay-' + ((index % 3) + 1)"
                 @click="showPostDetail(post)"
               >
-                <div class="post-card-image">
+                <div class="note-cover">
                   <CoverArt
                     :seed="post.id"
                     :category="post.category"
                     :image="coverOf(post)"
-                    size="md"
+                    size="lg"
                   />
                 </div>
-                <div class="post-card-body">
+                <div class="note-body">
                   <h3>{{ post.title }}</h3>
-                  <p>{{ post.excerpt }}</p>
-                  <div class="post-card-foot">
-                    <span class="post-date">{{ cardDate(post) }}</span>
+                  <p class="note-excerpt">
+                    {{ post.excerpt }}
+                  </p>
+                  <div class="note-tags">
                     <span class="tag tag-accent">{{ designTag(post).label }}</span>
+                  </div>
+                  <div class="note-footer">
+                    <span>{{ cardDate(post) }}</span>
                   </div>
                 </div>
               </article>
             </div>
-
             <div
-              v-if="filteredPosts.length === 0"
+              v-else
               class="empty-state"
             >
               <p>{{ $t('blog.empty') }}</p>
             </div>
-
-            <div
-              v-if="hasMorePosts"
-              class="load-more-wrap"
-            >
-              <button
-                type="button"
-                class="btn btn-primary load-more-btn"
-                @click="loadMorePosts"
-              >
-                {{ $t('blog.loadMore') }}
-              </button>
-            </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </div>
 
       <!-- Blog post detail view — magazine / tech-doc reading layout -->
@@ -572,8 +567,6 @@ const selectedTag = ref('')
 const selectedYear = ref(null)
 const selectedDesignTag = ref('')
 const sortBy = ref('newest')
-const visibleCount = ref(4)
-const PAGE_SIZE = 4
 const currentPostId = ref(null)
 const currentPost = ref(null)
 const renderedContent = ref('')
@@ -897,12 +890,6 @@ const filteredPosts = computed(() => {
   return result
 })
 
-const visiblePosts = computed(() => filteredPosts.value.slice(0, visibleCount.value))
-const hasMorePosts = computed(() => visibleCount.value < filteredPosts.value.length)
-const loadMorePosts = () => {
-  visibleCount.value += PAGE_SIZE
-}
-
 const observeRevealElements = () => {
   observe()
 }
@@ -935,11 +922,6 @@ onUnmounted(() => {
 
 watch(selectedCategory, () => {
   syncCategoryToUrl()
-  visibleCount.value = PAGE_SIZE
-})
-
-watch([selectedTag, selectedYear, selectedDesignTag, searchQuery], () => {
-  visibleCount.value = PAGE_SIZE
 })
 
 watch(tocSheetOpen, open => {
@@ -982,10 +964,9 @@ watch(filteredPosts, () => {
   opacity: 0;
 }
 
-/* --- Notes list (疏-卡) --- */
 .notes-page {
   position: relative;
-  padding: var(--space-12) 0 var(--space-16);
+  min-height: calc(100vh - var(--nav-height));
   overflow: hidden;
 }
 
@@ -1000,46 +981,99 @@ watch(filteredPosts, () => {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 50% 40% at 70% 90%, var(--color-mesh-1) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 30% at 20% 20%, var(--color-mesh-2) 0%, transparent 50%);
+    radial-gradient(ellipse 50% 40% at 75% 20%, var(--color-mesh-1) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 15% 80%, var(--color-mesh-2) 0%, transparent 50%);
 }
 
-.notes-layout {
+.notes-snow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 15% 25%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 40%, #fff 0%, transparent 100%),
+    radial-gradient(2px 2px at 80% 70%, #fff 0%, transparent 100%);
+}
+
+html.dark .notes-snow {
+  opacity: 0.4;
+}
+
+.notes-header,
+.notes-body {
   position: relative;
   z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(200px, 240px) minmax(0, 1fr);
-  gap: 40px;
-  align-items: start;
 }
 
-.notes-sidebar h1 {
-  font-size: clamp(40px, 4vw, 52px);
-  font-weight: 700;
-  margin-bottom: 8px;
+.notes-body.section {
+  padding-top: 0;
+  padding-bottom: 80px;
 }
 
-.notes-sub {
-  font-size: 15px;
+.notes-header {
+  padding: var(--space-12) 0 var(--space-6);
+}
+
+.notes-header h1 {
+  font-size: clamp(36px, 5vw, 48px);
+  margin-bottom: var(--space-6);
+}
+
+.notes-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  justify-content: flex-start;
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--color-pill-bg);
+  box-shadow: var(--shadow-xs);
   color: var(--color-text-secondary);
-  margin-bottom: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out);
 }
 
-.notes-search {
-  position: relative;
+.chip.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+html.dark .chip:not(.active) {
+  background: transparent;
+  border-color: var(--color-accent-border);
+}
+
+.search-wrap {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 16px;
-  border-radius: 18px;
+  width: min(260px, 100%);
+  padding: 10px 16px;
+  border-radius: var(--radius-full);
   background: var(--color-card-bg);
   border: 1px solid var(--color-card-border);
-  box-shadow: var(--shadow-sm), var(--color-card-glow);
   color: var(--color-text-tertiary);
-  margin-bottom: 28px;
+  box-shadow: var(--shadow-sm), var(--color-card-glow);
 }
 
-.notes-search-input {
+.search-input {
   flex: 1;
   border: none;
   background: transparent;
@@ -1048,53 +1082,6 @@ watch(filteredPosts, () => {
   font-family: var(--font-sans);
   outline: none;
   min-width: 0;
-}
-
-.notes-filter-block {
-  margin-bottom: 22px;
-}
-
-.notes-filter-block h4 {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-tertiary);
-  margin-bottom: 10px;
-}
-
-.filter-pills {
-  display: flex;
-  gap: var(--space-2);
-  flex-wrap: wrap;
-}
-
-.pill {
-  padding: 7px 14px;
-  font-size: 13px;
-  font-weight: 500;
-  border-radius: var(--radius-full);
-  border: none;
-  background: var(--color-pill-bg);
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  font-family: var(--font-sans);
-  box-shadow: var(--shadow-xs);
-  transition: background var(--duration-fast) var(--ease-out),
-              color var(--duration-fast) var(--ease-out),
-              border-color var(--duration-fast) var(--ease-out);
-  white-space: nowrap;
-}
-
-.pill.pill-accent {
-  background: var(--color-pill-accent-bg);
-  border-color: transparent;
-  color: var(--color-pill-accent-text);
-  box-shadow: none;
-}
-
-.pill.active {
-  background: var(--color-accent);
-  color: var(--color-accent-contrast);
-  border-color: var(--color-accent);
 }
 
 .search-clear {
@@ -1113,95 +1100,70 @@ watch(filteredPosts, () => {
   flex-shrink: 0;
 }
 
-.post-grid {
+.notes-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
 }
 
-@keyframes postStaggerIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.post-card-stagger {
-  animation: postStaggerIn 0.2s var(--ease-out) both;
-}
-
-.post-card {
+.note-card {
   background: var(--color-card-bg);
   border: 1px solid var(--color-card-border);
   border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm), var(--color-card-glow);
   overflow: hidden;
-  cursor: pointer;
-  box-shadow: var(--shadow-md), var(--color-card-glow);
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 
-.post-card-image {
-  width: 100%;
-  height: 160px;
-  overflow: hidden;
-  position: relative;
-  border-radius: var(--radius-lg);
+.note-cover {
+  height: 168px;
   margin: 12px 12px 0;
-  width: calc(100% - 24px);
+  border-radius: 16px;
+  overflow: hidden;
 }
 
-.post-card-body {
-  padding: 16px 18px 18px;
+.note-body {
+  padding: 18px 18px 20px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   flex: 1;
 }
 
-.post-card-body h3 {
-  font-size: 17px;
-  line-height: 1.35;
-  margin: 0;
+.note-body h3 {
+  font-size: 18px;
+  line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.post-card-body > p {
+.note-excerpt {
   font-size: 13px;
   color: var(--color-text-secondary);
   line-height: 1.5;
+  margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin: 0;
-  flex: 1;
 }
 
-.post-card-foot {
+.note-tags {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
 }
 
-.post-date {
+.note-footer {
+  padding-top: 4px;
   font-size: 12px;
   color: var(--color-text-tertiary);
-}
-
-.load-more-wrap {
-  display: flex;
-  justify-content: center;
-  margin-top: 40px;
-}
-
-.load-more-btn {
-  min-width: 0;
-  padding: 12px 28px;
-  border-radius: 999px;
 }
 
 .empty-state {
@@ -1210,28 +1172,25 @@ watch(filteredPosts, () => {
   color: var(--color-text-secondary);
 }
 
-@media (max-width: 1200px) {
-  .post-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 980px) {
-  .post-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 860px) {
-  .notes-layout {
-    grid-template-columns: 1fr;
-    gap: 28px;
+@media (max-width: 960px) {
+  .notes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 }
 
 @media (max-width: 640px) {
-  .post-grid {
+  .notes-grid {
     grid-template-columns: 1fr;
+  }
+
+  .notes-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-wrap {
+    min-width: 0;
   }
 }
 
@@ -1908,19 +1867,10 @@ watch(filteredPosts, () => {
     transition: none;
   }
 
-  .post-card-stagger {
-    animation: none;
-  }
 }
 
 /* --- Responsive --- */
 @media (max-width: 734px) {
-  .filter-pills {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: var(--space-2);
-  }
-
   .article-shell {
     padding-top: var(--space-8);
   }
