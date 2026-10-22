@@ -54,27 +54,32 @@
         </p>
       </div>
 
-      <div class="about-right">
-        <div
-          class="resume-rail"
-          aria-hidden="true"
-        />
-        <article
+      <ol class="about-right timeline">
+        <li
           v-for="(job, idx) in workExperience"
           :key="`${job.company}-${job.period}`"
-          class="resume-card reveal"
-          :class="['reveal-delay-' + (idx + 1), { 'is-mid': idx === 1 }]"
-          :style="{ '--offset': `${[0, 84, 18][idx] || 0}px` }"
+          class="timeline-item reveal"
+          :class="['reveal-delay-' + (idx + 1), { 'is-current': idx === 0 }]"
         >
-          <h3>{{ job.company }} <span class="resume-years">{{ job.period }}</span></h3>
-          <p class="resume-duty">
-            {{ job.position }}
-          </p>
-          <p class="resume-detail">
-            {{ job.description }}
-          </p>
-        </article>
-      </div>
+          <time class="timeline-time">{{ job.period }}</time>
+          <span
+            class="timeline-dot"
+            aria-hidden="true"
+          />
+          <article class="timeline-card">
+            <h3>{{ job.company }}</h3>
+            <p class="timeline-role">
+              {{ job.position }}
+            </p>
+            <p
+              v-if="job.description && job.description !== job.position"
+              class="timeline-detail"
+            >
+              {{ job.description }}
+            </p>
+          </article>
+        </li>
+      </ol>
     </section>
   </div>
 </template>
@@ -245,79 +250,109 @@ html.dark .skill-row {
 }
 
 .about-right {
+  --time-col: 132px;
+  --dot-col: 18px;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  padding: 12px 0 0 36px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
 }
 
-.resume-rail {
+.timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--time-col) var(--dot-col) minmax(0, 1fr);
+  align-items: start;
+}
+
+.timeline-item:not(:last-child)::before {
+  content: '';
   position: absolute;
-  left: 8px;
-  top: 12px;
-  bottom: 12px;
-  width: 0;
+  left: calc(var(--time-col) + var(--dot-col) / 2);
+  top: 28px;
+  bottom: -56px;
   border-left: 1.5px dashed var(--color-accent-border);
+  transform: translateX(-0.75px);
 }
 
-.resume-card {
+.timeline-item + .timeline-item {
+  margin-top: 28px;
+}
+
+.timeline-time {
+  padding: 16px 16px 0 0;
+  text-align: right;
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  color: var(--color-text-tertiary);
+}
+
+.timeline-item.is-current .timeline-time {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  margin: 22px auto 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(183, 164, 243, 0.32);
   position: relative;
-  margin-left: var(--offset, 0);
+  z-index: 1;
+}
+
+.timeline-dot::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 5px;
+  width: 16px;
+  height: 1.5px;
+  background: var(--color-accent-border);
+}
+
+.timeline-item.is-current .timeline-dot {
+  background: #9b87e8;
+  box-shadow: 0 0 0 5px rgba(183, 164, 243, 0.42);
+}
+
+html.dark .timeline-dot {
+  background: #1a1428;
+  box-shadow: 0 0 0 4px rgba(196, 170, 255, 0.28);
+}
+
+html.dark .timeline-item.is-current .timeline-dot {
+  background: #d7c6ff;
+  box-shadow: 0 0 0 5px rgba(196, 170, 255, 0.35);
+}
+
+.timeline-card {
   background: var(--color-card-bg);
   border: 1px solid var(--color-card-border);
   border-radius: 22px;
   box-shadow: var(--shadow-md), var(--color-card-glow);
-  padding: 22px 24px;
-  max-width: 280px;
+  padding: 18px 22px 20px;
+  max-width: 420px;
 }
 
-.resume-card.is-mid::before {
-  content: '';
-  position: absolute;
-  left: -32px;
-  top: 28px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(183, 164, 243, 0.28);
-}
-
-html.dark .resume-card.is-mid::before {
-  background: #d7c6ff;
-}
-
-.resume-card h3 {
+.timeline-card h3 {
   font-size: 20px;
   font-weight: 650;
   margin-bottom: 6px;
 }
 
-.resume-years {
-  font-weight: 400;
-  color: var(--color-text-tertiary);
-  font-size: 14px;
-}
-
-.resume-duty {
+.timeline-role,
+.timeline-detail {
+  margin: 0;
   font-size: 14px;
   color: var(--color-text-secondary);
-  margin: 0;
 }
 
-.resume-chevron {
-  flex-shrink: 0;
-  color: var(--color-text-tertiary);
-  transition: transform var(--duration-base) var(--ease-out);
-}
-
-.resume-chevron.open {
-  transform: rotate(180deg);
-}
-
-.resume-detail {
-  display: none;
+.timeline-detail {
+  margin-top: 8px;
 }
 
 @media (max-width: 860px) {
@@ -327,26 +362,45 @@ html.dark .resume-card.is-mid::before {
   }
 
   .about-right {
-    padding-left: 24px;
+    --time-col: 0px;
   }
 
-  .resume-card {
-    margin-left: 0 !important;
+  .timeline-item {
+    grid-template-columns: 18px minmax(0, 1fr);
+  }
+
+  .timeline-time {
+    grid-column: 2;
+    grid-row: 1;
+    padding: 0 0 8px 14px;
+    text-align: left;
+  }
+
+  .timeline-dot {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .timeline-card {
+    grid-column: 2;
+    grid-row: 2;
+    max-width: none;
+    margin-left: 14px;
+  }
+
+  .timeline-item:not(:last-child)::before {
+    left: 9px;
   }
 }
 
 @media print {
   .about-atmosphere,
-  .about-actions,
-  .resume-chevron {
+  .about-actions {
     display: none !important;
   }
 
-  .resume-detail {
+  .timeline-detail {
     display: block !important;
-    margin-top: 8px;
-    font-size: 13px;
-    color: var(--color-text-secondary);
   }
 }
 </style>
