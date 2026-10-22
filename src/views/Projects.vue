@@ -13,6 +13,12 @@
         <h1 class="reveal">
           {{ $t('projects.title') }}
         </h1>
+        <p
+          v-if="showArchive"
+          class="archive-note reveal"
+        >
+          {{ $t('projects.archiveHint') }}
+        </p>
         <div class="projects-controls reveal reveal-delay-1">
           <div
             class="filter-chips"
@@ -83,6 +89,7 @@
               <CoverArt
                 :seed="project.id"
                 :category="coverCategory(project)"
+                :image="project.image"
                 size="lg"
               />
             </div>
@@ -132,13 +139,16 @@
 
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useReveal } from '@/composables/useReveal'
 import { useCareer } from '@/composables/useCareer'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import CoverArt from '@/components/CoverArt.vue'
 
+const route = useRoute()
 const { projects } = useCareer()
 const { observe } = useReveal()
+const showArchive = computed(() => route.query.archive === '1')
 
 const selectedChip = ref('all')
 const searchInput = ref('')
@@ -147,7 +157,8 @@ const chipKeys = ['firmware', 'tools', 'app']
 
 const filteredProjects = computed(() => {
   const q = String(searchQuery.value || '').toLowerCase().trim()
-  return projects.value.filter(project => {
+  const pool = projects.value.filter(project => (showArchive.value ? !project.showcase : project.showcase))
+  return pool.filter(project => {
     const chipOk = selectedChip.value === 'all' || project.chip === selectedChip.value
     if (!chipOk) return false
     if (!q) return true
@@ -176,7 +187,7 @@ watch(filteredProjects, () => {
   position: relative;
   padding-top: var(--nav-height);
   min-height: 100vh;
-  background: var(--color-bg);
+  background: transparent;
   overflow: hidden;
 }
 
@@ -215,6 +226,11 @@ html.dark .projects-snow {
   z-index: 1;
 }
 
+.projects-body.section {
+  padding-top: 0;
+  padding-bottom: 80px;
+}
+
 .projects-header {
   padding: var(--space-12) 0 var(--space-6);
 }
@@ -224,12 +240,18 @@ html.dark .projects-snow {
   margin-bottom: var(--space-6);
 }
 
+.archive-note {
+  margin: -8px 0 16px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
 .projects-controls {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 16px;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .filter-chips {
@@ -241,8 +263,9 @@ html.dark .projects-snow {
 .chip {
   padding: 8px 16px;
   border-radius: var(--radius-full);
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-secondary);
+  border: none;
+  background: var(--color-pill-bg);
+  box-shadow: var(--shadow-xs);
   color: var(--color-text-secondary);
   font-size: 14px;
   font-weight: 500;
@@ -268,13 +291,13 @@ html.dark .chip:not(.active) {
   display: flex;
   align-items: center;
   gap: 8px;
-  min-width: min(320px, 100%);
+  width: min(260px, 100%);
   padding: 10px 16px;
   border-radius: var(--radius-full);
-  background: var(--color-input-bg);
-  border: 1px solid var(--color-input-border);
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
   color: var(--color-text-tertiary);
-  box-shadow: var(--color-card-glow);
+  box-shadow: var(--shadow-sm), var(--color-card-glow);
 }
 
 .search-input {
@@ -304,7 +327,9 @@ html.dark .chip:not(.active) {
 }
 
 .project-cover {
-  height: 160px;
+  height: 168px;
+  margin: 12px 12px 0;
+  border-radius: 16px;
   overflow: hidden;
 }
 

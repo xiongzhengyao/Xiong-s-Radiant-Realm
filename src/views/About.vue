@@ -21,9 +21,6 @@
         <p class="about-title">
           {{ $t('about.profile.title') }}
         </p>
-        <p class="about-eyebrow">
-          {{ $t('about.eyebrow') }}
-        </p>
         <p class="about-bio">
           {{ $t('about.intro') }}
         </p>
@@ -41,22 +38,20 @@
           <p>{{ $t('about.educationSummary') }}</p>
         </div>
 
-        <div class="about-actions no-print">
+        <p class="about-links no-print">
           <button
-            class="btn btn-primary"
             type="button"
             @click="$router.push('/contact')"
           >
             {{ $t('about.contactCta') }}
           </button>
           <button
-            class="btn btn-ghost about-ghost"
             type="button"
             @click="printResume"
           >
             {{ $t('about.resumeCta') }}
           </button>
-        </div>
+        </p>
       </div>
 
       <div class="about-right">
@@ -68,41 +63,16 @@
           v-for="(job, idx) in workExperience"
           :key="`${job.company}-${job.period}`"
           class="resume-card reveal"
-          :class="'reveal-delay-' + (idx + 1)"
-          :style="{ '--offset': `${(idx % 2 === 0 ? -12 : 18)}px` }"
+          :class="['reveal-delay-' + (idx + 1), { 'is-mid': idx === 1 }]"
+          :style="{ '--offset': `${[0, 84, 18][idx] || 0}px` }"
         >
-          <button
-            type="button"
-            class="resume-card-toggle"
-            :aria-expanded="expandedId === job.company + job.period"
-            @click="toggleExpand(job)"
-          >
-            <div class="resume-card-top">
-              <h3>{{ job.company }} <span class="resume-years">{{ job.period }}</span></h3>
-              <svg
-                class="resume-chevron"
-                :class="{ open: expandedId === job.company + job.period }"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                aria-hidden="true"
-              >
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </div>
-            <p class="resume-duty">
-              {{ job.position }}
-            </p>
-          </button>
-          <div
-            v-show="expandedId === job.company + job.period"
-            class="resume-detail"
-          >
-            <p>{{ job.description }}</p>
-          </div>
+          <h3>{{ job.company }} <span class="resume-years">{{ job.period }}</span></h3>
+          <p class="resume-duty">
+            {{ job.position }}
+          </p>
+          <p class="resume-detail">
+            {{ job.description }}
+          </p>
         </article>
       </div>
     </section>
@@ -110,14 +80,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
 
 const { t, tm } = useI18n()
 useReveal()
-
-const expandedId = ref(null)
 
 const nameFull = computed(() => t('about.profile.name'))
 const accentChar = computed(() => t('about.profile.nameAccent'))
@@ -133,11 +101,6 @@ const workExperience = computed(() => {
   return Array.isArray(items) ? items : []
 })
 
-const toggleExpand = job => {
-  const id = job.company + job.period
-  expandedId.value = expandedId.value === id ? null : id
-}
-
 const printResume = () => {
   window.print()
 }
@@ -148,7 +111,7 @@ const printResume = () => {
   position: relative;
   padding-top: var(--nav-height);
   min-height: 100vh;
-  background: var(--color-hero-bg);
+  background: transparent;
   overflow: hidden;
 }
 
@@ -196,15 +159,20 @@ html.dark .about-stars {
 }
 
 .about-name {
-  font-size: clamp(48px, 8vw, 72px);
+  font-family: var(--font-serif);
+  font-size: clamp(76px, 9vw, 118px);
   font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 1.05;
-  margin-bottom: 12px;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  margin-bottom: 18px;
 }
 
 .about-name .accent {
-  color: var(--color-accent);
+  color: #9a8bc4;
+}
+
+html.dark .about-name .accent {
+  color: #cbb6ff;
 }
 
 .about-title {
@@ -222,22 +190,29 @@ html.dark .about-stars {
 }
 
 .about-bio {
-  font-size: 16px;
-  line-height: 1.65;
-  color: var(--color-text-secondary);
-  max-width: 28em;
-  margin-bottom: 24px;
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--color-text);
+  max-width: 16em;
+  margin-bottom: 28px;
+  white-space: pre-line;
 }
 
 .skill-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding: 14px 16px;
-  border-radius: var(--radius-lg);
-  background: var(--color-accent-light);
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.7);
   margin-bottom: 28px;
-  max-width: 420px;
+  max-width: 460px;
+}
+
+html.dark .skill-row {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(196, 181, 253, 0.16);
 }
 
 .education-block h3 {
@@ -253,26 +228,28 @@ html.dark .about-stars {
   margin-bottom: 28px;
 }
 
-.about-actions {
+.about-links {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  gap: 16px;
+  margin-top: -8px;
 }
 
-.about-ghost {
-  border: 1px solid var(--color-hero-ghost-border);
-  color: var(--color-hero-ghost-text);
-  background: transparent;
-  min-height: 42px;
-  padding: 11px 18px;
+.about-links button {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
 }
 
 .about-right {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding-left: 28px;
+  gap: 22px;
+  padding: 12px 0 0 36px;
 }
 
 .resume-rail {
@@ -289,46 +266,32 @@ html.dark .about-stars {
   margin-left: var(--offset, 0);
   background: var(--color-card-bg);
   border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-lg);
+  border-radius: 22px;
   box-shadow: var(--shadow-md), var(--color-card-glow);
-  padding: 0;
-  overflow: hidden;
+  padding: 22px 24px;
+  max-width: 280px;
 }
 
-.resume-card::before {
+.resume-card.is-mid::before {
   content: '';
   position: absolute;
-  left: -24px;
-  top: 22px;
+  left: -32px;
+  top: 28px;
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-light);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(183, 164, 243, 0.28);
 }
 
-.resume-card-toggle {
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  padding: 18px 20px;
-  cursor: pointer;
-  color: inherit;
-  font: inherit;
+html.dark .resume-card.is-mid::before {
+  background: #d7c6ff;
 }
 
-.resume-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
+.resume-card h3 {
+  font-size: 20px;
+  font-weight: 650;
   margin-bottom: 6px;
-}
-
-.resume-card-top h3 {
-  font-size: 17px;
-  font-weight: 600;
 }
 
 .resume-years {
@@ -354,15 +317,7 @@ html.dark .about-stars {
 }
 
 .resume-detail {
-  padding: 0 20px 18px;
-  border-top: 1px solid var(--color-divider);
-}
-
-.resume-detail p {
-  margin: 12px 0 0;
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  line-height: 1.55;
+  display: none;
 }
 
 @media (max-width: 860px) {
@@ -389,6 +344,9 @@ html.dark .about-stars {
 
   .resume-detail {
     display: block !important;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
   }
 }
 </style>

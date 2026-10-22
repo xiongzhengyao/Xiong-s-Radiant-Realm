@@ -7,6 +7,7 @@ export default {
     contact: 'Contact',
     life: 'Life',
     brand: 'Snowhush',
+    archive: 'Archive',
     skipToContent: 'Skip to content',
     toggleMenu: 'Toggle navigation menu'
   },
@@ -62,6 +63,9 @@ export default {
   },
   home: {
     hello: 'Hi, I am Snowhush.',
+    helloPrefix: 'Hi, I am',
+    helloName: 'Snowhush',
+    helloSuffix: '.',
     headline: 'Still recording and creating today.',
     sub: 'Camera Driver at DJI — building imaging tools and flight systems.',
     roleLine: "Camera Driver {'@'} DJI · Shanghai",
@@ -69,6 +73,7 @@ export default {
     readNotes: 'Read latest notes',
     latestNotes: 'Latest notes',
     projectProgress: 'Project progress',
+    projectMeta: 'March update',
     lifeMoments: 'Life moments',
     daysAgo: '{n}d ago',
     lastWeek: 'Last week',
@@ -77,6 +82,8 @@ export default {
     lifeCaption: 'A walk by the sea — clear the mind.',
     lifeTag: 'Life scraps',
     noteTag: 'Work notes',
+    fallbackNoteTitle: 'On imaging and judgment',
+    fallbackNoteExcerpt: 'Judgment in the air is harder than judgment on the ground.',
     continue: {
       eyebrow: 'Continue reading',
       cta: 'Pick up where you left off'
@@ -85,7 +92,7 @@ export default {
   about: {
     title: 'About',
     eyebrow: 'A LIGHT',
-    intro: 'From Bosch to Xiaomi and DJI — going deep in Camera systems.',
+    intro: 'From Bosch to Xiaomi and DJI,\ngoing deep on one thing inside Camera systems.',
     contactCta: 'Get in touch',
     resumeCta: 'Download résumé',
     profile: {
@@ -158,6 +165,11 @@ export default {
     clearSearch: 'Clear search',
     yearLabel: 'Year',
     tagLabel: 'Tags',
+    designTags: [
+      { id: 'work', label: 'Work notes' },
+      { id: 'imaging', label: 'Imaging' },
+      { id: 'life', label: 'Life' }
+    ],
     loadMore: 'Load more',
     latest: 'Latest',
     readingProgress: '{n}% read',
@@ -208,7 +220,18 @@ export default {
       photography: 'Photography',
       thoughts: 'Thoughts'
     },
-    posts: []
+    posts: [
+      { id: 'sea', title: 'A walk by the sea.', image: '/images/beach.jpg', date: '2024-03-18', category: 'photography' },
+      { id: 'sakura', title: 'Spring cherry blossoms.', image: '/images/cherry.jpg', date: '2024-03-02', category: 'photography' },
+      { id: 'daily', title: 'Everyday notes.', image: '/images/coffee.jpg', date: '2024-02-14', category: 'food' },
+      { id: 'work', title: 'Work scraps.', image: '/images/laptop.jpg', date: '2024-02-08', category: 'thoughts' },
+      { id: 'dusk', title: 'Dusk on the water.', image: '/images/sunset-sea.jpg', date: '2024-01-20', category: 'photography' },
+      { id: 'read', title: 'Reading hour.', image: '/images/book.jpg', date: '2024-01-06', category: 'reading' },
+      { id: 'plant', title: 'A plant diary.', image: '/images/plant.jpg', date: '2023-03-11', category: 'thoughts' },
+      { id: 'cafe', title: 'Corner café.', image: '/images/cafe.jpg', date: '2023-02-19', category: 'food' },
+      { id: 'rain', title: 'Rainy thoughts.', image: '/images/rain.jpg', date: '2023-01-28', category: 'thoughts' },
+      { id: 'city', title: 'City at night.', image: '/images/city.jpg', date: '2023-01-09', category: 'photography' }
+    ]
   },
   projects: {
     eyebrow: 'Portfolio',
@@ -229,7 +252,68 @@ export default {
     privateRepo: 'Private repository',
     viewOnGithub: 'View repository',
     empty: 'No matching projects',
+    archiveHint: 'Earlier tools and open-source projects.',
     items: [
+      {
+        id: 'matrice-30',
+        company: 'DJI',
+        year: '2026',
+        title: 'DJI Matrice 30 systems',
+        role: 'Camera Driver systems',
+        chip: 'firmware',
+        description: 'Steadier imaging and flight decisions in low light.',
+        tags: ['Firmware']
+      },
+      {
+        id: 'camera-toolchain',
+        company: 'DJI',
+        year: '2026',
+        title: 'Camera Driver toolchain',
+        role: 'Imaging tools lead',
+        chip: 'tools',
+        description: 'Repeatable checks for the imaging toolchain and compatibility.',
+        tags: ['Tools']
+      },
+      {
+        id: 'altitude-flight',
+        company: 'DJI',
+        year: '2026',
+        title: 'High-altitude flight system',
+        role: 'Flight-control adaptation',
+        chip: 'firmware',
+        description: 'Keeping imaging and flight rhythm in thin air and wide temperature swings.',
+        tags: ['Stability']
+      },
+      {
+        id: 'vision-algo',
+        company: 'DJI',
+        year: '2025',
+        title: 'Algorithm tuning',
+        role: 'Image processing',
+        chip: 'tools',
+        description: 'Image-processing paths for low light and motion.',
+        tags: ['Vision']
+      },
+      {
+        id: 'flight-app',
+        company: 'Personal',
+        year: '2025',
+        title: 'Mobile flight app',
+        role: 'UI/UX design & development',
+        chip: 'app',
+        description: 'Flight state and key actions in an interface you can use one-handed.',
+        tags: ['Cross-platform']
+      },
+      {
+        id: 'firmware-tool',
+        company: 'Open Source',
+        year: 'Ongoing',
+        title: 'Firmware tools',
+        role: 'Low-level drivers',
+        chip: 'firmware',
+        description: 'Debug tooling for registers, logs, and bring-up paths.',
+        tags: ['Firmware']
+      },
       {
         id: 'dji-sensor',
         company: 'DJI',

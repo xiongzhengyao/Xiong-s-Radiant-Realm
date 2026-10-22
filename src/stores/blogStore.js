@@ -135,11 +135,14 @@ const parsePost = (path, rawContent) => {
       ? inferCategory({ title, tags, keywords, body })
       : normalizedCategory
 
+  const pin = Number(frontmatter.pin)
   return {
     id: slugToStableId(slug),
     slug,
     title,
     date: normalizeDate(frontmatter.date),
+    dateLabel: frontmatter.dateLabel || '',
+    pin: Number.isFinite(pin) && pin > 0 ? pin : 0,
     author: frontmatter.author || AUTHOR_FALLBACK,
     image: frontmatter.image || null,
     excerpt: extractExcerpt(frontmatter, body),
@@ -161,7 +164,12 @@ const loadPostsFromModules = async () => {
   return entries
     .filter(Boolean)
     .filter(post => post.date)
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .sort((a, b) => {
+      if (a.pin && b.pin && a.pin !== b.pin) return a.pin - b.pin
+      if (a.pin && !b.pin) return -1
+      if (!a.pin && b.pin) return 1
+      return new Date(b.date) - new Date(a.date)
+    })
 }
 
 export const useBlogStore = defineStore('blog', () => {
