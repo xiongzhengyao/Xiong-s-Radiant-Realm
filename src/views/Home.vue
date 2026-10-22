@@ -318,14 +318,15 @@ html:not(.dark) .home-snow {
 }
 
 .home-stage {
-  /* Soft-studio F mock: scattered absolute stage (not a 3-col grid) */
+  /* Soft-studio F mock: scattered absolute stage — light edge kiss only */
   --stage-side-w: clamp(220px, 22vw, 248px);
-  --stage-hero-w: clamp(400px, 46vw, 520px);
-  --stage-hero-shift: 40px; /* pull cluster slightly left of center */
+  --stage-hero-w: clamp(380px, 42vw, 480px);
+  --stage-hero-shift: 36px; /* pull hero slightly left of center */
   --stage-hero-top: calc(50% - 200px);
+  --stage-kiss: 14px; /* max hero overlap of side-card edges */
   position: relative;
   z-index: 1;
-  max-width: 1120px;
+  max-width: 1160px;
   margin: 0 auto;
   padding: clamp(28px, 5vh, 56px) clamp(20px, 3vw, 32px) 72px;
   min-height: var(--hero-min-height);
@@ -344,7 +345,7 @@ html:not(.dark) .home-snow {
 }
 
 .float-card--hero {
-  /* Slightly left-of-center, vertical mid — stage anchor; sits ON TOP of sides */
+  /* Slightly left-of-center, vertical mid — primary but not smothering sides */
   left: 50%;
   top: var(--stage-hero-top);
   margin-left: calc(var(--stage-hero-w) / -2 - var(--stage-hero-shift));
@@ -358,22 +359,22 @@ html:not(.dark) .home-snow {
 }
 
 .float-card--notes {
-  /* Mid-left, ~1/3 down from hero top; right edge tucked under hero */
-  left: calc(50% - var(--stage-hero-w) / 2 - var(--stage-hero-shift) - var(--stage-side-w) + 52px);
+  /* Mid-left, lower than hero top; only a light right-edge kiss under hero */
+  left: calc(50% - var(--stage-hero-w) / 2 - var(--stage-hero-shift) - var(--stage-side-w) + var(--stage-kiss));
   top: calc(var(--stage-hero-top) + 96px);
   z-index: 2;
 }
 
 .float-card--project {
-  /* Upper-right, above hero top; left edge tucked under hero */
-  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) - 56px);
+  /* Upper-right, above hero top; light left-edge kiss only */
+  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) - var(--stage-kiss));
   top: calc(var(--stage-hero-top) - 64px);
   z-index: 2;
 }
 
 .float-card--life {
-  /* Lower-right, gap below project; inset left vs project (not flush column) */
-  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) - 88px);
+  /* Lower-right, gap below project; shifted further right than project (not flush) */
+  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + 18px);
   top: calc(var(--stage-hero-top) + 292px);
   z-index: 2;
   width: calc(var(--stage-side-w) + 8px);
@@ -573,20 +574,13 @@ html:not(.dark) .home-snow {
 @media (max-width: 1100px) and (min-width: 761px) {
   .home-stage {
     --stage-side-w: clamp(200px, 20vw, 228px);
-    --stage-hero-w: clamp(340px, 42vw, 440px);
-    --stage-hero-shift: 24px;
-  }
-
-  .float-card--notes {
-    left: calc(50% - var(--stage-hero-w) / 2 - var(--stage-hero-shift) - var(--stage-side-w) + 40px);
-  }
-
-  .float-card--project {
-    left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) - 44px);
+    --stage-hero-w: clamp(320px, 40vw, 420px);
+    --stage-hero-shift: 20px;
+    --stage-kiss: 10px;
   }
 
   .float-card--life {
-    left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) - 68px);
+    left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + 12px);
   }
 }
 
