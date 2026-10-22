@@ -61,14 +61,12 @@
           class="timeline-item reveal"
           :class="['reveal-delay-' + (idx + 1), { 'is-current': idx === 0 }]"
         >
+          <time class="timeline-time">{{ job.period }}</time>
           <span
             class="timeline-dot"
             aria-hidden="true"
           />
           <article class="timeline-card">
-            <p class="timeline-period">
-              {{ job.period }}
-            </p>
             <h3>{{ job.company }}</h3>
             <p class="timeline-role">
               {{ job.position }}
@@ -252,6 +250,8 @@ html.dark .skill-row {
 }
 
 .about-right {
+  --time-col: 132px;
+  --dot-col: 18px;
   position: relative;
   margin: 8px 0 0;
   padding: 0;
@@ -261,33 +261,57 @@ html.dark .skill-row {
 .timeline-item {
   position: relative;
   display: grid;
-  grid-template-columns: 12px minmax(0, 1fr);
-  column-gap: 22px;
+  grid-template-columns: var(--time-col) var(--dot-col) minmax(0, 1fr);
   align-items: start;
 }
 
 .timeline-item:not(:last-child)::before {
   content: '';
   position: absolute;
-  left: 5px;
+  left: calc(var(--time-col) + var(--dot-col) / 2);
   top: 28px;
   bottom: -56px;
   border-left: 1.5px dashed var(--color-accent-border);
+  transform: translateX(-0.75px);
 }
 
 .timeline-item + .timeline-item {
   margin-top: 28px;
 }
 
+.timeline-time {
+  padding: 16px 16px 0 0;
+  text-align: right;
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+  color: var(--color-text-tertiary);
+}
+
+.timeline-item.is-current .timeline-time {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
 .timeline-dot {
   width: 12px;
   height: 12px;
-  margin-top: 22px;
+  margin: 22px auto 0;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 0 0 4px rgba(183, 164, 243, 0.32);
   position: relative;
   z-index: 1;
+}
+
+.timeline-dot::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 5px;
+  width: 16px;
+  height: 1.5px;
+  background: var(--color-accent-border);
 }
 
 .timeline-item.is-current .timeline-dot {
@@ -314,13 +338,6 @@ html.dark .timeline-item.is-current .timeline-dot {
   max-width: 420px;
 }
 
-.timeline-period {
-  margin: 0 0 6px;
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  color: var(--color-text-tertiary);
-}
-
 .timeline-card h3 {
   font-size: 20px;
   font-weight: 650;
@@ -344,8 +361,35 @@ html.dark .timeline-item.is-current .timeline-dot {
     gap: 48px;
   }
 
+  .about-right {
+    --time-col: 0px;
+  }
+
+  .timeline-item {
+    grid-template-columns: 18px minmax(0, 1fr);
+  }
+
+  .timeline-time {
+    grid-column: 2;
+    grid-row: 1;
+    padding: 0 0 8px 14px;
+    text-align: left;
+  }
+
+  .timeline-dot {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
   .timeline-card {
+    grid-column: 2;
+    grid-row: 2;
     max-width: none;
+    margin-left: 14px;
+  }
+
+  .timeline-item:not(:last-child)::before {
+    left: 9px;
   }
 }
 
