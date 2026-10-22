@@ -21,76 +21,6 @@
         <p class="about-title">
           {{ $t('about.profile.title') }}
         </p>
-
-        <div class="profile-meta-strip">
-          <div class="avatar-wrapper">
-            <img
-              v-if="!imageError"
-              class="avatar"
-              :src="profileImage"
-              :alt="$t('about.profile.name')"
-              @error="handleImageError"
-            >
-            <div
-              v-else
-              class="avatar-fallback"
-            >
-              {{ avatarFallback }}
-            </div>
-          </div>
-          <div class="profile-meta">
-            <span class="meta-item">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                aria-hidden="true"
-              ><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle
-                cx="12"
-                cy="10"
-                r="3"
-              /></svg>
-              {{ $t('about.profile.location') }}
-            </span>
-            <span class="meta-item">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                aria-hidden="true"
-              ><rect
-                x="2"
-                y="7"
-                width="20"
-                height="14"
-                rx="2"
-              /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
-              {{ $t('about.profile.years') }}
-            </span>
-            <a
-              class="meta-item meta-link"
-              :href="`mailto:${email}`"
-            >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                aria-hidden="true"
-              ><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
-              {{ email }}
-            </a>
-          </div>
-        </div>
-
         <p class="about-eyebrow">
           {{ $t('about.eyebrow') }}
         </p>
@@ -98,43 +28,17 @@
           {{ $t('about.intro') }}
         </p>
 
-        <div class="skill-groups">
-          <div
-            v-for="group in skillGroups"
-            :key="group.name"
-            class="skill-group"
-          >
-            <h4>{{ group.name }}</h4>
-            <div class="skill-row">
-              <span
-                v-for="skill in group.items"
-                :key="skill"
-                class="tag tag-accent"
-              >{{ skill }}</span>
-            </div>
-          </div>
+        <div class="skill-row">
+          <span
+            v-for="skill in skillsFlat"
+            :key="skill"
+            class="tag tag-accent"
+          >{{ skill }}</span>
         </div>
 
         <div class="education-block">
           <h3>{{ $t('about.educationLabel') }}</h3>
-          <ul class="education-list">
-            <li
-              v-for="edu in educationHistory"
-              :key="`${edu.school}-${edu.period}`"
-              class="education-item"
-            >
-              <div class="education-top">
-                <span class="education-school">{{ edu.school }}</span>
-                <span class="education-period">{{ edu.period }}</span>
-              </div>
-              <p class="education-major">
-                {{ edu.degree }} · {{ edu.major }}
-              </p>
-              <p class="education-details">
-                {{ edu.details }}
-              </p>
-            </li>
-          </ul>
+          <p>{{ $t('about.educationSummary') }}</p>
         </div>
 
         <div class="about-actions no-print">
@@ -209,37 +113,23 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
-import { APP_CONFIG } from '@/utils/constants'
 
 const { t, tm } = useI18n()
 useReveal()
-
-const email = APP_CONFIG.EMAIL
-const profileImage = APP_CONFIG.IMAGES.PROFILE
-const imageError = ref(false)
-const handleImageError = () => {
-  imageError.value = true
-}
 
 const expandedId = ref(null)
 
 const nameFull = computed(() => t('about.profile.name'))
 const accentChar = computed(() => t('about.profile.nameAccent'))
 const nameChars = computed(() => Array.from(nameFull.value))
-const avatarFallback = computed(() => t('about.profile.avatarFallback'))
 
-const skillGroups = computed(() => {
-  const items = tm('about.skillGroups')
-  return Array.isArray(items) ? items : []
+const skillsFlat = computed(() => {
+  const items = tm('about.skillsFlat')
+  return Array.isArray(items) ? items : ['C/C++', 'Python', 'ARM', 'Sensor', 'Linux']
 })
 
 const workExperience = computed(() => {
   const items = tm('about.work')
-  return Array.isArray(items) ? items : []
-})
-
-const educationHistory = computed(() => {
-  const items = tm('about.education')
   return Array.isArray(items) ? items : []
 })
 
@@ -320,82 +210,7 @@ html.dark .about-stars {
 .about-title {
   font-size: 16px;
   color: var(--color-text-secondary);
-  margin-bottom: 16px;
-}
-
-.profile-meta-strip {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 22px;
-  padding: 12px 14px;
-  max-width: 420px;
-  border-radius: var(--radius-lg);
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
-  box-shadow: var(--shadow-sm);
-}
-
-.avatar-wrapper {
-  flex-shrink: 0;
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-full);
-  overflow: hidden;
-  border: 1.5px solid var(--color-accent-border);
-  box-shadow: var(--shadow-xs);
-  background: var(--color-bg-secondary);
-}
-
-.avatar {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.avatar-fallback {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-accent);
-  background: var(--color-accent-light);
-}
-
-.profile-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
-}
-
-.meta-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  line-height: 1.35;
-}
-
-.meta-item svg {
-  flex-shrink: 0;
-  color: var(--color-mist);
-}
-
-.meta-link {
-  color: var(--color-accent);
-  text-decoration: none;
-  word-break: break-all;
-}
-
-.meta-link:hover {
-  color: var(--color-accent-hover);
-  text-decoration: underline;
+  margin-bottom: 8px;
 }
 
 .about-eyebrow {
@@ -403,7 +218,7 @@ html.dark .about-stars {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-mist);
-  margin-bottom: 12px;
+  margin-bottom: 18px;
 }
 
 .about-bio {
@@ -414,32 +229,13 @@ html.dark .about-stars {
   margin-bottom: 24px;
 }
 
-.skill-groups {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-bottom: 28px;
-  max-width: 420px;
-}
-
-.skill-group h4 {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--color-text-tertiary);
-  margin: 0 0 8px;
-}
-
 .skill-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding: 12px 14px;
+  padding: 14px 16px;
   border-radius: var(--radius-lg);
   background: var(--color-accent-light);
-}
-
-.education-block {
   margin-bottom: 28px;
   max-width: 420px;
 }
@@ -448,57 +244,13 @@ html.dark .about-stars {
   font-size: 13px;
   font-weight: 600;
   color: var(--color-text-tertiary);
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
-.education-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.education-item {
-  padding: 12px 14px;
-  border-radius: var(--radius-md);
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
-  box-shadow: var(--shadow-xs);
-}
-
-.education-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 10px;
-  margin-bottom: 4px;
-}
-
-.education-school {
-  font-size: 14px;
-  font-weight: 600;
+.education-block p {
+  font-size: 15px;
   color: var(--color-text);
-}
-
-.education-period {
-  flex-shrink: 0;
-  font-size: 12px;
-  color: var(--color-text-tertiary);
-}
-
-.education-major {
-  margin: 0 0 4px;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-.education-details {
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--color-text-tertiary);
+  margin-bottom: 28px;
 }
 
 .about-actions {

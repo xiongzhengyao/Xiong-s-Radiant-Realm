@@ -94,10 +94,21 @@ export default {
       title: "Camera 驱动软件工程师 {'@'} 大疆 · 上海",
       bio: '从博世到小米、大疆 — 在 Camera 系统全栈持续深耕。',
       location: '上海',
-      years: '3 年+工作经验',
-      avatarFallback: '正耀'
+      years: '3 年+工作经验'
     },
-    skillsFlat: ['C/C++', 'Python', 'ARM', 'Sensor', 'Linux'],
+    skillsFlat: [
+      'C/C++',
+      'Python',
+      'Shell',
+      'ARM',
+      'Linux 驱动',
+      'Sensor 驱动',
+      'Git',
+      'VSCode',
+      'Cursor',
+      'Jira',
+      'Confluence'
+    ],
     sections: {
       skills: '专业技能',
       experience: '工作经历',

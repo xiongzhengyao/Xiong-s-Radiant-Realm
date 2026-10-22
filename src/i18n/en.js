@@ -94,10 +94,21 @@ export default {
       title: "Camera Driver Software Engineer {'@'} DJI · Shanghai",
       bio: 'From Bosch to Xiaomi and DJI — deep in the full camera systems stack.',
       location: 'Shanghai',
-      years: '3+ years experience',
-      avatarFallback: 'ZY'
+      years: '3+ years experience'
     },
-    skillsFlat: ['C/C++', 'Python', 'ARM', 'Sensor', 'Linux'],
+    skillsFlat: [
+      'C/C++',
+      'Python',
+      'Shell',
+      'ARM',
+      'Linux drivers',
+      'Sensor drivers',
+      'Git',
+      'VSCode',
+      'Cursor',
+      'Jira',
+      'Confluence'
+    ],
     sections: {
       skills: 'Skills',
       experience: 'Experience',
