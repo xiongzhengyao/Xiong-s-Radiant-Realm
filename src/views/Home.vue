@@ -318,17 +318,20 @@ html:not(.dark) .home-snow {
 }
 
 .home-stage {
-  /* Soft-studio F mock: scatter with readable sides (tiny edge kiss ≤8px) */
-  --stage-side-w: clamp(220px, 22vw, 248px);
-  --stage-hero-w: clamp(360px, 40vw, 460px);
-  --stage-hero-shift: 28px; /* hero slightly left-of-center */
+  /* Soft-studio F scatter: air between hero & sides (gap > kiss) */
+  --stage-side-w: clamp(220px, 21vw, 240px);
+  --stage-hero-w: clamp(340px, 38vw, 440px);
+  --stage-hero-shift: 24px; /* hero slightly left-of-center */
   --stage-hero-top: calc(50% - 200px);
-  --stage-kiss: 6px;
+  /* negative = gap from hero edge; keeps soft float without covering content */
+  --stage-gap-notes: 20px;
+  --stage-gap-project: 16px;
+  --stage-gap-life: 28px;
   position: relative;
   z-index: 1;
-  max-width: 1180px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: clamp(28px, 5vh, 56px) clamp(16px, 2.5vw, 28px) 72px;
+  padding: clamp(28px, 5vh, 56px) clamp(12px, 2vw, 24px) 72px;
   min-height: var(--hero-min-height);
   height: var(--hero-min-height);
 }
@@ -345,13 +348,13 @@ html:not(.dark) .home-snow {
 }
 
 .float-card--hero {
-  /* Slightly left-of-center, vertical mid — primary without smothering sides */
+  /* Slightly left-of-center — lowest layer so side edges stay readable */
   left: 50%;
   top: var(--stage-hero-top);
   margin-left: calc(var(--stage-hero-w) / -2 - var(--stage-hero-shift));
   width: var(--stage-hero-w);
   min-height: 380px;
-  z-index: 3;
+  z-index: 2;
   cursor: default;
   padding: clamp(28px, 4vw, 40px);
   overflow: hidden;
@@ -359,23 +362,23 @@ html:not(.dark) .home-snow {
 }
 
 .float-card--notes {
-  /* Mid-left, lower than hero top; tiny right-edge kiss only */
-  left: calc(50% - var(--stage-hero-w) / 2 - var(--stage-hero-shift) - var(--stage-side-w) + var(--stage-kiss));
-  top: calc(var(--stage-hero-top) + 100px);
-  z-index: 4;
+  /* Mid-left, lower than hero top; clear horizontal gap from hero */
+  left: calc(50% - var(--stage-hero-w) / 2 - var(--stage-hero-shift) - var(--stage-side-w) - var(--stage-gap-notes));
+  top: calc(var(--stage-hero-top) + 108px);
+  z-index: 3;
 }
 
 .float-card--project {
-  /* Upper-right, above hero top; clear of hero content (tiny kiss) */
-  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) - var(--stage-kiss));
-  top: calc(var(--stage-hero-top) - 64px);
+  /* Upper-right, above hero; clear gap — only soft shadow may touch */
+  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + var(--stage-gap-project));
+  top: calc(var(--stage-hero-top) - 72px);
   z-index: 4;
 }
 
 .float-card--life {
-  /* Lower-right, gap below project; further right than project (not flush) */
-  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + 24px);
-  top: calc(var(--stage-hero-top) + 300px);
+  /* Lower-right, gap below project; further right than project (stagger) */
+  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + var(--stage-gap-life));
+  top: calc(var(--stage-hero-top) + 308px);
   z-index: 4;
   width: calc(var(--stage-side-w) + 8px);
 }
@@ -573,14 +576,12 @@ html:not(.dark) .home-snow {
 
 @media (max-width: 1100px) and (min-width: 761px) {
   .home-stage {
-    --stage-side-w: clamp(200px, 20vw, 228px);
-    --stage-hero-w: clamp(300px, 38vw, 400px);
-    --stage-hero-shift: 16px;
-    --stage-kiss: 4px;
-  }
-
-  .float-card--life {
-    left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + 16px);
+    --stage-side-w: clamp(196px, 19vw, 220px);
+    --stage-hero-w: clamp(280px, 36vw, 380px);
+    --stage-hero-shift: 12px;
+    --stage-gap-notes: 14px;
+    --stage-gap-project: 12px;
+    --stage-gap-life: 20px;
   }
 }
 
