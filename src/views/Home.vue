@@ -318,54 +318,65 @@ html:not(.dark) .home-snow {
 }
 
 .home-stage {
+  /* Soft-studio F mock: scattered absolute stage (not a 3-col grid) */
+  --stage-side-w: clamp(220px, 22vw, 248px);
+  --stage-hero-w: clamp(400px, 46vw, 520px);
+  --stage-hero-shift: 40px; /* pull cluster slightly left of center */
+  --stage-hero-top: calc(50% - 200px);
   position: relative;
   z-index: 1;
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
-  padding: clamp(32px, 6vh, 64px) 24px 80px;
-  display: grid;
-  grid-template-columns: minmax(200px, 240px) minmax(0, 1fr) minmax(220px, 260px);
-  grid-template-rows: auto auto auto;
-  gap: 20px 24px;
-  align-items: start;
+  padding: clamp(28px, 5vh, 56px) clamp(20px, 3vw, 32px) 72px;
   min-height: var(--hero-min-height);
+  height: var(--hero-min-height);
 }
 
 .float-card {
   background: var(--color-card-bg);
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-card-border);
-  box-shadow: var(--shadow-md), var(--color-card-glow);
+  box-shadow: var(--shadow-lg), var(--color-card-glow);
   padding: 18px;
   cursor: pointer;
+  position: absolute;
+  width: var(--stage-side-w);
 }
 
 .float-card--hero {
-  grid-column: 2;
-  grid-row: 1 / span 3;
-  align-self: center;
+  /* Slightly left-of-center, vertical mid — stage anchor; sits ON TOP of sides */
+  left: 50%;
+  top: var(--stage-hero-top);
+  margin-left: calc(var(--stage-hero-w) / -2 - var(--stage-hero-shift));
+  width: var(--stage-hero-w);
+  min-height: 380px;
+  z-index: 5;
   cursor: default;
   padding: clamp(28px, 4vw, 40px);
-  position: relative;
   overflow: hidden;
-  min-height: 360px;
+  box-shadow: var(--shadow-xl), var(--color-card-glow);
 }
 
 .float-card--notes {
-  grid-column: 1;
-  grid-row: 2;
-  margin-top: 48px;
+  /* Mid-left, ~1/3 down from hero top; right edge tucked under hero */
+  left: calc(50% - var(--stage-hero-w) / 2 - var(--stage-hero-shift) - var(--stage-side-w) + 52px);
+  top: calc(var(--stage-hero-top) + 96px);
+  z-index: 2;
 }
 
 .float-card--project {
-  grid-column: 3;
-  grid-row: 1;
+  /* Upper-right, above hero top; left edge tucked under hero */
+  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) - 56px);
+  top: calc(var(--stage-hero-top) - 64px);
+  z-index: 2;
 }
 
 .float-card--life {
-  grid-column: 3;
-  grid-row: 3;
-  margin-top: -12px;
+  /* Lower-right, gap below project; inset left vs project (not flush column) */
+  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) - 88px);
+  top: calc(var(--stage-hero-top) + 292px);
+  z-index: 2;
+  width: calc(var(--stage-side-w) + 8px);
 }
 
 .float-card-head {
@@ -559,45 +570,50 @@ html:not(.dark) .home-snow {
   margin: 0;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1100px) and (min-width: 761px) {
   .home-stage {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-  }
-
-  .float-card--hero {
-    grid-column: 1 / -1;
-    grid-row: 1;
+    --stage-side-w: clamp(200px, 20vw, 228px);
+    --stage-hero-w: clamp(340px, 42vw, 440px);
+    --stage-hero-shift: 24px;
   }
 
   .float-card--notes {
-    grid-column: 1;
-    grid-row: 2;
-    margin-top: 0;
+    left: calc(50% - var(--stage-hero-w) / 2 - var(--stage-hero-shift) - var(--stage-side-w) + 40px);
   }
 
   .float-card--project {
-    grid-column: 2;
-    grid-row: 2;
+    left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) - 44px);
   }
 
   .float-card--life {
-    grid-column: 1 / -1;
-    grid-row: 3;
-    margin-top: 0;
+    left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) - 68px);
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 760px) {
   .home-stage {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    height: auto;
+    min-height: 0;
     padding-top: 24px;
+    padding-bottom: 48px;
+  }
+
+  .float-card {
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: 0;
+    width: 100%;
+    z-index: auto;
   }
 
   .float-card--hero {
+    order: -1;
     min-height: auto;
+    width: 100%;
   }
 
   .hero-orb {
