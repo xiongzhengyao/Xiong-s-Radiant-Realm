@@ -32,13 +32,13 @@
           <CoverArt
             :seed="latestNote?.id || 'note'"
             :category="latestNote?.category || 'notes'"
-            :image="noteImage"
+            :image="noteCover"
             size="md"
           />
         </div>
         <h3>{{ latestNote?.title || $t('home.fallbackNoteTitle') }}</h3>
         <p>{{ latestNote?.excerpt || $t('home.fallbackNoteExcerpt') }}</p>
-        <span class="tag tag-accent">{{ $t('home.noteTag') }}</span>
+        <span class="tag tag-accent">{{ noteTagLabel }}</span>
       </div>
 
       <article class="float-card float-card--hero reveal reveal-delay-1">
@@ -120,7 +120,7 @@
             ><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /></svg>
             {{ $t('home.projectProgress') }}
           </span>
-          <span class="float-card-meta">{{ $t('home.projectMeta') }} ›</span>
+          <span class="float-card-meta">{{ featuredProject.year }} ›</span>
         </header>
         <div class="float-card-cover">
           <CoverArt
@@ -168,20 +168,20 @@
             /></svg>
             {{ $t('home.lifeMoments') }}
           </span>
-          <span class="float-card-meta">{{ $t('home.lastWeek') }} ›</span>
+          <span class="float-card-meta">{{ lifeMeta }} ›</span>
         </header>
         <div class="float-card-cover float-card-cover--life">
           <CoverArt
-            seed="life-home"
-            category="notes"
-            image="/images/beach.jpg"
+            :seed="latestLife?.id || 'life-home'"
+            :category="latestLife?.category || 'notes'"
+            :image="lifeImage"
             size="md"
           />
         </div>
         <p class="life-caption">
-          {{ $t('home.lifeCaption') }}
+          {{ lifeCaptionText }}
         </p>
-        <span class="tag tag-accent">{{ $t('home.lifeTag') }}</span>
+        <span class="tag tag-accent">{{ lifeTagText }}</span>
       </div>
     </section>
 
@@ -227,10 +227,12 @@ import { useReveal } from '@/composables/useReveal'
 import { useBlogStore } from '@/stores/blogStore'
 import { useCareer } from '@/composables/useCareer'
 import { useReadHistory } from '@/composables/useReadHistory'
+import { getDesignTag } from '@/utils/categoryLabel'
+import { formatRelativeDate } from '@/utils/relativeTime'
 import CoverArt from '@/components/CoverArt.vue'
 
 const router = useRouter()
-const { t } = useI18n()
+const { t, tm, locale } = useI18n()
 const blogStore = useBlogStore()
 const { companyProjects } = useCareer()
 const { continueReading } = useReadHistory()
@@ -245,14 +247,42 @@ const continuePost = computed(() => {
 const latestNote = computed(() => blogStore.getRecentPosts(1)[0] || null)
 const featuredProject = computed(() => companyProjects.value[0] || null)
 
-const noteImage = computed(() => latestNote.value?.image || '/images/mountains.jpg')
+const noteCover = computed(() => {
+  const post = latestNote.value
+  if (!post) return '/images/mountains.jpg'
+  if (post.image) return post.image
+  const cat = String(post.category || '').toLowerCase()
+  if (cat === 'linux') return '/images/laptop.jpg'
+  if (cat === 'sensor' || cat === 'camera') return '/images/drone-studio.jpg'
+  if (cat === 'embedded') return '/images/desk.jpg'
+  return '/images/mountains.jpg'
+})
+
+const noteTagLabel = computed(() => (
+  latestNote.value ? getDesignTag(latestNote.value, locale.value).label : t('home.noteTag')
+))
 
 const noteRelative = computed(() => {
   if (latestNote.value?.dateLabel) return latestNote.value.dateLabel
-  if (!latestNote.value?.date) return t('home.daysAgo', { n: 2 })
-  const days = Math.max(1, Math.round((Date.now() - new Date(latestNote.value.date).getTime()) / 86400000))
-  return t('home.daysAgo', { n: Math.min(days, 99) })
+  if (!latestNote.value?.date) return ''
+  return formatRelativeDate(latestNote.value.date, locale.value)
 })
+
+const lifePosts = computed(() => {
+  const items = tm('life.posts')
+  if (!Array.isArray(items)) return []
+  return [...items].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))
+})
+
+const latestLife = computed(() => lifePosts.value[0] || null)
+const lifeImage = computed(() => latestLife.value?.image || '/images/city.jpg')
+const lifeCaptionText = computed(() => latestLife.value?.title || t('home.lifeCaption'))
+const lifeTagText = computed(() => latestLife.value?.tags?.[0] || t('home.lifeTag'))
+const lifeMeta = computed(() => (
+  latestLife.value?.date
+    ? formatRelativeDate(latestLife.value.date, locale.value)
+    : t('home.lastWeek')
+))
 
 const goToPost = post => {
   router.push(`/blog/${post.id}/${encodeURIComponent(post.slug)}`)
@@ -269,7 +299,7 @@ onMounted(async () => {
   observe()
 })
 
-watch([latestNote, continuePost, featuredProject], () => {
+watch([latestNote, continuePost, featuredProject, latestLife], () => {
   nextTick(() => observe())
 })
 </script>
@@ -428,6 +458,10 @@ html:not(.dark) .home-snow {
   font-size: 15px;
   margin-bottom: 6px;
   line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .float-card p {

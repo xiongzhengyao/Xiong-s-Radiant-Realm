@@ -157,7 +157,9 @@ const chipKeys = ['firmware', 'tools', 'app']
 
 const filteredProjects = computed(() => {
   const q = String(searchQuery.value || '').toLowerCase().trim()
-  const pool = projects.value.filter(project => (showArchive.value ? !project.showcase : project.showcase))
+  const pool = showArchive.value
+    ? projects.value.filter(project => project.group === 'personal')
+    : projects.value
   return pool.filter(project => {
     const chipOk = selectedChip.value === 'all' || project.chip === selectedChip.value
     if (!chipOk) return false

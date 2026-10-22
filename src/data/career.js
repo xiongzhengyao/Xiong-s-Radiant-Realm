@@ -1,74 +1,13 @@
 /** Shared career / project structural data (localized copy lives in i18n). */
 export const CAREER_ITEMS = [
   {
-    id: 'matrice-30',
-    companyId: 'DJI',
-    year: '2026',
-    tags: ['固件优化'],
-    group: 'company',
-    showcase: true,
-    image: '/images/drone-studio.jpg',
-    order: 0
-  },
-  {
-    id: 'camera-toolchain',
-    companyId: 'DJI',
-    year: '2026',
-    tags: ['效率工具'],
-    group: 'company',
-    showcase: true,
-    image: '/images/dashboard.svg',
-    order: 1
-  },
-  {
-    id: 'altitude-flight',
-    companyId: 'DJI',
-    year: '2026',
-    tags: ['稳定性'],
-    group: 'company',
-    showcase: true,
-    image: '/images/mountains.jpg',
-    order: 2
-  },
-  {
-    id: 'vision-algo',
-    companyId: 'DJI',
-    year: '2025',
-    tags: ['视觉算法'],
-    group: 'company',
-    showcase: true,
-    image: '/images/drone-white.jpg',
-    order: 3
-  },
-  {
-    id: 'flight-app',
-    companyId: 'Personal',
-    year: '2025',
-    tags: ['跨平台'],
-    group: 'personal',
-    showcase: true,
-    image: '/images/app-ui.svg',
-    order: 4
-  },
-  {
-    id: 'firmware-tool',
-    companyId: 'Open Source',
-    year: 'ongoing',
-    tags: ['固件'],
-    group: 'personal',
-    showcase: true,
-    image: '/images/firmware-ui.svg',
-    order: 5
-  },
-  {
     id: 'dji-sensor',
     companyId: 'DJI',
     year: '2026',
     tags: ['C/C++', 'Sensor', 'Factory'],
     group: 'company',
-    showcase: false,
     image: '/images/drone-studio.jpg',
-    order: 6
+    order: 0
   },
   {
     id: 'xiaomi-perf',
@@ -76,9 +15,8 @@ export const CAREER_ITEMS = [
     year: '2022–2026',
     tags: ['ISP', 'Performance', 'Linux'],
     group: 'company',
-    showcase: false,
     image: '/images/laptop.jpg',
-    order: 7
+    order: 1
   },
   {
     id: 'bosch-edge',
@@ -86,9 +24,8 @@ export const CAREER_ITEMS = [
     year: '2021–2022',
     tags: ['Embedded', 'AI', 'Python'],
     group: 'company',
-    showcase: false,
     image: '/images/desk.jpg',
-    order: 8
+    order: 2
   },
   {
     id: 'isp-pipeline',
@@ -96,9 +33,8 @@ export const CAREER_ITEMS = [
     year: 'ongoing',
     tags: ['V4L2', 'MIPI', 'Blog'],
     group: 'company',
-    showcase: false,
     image: '/images/dashboard.svg',
-    order: 9
+    order: 3
   },
   {
     id: 'script-manager',
@@ -107,9 +43,8 @@ export const CAREER_ITEMS = [
     tags: ['TypeScript', 'Tooling'],
     group: 'personal',
     url: 'https://github.com/xiongzhengyao/Script-Manager',
-    showcase: false,
     image: '/images/laptop.jpg',
-    order: 10
+    order: 4
   },
   {
     id: 'log-viewer',
@@ -118,9 +53,8 @@ export const CAREER_ITEMS = [
     tags: ['Logs', 'Debugging'],
     group: 'personal',
     url: 'https://github.com/xiongzhengyao/LogViewer',
-    showcase: false,
     image: '/images/firmware-ui.svg',
-    order: 11
+    order: 5
   },
   {
     id: 'log-system',
@@ -129,9 +63,8 @@ export const CAREER_ITEMS = [
     tags: ['C++', 'Logging'],
     group: 'personal',
     url: 'https://github.com/xiongzhengyao/log_system',
-    showcase: false,
     image: '/images/firmware-ui.svg',
-    order: 12
+    order: 6
   },
   {
     id: 'scripts-android',
@@ -140,9 +73,8 @@ export const CAREER_ITEMS = [
     tags: ['Android', 'Python'],
     group: 'personal',
     url: 'https://github.com/xiongzhengyao/scripts_android',
-    showcase: false,
     image: '/images/app-ui.svg',
-    order: 13
+    order: 7
   },
   {
     id: 'cost-tracker',
@@ -151,9 +83,8 @@ export const CAREER_ITEMS = [
     tags: ['Flutter', 'Mobile'],
     group: 'personal',
     private: true,
-    showcase: false,
-    image: '/images/desk.jpg',
-    order: 14
+    image: '/images/app-ui.svg',
+    order: 8
   }
 ]
 

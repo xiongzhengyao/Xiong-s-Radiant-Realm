@@ -33,7 +33,7 @@ export function getDesignTag(post, locale = 'zh') {
   let id = 'work'
   if (has(['项目', 'Project'])) id = 'project'
   else if (has(['生活', 'Life', '生活碎片'])) id = 'life'
-  else if (has(['影像', 'Imaging'])) id = 'imaging'
+  else if (has(['影像', 'Imaging', 'Camera', '图像传感器', 'CMOS', 'CCD', 'ISP'])) id = 'imaging'
   else if (has(['工作思考', 'Work notes'])) id = 'work'
   else {
     const cat = String(post?.category || '').toLowerCase()

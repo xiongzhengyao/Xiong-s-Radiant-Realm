@@ -82,8 +82,8 @@ export default {
     lifeCaption: '海边走走，换换脑子。',
     lifeTag: '生活碎片',
     noteTag: '工作思考',
-    fallbackNoteTitle: '关于影像与判断',
-    fallbackNoteExcerpt: '在飞行中做判断，比在地上难得多。一些近期的工作思考。',
+    fallbackNoteTitle: '',
+    fallbackNoteExcerpt: '',
     continue: {
       eyebrow: '继续阅读',
       cta: '从上次离开的地方继续'
@@ -221,16 +221,33 @@ export default {
       thoughts: '随想'
     },
     posts: [
-      { id: 'sea', title: '海边走走。', image: '/images/beach.jpg', date: '2024-03-18', category: 'photography' },
-      { id: 'sakura', title: '春日樱花。', image: '/images/cherry.jpg', date: '2024-03-02', category: 'photography' },
-      { id: 'daily', title: '日常点滴。', image: '/images/coffee.jpg', date: '2024-02-14', category: 'food' },
-      { id: 'work', title: '工作随记。', image: '/images/laptop.jpg', date: '2024-02-08', category: 'thoughts' },
-      { id: 'dusk', title: '黄昏海景。', image: '/images/sunset-sea.jpg', date: '2024-01-20', category: 'photography' },
-      { id: 'read', title: '阅读时光。', image: '/images/book.jpg', date: '2024-01-06', category: 'reading' },
-      { id: 'plant', title: '绿植日记。', image: '/images/plant.jpg', date: '2023-03-11', category: 'thoughts' },
-      { id: 'cafe', title: '街角咖啡。', image: '/images/cafe.jpg', date: '2023-02-19', category: 'food' },
-      { id: 'rain', title: '雨天随想。', image: '/images/rain.jpg', date: '2023-01-28', category: 'thoughts' },
-      { id: 'city', title: '城市夜色。', image: '/images/city.jpg', date: '2023-01-09', category: 'photography' }
+      {
+        id: 1,
+        title: '上海周末游记',
+        date: '2024-02-10',
+        description: '周末在上海的人文探索之旅，感受这座城市的魅力。漫步于外滩，穿行于田子坊，体验上海的文艺气息。',
+        tags: ['旅行', '城市'],
+        category: 'travel',
+        image: '/images/city.jpg'
+      },
+      {
+        id: 2,
+        title: '年度摄影作品集',
+        date: '2024-02-08',
+        description: '记录生活中的美好瞬间，分享摄影心得。用镜头捕捉城市的光影变化，记录四季的自然风光。',
+        tags: ['摄影', '艺术'],
+        category: 'photography',
+        image: '/images/mountains.jpg'
+      },
+      {
+        id: 3,
+        title: '读《人类简史》有感',
+        date: '2024-02-05',
+        description: '关于人类历史、文明演进的思考。从认知革命到科技革命，人类社会经历了怎样的变迁？',
+        tags: ['读书', '思考'],
+        category: 'reading',
+        image: '/images/book.jpg'
+      }
     ]
   },
   projects: {
@@ -254,66 +271,6 @@ export default {
     empty: '没有找到匹配的项目',
     archiveHint: '更早的工具与开源项目。',
     items: [
-      {
-        id: 'matrice-30',
-        company: 'DJI',
-        year: '2026',
-        title: 'DJI Matrice 30 系统优化',
-        role: 'Camera Driver 系统开发',
-        chip: 'firmware',
-        description: '提升低光环境下的成像稳定性和飞行决策体验。',
-        tags: ['固件优化']
-      },
-      {
-        id: 'camera-toolchain',
-        company: 'DJI',
-        year: '2026',
-        title: 'Camera Driver 工具链',
-        role: '影像工具主程',
-        chip: 'tools',
-        description: '把图像工具链和兼容性检查收成可以重复跑的步骤。',
-        tags: ['效率工具']
-      },
-      {
-        id: 'altitude-flight',
-        company: 'DJI',
-        year: '2026',
-        title: '高海拔飞行系统',
-        role: '飞控算法适配',
-        chip: 'firmware',
-        description: '在稀薄空气和大幅温差里保持成像与飞行节奏。',
-        tags: ['稳定性']
-      },
-      {
-        id: 'vision-algo',
-        company: 'DJI',
-        year: '2025',
-        title: '算法优化',
-        role: '图像处理',
-        chip: 'tools',
-        description: '面向低光与运动场景的图像处理路径。',
-        tags: ['视觉算法']
-      },
-      {
-        id: 'flight-app',
-        company: 'Personal',
-        year: '2025',
-        title: '移动端飞控 App',
-        role: 'UI/UX 设计与开发',
-        chip: 'app',
-        description: '把飞行状态和关键操作收进一块可以单手完成的界面。',
-        tags: ['跨平台']
-      },
-      {
-        id: 'firmware-tool',
-        company: 'Open Source',
-        year: '持续',
-        title: '固件工具',
-        role: '底层驱动',
-        chip: 'firmware',
-        description: '面向调试的底层工具，用来核对寄存器、日志和启动路径。',
-        tags: ['固件']
-      },
       {
         id: 'dji-sensor',
         company: 'DJI',
