@@ -318,17 +318,17 @@ html:not(.dark) .home-snow {
 }
 
 .home-stage {
-  /* Soft-studio F mock: scattered absolute stage — light edge kiss only */
+  /* Soft-studio F mock: scatter with readable sides (tiny edge kiss ≤8px) */
   --stage-side-w: clamp(220px, 22vw, 248px);
-  --stage-hero-w: clamp(380px, 42vw, 480px);
-  --stage-hero-shift: 36px; /* pull hero slightly left of center */
+  --stage-hero-w: clamp(360px, 40vw, 460px);
+  --stage-hero-shift: 28px; /* hero slightly left-of-center */
   --stage-hero-top: calc(50% - 200px);
-  --stage-kiss: 14px; /* max hero overlap of side-card edges */
+  --stage-kiss: 6px;
   position: relative;
   z-index: 1;
-  max-width: 1160px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: clamp(28px, 5vh, 56px) clamp(20px, 3vw, 32px) 72px;
+  padding: clamp(28px, 5vh, 56px) clamp(16px, 2.5vw, 28px) 72px;
   min-height: var(--hero-min-height);
   height: var(--hero-min-height);
 }
@@ -345,13 +345,13 @@ html:not(.dark) .home-snow {
 }
 
 .float-card--hero {
-  /* Slightly left-of-center, vertical mid — primary but not smothering sides */
+  /* Slightly left-of-center, vertical mid — primary without smothering sides */
   left: 50%;
   top: var(--stage-hero-top);
   margin-left: calc(var(--stage-hero-w) / -2 - var(--stage-hero-shift));
   width: var(--stage-hero-w);
   min-height: 380px;
-  z-index: 5;
+  z-index: 3;
   cursor: default;
   padding: clamp(28px, 4vw, 40px);
   overflow: hidden;
@@ -359,24 +359,24 @@ html:not(.dark) .home-snow {
 }
 
 .float-card--notes {
-  /* Mid-left, lower than hero top; only a light right-edge kiss under hero */
+  /* Mid-left, lower than hero top; tiny right-edge kiss only */
   left: calc(50% - var(--stage-hero-w) / 2 - var(--stage-hero-shift) - var(--stage-side-w) + var(--stage-kiss));
-  top: calc(var(--stage-hero-top) + 96px);
-  z-index: 2;
+  top: calc(var(--stage-hero-top) + 100px);
+  z-index: 4;
 }
 
 .float-card--project {
-  /* Upper-right, above hero top; light left-edge kiss only */
+  /* Upper-right, above hero top; clear of hero content (tiny kiss) */
   left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) - var(--stage-kiss));
   top: calc(var(--stage-hero-top) - 64px);
-  z-index: 2;
+  z-index: 4;
 }
 
 .float-card--life {
-  /* Lower-right, gap below project; shifted further right than project (not flush) */
-  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + 18px);
-  top: calc(var(--stage-hero-top) + 292px);
-  z-index: 2;
+  /* Lower-right, gap below project; further right than project (not flush) */
+  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + 24px);
+  top: calc(var(--stage-hero-top) + 300px);
+  z-index: 4;
   width: calc(var(--stage-side-w) + 8px);
 }
 
@@ -574,13 +574,13 @@ html:not(.dark) .home-snow {
 @media (max-width: 1100px) and (min-width: 761px) {
   .home-stage {
     --stage-side-w: clamp(200px, 20vw, 228px);
-    --stage-hero-w: clamp(320px, 40vw, 420px);
-    --stage-hero-shift: 20px;
-    --stage-kiss: 10px;
+    --stage-hero-w: clamp(300px, 38vw, 400px);
+    --stage-hero-shift: 16px;
+    --stage-kiss: 4px;
   }
 
   .float-card--life {
-    left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + 12px);
+    left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + 16px);
   }
 }
 
