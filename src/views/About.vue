@@ -54,27 +54,34 @@
         </p>
       </div>
 
-      <div class="about-right">
-        <div
-          class="resume-rail"
-          aria-hidden="true"
-        />
-        <article
+      <ol class="about-right timeline">
+        <li
           v-for="(job, idx) in workExperience"
           :key="`${job.company}-${job.period}`"
-          class="resume-card reveal"
-          :class="['reveal-delay-' + (idx + 1), { 'is-mid': idx === 1 }]"
-          :style="{ '--offset': `${[0, 84, 18][idx] || 0}px` }"
+          class="timeline-item reveal"
+          :class="['reveal-delay-' + (idx + 1), { 'is-current': idx === 0 }]"
         >
-          <h3>{{ job.company }} <span class="resume-years">{{ job.period }}</span></h3>
-          <p class="resume-duty">
-            {{ job.position }}
-          </p>
-          <p class="resume-detail">
-            {{ job.description }}
-          </p>
-        </article>
-      </div>
+          <span
+            class="timeline-dot"
+            aria-hidden="true"
+          />
+          <article class="timeline-card">
+            <p class="timeline-period">
+              {{ job.period }}
+            </p>
+            <h3>{{ job.company }}</h3>
+            <p class="timeline-role">
+              {{ job.position }}
+            </p>
+            <p
+              v-if="job.description && job.description !== job.position"
+              class="timeline-detail"
+            >
+              {{ job.description }}
+            </p>
+          </article>
+        </li>
+      </ol>
     </section>
   </div>
 </template>
@@ -246,78 +253,89 @@ html.dark .skill-row {
 
 .about-right {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  padding: 12px 0 0 36px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
 }
 
-.resume-rail {
+.timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr);
+  column-gap: 22px;
+  align-items: start;
+}
+
+.timeline-item:not(:last-child)::before {
+  content: '';
   position: absolute;
-  left: 8px;
-  top: 12px;
-  bottom: 12px;
-  width: 0;
+  left: 5px;
+  top: 28px;
+  bottom: -56px;
   border-left: 1.5px dashed var(--color-accent-border);
 }
 
-.resume-card {
+.timeline-item + .timeline-item {
+  margin-top: 28px;
+}
+
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  margin-top: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(183, 164, 243, 0.32);
   position: relative;
-  margin-left: var(--offset, 0);
+  z-index: 1;
+}
+
+.timeline-item.is-current .timeline-dot {
+  background: #9b87e8;
+  box-shadow: 0 0 0 5px rgba(183, 164, 243, 0.42);
+}
+
+html.dark .timeline-dot {
+  background: #1a1428;
+  box-shadow: 0 0 0 4px rgba(196, 170, 255, 0.28);
+}
+
+html.dark .timeline-item.is-current .timeline-dot {
+  background: #d7c6ff;
+  box-shadow: 0 0 0 5px rgba(196, 170, 255, 0.35);
+}
+
+.timeline-card {
   background: var(--color-card-bg);
   border: 1px solid var(--color-card-border);
   border-radius: 22px;
   box-shadow: var(--shadow-md), var(--color-card-glow);
-  padding: 22px 24px;
-  max-width: 280px;
+  padding: 18px 22px 20px;
+  max-width: 420px;
 }
 
-.resume-card.is-mid::before {
-  content: '';
-  position: absolute;
-  left: -32px;
-  top: 28px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(183, 164, 243, 0.28);
+.timeline-period {
+  margin: 0 0 6px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--color-text-tertiary);
 }
 
-html.dark .resume-card.is-mid::before {
-  background: #d7c6ff;
-}
-
-.resume-card h3 {
+.timeline-card h3 {
   font-size: 20px;
   font-weight: 650;
   margin-bottom: 6px;
 }
 
-.resume-years {
-  font-weight: 400;
-  color: var(--color-text-tertiary);
-  font-size: 14px;
-}
-
-.resume-duty {
+.timeline-role,
+.timeline-detail {
+  margin: 0;
   font-size: 14px;
   color: var(--color-text-secondary);
-  margin: 0;
 }
 
-.resume-chevron {
-  flex-shrink: 0;
-  color: var(--color-text-tertiary);
-  transition: transform var(--duration-base) var(--ease-out);
-}
-
-.resume-chevron.open {
-  transform: rotate(180deg);
-}
-
-.resume-detail {
-  display: none;
+.timeline-detail {
+  margin-top: 8px;
 }
 
 @media (max-width: 860px) {
@@ -326,27 +344,19 @@ html.dark .resume-card.is-mid::before {
     gap: 48px;
   }
 
-  .about-right {
-    padding-left: 24px;
-  }
-
-  .resume-card {
-    margin-left: 0 !important;
+  .timeline-card {
+    max-width: none;
   }
 }
 
 @media print {
   .about-atmosphere,
-  .about-actions,
-  .resume-chevron {
+  .about-actions {
     display: none !important;
   }
 
-  .resume-detail {
+  .timeline-detail {
     display: block !important;
-    margin-top: 8px;
-    font-size: 13px;
-    color: var(--color-text-secondary);
   }
 }
 </style>
