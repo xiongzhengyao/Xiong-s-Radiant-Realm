@@ -85,16 +85,17 @@ export default {
   about: {
     title: '关于',
     eyebrow: 'A LIGHT',
-    intro: '从博世到小米、大疆，在 Camera 系统里把一件事做深。',
+    intro: '从博世到小米、大疆 — 在 Camera 系统全栈持续深耕。',
     contactCta: '联系我',
     resumeCta: '下载简历',
     profile: {
       name: '熊正耀',
       nameAccent: '耀',
       title: "Camera 驱动软件工程师 {'@'} 大疆 · 上海",
-      bio: '从博世到小米、大疆，在 Camera 系统里把一件事做深。',
+      bio: '从博世到小米、大疆 — 在 Camera 系统全栈持续深耕。',
       location: '上海',
-      years: '3 年+工作经验'
+      years: '3 年+工作经验',
+      avatarFallback: '正耀'
     },
     skillsFlat: ['C/C++', 'Python', 'ARM', 'Sensor', 'Linux'],
     sections: {
@@ -117,19 +118,19 @@ export default {
         period: '2026.02–',
         position: '相机驱动研发',
         company: '大疆',
-        description: '负责影像链路驱动与相机软件栈'
+        description: '负责影像链路驱动与相机软件栈，含 Sensor 驱动与产线自动化测试。'
       },
       {
         period: '2022.08–2026.02',
         position: '影像系统优化',
         company: '小米',
-        description: '影像系统优化'
+        description: '负责 Camera 驱动开发，包括 Sensor 驱动开发、性能优化等工作。'
       },
       {
         period: '2021.09–2022.03',
         position: '嵌入式软件开发',
         company: '博世',
-        description: '嵌入式软件开发'
+        description: '负责嵌入式系统开发，包括大模型部署、图像采集处理、系统优化等工作。'
       }
     ],
     education: [

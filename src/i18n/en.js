@@ -85,16 +85,17 @@ export default {
   about: {
     title: 'About',
     eyebrow: 'A LIGHT',
-    intro: 'From Bosch to Xiaomi and DJI — going deep in Camera systems.',
+    intro: 'From Bosch to Xiaomi and DJI — deep in the full camera systems stack.',
     contactCta: 'Get in touch',
     resumeCta: 'Download résumé',
     profile: {
       name: '熊正耀',
       nameAccent: '耀',
       title: "Camera Driver Software Engineer {'@'} DJI · Shanghai",
-      bio: 'From Bosch to Xiaomi and DJI — going deep in Camera systems.',
+      bio: 'From Bosch to Xiaomi and DJI — deep in the full camera systems stack.',
       location: 'Shanghai',
-      years: '3+ years experience'
+      years: '3+ years experience',
+      avatarFallback: 'ZY'
     },
     skillsFlat: ['C/C++', 'Python', 'ARM', 'Sensor', 'Linux'],
     sections: {
@@ -115,21 +116,24 @@ export default {
     work: [
       {
         period: '2026.02–',
-        position: 'Camera driver R&D',
+        position: 'Camera Driver Software Engineer',
         company: 'DJI',
-        description: 'Imaging pipeline drivers and camera software stack'
+        description:
+          'Imaging pipeline drivers and camera software stack, including Sensor drivers and factory automation testing.'
       },
       {
         period: '2022.08–2026.02',
         position: 'Imaging systems optimization',
         company: 'Xiaomi',
-        description: 'Imaging systems optimization'
+        description:
+          'Camera driver development, including Sensor drivers and performance optimization.'
       },
       {
         period: '2021.09–2022.03',
         position: 'Embedded software',
         company: 'Bosch',
-        description: 'Embedded software development'
+        description:
+          'Embedded systems development, including large-model deployment, image acquisition/processing, and system optimization.'
       }
     ],
     education: [
