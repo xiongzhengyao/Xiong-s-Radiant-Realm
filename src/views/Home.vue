@@ -318,54 +318,69 @@ html:not(.dark) .home-snow {
 }
 
 .home-stage {
+  /* Soft-studio F scatter: air between hero & sides (gap > kiss) */
+  --stage-side-w: clamp(220px, 21vw, 240px);
+  --stage-hero-w: clamp(340px, 38vw, 440px);
+  --stage-hero-shift: 24px; /* hero slightly left-of-center */
+  --stage-hero-top: calc(50% - 200px);
+  /* negative = gap from hero edge; keeps soft float without covering content */
+  --stage-gap-notes: 20px;
+  --stage-gap-project: 16px;
+  --stage-gap-life: 28px;
   position: relative;
   z-index: 1;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: clamp(32px, 6vh, 64px) 24px 80px;
-  display: grid;
-  grid-template-columns: minmax(200px, 240px) minmax(0, 1fr) minmax(220px, 260px);
-  grid-template-rows: auto auto auto;
-  gap: 20px 24px;
-  align-items: start;
+  padding: clamp(28px, 5vh, 56px) clamp(12px, 2vw, 24px) 72px;
   min-height: var(--hero-min-height);
+  height: var(--hero-min-height);
 }
 
 .float-card {
   background: var(--color-card-bg);
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-card-border);
-  box-shadow: var(--shadow-md), var(--color-card-glow);
+  box-shadow: var(--shadow-lg), var(--color-card-glow);
   padding: 18px;
   cursor: pointer;
+  position: absolute;
+  width: var(--stage-side-w);
 }
 
 .float-card--hero {
-  grid-column: 2;
-  grid-row: 1 / span 3;
-  align-self: center;
+  /* Slightly left-of-center — lowest layer so side edges stay readable */
+  left: 50%;
+  top: var(--stage-hero-top);
+  margin-left: calc(var(--stage-hero-w) / -2 - var(--stage-hero-shift));
+  width: var(--stage-hero-w);
+  min-height: 380px;
+  z-index: 2;
   cursor: default;
   padding: clamp(28px, 4vw, 40px);
-  position: relative;
   overflow: hidden;
-  min-height: 360px;
+  box-shadow: var(--shadow-xl), var(--color-card-glow);
 }
 
 .float-card--notes {
-  grid-column: 1;
-  grid-row: 2;
-  margin-top: 48px;
+  /* Mid-left, lower than hero top; clear horizontal gap from hero */
+  left: calc(50% - var(--stage-hero-w) / 2 - var(--stage-hero-shift) - var(--stage-side-w) - var(--stage-gap-notes));
+  top: calc(var(--stage-hero-top) + 108px);
+  z-index: 3;
 }
 
 .float-card--project {
-  grid-column: 3;
-  grid-row: 1;
+  /* Upper-right, above hero; clear gap — only soft shadow may touch */
+  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + var(--stage-gap-project));
+  top: calc(var(--stage-hero-top) - 72px);
+  z-index: 4;
 }
 
 .float-card--life {
-  grid-column: 3;
-  grid-row: 3;
-  margin-top: -12px;
+  /* Lower-right, gap below project; further right than project (stagger) */
+  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + var(--stage-gap-life));
+  top: calc(var(--stage-hero-top) + 308px);
+  z-index: 4;
+  width: calc(var(--stage-side-w) + 8px);
 }
 
 .float-card-head {
@@ -559,45 +574,41 @@ html:not(.dark) .home-snow {
   margin: 0;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1100px) and (min-width: 761px) {
   .home-stage {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-  }
-
-  .float-card--hero {
-    grid-column: 1 / -1;
-    grid-row: 1;
-  }
-
-  .float-card--notes {
-    grid-column: 1;
-    grid-row: 2;
-    margin-top: 0;
-  }
-
-  .float-card--project {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  .float-card--life {
-    grid-column: 1 / -1;
-    grid-row: 3;
-    margin-top: 0;
+    --stage-side-w: clamp(196px, 19vw, 220px);
+    --stage-hero-w: clamp(280px, 36vw, 380px);
+    --stage-hero-shift: 12px;
+    --stage-gap-notes: 14px;
+    --stage-gap-project: 12px;
+    --stage-gap-life: 20px;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 760px) {
   .home-stage {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    height: auto;
+    min-height: 0;
     padding-top: 24px;
+    padding-bottom: 48px;
+  }
+
+  .float-card {
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: 0;
+    width: 100%;
+    z-index: auto;
   }
 
   .float-card--hero {
+    order: -1;
     min-height: auto;
+    width: 100%;
   }
 
   .hero-orb {
