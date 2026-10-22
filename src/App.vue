@@ -26,19 +26,37 @@
               fill="none"
               aria-hidden="true"
             >
-              <path
-                d="M12 2l1.2 4.2L17.5 7.5l-4.3 1.3L12 13l-1.2-4.2L6.5 7.5l4.3-1.3L12 2z"
+              <g
                 stroke="currentColor"
-                stroke-width="1.4"
+                stroke-width="1.5"
+                stroke-linecap="round"
                 stroke-linejoin="round"
-              />
-              <path
-                d="M12 13l.9 3.1 3.1.9-3.1.9L12 21l-.9-3.1-3.1-.9 3.1-.9L12 13z"
-                stroke="currentColor"
-                stroke-width="1.4"
-                stroke-linejoin="round"
-                opacity="0.7"
-              />
+              >
+                <line
+                  x1="12"
+                  y1="3.2"
+                  x2="12"
+                  y2="20.8"
+                />
+                <line
+                  x1="4.4"
+                  y1="7.6"
+                  x2="19.6"
+                  y2="16.4"
+                />
+                <line
+                  x1="4.4"
+                  y1="16.4"
+                  x2="19.6"
+                  y2="7.6"
+                />
+                <path d="M12 5.6 L10.4 4.2 M12 5.6 L13.6 4.2" />
+                <path d="M12 18.4 L10.4 19.8 M12 18.4 L13.6 19.8" />
+                <path d="M6.2 8.6 L4.4 8.2 M6.2 8.6 L5.4 6.8" />
+                <path d="M17.8 15.4 L19.6 15.8 M17.8 15.4 L18.6 17.2" />
+                <path d="M6.2 15.4 L4.4 15.8 M6.2 15.4 L5.4 17.2" />
+                <path d="M17.8 8.6 L19.6 8.2 M17.8 8.6 L18.6 6.8" />
+              </g>
             </svg>
             <span class="nav-logo-text">{{ $t('nav.brand') }}</span>
           </router-link>
