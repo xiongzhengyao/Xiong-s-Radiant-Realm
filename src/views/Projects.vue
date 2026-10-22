@@ -1,57 +1,107 @@
 <template>
   <div class="projects">
-    <section class="projects-hero">
-      <div class="projects-hero-mesh" aria-hidden="true" />
-      <div class="container-wide projects-hero-inner">
-        <span class="section-eyebrow reveal">{{ $t('projects.eyebrow') }}</span>
-        <h1 class="reveal reveal-delay-1">{{ $t('projects.title') }}</h1>
-        <p class="projects-hero-sub reveal reveal-delay-2">{{ $t('projects.subtitle') }}</p>
+    <div
+      class="projects-atmosphere"
+      aria-hidden="true"
+    >
+      <div class="projects-mesh" />
+      <div class="projects-snow" />
+    </div>
+
+    <section class="projects-header">
+      <div class="container-wide">
+        <h1 class="reveal">
+          {{ $t('projects.title') }}
+        </h1>
+        <div class="projects-controls reveal reveal-delay-1">
+          <div
+            class="filter-chips"
+            role="tablist"
+          >
+            <button
+              type="button"
+              class="chip"
+              :class="{ active: selectedChip === 'all' }"
+              @click="selectedChip = 'all'"
+            >
+              {{ $t('projects.all') }}
+            </button>
+            <button
+              v-for="chip in chipKeys"
+              :key="chip"
+              type="button"
+              class="chip"
+              :class="{ active: selectedChip === chip }"
+              @click="selectedChip = chip"
+            >
+              {{ $t(`projects.chips.${chip}`) }}
+            </button>
+          </div>
+          <div class="search-wrap">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              aria-hidden="true"
+            ><circle
+              cx="11"
+              cy="11"
+              r="8"
+            /><line
+              x1="21"
+              y1="21"
+              x2="16.65"
+              y2="16.65"
+            /></svg>
+            <input
+              v-model="searchInput"
+              type="search"
+              class="search-input"
+              :placeholder="$t('projects.searchPlaceholder')"
+            >
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="section projects-body">
       <div class="container-wide">
-        <div class="projects-group">
-          <h2 class="projects-group-title reveal">{{ $t('projects.groups.company') }}</h2>
-          <div class="projects-grid">
-            <article
-              v-for="(project, index) in companyProjects"
-              :key="project.id"
-              class="project-card reveal"
-              :class="['reveal-delay-' + (index + 1), { 'project-card--featured': index === 0 }]"
-            >
-              <div class="project-card-header">
-                <span class="project-company">{{ project.company }}</span>
-                <span class="project-year">{{ project.year }}</span>
-              </div>
+        <div
+          v-if="filteredProjects.length"
+          class="projects-grid"
+        >
+          <article
+            v-for="(project, index) in filteredProjects"
+            :key="project.id"
+            class="project-card reveal"
+            :class="'reveal-delay-' + ((index % 3) + 1)"
+          >
+            <div class="project-cover">
+              <CoverArt
+                :seed="project.id"
+                :category="coverCategory(project)"
+                size="lg"
+              />
+            </div>
+            <div class="project-body">
               <h3>{{ project.title }}</h3>
-              <p class="project-desc">{{ project.description }}</p>
+              <p class="project-role">
+                {{ $t('projects.rolePrefix') }}: {{ project.role || project.company }}
+              </p>
               <div class="project-tags">
-                <span v-for="tag in project.tags" :key="tag" class="tag">{{ tag }}</span>
+                <span
+                  v-for="tag in project.tags"
+                  :key="tag"
+                  class="tag tag-accent"
+                >{{ tag }}</span>
               </div>
-            </article>
-          </div>
-        </div>
-
-        <div class="projects-group projects-group--personal">
-          <h2 class="projects-group-title reveal">{{ $t('projects.groups.personal') }}</h2>
-          <div class="projects-grid">
-            <article
-              v-for="(project, index) in personalProjects"
-              :key="project.id"
-              class="project-card reveal"
-              :class="'reveal-delay-' + (index + 1)"
-            >
-              <div class="project-card-header">
-                <span class="project-company">{{ project.company }}</span>
-                <span class="project-year">{{ project.year }}</span>
-              </div>
-              <h3>{{ project.title }}</h3>
-              <p class="project-desc">{{ project.description }}</p>
-              <div class="project-tags">
-                <span v-for="tag in project.tags" :key="tag" class="tag">{{ tag }}</span>
-              </div>
-              <div class="project-footer">
+              <div
+                v-if="project.url || project.private"
+                class="project-footer"
+              >
                 <a
                   v-if="project.url"
                   :href="project.url"
@@ -60,12 +110,20 @@
                   rel="noopener noreferrer"
                 >
                   {{ $t('projects.viewOnGithub') }}
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 </a>
-                <span v-else-if="project.private" class="project-private">{{ $t('projects.privateRepo') }}</span>
+                <span
+                  v-else-if="project.private"
+                  class="project-private"
+                >{{ $t('projects.privateRepo') }}</span>
               </div>
-            </article>
-          </div>
+            </div>
+          </article>
+        </div>
+        <div
+          v-else
+          class="empty-state"
+        >
+          <p>{{ $t('projects.empty') }}</p>
         </div>
       </div>
     </section>
@@ -73,176 +131,250 @@
 </template>
 
 <script setup>
+import { ref, computed, watch, nextTick, onMounted } from 'vue'
 import { useReveal } from '@/composables/useReveal'
 import { useCareer } from '@/composables/useCareer'
+import { useDebouncedRef } from '@/composables/useDebouncedRef'
+import CoverArt from '@/components/CoverArt.vue'
 
-const { companyProjects, personalProjects } = useCareer()
-useReveal()
+const { projects } = useCareer()
+const { observe } = useReveal()
+
+const selectedChip = ref('all')
+const searchInput = ref('')
+const searchQuery = useDebouncedRef(searchInput, 200)
+const chipKeys = ['firmware', 'tools', 'app']
+
+const filteredProjects = computed(() => {
+  const q = String(searchQuery.value || '').toLowerCase().trim()
+  return projects.value.filter(project => {
+    const chipOk = selectedChip.value === 'all' || project.chip === selectedChip.value
+    if (!chipOk) return false
+    if (!q) return true
+    const hay = [project.title, project.role, project.description, project.company, ...(project.tags || [])]
+      .join(' ')
+      .toLowerCase()
+    return hay.includes(q)
+  })
+})
+
+const coverCategory = project => {
+  if (project.chip === 'app') return 'notes'
+  if (project.chip === 'tools') return 'linux'
+  return 'sensor'
+}
+
+onMounted(() => observe())
+
+watch(filteredProjects, () => {
+  nextTick(() => observe())
+})
 </script>
 
 <style scoped>
 .projects {
+  position: relative;
   padding-top: var(--nav-height);
   min-height: 100vh;
   background: var(--color-bg);
-}
-
-.projects-hero {
-  position: relative;
-  padding: var(--space-16) 0 var(--space-8);
   overflow: hidden;
 }
 
-.projects-hero-mesh {
+.projects-atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.projects-mesh {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 50% 45% at 70% 30%, var(--color-mesh-1) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 35% at 20% 80%, var(--color-mesh-2) 0%, transparent 50%);
-  pointer-events: none;
+    radial-gradient(ellipse 50% 40% at 75% 20%, var(--color-mesh-1) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 15% 80%, var(--color-mesh-2) 0%, transparent 50%);
 }
 
-.projects-hero-inner {
+.projects-snow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 15% 25%, #fff 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 40%, #fff 0%, transparent 100%),
+    radial-gradient(2px 2px at 80% 70%, #fff 0%, transparent 100%);
+}
+
+html.dark .projects-snow {
+  opacity: 0.4;
+}
+
+.projects-header,
+.projects-body {
   position: relative;
-  max-width: 640px;
+  z-index: 1;
 }
 
-.projects-hero-inner h1 {
-  font-family: var(--font-mono);
-  font-size: clamp(36px, 5vw, 52px);
-  letter-spacing: -0.03em;
-  margin-bottom: var(--space-3);
+.projects-header {
+  padding: var(--space-12) 0 var(--space-6);
 }
 
-.projects-hero-sub {
-  font-size: 18px;
-  color: var(--color-text-secondary);
-  line-height: 1.58;
-}
-
-.projects-group + .projects-group {
-  margin-top: var(--space-16);
-}
-
-.projects-group-title {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-accent);
+.projects-header h1 {
+  font-size: clamp(36px, 5vw, 48px);
   margin-bottom: var(--space-6);
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--color-border);
+}
+
+.projects-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out);
+}
+
+.chip.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+html.dark .chip:not(.active) {
+  background: transparent;
+  border-color: var(--color-accent-border);
+}
+
+.search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: min(320px, 100%);
+  padding: 10px 16px;
+  border-radius: var(--radius-full);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  color: var(--color-text-tertiary);
+  box-shadow: var(--color-card-glow);
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 14px;
+  font-family: var(--font-sans);
+  outline: none;
 }
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-5);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
 }
 
 .project-card {
-  padding: var(--space-8);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
   background: var(--color-card-bg);
-  /* Hover / press: shared .project-card motion in apple-design.css */
-}
-
-.project-card--featured {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--space-4) var(--space-8);
-  align-items: start;
-}
-
-.project-card--featured .project-desc {
-  grid-column: 1;
-}
-
-.project-card--featured .project-tags {
-  grid-column: 1;
-}
-
-.project-card-header {
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm), var(--color-card-glow);
+  overflow: hidden;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-3);
+  flex-direction: column;
 }
 
-.project-company {
-  font-size: 11px;
-  font-family: var(--font-mono);
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-accent);
+.project-cover {
+  height: 160px;
+  overflow: hidden;
 }
 
-.project-year {
-  font-size: 12px;
-  font-family: var(--font-mono);
-  color: var(--color-text-tertiary);
+.project-body {
+  padding: 18px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
 }
 
-.project-card h3 {
-  font-family: var(--font-mono);
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  margin-bottom: var(--space-3);
+.project-body h3 {
+  font-size: 18px;
+  line-height: 1.3;
 }
 
-.project-desc {
-  font-size: 15px;
-  line-height: 1.55;
+.project-role {
+  font-size: 13px;
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-4);
+  margin: 0;
 }
 
 .project-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
 }
 
 .project-footer {
-  margin-top: var(--space-5);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-border);
+  padding-top: 4px;
 }
 
 .project-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-family: var(--font-mono);
   font-size: 13px;
+  font-weight: 600;
   color: var(--color-accent);
 }
 
 .project-private {
-  font-family: var(--font-mono);
   font-size: 12px;
   color: var(--color-text-tertiary);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .project-link:hover {
-    color: var(--color-accent-hover);
+.empty-state {
+  text-align: center;
+  padding: 64px 16px;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 960px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 }
 
-@media (max-width: 734px) {
+@media (max-width: 640px) {
   .projects-grid {
     grid-template-columns: 1fr;
   }
 
-  .project-card--featured {
-    grid-template-columns: 1fr;
+  .projects-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-wrap {
+    min-width: 0;
   }
 }
 </style>

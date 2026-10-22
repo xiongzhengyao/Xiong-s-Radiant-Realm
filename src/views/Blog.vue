@@ -1,358 +1,556 @@
 <template>
   <div class="blog">
-    <Transition name="blog-view" mode="out-in">
-    <!-- Blog list view -->
-    <div v-if="!currentPostId" key="list">
-      <section class="blog-hero">
-        <div class="container-wide">
-          <div class="blog-hero-intro reveal">
-            <span class="section-eyebrow">{{ $t('blog.eyebrow') }}</span>
-            <h1>{{ $t('blog.title') }}</h1>
-            <p class="blog-hero-sub">{{ $t('blog.subtitle') }}</p>
-          </div>
+    <Transition
+      name="blog-view"
+      mode="out-in"
+    >
+      <!-- Blog list view — 疏-卡 airy notes (mock lock) -->
+      <div
+        v-if="!currentPostId"
+        key="list"
+        class="notes-page"
+      >
+        <div
+          class="notes-atmosphere"
+          aria-hidden="true"
+        >
+          <div class="notes-mesh" />
         </div>
-      </section>
+        <div class="notes-layout container-wide">
+          <aside class="notes-sidebar reveal">
+            <h1>{{ $t('blog.title') }}</h1>
+            <p class="notes-sub">
+              {{ $t('blog.subtitle') }}
+            </p>
 
-      <section class="section">
-        <div class="container-wide">
-          <!-- Filters -->
-          <div class="blog-filters reveal">
-            <div class="filter-pills">
-              <button
-                class="pill"
-                :class="{ active: selectedCategory === 'all' }"
-                @click="selectedCategory = 'all'"
-              >
-                {{ $t('blog.all') }}
-              </button>
-              <button
-                v-for="category in categories"
-                :key="category.name"
-                class="pill"
-                :class="{ active: selectedCategory === category.name }"
-                @click="selectedCategory = category.name"
-              >
-                {{ category.label }}
-              </button>
-            </div>
-            <div class="filter-actions">
-              <select v-model="sortBy" class="sort-select" :aria-label="$t('blog.sortLabel')">
-                <option value="newest">{{ $t('blog.sortNewest') }}</option>
-                <option value="oldest">{{ $t('blog.sortOldest') }}</option>
-                <option value="title">{{ $t('blog.sortTitle') }}</option>
-              </select>
-              <div class="search-wrapper">
-              <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <div class="notes-search">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                aria-hidden="true"
+              ><circle
+                cx="11"
+                cy="11"
+                r="8"
+              /><line
+                x1="21"
+                y1="21"
+                x2="16.65"
+                y2="16.65"
+              /></svg>
               <input
                 ref="searchInputRef"
                 v-model="searchInput"
                 type="search"
                 :placeholder="$t('blog.searchPlaceholder')"
-                class="search-input"
-              />
+                class="notes-search-input"
+              >
               <button
                 v-if="searchInput"
                 type="button"
                 class="search-clear"
                 :aria-label="$t('blog.clearSearch')"
                 @click="searchInput = ''"
-              >×</button>
-            </div>
-            </div>
-          </div>
-
-          <!-- Tag cloud -->
-          <div v-if="popularTags.length" class="tag-cloud reveal">
-            <button
-              class="tag-cloud-pill"
-              :class="{ active: !selectedTag }"
-              @click="selectedTag = ''"
-            >
-              {{ $t('blog.allTags') }}
-            </button>
-            <button
-              v-for="tag in popularTags"
-              :key="tag.name"
-              class="tag-cloud-pill"
-              :class="{ active: selectedTag === tag.name }"
-              @click="selectedTag = selectedTag === tag.name ? '' : tag.name"
-            >
-              {{ tag.name }}
-              <span class="tag-count">{{ tag.count }}</span>
-            </button>
-          </div>
-
-          <!-- Featured post -->
-          <article
-            v-if="listFeaturedPost"
-            class="post-featured reveal"
-            @click="showPostDetail(listFeaturedPost)"
-          >
-            <div class="post-featured-cover">
-              <CoverArt
-                :seed="listFeaturedPost.id"
-                :category="listFeaturedPost.category"
-                :label="categoryLabel(listFeaturedPost.category)"
-                :image="listFeaturedPost.image"
-                size="featured"
-              />
-            </div>
-            <div class="post-featured-body">
-              <span class="tag tag-latest">{{ $t('blog.latest') }}</span>
-              <div class="post-card-meta">
-                <span class="tag tag-accent">{{ categoryLabel(listFeaturedPost.category) }}</span>
-                <span>{{ listFeaturedPost.date }}</span>
-                <span class="meta-dot" />
-                <span>{{ $t('blog.readTime', { n: listFeaturedPost.readingTime }) }}</span>
-              </div>
-              <h2>{{ listFeaturedPost.title }}</h2>
-              <p>{{ listFeaturedPost.excerpt }}</p>
-              <span class="read-more-link">{{ $t('blog.readMore') }} →</span>
-            </div>
-          </article>
-
-          <!-- Post Grid -->
-          <div class="post-grid" :key="`${selectedCategory}-${searchQuery}`">
-            <article
-              v-for="(post, index) in listGridPosts"
-              :key="post.id"
-              class="post-card post-card-stagger"
-              :style="{ animationDelay: `${Math.min(index, 8) * 40}ms` }"
-              @click="showPostDetail(post)"
-            >
-              <div class="post-card-image">
-                <CoverArt
-                  :seed="post.id"
-                  :category="post.category"
-                  :label="categoryLabel(post.category)"
-                  :image="post.image"
-                  size="md"
-                />
-              </div>
-              <div class="post-card-body">
-                <div class="post-card-meta">
-                  <span class="tag tag-accent post-category-badge">{{ categoryLabel(post.category) }}</span>
-                  <span v-if="isRead(post.id)" class="tag tag-read">{{ $t('blog.read') }}</span>
-                  <span>{{ post.date }}</span>
-                  <span class="meta-dot"></span>
-                  <span>{{ $t('blog.readTime', { n: post.readingTime }) }}</span>
-                </div>
-                <h3>{{ post.title }}</h3>
-                <p>{{ post.excerpt }}</p>
-                <div v-if="post.keywords?.length" class="post-keywords">
-                  <span class="keyword-label">{{ $t('blog.keywords') }}</span>
-                  <span class="keyword-item" v-for="keyword in post.keywords.slice(0, 5)" :key="keyword">
-                    {{ keyword }}
-                  </span>
-                </div>
-                <div class="post-card-tags">
-                  <span class="tag" v-for="tag in post.tags" :key="tag">{{ tag }}</span>
-                </div>
-              </div>
-            </article>
-          </div>
-
-          <!-- Empty state -->
-          <div v-if="filteredPosts.length === 0" class="empty-state">
-            <p>{{ $t('blog.empty') }}</p>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- Blog post detail view — magazine / tech-doc reading layout -->
-    <div v-else key="detail" class="post-detail">
-      <div class="reading-progress" :style="{ width: readingProgress + '%' }" />
-
-      <div class="article-shell" v-if="currentPost">
-        <!-- One chrome row: blog + back | copy + more -->
-        <div class="article-chrome">
-          <nav class="breadcrumb" aria-label="Breadcrumb">
-            <button class="breadcrumb-link" @click="backToList">{{ $t('blog.breadcrumbBlog') }}</button>
-            <span class="breadcrumb-sep" aria-hidden="true">·</span>
-            <button class="breadcrumb-back" @click="backToList">{{ $t('blog.backToList') }}</button>
-          </nav>
-          <div class="toolbar-actions">
-            <button class="toolbar-btn toolbar-btn-primary" @click="copyArticleLink">{{ copyLabel }}</button>
-            <div class="toolbar-more" :class="{ 'is-open': moreMenuOpen }">
-              <button
-                type="button"
-                class="toolbar-btn toolbar-more-trigger"
-                :aria-expanded="moreMenuOpen"
-                :aria-label="$t('blog.moreActions')"
-                @click="moreMenuOpen = !moreMenuOpen"
-              >⋯</button>
-              <div v-if="moreMenuOpen" class="toolbar-menu" role="menu">
-                <button
-                  type="button"
-                  class="toolbar-menu-item"
-                  :class="{ 'is-active': isBookmarked(currentPost.id) }"
-                  role="menuitem"
-                  @click="runToolbarAction(toggleBookmarkAction)"
-                >
-                  {{ isBookmarked(currentPost.id) ? $t('blog.bookmarked') : $t('blog.bookmark') }}
-                </button>
-                <button
-                  type="button"
-                  class="toolbar-menu-item"
-                  role="menuitem"
-                  @click="runToolbarAction(shareArticle)"
-                >
-                  {{ $t('blog.share') }}
-                </button>
-                <button
-                  type="button"
-                  class="toolbar-menu-item toolbar-menu-print"
-                  role="menuitem"
-                  @click="runToolbarAction(printArticle)"
-                >
-                  {{ $t('blog.print') }}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Reading stage: hero | TOC ; body | TOC (sticky) -->
-        <div class="article-reading" :class="{ 'has-toc': tableOfContents.length > 0 }">
-          <header class="article-hero">
-            <div class="article-meta">
-              <span class="tag tag-accent">{{ categoryLabel(currentPost.category) }}</span>
-              <time class="meta-item" :datetime="currentPost.date">{{ currentPost.date }}</time>
-              <span class="meta-dot" aria-hidden="true" />
-              <span class="meta-item">{{ $t('blog.readTime', { n: currentPost.readingTime }) }}</span>
-              <template v-if="currentPost.author">
-                <span class="meta-dot" aria-hidden="true" />
-                <span class="meta-item meta-author">{{ currentPost.author }}</span>
-              </template>
-            </div>
-            <h1 class="article-title">{{ currentPost.title }}</h1>
-            <p v-if="currentPost.excerpt" class="article-lead">{{ currentPost.excerpt }}</p>
-            <div v-if="heroTags.length" class="article-tags">
-              <span class="tag" v-for="tag in heroTags" :key="tag">{{ tag }}</span>
-            </div>
-          </header>
-
-          <aside v-if="tableOfContents.length" class="article-toc" aria-label="Table of contents">
-            <!-- Desktop: always-visible sticky nav -->
-            <div v-if="tocIsWide" class="toc-panel toc-panel--desktop">
-              <p class="toc-title">{{ $t('blog.toc') }}</p>
-              <nav class="toc-nav">
-                <ul>
-                  <li
-                    v-for="item in tableOfContents"
-                    :key="'d-' + item.id"
-                    :class="['toc-level-' + item.level, { 'is-active': activeHeadingId === item.id }]"
-                  >
-                    <a :href="'#' + item.id" @click.prevent="scrollToHeading(item.id)">{{ item.text }}</a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-            <!-- Mobile: collapsed trigger; expands as bottom sheet (no layout shove) -->
-            <div v-else class="toc-panel toc-panel--mobile">
-              <button
-                type="button"
-                class="toc-trigger"
-                :aria-expanded="tocSheetOpen"
-                aria-controls="article-toc-sheet"
-                @click="tocSheetOpen = true"
               >
-                <span class="toc-title">{{ $t('blog.toc') }}</span>
-                <span class="toc-count">{{ $t('blog.tocCount', { n: tableOfContents.length }) }}</span>
+                ×
               </button>
+            </div>
+
+            <div class="notes-filter-block">
+              <h4>{{ $t('blog.yearLabel') }}</h4>
+              <div class="filter-pills">
+                <button
+                  v-for="year in availableYears"
+                  :key="year"
+                  type="button"
+                  class="pill"
+                  :class="{ active: selectedYear === year }"
+                  @click="selectedYear = selectedYear === year ? null : year"
+                >
+                  {{ year }}
+                </button>
+              </div>
+            </div>
+
+            <div class="notes-filter-block">
+              <h4>{{ $t('blog.tagLabel') }}</h4>
+              <div class="filter-pills">
+                <button
+                  type="button"
+                  class="pill"
+                  :class="{ active: selectedCategory === 'all' && !selectedTag }"
+                  @click="selectedCategory = 'all'; selectedTag = ''"
+                >
+                  {{ $t('blog.all') }}
+                </button>
+                <button
+                  v-for="category in categories"
+                  :key="category.name"
+                  type="button"
+                  class="pill pill-accent"
+                  :class="{ active: selectedCategory === category.name }"
+                  @click="selectedCategory = category.name; selectedTag = ''"
+                >
+                  {{ category.label }}
+                </button>
+                <button
+                  v-for="tag in popularTags.slice(0, 6)"
+                  :key="tag.name"
+                  type="button"
+                  class="pill pill-accent"
+                  :class="{ active: selectedTag === tag.name }"
+                  @click="selectedTag = selectedTag === tag.name ? '' : tag.name"
+                >
+                  {{ tag.name }}
+                </button>
+              </div>
             </div>
           </aside>
 
-          <Teleport to="body">
+          <section class="notes-main">
             <div
-              v-if="!tocIsWide && tocSheetOpen && tableOfContents.length"
-              id="article-toc-sheet"
-              class="toc-sheet"
-              role="dialog"
-              aria-modal="true"
-              :aria-label="$t('blog.toc')"
+              :key="`${selectedCategory}-${selectedYear}-${selectedTag}-${searchQuery}`"
+              class="post-grid"
+            >
+              <article
+                v-for="(post, index) in visiblePosts"
+                :key="post.id"
+                class="post-card post-card-stagger reveal"
+                :style="{ animationDelay: `${Math.min(index, 8) * 40}ms` }"
+                @click="showPostDetail(post)"
+              >
+                <div class="post-card-image">
+                  <CoverArt
+                    :seed="post.id"
+                    :category="post.category"
+                    :image="post.image"
+                    size="md"
+                  />
+                </div>
+                <div class="post-card-body">
+                  <h3>{{ post.title }}</h3>
+                  <p>{{ post.excerpt }}</p>
+                  <div class="post-card-foot">
+                    <span class="post-date">{{ post.date }}</span>
+                    <span class="tag tag-accent">{{ categoryLabel(post.category) }}</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div
+              v-if="filteredPosts.length === 0"
+              class="empty-state"
+            >
+              <p>{{ $t('blog.empty') }}</p>
+            </div>
+
+            <div
+              v-if="hasMorePosts"
+              class="load-more-wrap"
             >
               <button
                 type="button"
-                class="toc-sheet-backdrop"
-                :aria-label="$t('blog.tocClose')"
-                @click="closeTocSheet"
-              />
-              <div class="toc-sheet-panel">
-                <header class="toc-sheet-header">
-                  <p class="toc-title">{{ $t('blog.toc') }}</p>
-                  <button type="button" class="toc-sheet-close" @click="closeTocSheet">
-                    {{ $t('blog.tocClose') }}
+                class="btn btn-primary load-more-btn"
+                @click="loadMorePosts"
+              >
+                {{ $t('blog.loadMore') }}
+              </button>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- Blog post detail view — magazine / tech-doc reading layout -->
+      <div
+        v-else
+        key="detail"
+        class="post-detail"
+      >
+        <div
+          class="reading-progress"
+          :style="{ width: readingProgress + '%' }"
+        />
+
+        <div
+          v-if="currentPost"
+          class="article-shell"
+        >
+          <!-- One chrome row: blog + back | copy + more -->
+          <div class="article-chrome">
+            <nav
+              class="breadcrumb"
+              aria-label="Breadcrumb"
+            >
+              <button
+                class="breadcrumb-link"
+                @click="backToList"
+              >
+                {{ $t('blog.breadcrumbBlog') }}
+              </button>
+              <span
+                class="breadcrumb-sep"
+                aria-hidden="true"
+              >·</span>
+              <button
+                class="breadcrumb-back"
+                @click="backToList"
+              >
+                {{ $t('blog.backToList') }}
+              </button>
+            </nav>
+            <div class="toolbar-actions">
+              <button
+                class="toolbar-btn toolbar-btn-primary"
+                @click="copyArticleLink"
+              >
+                {{ copyLabel }}
+              </button>
+              <div
+                class="toolbar-more"
+                :class="{ 'is-open': moreMenuOpen }"
+              >
+                <button
+                  type="button"
+                  class="toolbar-btn toolbar-more-trigger"
+                  :aria-expanded="moreMenuOpen"
+                  :aria-label="$t('blog.moreActions')"
+                  @click="moreMenuOpen = !moreMenuOpen"
+                >
+                  ⋯
+                </button>
+                <div
+                  v-if="moreMenuOpen"
+                  class="toolbar-menu"
+                  role="menu"
+                >
+                  <button
+                    type="button"
+                    class="toolbar-menu-item"
+                    :class="{ 'is-active': isBookmarked(currentPost.id) }"
+                    role="menuitem"
+                    @click="runToolbarAction(toggleBookmarkAction)"
+                  >
+                    {{ isBookmarked(currentPost.id) ? $t('blog.bookmarked') : $t('blog.bookmark') }}
                   </button>
-                </header>
-                <nav class="toc-nav toc-sheet-nav">
+                  <button
+                    type="button"
+                    class="toolbar-menu-item"
+                    role="menuitem"
+                    @click="runToolbarAction(shareArticle)"
+                  >
+                    {{ $t('blog.share') }}
+                  </button>
+                  <button
+                    type="button"
+                    class="toolbar-menu-item toolbar-menu-print"
+                    role="menuitem"
+                    @click="runToolbarAction(printArticle)"
+                  >
+                    {{ $t('blog.print') }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reading stage: hero | TOC ; body | TOC (sticky) -->
+          <div
+            class="article-reading"
+            :class="{ 'has-toc': tableOfContents.length > 0 }"
+          >
+            <header class="article-hero">
+              <div class="article-meta">
+                <span class="tag tag-accent">{{ categoryLabel(currentPost.category) }}</span>
+                <time
+                  class="meta-item"
+                  :datetime="currentPost.date"
+                >{{ currentPost.date }}</time>
+                <span
+                  class="meta-dot"
+                  aria-hidden="true"
+                />
+                <span class="meta-item">{{ $t('blog.readTime', { n: currentPost.readingTime }) }}</span>
+                <template v-if="currentPost.author">
+                  <span
+                    class="meta-dot"
+                    aria-hidden="true"
+                  />
+                  <span class="meta-item meta-author">{{ currentPost.author }}</span>
+                </template>
+              </div>
+              <h1 class="article-title">
+                {{ currentPost.title }}
+              </h1>
+              <p
+                v-if="currentPost.excerpt"
+                class="article-lead"
+              >
+                {{ currentPost.excerpt }}
+              </p>
+              <div
+                v-if="heroTags.length"
+                class="article-tags"
+              >
+                <span
+                  v-for="tag in heroTags"
+                  :key="tag"
+                  class="tag"
+                >{{ tag }}</span>
+              </div>
+            </header>
+
+            <aside
+              v-if="tableOfContents.length"
+              class="article-toc"
+              aria-label="Table of contents"
+            >
+              <!-- Desktop: always-visible sticky nav -->
+              <div
+                v-if="tocIsWide"
+                class="toc-panel toc-panel--desktop"
+              >
+                <p class="toc-title">
+                  {{ $t('blog.toc') }}
+                </p>
+                <nav class="toc-nav">
                   <ul>
                     <li
                       v-for="item in tableOfContents"
-                      :key="'s-' + item.id"
+                      :key="'d-' + item.id"
                       :class="['toc-level-' + item.level, { 'is-active': activeHeadingId === item.id }]"
                     >
-                      <a :href="'#' + item.id" @click.prevent="scrollToHeading(item.id)">{{ item.text }}</a>
+                      <a
+                        :href="'#' + item.id"
+                        @click.prevent="scrollToHeading(item.id)"
+                      >{{ item.text }}</a>
                     </li>
                   </ul>
                 </nav>
               </div>
-            </div>
-          </Teleport>
-
-          <div class="article article-main">
-            <div v-if="currentPost.image" class="article-cover">
-              <img :src="currentPost.image" :alt="currentPost.title" />
-            </div>
-
-            <div ref="markdownRef" class="rich-markdown article-prose" v-html="renderedContent" />
-
-            <ArticleAuthor compact />
-
-            <section v-if="relatedPosts.length" class="related-posts">
-              <h2 class="related-title">{{ $t('blog.relatedTitle') }}</h2>
-              <div class="related-grid">
-                <article
-                  v-for="post in relatedPosts"
-                  :key="post.id"
-                  class="related-card"
-                  @click="loadPost(post.id)"
+              <!-- Mobile: collapsed trigger; expands as bottom sheet (no layout shove) -->
+              <div
+                v-else
+                class="toc-panel toc-panel--mobile"
+              >
+                <button
+                  type="button"
+                  class="toc-trigger"
+                  :aria-expanded="tocSheetOpen"
+                  aria-controls="article-toc-sheet"
+                  @click="tocSheetOpen = true"
                 >
-                  <span class="tag tag-accent">{{ categoryLabel(post.category) }}</span>
-                  <h3>{{ post.title }}</h3>
-                  <p>{{ post.excerpt }}</p>
-                </article>
+                  <span class="toc-title">{{ $t('blog.toc') }}</span>
+                  <span class="toc-count">{{ $t('blog.tocCount', { n: tableOfContents.length }) }}</span>
+                </button>
               </div>
-            </section>
+            </aside>
 
-            <footer class="article-footer">
-              <div class="article-nav">
-                <button v-if="prevPost" class="nav-post-btn" @click="loadPost(prevPost.id)">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                  <span>{{ prevPost.title }}</span>
-                </button>
-                <button v-if="nextPost" class="nav-post-btn next" @click="loadPost(nextPost.id)">
-                  <span>{{ nextPost.title }}</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                </button>
+            <Teleport to="body">
+              <div
+                v-if="!tocIsWide && tocSheetOpen && tableOfContents.length"
+                id="article-toc-sheet"
+                class="toc-sheet"
+                role="dialog"
+                aria-modal="true"
+                :aria-label="$t('blog.toc')"
+              >
+                <button
+                  type="button"
+                  class="toc-sheet-backdrop"
+                  :aria-label="$t('blog.tocClose')"
+                  @click="closeTocSheet"
+                />
+                <div class="toc-sheet-panel">
+                  <header class="toc-sheet-header">
+                    <p class="toc-title">
+                      {{ $t('blog.toc') }}
+                    </p>
+                    <button
+                      type="button"
+                      class="toc-sheet-close"
+                      @click="closeTocSheet"
+                    >
+                      {{ $t('blog.tocClose') }}
+                    </button>
+                  </header>
+                  <nav class="toc-nav toc-sheet-nav">
+                    <ul>
+                      <li
+                        v-for="item in tableOfContents"
+                        :key="'s-' + item.id"
+                        :class="['toc-level-' + item.level, { 'is-active': activeHeadingId === item.id }]"
+                      >
+                        <a
+                          :href="'#' + item.id"
+                          @click.prevent="scrollToHeading(item.id)"
+                        >{{ item.text }}</a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
               </div>
-            </footer>
+            </Teleport>
+
+            <div class="article article-main">
+              <div
+                v-if="currentPost.image"
+                class="article-cover"
+              >
+                <img
+                  :src="currentPost.image"
+                  :alt="currentPost.title"
+                >
+              </div>
+
+              <div
+                ref="markdownRef"
+                class="rich-markdown article-prose"
+                v-html="renderedContent"
+              />
+
+              <ArticleAuthor compact />
+
+              <section
+                v-if="relatedPosts.length"
+                class="related-posts"
+              >
+                <h2 class="related-title">
+                  {{ $t('blog.relatedTitle') }}
+                </h2>
+                <div class="related-grid">
+                  <article
+                    v-for="post in relatedPosts"
+                    :key="post.id"
+                    class="related-card"
+                    @click="loadPost(post.id)"
+                  >
+                    <span class="tag tag-accent">{{ categoryLabel(post.category) }}</span>
+                    <h3>{{ post.title }}</h3>
+                    <p>{{ post.excerpt }}</p>
+                  </article>
+                </div>
+              </section>
+
+              <footer class="article-footer">
+                <div class="article-nav">
+                  <button
+                    v-if="prevPost"
+                    class="nav-post-btn"
+                    @click="loadPost(prevPost.id)"
+                  >
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ><line
+                      x1="19"
+                      y1="12"
+                      x2="5"
+                      y2="12"
+                    /><polyline points="12 19 5 12 12 5" /></svg>
+                    <span>{{ prevPost.title }}</span>
+                  </button>
+                  <button
+                    v-if="nextPost"
+                    class="nav-post-btn next"
+                    @click="loadPost(nextPost.id)"
+                  >
+                    <span>{{ nextPost.title }}</span>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ><line
+                      x1="5"
+                      y1="12"
+                      x2="19"
+                      y2="12"
+                    /><polyline points="12 5 19 12 12 19" /></svg>
+                  </button>
+                </div>
+              </footer>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Sole mobile bottom bar (site tabs hidden on article) -->
-      <div class="mobile-share-bar" v-if="currentPost">
-        <button class="share-bar-btn" :aria-label="$t('blog.backToList')" @click="backToList">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        </button>
-        <span class="share-bar-title">{{ currentPost.title }}</span>
-        <button class="share-bar-btn" :aria-label="$t('blog.share')" @click="shareArticle">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        </button>
+        <!-- Sole mobile bottom bar (site tabs hidden on article) -->
+        <div
+          v-if="currentPost"
+          class="mobile-share-bar"
+        >
+          <button
+            class="share-bar-btn"
+            :aria-label="$t('blog.backToList')"
+            @click="backToList"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            ><line
+              x1="19"
+              y1="12"
+              x2="5"
+              y2="12"
+            /><polyline points="12 19 5 12 12 5" /></svg>
+          </button>
+          <span class="share-bar-title">{{ currentPost.title }}</span>
+          <button
+            class="share-bar-btn"
+            :aria-label="$t('blog.share')"
+            @click="shareArticle"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            ><circle
+              cx="18"
+              cy="5"
+              r="3"
+            /><circle
+              cx="6"
+              cy="12"
+              r="3"
+            /><circle
+              cx="18"
+              cy="19"
+              r="3"
+            /><line
+              x1="8.59"
+              y1="13.51"
+              x2="15.42"
+              y2="17.49"
+            /><line
+              x1="15.41"
+              y1="6.51"
+              x2="8.59"
+              y2="10.49"
+            /></svg>
+          </button>
+        </div>
       </div>
-    </div>
     </Transition>
   </div>
 </template>
@@ -388,7 +586,10 @@ const searchInput = ref('')
 const searchQuery = useDebouncedRef(searchInput, 200)
 const selectedCategory = ref('all')
 const selectedTag = ref('')
+const selectedYear = ref(null)
 const sortBy = ref('newest')
+const visibleCount = ref(6)
+const PAGE_SIZE = 6
 const currentPostId = ref(null)
 const currentPost = ref(null)
 const renderedContent = ref('')
@@ -445,7 +646,7 @@ watch(locale, updateCopyLabel)
 const route = useRoute()
 const router = useRouter()
 const blogStore = useBlogStore()
-const { updateProgress, markRead, isRead } = useReadHistory()
+const { updateProgress, markRead } = useReadHistory()
 const { isBookmarked, toggleBookmark } = useBookmarks()
 const posts = computed(() => blogStore.posts)
 const normalizeCategoryName = name => {
@@ -468,7 +669,7 @@ const categoryLabel = category => getCategoryLabel(category, locale.value)
 const popularTags = computed(() => {
   const counts = {}
   posts.value.forEach(post => {
-    ;(post.tags || []).forEach(tag => {
+    (post.tags || []).forEach(tag => {
       counts[tag] = (counts[tag] || 0) + 1
     })
   })
@@ -476,6 +677,15 @@ const popularTags = computed(() => {
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 12)
+})
+
+const availableYears = computed(() => {
+  const years = new Set()
+  posts.value.forEach(post => {
+    if (post.date) years.add(String(new Date(post.date).getFullYear()))
+  })
+  const list = Array.from(years).sort((a, b) => Number(b) - Number(a))
+  return list.length ? list : ['2024', '2023']
 })
 
 const toggleBookmarkAction = () => {
@@ -686,7 +896,9 @@ const filteredPosts = computed(() => {
     const matchesSearch = searchable.includes(q)
     const matchesCategory = selectedCategory.value === 'all' || post.category === selectedCategory.value
     const matchesTag = !selectedTag.value || (post.tags || []).includes(selectedTag.value)
-    return matchesSearch && matchesCategory && matchesTag
+    const matchesYear =
+      !selectedYear.value || String(new Date(post.date).getFullYear()) === selectedYear.value
+    return matchesSearch && matchesCategory && matchesTag && matchesYear
   })
 
   if (sortBy.value === 'oldest') {
@@ -699,15 +911,11 @@ const filteredPosts = computed(() => {
   return result
 })
 
-const listFeaturedPost = computed(() => {
-  if (selectedCategory.value !== 'all' || searchQuery.value) return null
-  return filteredPosts.value[0] || null
-})
-
-const listGridPosts = computed(() => {
-  if (listFeaturedPost.value) return filteredPosts.value.slice(1)
-  return filteredPosts.value
-})
+const visiblePosts = computed(() => filteredPosts.value.slice(0, visibleCount.value))
+const hasMorePosts = computed(() => visibleCount.value < filteredPosts.value.length)
+const loadMorePosts = () => {
+  visibleCount.value += PAGE_SIZE
+}
 
 const observeRevealElements = () => {
   observe()
@@ -741,6 +949,11 @@ onUnmounted(() => {
 
 watch(selectedCategory, () => {
   syncCategoryToUrl()
+  visibleCount.value = PAGE_SIZE
+})
+
+watch([selectedTag, selectedYear, searchQuery], () => {
+  visibleCount.value = PAGE_SIZE
 })
 
 watch(tocSheetOpen, open => {
@@ -783,37 +996,82 @@ watch(filteredPosts, () => {
   opacity: 0;
 }
 
-/* --- Blog Hero --- */
-.blog-hero {
-  padding: var(--space-16) 0 var(--space-8);
-  background: var(--color-bg);
+/* --- Notes list (疏-卡) --- */
+.notes-page {
   position: relative;
+  padding: var(--space-12) 0 var(--space-16);
+  overflow: hidden;
 }
 
-.blog-hero-intro {
-  max-width: 640px;
+.notes-atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
 }
 
-.blog-hero-intro h1 {
-  font-size: clamp(36px, 5vw, 56px);
-  letter-spacing: -0.03em;
-  margin-bottom: var(--space-3);
+.notes-mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 40% at 70% 90%, var(--color-mesh-1) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 30% at 20% 20%, var(--color-mesh-2) 0%, transparent 50%);
 }
 
-.blog-hero-sub {
-  font-size: 18px;
+.notes-layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(200px, 240px) minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+
+.notes-sidebar h1 {
+  font-size: clamp(36px, 5vw, 48px);
+  margin-bottom: 8px;
+}
+
+.notes-sub {
+  font-size: 15px;
   color: var(--color-text-secondary);
-  line-height: 1.58;
+  margin-bottom: 24px;
 }
 
-/* --- Filters --- */
-.blog-filters {
+.notes-search {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: var(--space-10);
-  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: var(--radius-lg);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04), var(--color-card-glow);
+  color: var(--color-text-tertiary);
+  margin-bottom: 28px;
+}
+
+.notes-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font-size: 14px;
+  font-family: var(--font-sans);
+  outline: none;
+  min-width: 0;
+}
+
+.notes-filter-block {
+  margin-bottom: 22px;
+}
+
+.notes-filter-block h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  margin-bottom: 10px;
 }
 
 .filter-pills {
@@ -823,134 +1081,34 @@ watch(filteredPosts, () => {
 }
 
 .pill {
-  padding: 8px 18px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 500;
   border-radius: var(--radius-full);
   border: 1px solid var(--color-border);
-  background: transparent;
+  background: var(--color-bg-secondary);
   color: var(--color-text-secondary);
   cursor: pointer;
   font-family: var(--font-sans);
   transition: background var(--duration-fast) var(--ease-out),
               color var(--duration-fast) var(--ease-out),
-              border-color var(--duration-fast) var(--ease-out),
-              transform 0.12s var(--ease-out);
+              border-color var(--duration-fast) var(--ease-out);
   white-space: nowrap;
 }
 
-.pill:active {
-  transform: scale(0.97);
-  transition: transform 0.1s var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .pill:hover {
-    border-color: var(--color-text-tertiary);
-    color: var(--color-text);
-  }
+.pill.pill-accent {
+  background: var(--color-accent-light);
+  border-color: transparent;
+  color: var(--color-tag-text);
 }
 
 .pill.active {
-  background: var(--color-text);
-  color: var(--color-bg);
-  border-color: var(--color-text);
-}
-
-.filter-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.sort-select {
-  padding: 10px 12px;
-  font-size: 14px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  background: var(--color-input-bg);
-  color: var(--color-text);
-  font-family: var(--font-sans);
-  cursor: pointer;
-  outline: none;
-}
-
-.tag-cloud {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin: calc(-1 * var(--space-4)) 0 var(--space-8);
-}
-
-.tag-cloud-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  font-size: 13px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--color-border);
-  background: transparent;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  font-family: var(--font-sans);
-  transition: all var(--duration-fast) var(--ease-out);
-}
-
-.tag-cloud-pill.active {
-  background: var(--color-accent-light);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
   border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-.tag-count {
-  font-size: 11px;
-  opacity: 0.6;
-}
-
-.tag-read {
-  background: var(--color-bg-secondary);
-  color: var(--color-text-tertiary);
-  border: 1px solid var(--color-border);
-}
-
-.search-wrapper {
-  position: relative;
-}
-
-.search-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-text-tertiary);
-  pointer-events: none;
-}
-
-.search-input {
-  padding: 10px 14px 10px 40px;
-  font-size: 14px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  background: var(--color-input-bg);
-  color: var(--color-text);
-  font-family: var(--font-sans);
-  width: 220px;
-  transition: border-color var(--duration-fast) var(--ease-out),
-              box-shadow var(--duration-fast) var(--ease-out);
-  outline: none;
-}
-
-.search-input:focus {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-input-focus);
 }
 
 .search-clear {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
   width: 22px;
   height: 22px;
   border: none;
@@ -963,69 +1121,14 @@ watch(filteredPosts, () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
-.tag-latest {
-  background: #34c759;
-  color: #fff;
-}
-
-/* --- Featured post --- */
-.post-featured {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 0;
-  margin-bottom: var(--space-8);
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  cursor: pointer;
-  /* Hover / press: shared .post-featured motion in apple-design.css */
-}
-
-.post-featured-cover {
-  min-height: 280px;
-}
-
-.post-featured-body {
-  padding: var(--space-8) var(--space-8) var(--space-10);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.post-featured-body h2 {
-  font-size: clamp(24px, 3vw, 32px);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  margin: var(--space-3) 0;
-  line-height: 1.2;
-}
-
-.post-featured-body > p {
-  font-size: 16px;
-  line-height: 1.55;
-  color: var(--color-text-secondary);
-  margin-bottom: var(--space-5);
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.read-more-link {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-accent);
-  margin-top: auto;
-}
-
-/* --- Post Grid --- */
+/* --- Post Grid — prefer ~3 columns, wide gutters --- */
 .post-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-6);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
 }
 
 @keyframes postStaggerIn {
@@ -1039,42 +1142,108 @@ watch(filteredPosts, () => {
 
 .post-card {
   background: var(--color-card-bg);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-card-border);
   border-radius: var(--radius-xl);
   overflow: hidden;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  /* Hover / press: shared .post-card motion in apple-design.css */
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .post-card:hover .post-card-image img {
-    transform: scale(1.04);
-  }
+  box-shadow: var(--shadow-md), var(--color-card-glow);
+  display: flex;
+  flex-direction: column;
 }
 
 .post-card-image {
   width: 100%;
-  height: 220px;
+  height: 160px;
   overflow: hidden;
   position: relative;
-}
-
-.post-category-badge {
-  font-size: 12px;
+  border-radius: var(--radius-lg);
+  margin: 12px 12px 0;
+  width: calc(100% - 24px);
 }
 
 .post-card-body {
-  padding: var(--space-5) var(--space-6) var(--space-6);
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
 }
 
+.post-card-body h3 {
+  font-size: 17px;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.post-card-body > p {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+  flex: 1;
+}
+
+.post-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.post-date {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
+.load-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.load-more-btn {
+  min-width: min(320px, 100%);
+  padding: 14px 32px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 64px 16px;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 1100px) {
+  .post-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .notes-layout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+@media (max-width: 640px) {
+  .post-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* legacy meta helpers still used by article chrome */
 .post-card-meta {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 8px;
+  flex-wrap: wrap;
   font-size: 13px;
   color: var(--color-text-tertiary);
-  margin-bottom: var(--space-3);
 }
 
 .meta-dot {
@@ -1084,60 +1253,9 @@ watch(filteredPosts, () => {
   background: var(--color-text-tertiary);
 }
 
-.post-card-body h3 {
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.3;
-  margin-bottom: var(--space-2);
-  color: var(--color-text);
-  letter-spacing: -0.01em;
-}
-
-.post-card-body p {
-  font-size: 15px;
-  color: var(--color-text-secondary);
-  line-height: 1.6;
-  margin-bottom: var(--space-4);
-  display: -webkit-box;
-  line-clamp: 3;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.post-card-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.post-keywords {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: var(--space-3);
-}
-
-.keyword-label {
-  font-size: 12px;
+.tag-read {
+  background: var(--color-bg-secondary);
   color: var(--color-text-tertiary);
-}
-
-.keyword-item {
-  font-size: 12px;
-  color: var(--color-accent);
-  background: var(--color-accent-light);
-  border-radius: var(--radius-full);
-  padding: 3px 10px;
-  line-height: 1.4;
-}
-
-.empty-state {
-  text-align: center;
-  padding: var(--space-16) 0;
-  color: var(--color-text-tertiary);
-  font-size: 17px;
 }
 
 /* --- Post Detail (magazine / tech-doc reading) --- */
@@ -1798,27 +1916,6 @@ watch(filteredPosts, () => {
 
 /* --- Responsive --- */
 @media (max-width: 734px) {
-  .post-featured {
-    grid-template-columns: 1fr;
-  }
-
-  .post-featured-cover {
-    min-height: 200px;
-  }
-
-  .post-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .blog-filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-input {
-    width: 100%;
-  }
-
   .filter-pills {
     overflow-x: auto;
     flex-wrap: nowrap;

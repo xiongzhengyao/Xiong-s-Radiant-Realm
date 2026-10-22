@@ -1,15 +1,52 @@
 <template>
   <ErrorBoundary>
-    <a href="#main-content" class="skip-link">{{ $t('nav.skipToContent') }}</a>
-    <div class="app" :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading }">
+    <a
+      href="#main-content"
+      class="skip-link"
+    >{{ $t('nav.skipToContent') }}</a>
+    <div
+      class="app"
+      :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading }"
+    >
       <!-- Navigation -->
-      <nav class="nav glass" role="navigation">
+      <nav
+        class="nav glass"
+        role="navigation"
+      >
         <div class="nav-inner">
-          <router-link to="/" class="nav-logo">
+          <router-link
+            to="/"
+            class="nav-logo"
+          >
+            <svg
+              class="nav-logo-mark"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 2l1.2 4.2L17.5 7.5l-4.3 1.3L12 13l-1.2-4.2L6.5 7.5l4.3-1.3L12 2z"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M12 13l.9 3.1 3.1.9-3.1.9L12 21l-.9-3.1-3.1-.9 3.1-.9L12 13z"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linejoin="round"
+                opacity="0.7"
+              />
+            </svg>
             <span class="nav-logo-text">{{ $t('nav.brand') }}</span>
           </router-link>
 
-          <div class="nav-links" :class="{ open: mobileMenuOpen }">
+          <div
+            class="nav-links"
+            :class="{ open: mobileMenuOpen }"
+          >
             <router-link
               v-for="link in navLinks"
               :key="link.path"
@@ -24,12 +61,78 @@
           </div>
 
           <div class="nav-actions">
-            <button class="nav-action-btn" @click="toggleLocale" :title="currentLocale === 'zh' ? 'English' : '中文'">
-              {{ currentLocale === 'zh' ? 'En' : '中' }}
-            </button>
-            <button class="nav-action-btn theme-toggle" @click="toggleTheme(!isDark)" :title="isDark ? 'Light mode' : 'Dark mode'">
-              <svg v-if="isDark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-              <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <button
+              class="nav-action-btn theme-toggle"
+              :title="isDark ? 'Light mode' : 'Dark mode'"
+              :aria-label="isDark ? 'Light mode' : 'Dark mode'"
+              @click="toggleTheme(!isDark)"
+            >
+              <svg
+                v-if="!isDark"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ><circle
+                cx="12"
+                cy="12"
+                r="5"
+              /><line
+                x1="12"
+                y1="1"
+                x2="12"
+                y2="3"
+              /><line
+                x1="12"
+                y1="21"
+                x2="12"
+                y2="23"
+              /><line
+                x1="4.22"
+                y1="4.22"
+                x2="5.64"
+                y2="5.64"
+              /><line
+                x1="18.36"
+                y1="18.36"
+                x2="19.78"
+                y2="19.78"
+              /><line
+                x1="1"
+                y1="12"
+                x2="3"
+                y2="12"
+              /><line
+                x1="21"
+                y1="12"
+                x2="23"
+                y2="12"
+              /><line
+                x1="4.22"
+                y1="19.78"
+                x2="5.64"
+                y2="18.36"
+              /><line
+                x1="18.36"
+                y1="5.64"
+                x2="19.78"
+                y2="4.22"
+              /></svg>
+              <svg
+                v-else
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
             </button>
             <button
               class="nav-toggle"
@@ -38,7 +141,7 @@
               :aria-label="$t('nav.toggleMenu')"
               @click="mobileMenuOpen = !mobileMenuOpen"
             >
-              <span></span><span></span>
+              <span /><span />
             </button>
           </div>
         </div>
@@ -47,8 +150,14 @@
       <!-- Main Content -->
       <main id="main-content">
         <router-view v-slot="{ Component, route: viewRoute }">
-          <Transition name="page" mode="out-in">
-            <component :is="Component" :key="pageTransitionKey(viewRoute)" />
+          <Transition
+            name="page"
+            mode="out-in"
+          >
+            <component
+              :is="Component"
+              :key="pageTransitionKey(viewRoute)"
+            />
           </Transition>
         </router-view>
       </main>
@@ -57,34 +166,109 @@
       <footer class="footer">
         <div class="footer-inner container">
           <div class="footer-brand">
-            <router-link to="/" class="footer-logo">{{ $t('nav.brand') }}</router-link>
-            <p class="footer-tagline">{{ $t('footer.tagline') }}</p>
-            <a :href="`mailto:${email}`" class="footer-email-btn">{{ $t('footer.emailCta') }}</a>
+            <router-link
+              to="/"
+              class="footer-logo"
+            >
+              {{ $t('nav.brand') }}
+            </router-link>
+            <p class="footer-tagline">
+              {{ $t('footer.tagline') }}
+            </p>
+            <a
+              :href="`mailto:${email}`"
+              class="footer-email-btn"
+            >{{ $t('footer.emailCta') }}</a>
           </div>
           <div class="footer-grid">
             <div class="footer-col">
-              <h4 class="footer-heading">{{ $t('footer.explore') }}</h4>
-              <router-link to="/" class="footer-link">{{ $t('nav.home') }}</router-link>
-              <router-link to="/blog" class="footer-link">{{ $t('nav.blog') }}</router-link>
-              <router-link to="/projects" class="footer-link">{{ $t('nav.projects') }}</router-link>
-              <router-link to="/life" class="footer-link">{{ $t('nav.life') }}</router-link>
+              <h4 class="footer-heading">
+                {{ $t('footer.explore') }}
+              </h4>
+              <router-link
+                to="/"
+                class="footer-link"
+              >
+                {{ $t('nav.home') }}
+              </router-link>
+              <router-link
+                to="/blog"
+                class="footer-link"
+              >
+                {{ $t('nav.blog') }}
+              </router-link>
+              <router-link
+                to="/projects"
+                class="footer-link"
+              >
+                {{ $t('nav.projects') }}
+              </router-link>
+              <router-link
+                to="/life"
+                class="footer-link"
+              >
+                {{ $t('nav.life') }}
+              </router-link>
             </div>
             <div class="footer-col">
-              <h4 class="footer-heading">{{ $t('footer.about') }}</h4>
-              <router-link to="/about" class="footer-link">{{ $t('nav.about') }}</router-link>
-              <router-link to="/contact" class="footer-link">{{ $t('nav.contact') }}</router-link>
+              <h4 class="footer-heading">
+                {{ $t('footer.about') }}
+              </h4>
+              <router-link
+                to="/about"
+                class="footer-link"
+              >
+                {{ $t('nav.about') }}
+              </router-link>
+              <router-link
+                to="/contact"
+                class="footer-link"
+              >
+                {{ $t('nav.contact') }}
+              </router-link>
+              <button
+                type="button"
+                class="footer-link footer-locale"
+                @click="toggleLocale"
+              >
+                {{ currentLocale === 'zh' ? 'English' : '中文' }}
+              </button>
             </div>
             <div class="footer-col">
-              <h4 class="footer-heading">{{ $t('footer.social') }}</h4>
-              <a href="https://github.com/xiongzhengyao" target="_blank" rel="noopener noreferrer" class="footer-link footer-link--external">GitHub</a>
-              <a href="https://blog.csdn.net/qq_38741583" target="_blank" rel="noopener noreferrer" class="footer-link footer-link--external">CSDN</a>
-              <a href="/rss.xml" class="footer-link" target="_blank" rel="noopener">{{ $t('footer.rss') }}</a>
-              <a href="/sitemap.xml" class="footer-link" target="_blank" rel="noopener">{{ $t('footer.sitemap') }}</a>
+              <h4 class="footer-heading">
+                {{ $t('footer.social') }}
+              </h4>
+              <a
+                href="https://github.com/xiongzhengyao"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="footer-link footer-link--external"
+              >GitHub</a>
+              <a
+                href="https://blog.csdn.net/qq_38741583"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="footer-link footer-link--external"
+              >CSDN</a>
+              <a
+                href="/rss.xml"
+                class="footer-link"
+                target="_blank"
+                rel="noopener"
+              >{{ $t('footer.rss') }}</a>
+              <a
+                href="/sitemap.xml"
+                class="footer-link"
+                target="_blank"
+                rel="noopener"
+              >{{ $t('footer.sitemap') }}</a>
             </div>
           </div>
           <div class="footer-bottom">
             <p>&copy; {{ new Date().getFullYear() }} Xiong Zhengyao</p>
-            <p class="footer-built">{{ $t('footer.builtWith') }}</p>
+            <p class="footer-built">
+              {{ $t('footer.builtWith') }}
+            </p>
           </div>
         </div>
       </footer>
@@ -119,13 +303,13 @@ const isScrolled = ref(false)
 /** Article detail hides MobileTabBar and uses a single mini share bar */
 const isArticleReading = computed(() => route.name === 'BlogPost')
 
+/* IA lock: 首页 · 笔记 · 项目 · 生活 · 关于 — no 存档 / contact in primary nav */
 const navLinks = [
   { path: '/', label: 'nav.home' },
-  { path: '/about', label: 'nav.about' },
-  { path: '/projects', label: 'nav.projects' },
   { path: '/blog', label: 'nav.blog' },
+  { path: '/projects', label: 'nav.projects' },
   { path: '/life', label: 'nav.life' },
-  { path: '/contact', label: 'nav.contact' },
+  { path: '/about', label: 'nav.about' },
 ]
 
 const toggleLocale = () => {
@@ -295,14 +479,22 @@ html.dark {
 }
 
 .nav-logo {
-  font-family: var(--font-mono);
-  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 16px;
   font-weight: 600;
   color: var(--color-text);
   text-decoration: none;
   letter-spacing: -0.02em;
   margin-right: var(--space-8);
   transition: opacity var(--duration-fast);
+}
+
+.nav-logo-mark {
+  flex-shrink: 0;
+  color: var(--color-accent);
 }
 
 .nav-logo-text {
@@ -322,12 +514,12 @@ html.dark {
 }
 
 .nav-link {
-  font-family: var(--font-mono);
-  font-size: 13px;
+  font-family: var(--font-sans);
+  font-size: 14px;
   font-weight: 400;
   color: var(--color-text-secondary);
   text-decoration: none;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: var(--radius-sm);
   position: relative;
   transition: color var(--duration-fast) var(--ease-out),
@@ -535,6 +727,15 @@ html.dark {
   content: ' ↗';
   font-size: 11px;
   opacity: 0.45;
+}
+
+.footer-locale {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
 }
 
 @media (hover: hover) and (pointer: fine) {
