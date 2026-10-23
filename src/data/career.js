@@ -15,7 +15,7 @@ export const CAREER_ITEMS = [
     year: '2022–2026',
     tags: ['ISP', 'Performance', 'Linux'],
     group: 'company',
-    image: '/images/laptop.jpg',
+    image: '/images/plant.jpg',
     order: 1
   },
   {
@@ -63,7 +63,7 @@ export const CAREER_ITEMS = [
     tags: ['C++', 'Logging'],
     group: 'personal',
     url: 'https://github.com/xiongzhengyao/log_system',
-    image: '/images/firmware-ui.svg',
+    image: '/images/hero-workspace.svg',
     order: 6
   },
   {
@@ -83,7 +83,7 @@ export const CAREER_ITEMS = [
     tags: ['Flutter', 'Mobile'],
     group: 'personal',
     private: true,
-    image: '/images/app-ui.svg',
+    image: '/images/sunset-sea.jpg',
     order: 8
   }
 ]

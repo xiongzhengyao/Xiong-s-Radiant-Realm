@@ -228,6 +228,7 @@ import { useBlogStore } from '@/stores/blogStore'
 import { useCareer } from '@/composables/useCareer'
 import { useReadHistory } from '@/composables/useReadHistory'
 import { getDesignTag } from '@/utils/categoryLabel'
+import { getPostCover } from '@/utils/postCover'
 import { formatRelativeDate } from '@/utils/relativeTime'
 import CoverArt from '@/components/CoverArt.vue'
 
@@ -247,16 +248,7 @@ const continuePost = computed(() => {
 const latestNote = computed(() => blogStore.getRecentPosts(1)[0] || null)
 const featuredProject = computed(() => companyProjects.value[0] || null)
 
-const noteCover = computed(() => {
-  const post = latestNote.value
-  if (!post) return '/images/mountains.jpg'
-  if (post.image) return post.image
-  const cat = String(post.category || '').toLowerCase()
-  if (cat === 'linux') return '/images/laptop.jpg'
-  if (cat === 'sensor' || cat === 'camera') return '/images/drone-studio.jpg'
-  if (cat === 'embedded') return '/images/desk.jpg'
-  return '/images/mountains.jpg'
-})
+const noteCover = computed(() => getPostCover(latestNote.value))
 
 const noteTagLabel = computed(() => (
   latestNote.value ? getDesignTag(latestNote.value, locale.value).label : t('home.noteTag')

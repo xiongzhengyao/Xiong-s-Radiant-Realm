@@ -541,6 +541,7 @@ import { useBlogStore } from '@/stores/blogStore'
 import { useMarkdown } from '@/composables/useMarkdown'
 import { useReveal } from '@/composables/useReveal'
 import { getCategoryLabel, getDesignTag } from '@/utils/categoryLabel'
+import { getPostCover } from '@/utils/postCover'
 import { formatRelativeDate } from '@/utils/relativeTime'
 import { extractHeadings, injectHeadingIds } from '@/utils/headings'
 import { enhanceMarkdownHtml, bindCodeCopyButtons, enhanceTableNumericColumns } from '@/utils/enhanceMarkdown'
@@ -640,15 +641,7 @@ const designTag = post => getDesignTag(post, locale.value)
 
 const cardDate = post => post.dateLabel || formatRelativeDate(post.date, locale.value)
 
-const coverOf = post => {
-  if (post.image) return post.image
-  const cat = String(post.category || '').toLowerCase()
-  if (cat === 'linux') return '/images/laptop.jpg'
-  if (cat === 'sensor' || cat === 'camera') return '/images/drone-studio.jpg'
-  if (cat === 'embedded') return '/images/desk.jpg'
-  if (cat === 'life') return '/images/beach.jpg'
-  return '/images/mountains.jpg'
-}
+const coverOf = post => getPostCover(post)
 
 const categoryLabel = category => getCategoryLabel(category, locale.value)
 
