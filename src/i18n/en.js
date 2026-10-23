@@ -94,7 +94,7 @@ export default {
     eyebrow: 'A LIGHT',
     intro: 'From Bosch to Xiaomi and DJI,\ngoing deep on one thing inside Camera systems.',
     contactCta: 'Get in touch',
-    resumeCta: 'Download résumé',
+    resumeCta: 'Print résumé',
     profile: {
       name: '熊正耀',
       nameAccent: '耀',
@@ -130,13 +130,13 @@ export default {
         period: '2022.08–2026.02',
         position: 'Imaging systems optimization',
         company: 'Xiaomi',
-        description: 'Imaging systems optimization'
+        description: 'First-frame pipeline work — sensor / ISP bring-up and cold-start path'
       },
       {
         period: '2021.09–2022.03',
         position: 'Embedded software',
         company: 'Bosch',
-        description: 'Embedded software development'
+        description: 'On-device AI image capture and embedded processing pipeline'
       }
     ],
     education: [

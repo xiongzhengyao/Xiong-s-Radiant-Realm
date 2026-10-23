@@ -113,11 +113,8 @@
                   class="tag tag-accent"
                 >{{ tag }}</span>
               </div>
-              <div
-                v-if="archiveOn"
-                class="life-footer"
-              >
-                <span>{{ post.date }}</span>
+              <div class="life-footer">
+                <span>{{ cardDate(post) }}</span>
               </div>
             </div>
           </article>
@@ -143,18 +140,16 @@
 
 <script setup>
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
-import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
+import { formatRelativeDate } from '@/utils/relativeTime'
 import CoverArt from '@/components/CoverArt.vue'
 
-const route = useRoute()
 const { t, tm, locale } = useI18n()
 const selectedCategory = ref('all')
 const selectedYear = ref(null)
 const selectedMonth = ref(null)
-const archiveOn = computed(() => route.query.archive === '1')
 const searchInput = ref('')
 const searchQuery = useDebouncedRef(searchInput, 200)
 const { observe } = useReveal()
@@ -169,14 +164,27 @@ const years = computed(() => {
   posts.value.forEach(post => {
     if (post.date) set.add(String(new Date(post.date).getFullYear()))
   })
-  const list = Array.from(set).sort((a, b) => Number(b) - Number(a))
-  return list.length ? list : ['2024', '2023']
+  return Array.from(set).sort((a, b) => Number(b) - Number(a))
 })
 
+/** Only months that actually have posts (respecting the selected year). */
 const monthChips = computed(() => {
-  const labels = locale.value === 'en' ? ['Mar', 'Feb', 'Jan'] : ['3月', '2月', '1月']
-  return [3, 2, 1].map((value, index) => ({ value, label: labels[index] }))
+  const labels = locale.value === 'en'
+    ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    : ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+  const months = new Set()
+  posts.value.forEach(post => {
+    if (!post.date) return
+    const d = new Date(post.date)
+    if (selectedYear.value && String(d.getFullYear()) !== selectedYear.value) return
+    months.add(d.getMonth() + 1)
+  })
+  return Array.from(months)
+    .sort((a, b) => b - a)
+    .map(value => ({ value, label: labels[value - 1] }))
 })
+
+const cardDate = post => formatRelativeDate(post.date, locale.value)
 
 const filteredPosts = computed(() => {
   const q = String(searchQuery.value || '').toLowerCase().trim()
@@ -205,6 +213,12 @@ const resetFilters = () => {
   selectedMonth.value = null
   searchInput.value = ''
 }
+
+watch(monthChips, chips => {
+  if (selectedMonth.value && !chips.some(chip => chip.value === selectedMonth.value)) {
+    selectedMonth.value = null
+  }
+})
 
 onMounted(() => observe())
 
@@ -387,12 +401,12 @@ html.dark .chip:not(.active) {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: auto;
   padding-top: 8px;
 }
 
 .life-footer {
-  padding-top: 4px;
+  margin-top: auto;
+  padding-top: 8px;
   font-size: 12px;
   color: var(--color-text-tertiary);
 }

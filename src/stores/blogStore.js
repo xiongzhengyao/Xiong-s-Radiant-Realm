@@ -6,8 +6,7 @@ const AUTHOR_FALLBACK = '熊正耀'
 const CATEGORY_FALLBACK = 'notes'
 const CATEGORY_ALIAS = {
   protocol: 'embedded',
-  cpp: 'embedded',
-  camera: 'embedded'
+  cpp: 'embedded'
 }
 const CATEGORY_KEYWORDS = {
   embedded: ['嵌入式', '驱动', 'i2c', 'i3c', 'spi', 'uart', 'can', '通信协议'],

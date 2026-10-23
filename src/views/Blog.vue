@@ -242,7 +242,7 @@
           >
             <header class="article-hero">
               <div class="article-meta">
-                <span class="tag tag-accent">{{ categoryLabel(currentPost.category) }}</span>
+                <span class="tag tag-accent">{{ designTag(currentPost).label }}</span>
                 <time
                   class="meta-item"
                   :datetime="currentPost.date"
@@ -406,7 +406,7 @@
                     class="related-card"
                     @click="loadPost(post.id)"
                   >
-                    <span class="tag tag-accent">{{ categoryLabel(post.category) }}</span>
+                    <span class="tag tag-accent">{{ designTag(post).label }}</span>
                     <h3>{{ post.title }}</h3>
                     <p>{{ post.excerpt }}</p>
                   </article>
@@ -540,7 +540,7 @@ import { toast } from '@/utils/toast'
 import { useBlogStore } from '@/stores/blogStore'
 import { useMarkdown } from '@/composables/useMarkdown'
 import { useReveal } from '@/composables/useReveal'
-import { getCategoryLabel, getDesignTag } from '@/utils/categoryLabel'
+import { getDesignTag } from '@/utils/categoryLabel'
 import { getPostCover } from '@/utils/postCover'
 import { formatRelativeDate } from '@/utils/relativeTime'
 import { extractHeadings, injectHeadingIds } from '@/utils/headings'
@@ -629,12 +629,13 @@ const { isBookmarked, toggleBookmark } = useBookmarks()
 const posts = computed(() => blogStore.posts)
 const designTags = computed(() => {
   const items = tm('blog.designTags')
-  if (Array.isArray(items) && items.length) return items
-  return [
+  const fallback = [
     { id: 'work', label: locale.value === 'en' ? 'Work notes' : '工作思考' },
     { id: 'imaging', label: locale.value === 'en' ? 'Imaging' : '影像' },
     { id: 'life', label: locale.value === 'en' ? 'Life' : '生活' }
   ]
+  const all = Array.isArray(items) && items.length ? items : fallback
+  return all.filter(tag => posts.value.some(post => getDesignTag(post, locale.value).id === tag.id))
 })
 
 const designTag = post => getDesignTag(post, locale.value)
@@ -642,8 +643,6 @@ const designTag = post => getDesignTag(post, locale.value)
 const cardDate = post => post.dateLabel || formatRelativeDate(post.date, locale.value)
 
 const coverOf = post => getPostCover(post)
-
-const categoryLabel = category => getCategoryLabel(category, locale.value)
 
 const availableYears = computed(() => {
   const years = new Set()
