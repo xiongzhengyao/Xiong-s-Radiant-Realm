@@ -118,7 +118,7 @@
               stroke-width="2"
               aria-hidden="true"
             ><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /></svg>
-            {{ $t('home.projectProgress') }}
+            {{ $t('home.featuredProject') }}
           </span>
           <span class="float-card-meta">{{ featuredProject.year }} ›</span>
         </header>
@@ -132,19 +132,7 @@
         </div>
         <h3>{{ featuredProject.title }}</h3>
         <p>{{ featuredProject.description }}</p>
-        <div
-          class="progress-track"
-          aria-hidden="true"
-        >
-          <div
-            class="progress-fill"
-            style="width: 62%"
-          />
-        </div>
-        <div class="progress-row">
-          <span>{{ $t('home.progressLabel', { n: 62 }) }}</span>
-          <span>{{ $t('home.coreContribution') }}</span>
-        </div>
+        <span class="tag tag-accent">{{ projectTagLabel }}</span>
       </div>
 
       <div
@@ -246,6 +234,12 @@ const continuePost = computed(() => {
 
 const latestNote = computed(() => blogStore.getRecentPosts(1)[0] || null)
 const featuredProject = computed(() => companyProjects.value[0] || null)
+const projectTagLabel = computed(() => {
+  const project = featuredProject.value
+  if (!project) return t('home.coreContribution')
+  if (Array.isArray(project.tags) && project.tags.length) return project.tags[0]
+  return project.role || t('home.coreContribution')
+})
 
 const noteCover = computed(() => {
   const post = latestNote.value
@@ -589,27 +583,6 @@ html.dark .hero-orb {
 html.dark .hero-orb span {
   background: #d7c6ff;
   box-shadow: 0 0 8px rgba(196, 170, 255, 0.8);
-}
-
-.progress-track {
-  height: 6px;
-  border-radius: 999px;
-  background: rgba(183, 164, 243, 0.22);
-  margin: 10px 0 8px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #c4b2f6, #9b87e8);
-}
-
-.progress-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  color: var(--color-text-tertiary);
 }
 
 .continue-section {
