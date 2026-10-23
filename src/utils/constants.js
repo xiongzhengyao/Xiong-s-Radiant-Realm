@@ -4,8 +4,14 @@ export const APP_CONFIG = {
   DESCRIPTION: '把光写进系统，把安静留在页面。Camera 驱动 · 摄影与海报',
   DESCRIPTION_EN: 'Quiet as fresh snow. Camera systems · photography & posters',
   EMAIL: 'xiongzhengyao163@163.com',
+  PHONE: '+86 188 0030 9920',
+  SHOW_PHONE: false,
   SITE_URL: 'https://snowhush.com',
   VERSION: '1.0.0',
+  SOCIAL: {
+    GITHUB: 'https://github.com/xiongzhengyao',
+    CSDN: 'https://blog.csdn.net/qq_38741583'
+  },
   IMAGES: {
     PROFILE: '/images/profile.jpg',
     HERO_WORKSPACE: '/images/hero-workspace.svg',

@@ -366,34 +366,20 @@ export default {
   contact: {
     title: '联系我',
     eyebrow: '保持联系',
-    subtitle: '期待与你的交流。无论是技术讨论还是项目合作，都欢迎联系。',
-    formTitle: '发送消息',
-    formDevNotice: '表单功能开发中，请直接发邮件联系我。',
+    subtitle: '期待与你的交流。无论是技术讨论还是项目合作，都欢迎写信。',
     emailCta: '发送邮件',
-    sending: '发送中...',
-    privacy: '你的信息仅用于回复此次联系，不会分享给第三方。',
     responseTime: '通常在 1–2 个工作日内回复。',
-    form: {
-      name: '姓名',
-      email: '邮箱',
-      subject: '主题',
-      message: '消息',
-      submit: '发送消息',
-      disabled: '表单开发中',
-      required: '请输入',
-      success: '消息已发送',
-      error: '发送失败',
-      invalidEmail: '请输入有效的邮箱地址',
-      messageTooShort: '消息至少需要 10 个字符'
+    channels: {
+      github: '开源项目与日常代码',
+      csdn: '技术文章与工程笔记'
     },
     info: {
       title: '联系方式',
       email: '邮箱',
       phone: '电话',
       location: '地址',
-      social: '社交媒体',
-      address: '中国，上海市',
-      mapPlaceholder: '地图将在这里显示'
+      social: '也可以在这里找到我',
+      address: '中国，上海市'
     }
   }
 }

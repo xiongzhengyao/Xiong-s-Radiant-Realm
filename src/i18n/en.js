@@ -366,34 +366,20 @@ export default {
   contact: {
     title: 'Contact',
     eyebrow: 'Get in touch',
-    subtitle: 'Open to technical discussions, collaborations, or just saying hi.',
-    formTitle: 'Send a message',
-    formDevNotice: 'The contact form is under development — please email me directly.',
+    subtitle: 'Open to technical discussions, collaborations, or just saying hi — email works best.',
     emailCta: 'Send email',
-    sending: 'Sending...',
-    privacy: 'Your message is only used to reply to you — never shared with third parties.',
     responseTime: 'I usually reply within 1–2 business days.',
-    form: {
-      name: 'Name',
-      email: 'Email',
-      subject: 'Subject',
-      message: 'Message',
-      submit: 'Send message',
-      disabled: 'Form in development',
-      required: 'Please input',
-      success: 'Message sent',
-      error: 'Failed to send',
-      invalidEmail: 'Please enter a valid email',
-      messageTooShort: 'Message must be at least 10 characters'
+    channels: {
+      github: 'Open-source tools and daily code',
+      csdn: 'Technical posts and engineering notes'
     },
     info: {
-      title: 'Contact Information',
+      title: 'Contact',
       email: 'Email',
       phone: 'Phone',
       location: 'Location',
-      social: 'Social Media',
-      address: 'Shanghai, China',
-      mapPlaceholder: 'Map will be displayed here'
+      social: 'Also find me here',
+      address: 'Shanghai, China'
     }
   }
 }

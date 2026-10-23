@@ -302,13 +302,13 @@
                 {{ $t('footer.social') }}
               </h4>
               <a
-                href="https://github.com/xiongzhengyao"
+                :href="githubUrl"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="footer-link footer-link--external"
               >GitHub</a>
               <a
-                href="https://blog.csdn.net/qq_38741583"
+                :href="csdnUrl"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="footer-link footer-link--external"
@@ -360,6 +360,8 @@ const { locale } = useI18n()
 const { isDark, toggleTheme } = useTheme()
 usePageMeta()
 const email = APP_CONFIG.EMAIL
+const githubUrl = APP_CONFIG.SOCIAL.GITHUB
+const csdnUrl = APP_CONFIG.SOCIAL.CSDN
 const currentLocale = computed(() => locale.value)
 const mobileMenuOpen = ref(false)
 const isScrolled = ref(false)
