@@ -1,238 +1,163 @@
 <template>
   <div class="home">
     <div
-      class="home-atmosphere"
+      class="home-wash"
       aria-hidden="true"
-    >
-      <div class="home-mesh" />
-      <div class="home-snow" />
-    </div>
+    />
+    <div
+      class="home-grain"
+      aria-hidden="true"
+    />
 
-    <section class="home-stage">
-      <div
-        class="float-card float-card--notes reveal"
-        role="link"
-        tabindex="0"
-        :aria-label="$t('home.latestNotes')"
-        @click="openLatest"
-        @keydown="onCardKeydown($event, openLatest)"
-      >
-        <header class="float-card-head">
-          <span class="float-card-title">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            ><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
-            {{ $t('home.latestNotes') }}
-          </span>
-          <span class="float-card-meta">{{ noteRelative }} ›</span>
-        </header>
-        <div class="float-card-cover">
-          <CoverArt
-            :seed="latestNote?.id || 'note'"
-            :category="latestNote?.category || 'notes'"
-            :image="noteCover"
-            size="md"
-          />
-        </div>
-        <h3>{{ latestNote?.title || $t('home.fallbackNoteTitle') }}</h3>
-        <p>{{ latestNote?.excerpt || $t('home.fallbackNoteExcerpt') }}</p>
-        <span class="tag tag-accent">{{ noteTagLabel }}</span>
-      </div>
-
-      <article class="float-card float-card--hero reveal reveal-delay-1">
-        <p class="hero-hello">
-          {{ $t('home.helloPrefix') }}
-          <span class="hero-name">{{ $t('home.helloName') }}</span>{{ $t('home.helloSuffix') }}
+    <section class="hero">
+      <div class="hero-copy reveal">
+        <p class="kicker">
+          <span>Snowhush</span>
+          <span
+            class="kicker-slash"
+            aria-hidden="true"
+          >/</span>
+          <span>{{ $t('home.kicker') }}</span>
         </p>
-        <h1 class="hero-headline">
-          {{ $t('home.headline') }}
-        </h1>
-        <p class="hero-sub">
+        <h1>{{ $t('home.headline') }}</h1>
+        <p class="lede">
           {{ $t('home.sub') }}
         </p>
-        <p class="hero-role">
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            aria-hidden="true"
-          ><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle
-            cx="12"
-            cy="13"
-            r="4"
-          /></svg>
+        <div class="hero-actions">
+          <router-link
+            class="text-link"
+            to="/projects"
+          >
+            {{ $t('home.ctaWork') }}
+          </router-link>
+          <router-link
+            class="text-link text-link--quiet"
+            to="/blog"
+          >
+            {{ $t('home.ctaNotes') }}
+          </router-link>
+        </div>
+        <p class="role">
           {{ $t('home.roleLine') }}
         </p>
-        <div class="hero-actions">
-          <button
-            class="btn btn-primary"
-            type="button"
-            @click="$router.push('/projects')"
-          >
-            <span aria-hidden="true">✨</span>
-            {{ $t('home.exploreWork') }}
-          </button>
-          <button
-            class="btn btn-ghost hero-ghost"
-            type="button"
-            @click="$router.push('/blog')"
-          >
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            ><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
-            {{ $t('home.readNotes') }}
-          </button>
-        </div>
-        <div class="hero-portrait">
-          <img
-            v-if="!portraitError"
-            :src="profileImage"
-            :alt="portraitAlt"
-            @error="portraitError = true"
-          >
+      </div>
+
+      <figure class="hero-frame reveal reveal-delay-2">
+        <img
+          src="/images/drone-white.jpg"
+          :alt="$t('home.heroAlt')"
+        >
+      </figure>
+    </section>
+
+    <section
+      class="index"
+      :aria-label="$t('home.latestNotes')"
+    >
+      <router-link
+        class="index-col reveal"
+        :to="noteTo"
+        :aria-label="latestNote?.title || $t('home.indexNotes')"
+      >
+        <header class="index-head">
+          <span class="index-name">{{ $t('home.indexNotes') }}</span>
           <span
-            v-else
-            class="hero-portrait-fallback"
-            aria-hidden="true"
-          >ZY</span>
-        </div>
-      </article>
-
-      <div
-        v-if="featuredProject"
-        class="float-card float-card--project reveal reveal-delay-2"
-        role="link"
-        tabindex="0"
-        :aria-label="featuredProject.title"
-        @click="$router.push('/projects')"
-        @keydown="onCardKeydown($event, () => $router.push('/projects'))"
-      >
-        <header class="float-card-head">
-          <span class="float-card-title">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            ><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /></svg>
-            {{ $t('home.featuredProject') }}
-          </span>
-          <span class="float-card-meta">{{ featuredProject.year }} ›</span>
+            v-if="noteRelative"
+            class="index-date"
+          >{{ noteRelative }}</span>
         </header>
-        <div class="float-card-cover">
-          <CoverArt
-            :seed="featuredProject.id"
-            category="sensor"
-            :image="featuredProject.image || '/images/drone-studio.jpg'"
-            size="md"
-          />
+        <div class="index-cover">
+          <img
+            :src="noteCover"
+            alt=""
+          >
         </div>
-        <h3>{{ featuredProject.title }}</h3>
-        <p>{{ featuredProject.description }}</p>
-        <span class="tag tag-accent">{{ projectTagLabel }}</span>
-      </div>
-
-      <div
-        class="float-card float-card--life reveal reveal-delay-3"
-        role="link"
-        tabindex="0"
-        :aria-label="$t('home.lifeMoments')"
-        @click="$router.push('/life')"
-        @keydown="onCardKeydown($event, () => $router.push('/life'))"
-      >
-        <header class="float-card-head">
-          <span class="float-card-title">
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            ><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle
-              cx="12"
-              cy="13"
-              r="4"
-            /></svg>
-            {{ $t('home.lifeMoments') }}
-          </span>
-          <span class="float-card-meta">{{ lifeMeta }} ›</span>
-        </header>
-        <div class="float-card-cover float-card-cover--life">
-          <CoverArt
-            :seed="latestLife?.id || 'life-home'"
-            :category="latestLife?.category || 'notes'"
-            :image="lifeImage"
-            size="md"
-          />
-        </div>
-        <p class="life-caption">
-          {{ lifeCaptionText }}
+        <h2 v-if="latestNote?.title">
+          {{ latestNote.title }}
+        </h2>
+        <p
+          v-if="noteTagLabel"
+          class="index-tag"
+        >
+          {{ noteTagLabel }}
         </p>
-        <span class="tag tag-accent">{{ lifeTagText }}</span>
-      </div>
+      </router-link>
+
+      <router-link
+        v-if="featuredProject"
+        class="index-col reveal reveal-delay-1"
+        to="/projects"
+        :aria-label="featuredProject.title"
+      >
+        <header class="index-head">
+          <span class="index-name">{{ $t('home.indexWork') }}</span>
+          <span
+            v-if="featuredProject.year"
+            class="index-date"
+          >{{ featuredProject.year }}</span>
+        </header>
+        <div class="index-cover">
+          <img
+            :src="featuredProject.image || '/images/drone-studio.jpg'"
+            alt=""
+          >
+        </div>
+        <h2>{{ featuredProject.title }}</h2>
+        <p
+          v-if="projectTagLabel"
+          class="index-tag"
+        >
+          {{ projectTagLabel }}
+        </p>
+      </router-link>
+
+      <router-link
+        class="index-col reveal reveal-delay-2"
+        to="/life"
+        :aria-label="lifeCaptionText"
+      >
+        <header class="index-head">
+          <span class="index-name">{{ $t('home.indexLife') }}</span>
+          <span class="index-date">{{ lifeMeta }}</span>
+        </header>
+        <div class="index-cover">
+          <img
+            :src="lifeImage"
+            alt=""
+          >
+        </div>
+        <h2>{{ lifeCaptionText }}</h2>
+        <p
+          v-if="lifeTagText"
+          class="index-tag"
+        >
+          {{ lifeTagText }}
+        </p>
+      </router-link>
     </section>
 
     <section
       v-if="continuePost"
-      class="continue-section"
+      class="continue"
     >
-      <div class="container-wide">
-        <article
-          class="continue-card reveal"
-          role="link"
-          tabindex="0"
-          :aria-label="continuePost.title"
-          @click="goToPost(continuePost)"
-          @keydown="onCardKeydown($event, () => goToPost(continuePost))"
-        >
-          <div class="continue-body">
-            <span class="section-eyebrow">{{ $t('home.continue.eyebrow') }}</span>
-            <h3>{{ continuePost.title }}</h3>
-            <p>{{ $t('home.continue.cta') }}</p>
-          </div>
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            aria-hidden="true"
-          ><line
-            x1="5"
-            y1="12"
-            x2="19"
-            y2="12"
-          /><polyline points="12 5 19 12 12 19" /></svg>
-        </article>
-      </div>
+      <router-link
+        class="continue-line reveal"
+        :to="continueTo"
+        :aria-label="continuePost.title"
+      >
+        <span class="continue-label">{{ $t('home.continue.eyebrow') }}</span>
+        <span class="continue-title">{{ continuePost.title }}</span>
+        <span
+          class="continue-cta"
+          aria-hidden="true"
+        >→</span>
+      </router-link>
     </section>
   </div>
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, nextTick, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
 import { useBlogStore } from '@/stores/blogStore'
@@ -241,18 +166,12 @@ import { useReadHistory } from '@/composables/useReadHistory'
 import { getDesignTag } from '@/utils/categoryLabel'
 import { getPostCover } from '@/utils/postCover'
 import { formatRelativeDate } from '@/utils/relativeTime'
-import { APP_CONFIG } from '@/utils/constants'
-import CoverArt from '@/components/CoverArt.vue'
 
-const router = useRouter()
 const { t, tm, locale } = useI18n()
 const blogStore = useBlogStore()
 const { companyProjects } = useCareer()
 const { continueReading } = useReadHistory()
 const { observe } = useReveal()
-const profileImage = APP_CONFIG.IMAGES.PROFILE
-const portraitError = ref(false)
-const portraitAlt = computed(() => t('about.profile.name'))
 
 const continuePost = computed(() => {
   const entry = continueReading.value
@@ -264,21 +183,32 @@ const latestNote = computed(() => blogStore.getRecentPosts(1)[0] || null)
 const featuredProject = computed(() => companyProjects.value[0] || null)
 const projectTagLabel = computed(() => {
   const project = featuredProject.value
-  if (!project) return t('home.coreContribution')
+  if (!project) return ''
   if (Array.isArray(project.tags) && project.tags.length) return project.tags[0]
-  return project.role || t('home.coreContribution')
+  return project.role || ''
 })
 
 const noteCover = computed(() => getPostCover(latestNote.value))
-
 const noteTagLabel = computed(() => (
-  latestNote.value ? getDesignTag(latestNote.value, locale.value).label : t('home.noteTag')
+  latestNote.value ? getDesignTag(latestNote.value, locale.value).label : ''
 ))
 
 const noteRelative = computed(() => {
   if (latestNote.value?.dateLabel) return latestNote.value.dateLabel
   if (!latestNote.value?.date) return ''
   return formatRelativeDate(latestNote.value.date, locale.value)
+})
+
+const noteTo = computed(() => {
+  const post = latestNote.value
+  if (!post) return '/blog'
+  return `/blog/${post.id}/${encodeURIComponent(post.slug)}`
+})
+
+const continueTo = computed(() => {
+  const post = continuePost.value
+  if (!post) return '/blog'
+  return `/blog/${post.id}/${encodeURIComponent(post.slug)}`
 })
 
 const lifePosts = computed(() => {
@@ -290,27 +220,12 @@ const lifePosts = computed(() => {
 const latestLife = computed(() => lifePosts.value[0] || null)
 const lifeImage = computed(() => latestLife.value?.image || '/images/city.jpg')
 const lifeCaptionText = computed(() => latestLife.value?.title || t('home.lifeCaption'))
-const lifeTagText = computed(() => latestLife.value?.tags?.[0] || t('home.lifeTag'))
+const lifeTagText = computed(() => latestLife.value?.tags?.[0] || '')
 const lifeMeta = computed(() => (
   latestLife.value?.date
     ? formatRelativeDate(latestLife.value.date, locale.value)
     : t('home.lastWeek')
 ))
-
-const goToPost = post => {
-  router.push(`/blog/${post.id}/${encodeURIComponent(post.slug)}`)
-}
-
-const openLatest = () => {
-  if (latestNote.value) goToPost(latestNote.value)
-  else router.push('/blog')
-}
-
-const onCardKeydown = (event, action) => {
-  if (event.key !== 'Enter' && event.key !== ' ') return
-  event.preventDefault()
-  action?.()
-}
 
 onMounted(async () => {
   await blogStore.ensureLoaded()
@@ -325,380 +240,343 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
 
 <style scoped>
 .home {
+  --paper: #f3eef8;
+  --ink: #1c1830;
+  --ink-soft: rgba(40, 32, 72, 0.72);
+  --ink-faint: rgba(70, 56, 120, 0.52);
+  --line: rgba(125, 106, 214, 0.28);
+  --violet: #6d5bc8;
+  --violet-ink: #ffffff;
   position: relative;
   padding-top: var(--nav-height);
-  min-height: calc(100vh - var(--nav-height));
-  background: transparent;
-  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
 }
 
-.home-atmosphere {
+html.dark .home {
+  --paper: #0c0a14;
+  --ink: #f4f1fb;
+  --ink-soft: rgba(244, 241, 251, 0.74);
+  --ink-faint: rgba(210, 198, 255, 0.58);
+  --line: rgba(184, 164, 243, 0.32);
+  --violet: #c4b2f6;
+  --violet-ink: #1a1428;
+}
+
+.home-wash {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 0;
-}
-
-.home-mesh {
-  position: absolute;
-  inset: 0;
   background:
-    radial-gradient(ellipse 55% 45% at 18% 30%, var(--color-mesh-1) 0%, transparent 60%),
-    radial-gradient(ellipse 45% 40% at 82% 70%, var(--color-mesh-2) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 30% at 50% 100%, var(--color-mesh-3) 0%, transparent 50%);
-  opacity: 0.85;
+    radial-gradient(ellipse 52% 44% at 8% 12%, rgba(183, 164, 243, 0.55), transparent 68%),
+    radial-gradient(ellipse 40% 36% at 92% 78%, rgba(125, 106, 214, 0.22), transparent 70%);
 }
 
-.home-snow {
+html.dark .home-wash {
+  background:
+    radial-gradient(ellipse 55% 46% at 16% 8%, rgba(124, 70, 210, 0.42), transparent 64%),
+    radial-gradient(ellipse 42% 38% at 88% 82%, rgba(88, 36, 168, 0.36), transparent 70%);
+}
+
+.home-grain {
   position: absolute;
   inset: 0;
-  opacity: 0.35;
-  background-image:
-    radial-gradient(1.5px 1.5px at 12% 18%, rgba(255, 255, 255, 0.55) 0%, transparent 100%),
-    radial-gradient(1px 1px at 42% 36%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
-    radial-gradient(2px 2px at 78% 22%, rgba(255, 255, 255, 0.35) 0%, transparent 100%),
-    radial-gradient(1px 1px at 64% 68%, rgba(255, 255, 255, 0.45) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 28% 76%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
-  animation: snow-drift 28s linear infinite;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-html:not(.dark) .home-snow {
-  opacity: 0.12;
-  filter: blur(18px);
-  background-image:
-    radial-gradient(120px 80px at 20% 40%, rgba(124, 108, 240, 0.08) 0%, transparent 70%),
-    radial-gradient(160px 100px at 70% 60%, rgba(124, 108, 240, 0.06) 0%, transparent 70%);
-  animation: none;
-}
-
-@keyframes snow-drift {
-  from { transform: translateY(0); }
-  to { transform: translateY(24px); }
-}
-
-.home-stage {
-  --stage-side-w: clamp(230px, 20vw, 268px);
-  --stage-hero-w: clamp(500px, 44vw, 640px);
-  --stage-hero-shift: 18px;
-  --stage-hero-top: calc(50% - 230px);
-  --stage-gap-notes: 28px;
-  --stage-gap-project: 22px;
-  --stage-gap-life: 36px;
+.hero {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: clamp(28px, 5vh, 56px) clamp(12px, 2vw, 24px) 72px;
   min-height: calc(100vh - var(--nav-height));
-  height: calc(100vh - var(--nav-height));
+  padding: clamp(36px, 6vh, 72px) 28px 64px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(260px, 0.86fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
 }
 
-.float-card {
-  background: var(--color-card-bg);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--color-card-border);
-  box-shadow: var(--shadow-lg), var(--color-card-glow);
-  padding: 18px;
-  cursor: pointer;
-  position: absolute;
-  width: var(--stage-side-w);
-}
-
-.float-card:focus-visible,
-.continue-card:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-}
-
-.float-card--hero {
-  left: 50%;
-  top: var(--stage-hero-top);
-  margin-left: calc(var(--stage-hero-w) / -2 - var(--stage-hero-shift));
-  width: var(--stage-hero-w);
-  min-height: 420px;
-  z-index: 2;
-  cursor: default;
-  padding: 40px 44px 36px;
-  overflow: hidden;
-  box-shadow: var(--shadow-xl), var(--color-card-glow);
-}
-
-.float-card--notes {
-  /* Mid-left, lower than hero top; clear horizontal gap from hero */
-  left: calc(50% - var(--stage-hero-w) / 2 - var(--stage-hero-shift) - var(--stage-side-w) - var(--stage-gap-notes));
-  top: calc(var(--stage-hero-top) + 108px);
-  z-index: 3;
-}
-
-.float-card--project {
-  /* Upper-right, above hero; clear gap — only soft shadow may touch */
-  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + var(--stage-gap-project));
-  top: calc(var(--stage-hero-top) - 72px);
-  z-index: 4;
-}
-
-.float-card--life {
-  /* Lower-right, gap below project; further right than project (stagger) */
-  left: calc(50% + var(--stage-hero-w) / 2 - var(--stage-hero-shift) + var(--stage-gap-life));
-  top: calc(var(--stage-hero-top) + 308px);
-  z-index: 4;
-  width: calc(var(--stage-side-w) + 8px);
-}
-
-.float-card-head {
+.kicker {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.float-card-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.float-card-meta {
+  gap: 10px;
+  margin-bottom: 22px;
   font-size: 12px;
-  color: var(--color-text-tertiary);
-  white-space: nowrap;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--violet);
 }
 
-.float-card-cover {
-  height: 110px;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  margin-bottom: 12px;
+.kicker-slash {
+  opacity: 0.55;
 }
 
-.float-card-cover--life {
-  height: 100px;
-}
-
-.float-card h3 {
-  font-size: 15px;
-  margin-bottom: 6px;
-  line-height: 1.35;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.float-card p {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  margin-bottom: 10px;
-}
-
-.life-caption {
-  -webkit-line-clamp: 2;
-  margin-bottom: 10px;
-}
-
-.hero-hello {
-  font-size: 15px;
-  color: var(--color-text-secondary);
-  margin-bottom: 16px;
-  padding-right: 140px;
-}
-
-.hero-name {
-  color: #8f7dcf;
-  font-weight: 600;
-}
-
-html.dark .hero-name {
-  color: #d2c2ff;
-}
-
-.hero-headline {
-  font-size: clamp(30px, 2.5vw, 38px);
+.hero h1 {
+  font-family: var(--font-serif);
   font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.25;
-  margin-bottom: 16px;
-  padding-right: 130px;
+  font-size: clamp(48px, 5.4vw, 72px);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  max-width: 8em;
+  margin-bottom: 18px;
 }
 
-.hero-sub {
-  font-size: 15px;
-  color: var(--color-text-secondary);
+.lede {
+  font-size: 16px;
   line-height: 1.65;
-  max-width: 22em;
-  margin-bottom: 16px;
-  -webkit-line-clamp: unset;
-  display: block;
-}
-
-.hero-role {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--color-text-tertiary);
+  color: var(--ink-soft);
+  max-width: 28em;
   margin-bottom: 28px;
-  -webkit-line-clamp: unset;
-  display: inline-flex;
 }
 
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  position: relative;
-  z-index: 1;
+  margin-bottom: 28px;
 }
 
-.hero-ghost {
-  background: var(--color-surface);
-  color: var(--color-text);
-  border: 1px solid rgba(26, 26, 34, 0.08);
-  box-shadow: var(--shadow-xs);
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 44px;
-  padding: 11px 18px;
+  padding: 0 18px;
+  border: 1px solid var(--violet);
+  border-radius: 2px;
+  background: var(--violet);
+  color: var(--violet-ink);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  transition: transform 0.12s ease, background 0.2s ease, color 0.2s ease;
 }
 
-html.dark .hero-ghost {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--color-text);
-  border-color: rgba(196, 181, 253, 0.28);
-  box-shadow: none;
+.text-link--quiet {
+  background: transparent;
+  color: var(--violet);
+}
+
+.text-link:active {
+  transform: scale(0.98);
+}
+
+.text-link:focus-visible,
+.index-col:focus-visible,
+.continue-line:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 3px;
+}
+
+.role {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--ink-faint);
+}
+
+.hero-frame {
+  margin: 0;
+  padding-left: clamp(20px, 3vw, 48px);
+  border-left: 1px solid var(--line);
+}
+
+.hero-frame img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center 42%;
+  border-radius: 10px;
+  transition: transform 0.8s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .hero-ghost:hover {
-    background: var(--color-hero-ghost-hover-bg);
-    border-color: var(--color-hero-ghost-hover-border);
-    color: var(--color-hero-ghost-hover-text);
+  .hero-frame:hover img,
+  .index-col:hover .index-cover img {
+    transform: scale(1.04);
+  }
+
+  .text-link--quiet:hover {
+    background: rgba(125, 106, 214, 0.1);
+  }
+
+  html.dark .text-link--quiet:hover {
+    background: rgba(196, 178, 246, 0.12);
   }
 }
 
-.hero-portrait {
-  position: absolute;
-  right: 36px;
-  top: 46%;
-  transform: translateY(-50%);
-  width: 128px;
-  height: 128px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 1px solid var(--color-card-border);
-  background: var(--color-bg-secondary);
-  box-shadow: var(--shadow-md), var(--color-card-glow);
-  pointer-events: none;
+.index {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 8px 28px 28px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  border-top: 1px solid var(--line);
 }
 
-.hero-portrait img {
+.index-col {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  padding-top: 22px;
+}
+
+.index-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.index-name {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--violet);
+}
+
+.index-date {
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+.index-cover {
+  height: 160px;
+  margin: 14px 0 14px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(26, 24, 20, 0.06);
+}
+
+.index-cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 18%;
   display: block;
+  transition: transform 0.8s ease;
 }
 
-.hero-portrait-fallback {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
+.index-col h2 {
+  font-family: var(--font-serif);
+  font-size: 22px;
   font-weight: 700;
-  color: var(--color-text-tertiary);
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.continue-section {
+.index-tag {
+  margin-top: 8px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+}
+
+.continue {
   position: relative;
   z-index: 1;
-  padding: 0 0 64px;
+  max-width: 1180px;
+  margin: 12px auto 72px;
+  padding: 0 28px;
 }
 
-.continue-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 20px 24px;
-  border-radius: var(--radius-lg);
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
-  box-shadow: var(--shadow-sm), var(--color-card-glow);
-  cursor: pointer;
+.continue-line {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 18px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
 }
 
-.continue-body h3 {
-  font-size: 16px;
-  margin: 4px 0;
+.continue-label {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--violet);
 }
 
-.continue-body p {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  margin: 0;
+.continue-title {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-@media (max-width: 1100px) and (min-width: 761px) {
-  .home-stage {
-    --stage-side-w: clamp(196px, 19vw, 220px);
-    --stage-hero-w: clamp(280px, 36vw, 380px);
-    --stage-hero-shift: 12px;
-    --stage-gap-notes: 14px;
-    --stage-gap-project: 12px;
-    --stage-gap-life: 20px;
-  }
+.continue-cta {
+  color: var(--ink-faint);
 }
 
-@media (max-width: 760px) {
-  .home-stage {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    height: auto;
+@media (max-width: 860px) {
+  .hero {
+    grid-template-columns: 1fr;
     min-height: 0;
-    padding-top: 24px;
-    padding-bottom: 48px;
+    padding: 28px 20px 36px;
+    gap: 28px;
   }
 
-  .float-card {
-    position: relative;
-    left: auto;
-    top: auto;
-    margin: 0;
+  .hero h1 {
+    font-size: clamp(40px, 12vw, 56px);
+  }
+
+  .hero-frame {
+    border-left: 0;
+    padding-left: 0;
+    padding-top: 8px;
+  }
+
+  .hero-frame img {
+    aspect-ratio: 4 / 5;
+    max-height: 46vh;
     width: 100%;
-    z-index: auto;
+    object-fit: cover;
   }
 
-  .float-card--hero {
-    order: -1;
-    min-height: auto;
-    width: 100%;
+  .index {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 0 20px 12px;
   }
 
-  .hero-hello,
-  .hero-headline,
-  .hero-sub {
-    padding-right: 0;
-    max-width: none;
+  .index-cover {
+    height: 180px;
   }
 
-  .hero-portrait {
-    display: none;
+  .continue {
+    padding: 0 20px;
+    margin-bottom: 48px;
+  }
+
+  .continue-line {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .continue-label {
+    grid-column: 1 / -1;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-snow {
-    animation: none;
+  .hero-frame img,
+  .index-cover img,
+  .text-link {
+    transition: none;
   }
 }
 </style>
