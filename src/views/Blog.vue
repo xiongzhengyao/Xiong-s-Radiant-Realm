@@ -178,7 +178,7 @@
           <div class="article-chrome">
             <nav
               class="breadcrumb"
-              aria-label="Breadcrumb"
+              :aria-label="$t('blog.breadcrumbNav')"
             >
               <button
                 class="breadcrumb-link"
@@ -301,7 +301,7 @@
             <aside
               v-if="tableOfContents.length"
               class="article-toc"
-              aria-label="Table of contents"
+              :aria-label="$t('blog.toc')"
             >
               <!-- Desktop: always-visible sticky nav -->
               <div
@@ -692,8 +692,11 @@ const relatedPosts = computed(() => {
 
 const bindMarkdownEnhancements = () => {
   nextTick(() => {
-    bindCodeCopyButtons(markdownRef.value, () => {
-      toast.success(t('blog.codeCopied'))
+    bindCodeCopyButtons(markdownRef.value, {
+      onCopied: () => toast.success(t('blog.codeCopied')),
+      copyLabel: t('blog.codeCopy'),
+      copiedLabel: t('blog.codeCopied'),
+      failedLabel: t('blog.copyFailed')
     })
     enhanceTableNumericColumns(markdownRef.value)
     observeHeadings()
@@ -766,7 +769,11 @@ const loadPost = async id => {
   router.replace(postPath(postData))
 
   const html = injectHeadingIds(
-    enhanceMarkdownHtml(renderMarkdown(postData.content), { title: postData.title })
+    enhanceMarkdownHtml(renderMarkdown(postData.content), {
+      title: postData.title,
+      copyLabel: t('blog.codeCopy'),
+      copyAria: t('blog.codeCopyAria')
+    })
   )
   renderedContent.value = html
   tableOfContents.value = extractHeadings(html)

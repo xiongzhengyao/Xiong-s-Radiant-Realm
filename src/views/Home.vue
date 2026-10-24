@@ -11,7 +11,11 @@
     <section class="home-stage">
       <div
         class="float-card float-card--notes reveal"
+        role="link"
+        tabindex="0"
+        :aria-label="$t('home.latestNotes')"
         @click="openLatest"
+        @keydown="onCardKeydown($event, openLatest)"
       >
         <header class="float-card-head">
           <span class="float-card-title">
@@ -112,7 +116,11 @@
       <div
         v-if="featuredProject"
         class="float-card float-card--project reveal reveal-delay-2"
+        role="link"
+        tabindex="0"
+        :aria-label="featuredProject.title"
         @click="$router.push('/projects')"
+        @keydown="onCardKeydown($event, () => $router.push('/projects'))"
       >
         <header class="float-card-head">
           <span class="float-card-title">
@@ -144,7 +152,11 @@
 
       <div
         class="float-card float-card--life reveal reveal-delay-3"
+        role="link"
+        tabindex="0"
+        :aria-label="$t('home.lifeMoments')"
         @click="$router.push('/life')"
+        @keydown="onCardKeydown($event, () => $router.push('/life'))"
       >
         <header class="float-card-head">
           <span class="float-card-title">
@@ -187,7 +199,11 @@
       <div class="container-wide">
         <article
           class="continue-card reveal"
+          role="link"
+          tabindex="0"
+          :aria-label="continuePost.title"
           @click="goToPost(continuePost)"
+          @keydown="onCardKeydown($event, () => goToPost(continuePost))"
         >
           <div class="continue-body">
             <span class="section-eyebrow">{{ $t('home.continue.eyebrow') }}</span>
@@ -290,6 +306,12 @@ const openLatest = () => {
   else router.push('/blog')
 }
 
+const onCardKeydown = (event, action) => {
+  if (event.key !== 'Enter' && event.key !== ' ') return
+  event.preventDefault()
+  action?.()
+}
+
 onMounted(async () => {
   await blogStore.ensureLoaded()
   await nextTick()
@@ -380,6 +402,12 @@ html:not(.dark) .home-snow {
   cursor: pointer;
   position: absolute;
   width: var(--stage-side-w);
+}
+
+.float-card:focus-visible,
+.continue-card:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
 }
 
 .float-card--hero {

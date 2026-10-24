@@ -9,7 +9,10 @@ export default {
     brand: 'Snowhush',
     archive: 'Archive',
     skipToContent: 'Skip to content',
-    toggleMenu: 'Toggle navigation menu'
+    toggleMenu: 'Toggle navigation menu',
+    themeLight: 'Switch to light mode',
+    themeDark: 'Switch to dark mode',
+    mobileNav: 'Mobile navigation'
   },
   common: {
     backToTop: 'Back to top'
@@ -193,10 +196,13 @@ export default {
     copyLink: 'Copy link',
     copySuccess: 'Link copied',
     breadcrumbBlog: 'Notes',
+    breadcrumbNav: 'Breadcrumb',
     moreActions: 'More actions',
     relatedTitle: 'Related posts',
     share: 'Share',
     print: 'Print',
+    codeCopy: 'Copy',
+    codeCopyAria: 'Copy code',
     codeCopied: 'Copied',
     read: 'Read',
     allTags: 'All tags',
