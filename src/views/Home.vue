@@ -94,11 +94,18 @@
             {{ $t('home.readNotes') }}
           </button>
         </div>
-        <div
-          class="hero-orb"
-          aria-hidden="true"
-        >
-          <span /><span /><span />
+        <div class="hero-portrait">
+          <img
+            v-if="!portraitError"
+            :src="profileImage"
+            :alt="portraitAlt"
+            @error="portraitError = true"
+          >
+          <span
+            v-else
+            class="hero-portrait-fallback"
+            aria-hidden="true"
+          >ZY</span>
         </div>
       </article>
 
@@ -208,7 +215,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
@@ -218,6 +225,7 @@ import { useReadHistory } from '@/composables/useReadHistory'
 import { getDesignTag } from '@/utils/categoryLabel'
 import { getPostCover } from '@/utils/postCover'
 import { formatRelativeDate } from '@/utils/relativeTime'
+import { APP_CONFIG } from '@/utils/constants'
 import CoverArt from '@/components/CoverArt.vue'
 
 const router = useRouter()
@@ -226,6 +234,9 @@ const blogStore = useBlogStore()
 const { companyProjects } = useCareer()
 const { continueReading } = useReadHistory()
 const { observe } = useReveal()
+const profileImage = APP_CONFIG.IMAGES.PROFILE
+const portraitError = ref(false)
+const portraitAlt = computed(() => t('about.profile.name'))
 
 const continuePost = computed(() => {
   const entry = continueReading.value
@@ -544,7 +555,7 @@ html.dark .hero-ghost {
   }
 }
 
-.hero-orb {
+.hero-portrait {
   position: absolute;
   right: 36px;
   top: 46%;
@@ -552,29 +563,30 @@ html.dark .hero-ghost {
   width: 128px;
   height: 128px;
   border-radius: 50%;
-  background: #efe8ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-card-border);
+  background: var(--color-bg-secondary);
+  box-shadow: var(--shadow-md), var(--color-card-glow);
   pointer-events: none;
 }
 
-html.dark .hero-orb {
-  background: radial-gradient(circle at 40% 35%, #3a2c62, #221838 72%);
-  box-shadow: inset 0 0 0 1px rgba(196, 170, 255, 0.28), 0 0 24px rgba(140, 80, 255, 0.2);
+.hero-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  display: block;
 }
 
-.hero-orb span {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #9b87e8;
-}
-
-html.dark .hero-orb span {
-  background: #d7c6ff;
-  box-shadow: 0 0 8px rgba(196, 170, 255, 0.8);
+.hero-portrait-fallback {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text-tertiary);
 }
 
 .continue-section {
@@ -651,7 +663,7 @@ html.dark .hero-orb span {
     max-width: none;
   }
 
-  .hero-orb {
+  .hero-portrait {
     display: none;
   }
 }

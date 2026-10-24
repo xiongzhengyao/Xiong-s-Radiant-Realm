@@ -367,7 +367,7 @@ const mobileMenuOpen = ref(false)
 const isScrolled = ref(false)
 /** Article detail hides MobileTabBar and uses a single mini share bar */
 const isArticleReading = computed(() => route.name === 'BlogPost')
-const showArchiveNav = computed(() => route.path === '/projects' || route.path === '/life')
+const showArchiveNav = computed(() => route.path === '/projects')
 const isArchiveOn = computed(() => route.query.archive === '1')
 const flakes = Array.from({ length: 14 }, (_, i) => ({
   id: i,
