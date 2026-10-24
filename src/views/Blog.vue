@@ -30,8 +30,8 @@
                 <button
                   type="button"
                   class="chip"
-                  :class="{ active: !selectedDesignTag }"
-                  @click="selectedDesignTag = ''"
+                  :class="{ active: !selectedDesignTag && !showBookmarksOnly }"
+                  @click="clearListFilters"
                 >
                   {{ $t('blog.all') }}
                 </button>
@@ -44,6 +44,15 @@
                   @click="selectedDesignTag = selectedDesignTag === tag.id ? '' : tag.id"
                 >
                   {{ tag.label }}
+                </button>
+                <button
+                  v-if="showBookmarkChip"
+                  type="button"
+                  class="chip"
+                  :class="{ active: showBookmarksOnly }"
+                  @click="showBookmarksOnly = !showBookmarksOnly"
+                >
+                  {{ $t('blog.bookmarkFilter') }}
                 </button>
                 <button
                   v-for="year in availableYears"
@@ -100,7 +109,7 @@
           <div class="container-wide">
             <div
               v-if="filteredPosts.length"
-              :key="`${selectedCategory}-${selectedYear}-${selectedTag}-${selectedDesignTag}-${searchQuery}`"
+              :key="`${selectedCategory}-${selectedYear}-${selectedTag}-${selectedDesignTag}-${showBookmarksOnly}-${searchQuery}`"
               class="notes-grid"
             >
               <article
@@ -136,7 +145,15 @@
               v-else
               class="empty-state"
             >
-              <p>{{ $t('blog.empty') }}</p>
+              <p>{{ showBookmarksOnly ? $t('blog.bookmarkEmpty') : $t('blog.empty') }}</p>
+              <button
+                v-if="showBookmarksOnly"
+                type="button"
+                class="btn btn-outline"
+                @click="showBookmarksOnly = false"
+              >
+                {{ $t('blog.all') }}
+              </button>
             </div>
           </div>
         </section>
@@ -566,6 +583,7 @@ const selectedCategory = ref('all')
 const selectedTag = ref('')
 const selectedYear = ref(null)
 const selectedDesignTag = ref('')
+const showBookmarksOnly = ref(false)
 const sortBy = ref('newest')
 const currentPostId = ref(null)
 const currentPost = ref(null)
@@ -624,8 +642,16 @@ const route = useRoute()
 const router = useRouter()
 const blogStore = useBlogStore()
 const { updateProgress, markRead } = useReadHistory()
-const { isBookmarked, toggleBookmark } = useBookmarks()
+const { isBookmarked, toggleBookmark, bookmarkedIds } = useBookmarks()
 const posts = computed(() => blogStore.posts)
+const showBookmarkChip = computed(() => (
+  bookmarkedIds.value.length > 0 || showBookmarksOnly.value
+))
+
+const clearListFilters = () => {
+  selectedDesignTag.value = ''
+  showBookmarksOnly.value = false
+}
 const designTags = computed(() => {
   const items = tm('blog.designTags')
   if (Array.isArray(items) && items.length) return items
@@ -872,7 +898,8 @@ const filteredPosts = computed(() => {
     const matchesDesign = !selectedDesignTag.value || designTag(post).id === selectedDesignTag.value
     const matchesYear =
       !selectedYear.value || String(new Date(post.date).getFullYear()) === selectedYear.value
-    return matchesSearch && matchesCategory && matchesTag && matchesDesign && matchesYear
+    const matchesBookmark = !showBookmarksOnly.value || isBookmarked(post.id)
+    return matchesSearch && matchesCategory && matchesTag && matchesDesign && matchesYear && matchesBookmark
   })
 
   if (sortBy.value === 'oldest') {

@@ -130,7 +130,7 @@
           v-else
           class="empty-state"
         >
-          <p>{{ $t('projects.empty') }}</p>
+          <p>{{ showArchive ? $t('projects.archiveEmpty') : $t('projects.empty') }}</p>
         </div>
       </div>
     </section>
@@ -157,9 +157,10 @@ const chipKeys = ['firmware', 'tools', 'app']
 
 const filteredProjects = computed(() => {
   const q = String(searchQuery.value || '').toLowerCase().trim()
-  const pool = showArchive.value
-    ? projects.value.filter(project => project.group === 'personal')
-    : projects.value
+  // Default: company work. Archive: personal / open-source tools.
+  const pool = projects.value.filter(project => (
+    showArchive.value ? project.group === 'personal' : project.group === 'company'
+  ))
   return pool.filter(project => {
     const chipOk = selectedChip.value === 'all' || project.chip === selectedChip.value
     if (!chipOk) return false

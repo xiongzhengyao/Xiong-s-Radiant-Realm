@@ -198,6 +198,8 @@ export default {
     sortTitle: '按标题',
     bookmark: '收藏',
     bookmarked: '已收藏',
+    bookmarkFilter: '收藏',
+    bookmarkEmpty: '还没有收藏的笔记。打开一篇文章，点右上角 ⋯ 即可收藏。',
     bookmarkAdded: '已加入收藏',
     bookmarkRemoved: '已取消收藏',
     copyFailed: '复制失败',
@@ -269,7 +271,8 @@ export default {
     privateRepo: '私有仓库',
     viewOnGithub: '查看仓库',
     empty: '没有找到匹配的项目',
-    archiveHint: '更早的工具与开源项目。',
+    archiveHint: '开源工具与个人项目。默认列表只展示公司项目。',
+    archiveEmpty: '暂无开源或个人项目。',
     items: [
       {
         id: 'dji-sensor',

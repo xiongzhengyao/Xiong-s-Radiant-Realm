@@ -198,6 +198,8 @@ export default {
     sortTitle: 'Title',
     bookmark: 'Bookmark',
     bookmarked: 'Saved',
+    bookmarkFilter: 'Saved',
+    bookmarkEmpty: 'No saved notes yet. Open an article and use ⋯ to bookmark it.',
     bookmarkAdded: 'Added to bookmarks',
     bookmarkRemoved: 'Removed from bookmarks',
     copyFailed: 'Copy failed',
@@ -269,7 +271,8 @@ export default {
     privateRepo: 'Private repository',
     viewOnGithub: 'View repository',
     empty: 'No matching projects',
-    archiveHint: 'Earlier tools and open-source projects.',
+    archiveHint: 'Open-source tools and personal projects. The default list shows company work only.',
+    archiveEmpty: 'No personal or open-source projects yet.',
     items: [
       {
         id: 'dji-sensor',
