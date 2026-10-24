@@ -10,9 +10,15 @@
 
     <section class="life-header">
       <div class="container-wide">
-        <h1 class="reveal">
+        <p class="page-kicker">
+          {{ $t('life.eyebrow') }}
+        </p>
+        <h1 class="page-title reveal">
           {{ $t('life.title') }}
         </h1>
+        <p class="page-lede">
+          {{ $t('life.subtitle') }}
+        </p>
         <div class="life-controls reveal reveal-delay-1">
           <div
             class="filter-chips"
@@ -390,7 +396,7 @@ watch(activePost, post => {
 .life-snow {
   position: absolute;
   inset: 0;
-  opacity: 0.35;
+  opacity: 0;
   background-image:
     radial-gradient(1.5px 1.5px at 12% 18%, rgba(255, 255, 255, 0.7) 0%, transparent 100%),
     radial-gradient(1px 1px at 40% 62%, rgba(255, 255, 255, 0.55) 0%, transparent 100%),
@@ -413,9 +419,7 @@ html:not(.dark) .life-snow {
 }
 
 .life-header h1 {
-  font-size: clamp(36px, 5vw, 52px);
-  margin: 0 0 20px;
-  letter-spacing: -0.03em;
+  margin: 0 0 12px;
 }
 
 .life-controls {
@@ -433,30 +437,29 @@ html:not(.dark) .life-snow {
 }
 
 .chip {
-  padding: 8px 16px;
-  border-radius: var(--radius-full);
+  padding: 4px 0 6px;
+  margin-right: 16px;
   border: none;
-  background: var(--color-pill-bg);
-  box-shadow: var(--shadow-xs);
-  color: var(--color-text-secondary);
-  font-size: 14px;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text-tertiary);
+  font-size: 13px;
   font-weight: 500;
   font-family: var(--font-sans);
   cursor: pointer;
-  transition: background var(--duration-fast) var(--ease-out),
-              color var(--duration-fast) var(--ease-out),
-              border-color var(--duration-fast) var(--ease-out);
 }
 
 .chip.active {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-accent-contrast);
+  background: transparent;
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
 }
 
 html.dark .chip:not(.active) {
   background: transparent;
-  border: 1px solid var(--color-accent-border);
+  border-color: transparent;
 }
 
 .search-wrap {
@@ -465,11 +468,11 @@ html.dark .chip:not(.active) {
   gap: 8px;
   width: min(260px, 100%);
   padding: 10px 16px;
-  border-radius: var(--radius-full);
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(125, 106, 214, 0.28);
   color: var(--color-text-tertiary);
-  box-shadow: var(--shadow-sm), var(--color-card-glow);
+  box-shadow: none;
 }
 
 .search-input {
@@ -492,20 +495,13 @@ html.dark .chip:not(.active) {
 .life-card {
   background: var(--color-card-bg);
   border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm), var(--color-card-glow);
+  border-radius: 12px;
+  border-color: rgba(125, 106, 214, 0.18);
+  box-shadow: none;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  transition: transform 0.16s var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .life-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md), var(--color-card-glow);
-  }
 }
 
 .life-card:focus-visible {

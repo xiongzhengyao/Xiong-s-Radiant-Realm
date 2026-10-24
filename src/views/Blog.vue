@@ -19,9 +19,15 @@
 
         <section class="notes-header">
           <div class="container-wide">
-            <h1 class="reveal">
+            <p class="page-kicker">
+              {{ $t('blog.eyebrow') }}
+            </p>
+            <h1 class="page-title reveal">
               {{ $t('blog.title') }}
             </h1>
+            <p class="page-lede">
+              {{ $t('blog.subtitle') }}
+            </p>
             <div class="notes-controls reveal reveal-delay-1">
               <div
                 class="filter-chips"
@@ -110,36 +116,29 @@
             <div
               v-if="filteredPosts.length"
               :key="`${selectedCategory}-${selectedYear}-${selectedTag}-${selectedDesignTag}-${showBookmarksOnly}-${searchQuery}`"
-              class="notes-grid"
+              class="note-index"
             >
-              <article
-                v-for="(post, index) in filteredPosts"
+              <router-link
+                v-for="post in filteredPosts"
                 :key="post.id"
-                class="note-card reveal"
-                :class="'reveal-delay-' + ((index % 3) + 1)"
-                @click="showPostDetail(post)"
+                class="note-row reveal"
+                :to="postPath(post)"
               >
-                <div class="note-cover">
-                  <CoverArt
-                    :seed="post.id"
-                    :category="post.category"
-                    :image="coverOf(post)"
-                    size="lg"
-                  />
-                </div>
-                <div class="note-body">
-                  <h3>{{ post.title }}</h3>
-                  <p class="note-excerpt">
+                <time :datetime="post.date">{{ cardDate(post) }}</time>
+                <div class="note-main">
+                  <h2>{{ post.title }}</h2>
+                  <p v-if="post.excerpt">
                     {{ post.excerpt }}
                   </p>
-                  <div class="note-tags">
-                    <span class="tag tag-accent">{{ designTag(post).label }}</span>
-                  </div>
-                  <div class="note-footer">
-                    <span>{{ cardDate(post) }}</span>
-                  </div>
                 </div>
-              </article>
+                <span class="note-kind">{{ designTag(post).label }}</span>
+                <span class="note-thumb">
+                  <img
+                    :src="coverOf(post)"
+                    alt=""
+                  >
+                </span>
+              </router-link>
             </div>
             <div
               v-else
@@ -563,7 +562,6 @@ import { formatRelativeDate } from '@/utils/relativeTime'
 import { extractHeadings, injectHeadingIds } from '@/utils/headings'
 import { enhanceMarkdownHtml, bindCodeCopyButtons, enhanceTableNumericColumns } from '@/utils/enhanceMarkdown'
 import { setPageMetaOverride, clearPageMetaOverride } from '@/composables/usePageMeta'
-import CoverArt from '@/components/CoverArt.vue'
 import ArticleAuthor from '@/components/ArticleAuthor.vue'
 import { APP_CONFIG } from '@/utils/constants'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
@@ -735,12 +733,6 @@ const restoreScrollPosition = id => {
 }
 
 const postPath = post => `/blog/${post.id}/${encodeURIComponent(post.slug)}`
-
-const showPostDetail = async post => {
-  await blogStore.ensureLoaded()
-  router.push(postPath(post))
-  await loadPost(post.id)
-}
 
 const backToList = () => {
   currentPostId.value = null
@@ -1022,7 +1014,7 @@ watch(filteredPosts, () => {
 }
 
 html.dark .notes-snow {
-  opacity: 0.4;
+  opacity: 0;
 }
 
 .notes-header,
@@ -1041,8 +1033,7 @@ html.dark .notes-snow {
 }
 
 .notes-header h1 {
-  font-size: clamp(36px, 5vw, 48px);
-  margin-bottom: var(--space-6);
+  margin-bottom: 12px;
 }
 
 .notes-controls {
@@ -1060,30 +1051,29 @@ html.dark .notes-snow {
 }
 
 .chip {
-  padding: 8px 16px;
-  border-radius: var(--radius-full);
+  padding: 4px 0 6px;
+  margin-right: 16px;
   border: none;
-  background: var(--color-pill-bg);
-  box-shadow: var(--shadow-xs);
-  color: var(--color-text-secondary);
-  font-size: 14px;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text-tertiary);
+  font-size: 13px;
   font-weight: 500;
   font-family: var(--font-sans);
   cursor: pointer;
-  transition: background var(--duration-fast) var(--ease-out),
-              color var(--duration-fast) var(--ease-out),
-              border-color var(--duration-fast) var(--ease-out);
 }
 
 .chip.active {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-accent-contrast);
+  background: transparent;
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
 }
 
 html.dark .chip:not(.active) {
   background: transparent;
-  border-color: var(--color-accent-border);
+  border-color: transparent;
 }
 
 .search-wrap {
@@ -1092,11 +1082,11 @@ html.dark .chip:not(.active) {
   gap: 8px;
   width: min(260px, 100%);
   padding: 10px 16px;
-  border-radius: var(--radius-full);
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(125, 106, 214, 0.28);
   color: var(--color-text-tertiary);
-  box-shadow: var(--shadow-sm), var(--color-card-glow);
+  box-shadow: none;
 }
 
 .search-input {
@@ -1126,70 +1116,89 @@ html.dark .chip:not(.active) {
   flex-shrink: 0;
 }
 
-.notes-grid {
+.note-index {
+  display: flex;
+  flex-direction: column;
+}
+
+.note-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  grid-template-columns: 96px minmax(0, 1fr) auto 88px;
+  gap: 20px;
+  align-items: center;
+  padding: 18px 0;
+  border-top: 1px solid rgba(125, 106, 214, 0.22);
+  color: inherit;
+  text-decoration: none;
 }
 
-.note-card {
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm), var(--color-card-glow);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
+.note-index .note-row:last-child {
+  border-bottom: 1px solid rgba(125, 106, 214, 0.22);
 }
 
-.note-cover {
-  height: 168px;
-  margin: 12px 12px 0;
-  border-radius: 16px;
-  overflow: hidden;
+.note-row:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
 }
 
-.note-body {
-  padding: 18px 18px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-}
-
-.note-body h3 {
-  font-size: 18px;
-  line-height: 1.3;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.note-excerpt {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.note-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: auto;
-  padding-top: 8px;
-}
-
-.note-footer {
-  padding-top: 4px;
+.note-row time {
   font-size: 12px;
   color: var(--color-text-tertiary);
+}
+
+.note-main h2 {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.note-main p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.note-kind {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--color-accent);
+  white-space: nowrap;
+}
+
+.note-thumb {
+  width: 88px;
+  height: 58px;
+  border-radius: 6px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.note-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .note-row:hover .note-thumb {
+    opacity: 1;
+  }
+}
+
+@media (hover: none) {
+  .note-thumb {
+    opacity: 1;
+  }
 }
 
 .empty-state {
@@ -1198,18 +1207,24 @@ html.dark .chip:not(.active) {
   color: var(--color-text-secondary);
 }
 
-@media (max-width: 960px) {
-  .notes-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+@media (max-width: 760px) {
+  .note-row {
+    grid-template-columns: 72px minmax(0, 1fr) 72px;
+    gap: 12px;
+  }
+
+  .note-kind {
+    display: none;
+  }
+
+  .note-thumb {
+    width: 72px;
+    height: 48px;
+    opacity: 1;
   }
 }
 
 @media (max-width: 640px) {
-  .notes-grid {
-    grid-template-columns: 1fr;
-  }
-
   .notes-controls {
     flex-direction: column;
     align-items: stretch;

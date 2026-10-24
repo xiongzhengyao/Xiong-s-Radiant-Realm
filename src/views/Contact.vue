@@ -10,10 +10,12 @@
 
     <section class="contact-board">
       <header class="contact-intro reveal">
-        <p class="contact-eyebrow">
+        <p class="page-kicker">
           {{ $t('contact.eyebrow') }}
         </p>
-        <h1>{{ $t('contact.title') }}</h1>
+        <h1 class="page-title">
+          {{ $t('contact.title') }}
+        </h1>
         <p class="contact-sub">
           {{ $t('contact.subtitle') }}
         </p>
@@ -159,7 +161,7 @@ useReveal()
 }
 
 html.dark .contact-stars {
-  opacity: 0.45;
+  opacity: 0;
 }
 
 .contact-board {
@@ -210,8 +212,9 @@ html.dark .contact-stars {
   padding: 24px 24px 22px;
   background: var(--color-card-bg);
   border: 1px solid var(--color-card-border);
-  border-radius: 22px;
-  box-shadow: var(--shadow-md), var(--color-card-glow);
+  border-radius: 12px;
+  border-color: rgba(125, 106, 214, 0.18);
+  box-shadow: none;
 }
 
 .contact-card h2 {

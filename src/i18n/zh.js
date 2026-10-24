@@ -175,7 +175,7 @@ export default {
     ]
   },
   blog: {
-    eyebrow: '记录与创造。',
+    eyebrow: 'Notes',
     title: '笔记',
     subtitle: '记录与创造。',
     all: '全部',

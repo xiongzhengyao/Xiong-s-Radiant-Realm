@@ -10,9 +10,15 @@
 
     <section class="projects-header">
       <div class="container-wide">
-        <h1 class="reveal">
+        <p class="page-kicker">
+          {{ $t('projects.eyebrow') }}
+        </p>
+        <h1 class="page-title reveal">
           {{ $t('projects.title') }}
         </h1>
+        <p class="page-lede">
+          {{ $t('projects.subtitle') }}
+        </p>
         <p
           v-if="showArchive"
           class="archive-note reveal"
@@ -220,7 +226,7 @@ watch(filteredProjects, () => {
 }
 
 html.dark .projects-snow {
-  opacity: 0.4;
+  opacity: 0;
 }
 
 .projects-header,
@@ -239,8 +245,7 @@ html.dark .projects-snow {
 }
 
 .projects-header h1 {
-  font-size: clamp(36px, 5vw, 48px);
-  margin-bottom: var(--space-6);
+  margin-bottom: 12px;
 }
 
 .archive-note {
@@ -264,30 +269,29 @@ html.dark .projects-snow {
 }
 
 .chip {
-  padding: 8px 16px;
-  border-radius: var(--radius-full);
+  padding: 4px 0 6px;
+  margin-right: 16px;
   border: none;
-  background: var(--color-pill-bg);
-  box-shadow: var(--shadow-xs);
-  color: var(--color-text-secondary);
-  font-size: 14px;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text-tertiary);
+  font-size: 13px;
   font-weight: 500;
   font-family: var(--font-sans);
   cursor: pointer;
-  transition: background var(--duration-fast) var(--ease-out),
-              color var(--duration-fast) var(--ease-out),
-              border-color var(--duration-fast) var(--ease-out);
 }
 
 .chip.active {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-accent-contrast);
+  background: transparent;
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
 }
 
 html.dark .chip:not(.active) {
   background: transparent;
-  border-color: var(--color-accent-border);
+  border-color: transparent;
 }
 
 .search-wrap {
@@ -296,11 +300,11 @@ html.dark .chip:not(.active) {
   gap: 8px;
   width: min(260px, 100%);
   padding: 10px 16px;
-  border-radius: var(--radius-full);
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(125, 106, 214, 0.28);
   color: var(--color-text-tertiary);
-  box-shadow: var(--shadow-sm), var(--color-card-glow);
+  box-shadow: none;
 }
 
 .search-input {
@@ -322,8 +326,9 @@ html.dark .chip:not(.active) {
 .project-card {
   background: var(--color-card-bg);
   border: 1px solid var(--color-card-border);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm), var(--color-card-glow);
+  border-radius: 12px;
+  border-color: rgba(125, 106, 214, 0.18);
+  box-shadow: none;
   overflow: hidden;
   display: flex;
   flex-direction: column;

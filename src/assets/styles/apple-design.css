@@ -254,6 +254,31 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 { font-size: clamp(32px, 5vw, 56px); font-weight: 600; letter-spacing: -0.025em; }
+
+.page-kicker {
+  margin: 0 0 10px;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.page-title {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: clamp(40px, 5vw, 64px);
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  margin: 0 0 12px;
+}
+
+.page-lede {
+  margin: 0 0 28px;
+  max-width: 36em;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
 h2 { font-size: clamp(24px, 3.5vw, 40px); font-weight: 600; letter-spacing: -0.02em; }
 h3 { font-size: clamp(20px, 2.5vw, 28px); }
 h4 { font-size: clamp(17px, 2vw, 22px); }
