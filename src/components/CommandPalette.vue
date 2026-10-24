@@ -22,6 +22,7 @@
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
+              aria-hidden="true"
             ><circle
               cx="11"
               cy="11"
@@ -45,28 +46,41 @@
             >
             <kbd class="cmd-kbd">esc</kbd>
           </div>
-          <ul
-            class="cmd-list"
-            role="listbox"
-          >
-            <li
-              v-for="(item, index) in filteredItems"
-              :key="item.path"
-              role="option"
-              :class="{ 'is-active': index === activeIndex }"
-              @click="go(item)"
-              @mouseenter="activeIndex = index"
-            >
-              <span class="cmd-item-label">{{ $t(item.label) }}</span>
-              <span class="cmd-item-hint">{{ item.hint }}</span>
-            </li>
-            <li
-              v-if="!filteredItems.length"
+          <div class="cmd-scroll">
+            <template v-if="groupedResults.length">
+              <section
+                v-for="group in groupedResults"
+                :key="group.id"
+                class="cmd-group"
+              >
+                <h3 class="cmd-group-title">
+                  {{ group.label }}
+                </h3>
+                <ul
+                  class="cmd-list"
+                  role="listbox"
+                >
+                  <li
+                    v-for="item in group.items"
+                    :key="item.key"
+                    role="option"
+                    :class="{ 'is-active': flatIndex(item) === activeIndex }"
+                    @click="go(item)"
+                    @mouseenter="activeIndex = flatIndex(item)"
+                  >
+                    <span class="cmd-item-label">{{ item.label }}</span>
+                    <span class="cmd-item-hint">{{ item.hint }}</span>
+                  </li>
+                </ul>
+              </section>
+            </template>
+            <p
+              v-else
               class="cmd-empty"
             >
               {{ $t('command.empty') }}
-            </li>
-          </ul>
+            </p>
+          </div>
         </div>
       </div>
     </Transition>
@@ -77,35 +91,85 @@
 import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useBlogStore } from '@/stores/blogStore'
+import { useCareer } from '@/composables/useCareer'
 
 const router = useRouter()
 const { t } = useI18n()
+const blogStore = useBlogStore()
+const { projects } = useCareer()
 
 const open = ref(false)
 const query = ref('')
 const activeIndex = ref(0)
 const inputRef = ref(null)
 
-const navItems = [
-  { path: '/', label: 'nav.home', hint: 'Home' },
-  { path: '/about', label: 'nav.about', hint: 'About' },
-  { path: '/projects', label: 'nav.projects', hint: 'Projects' },
-  { path: '/blog', label: 'nav.blog', hint: 'Blog' },
-  { path: '/life', label: 'nav.life', hint: 'Life' },
-  { path: '/contact', label: 'nav.contact', hint: 'Contact' }
-]
+const navItems = computed(() => [
+  { key: 'nav-home', path: '/', label: t('nav.home'), hint: t('command.groups.pages'), kind: 'page' },
+  { key: 'nav-blog', path: '/blog', label: t('nav.blog'), hint: t('command.groups.pages'), kind: 'page' },
+  { key: 'nav-projects', path: '/projects', label: t('nav.projects'), hint: t('command.groups.pages'), kind: 'page' },
+  { key: 'nav-life', path: '/life', label: t('nav.life'), hint: t('command.groups.pages'), kind: 'page' },
+  { key: 'nav-about', path: '/about', label: t('nav.about'), hint: t('command.groups.pages'), kind: 'page' },
+  { key: 'nav-contact', path: '/contact', label: t('nav.contact'), hint: t('command.groups.pages'), kind: 'page' }
+])
+
+const noteItems = computed(() => blogStore.posts.map(post => ({
+  key: `note-${post.id}`,
+  path: `/blog/${post.id}/${encodeURIComponent(post.slug)}`,
+  label: post.title,
+  hint: t('command.groups.notes'),
+  kind: 'note',
+  search: [post.title, post.excerpt, ...(post.tags || [])].join(' ')
+})))
+
+const projectItems = computed(() => projects.value.map(project => ({
+  key: `project-${project.id}`,
+  path: '/projects',
+  label: project.title,
+  hint: project.company || t('command.groups.projects'),
+  kind: 'project',
+  search: [project.title, project.role, project.description, project.company, ...(project.tags || [])].join(' ')
+})))
+
+const allItems = computed(() => [
+  ...navItems.value,
+  ...noteItems.value,
+  ...projectItems.value
+])
 
 const filteredItems = computed(() => {
   const q = query.value.trim().toLowerCase()
-  if (!q) return navItems
-  return navItems.filter(item => {
-    const label = t(item.label).toLowerCase()
-    return label.includes(q) || item.hint.toLowerCase().includes(q) || item.path.includes(q)
-  })
+  if (!q) return navItems.value
+  return allItems.value.filter(item => {
+    const hay = `${item.label} ${item.hint} ${item.search || ''} ${item.path}`.toLowerCase()
+    return hay.includes(q)
+  }).slice(0, 24)
 })
+
+const groupedResults = computed(() => {
+  const order = [
+    { id: 'page', label: t('command.groups.pages') },
+    { id: 'note', label: t('command.groups.notes') },
+    { id: 'project', label: t('command.groups.projects') }
+  ]
+  return order
+    .map(group => ({
+      ...group,
+      items: filteredItems.value.filter(item => item.kind === group.id)
+    }))
+    .filter(group => group.items.length)
+})
+
+const flatItems = computed(() => groupedResults.value.flatMap(group => group.items))
+
+const flatIndex = item => flatItems.value.findIndex(entry => entry.key === item.key)
 
 watch(query, () => {
   activeIndex.value = 0
+})
+
+watch(filteredItems, () => {
+  if (activeIndex.value >= flatItems.value.length) activeIndex.value = 0
 })
 
 const close = () => {
@@ -114,29 +178,30 @@ const close = () => {
   activeIndex.value = 0
 }
 
-const show = () => {
+const show = async () => {
   open.value = true
+  await blogStore.ensureLoaded()
   nextTick(() => inputRef.value?.focus())
 }
 
 const go = item => {
+  if (!item) return
   close()
   router.push(item.path)
 }
 
 const selectCurrent = () => {
-  const item = filteredItems.value[activeIndex.value]
-  if (item) go(item)
+  go(flatItems.value[activeIndex.value])
 }
 
 const moveSelection = delta => {
-  const len = filteredItems.value.length
+  const len = flatItems.value.length
   if (!len) return
   activeIndex.value = (activeIndex.value + delta + len) % len
 }
 
 const onKeydown = e => {
-  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
     e.preventDefault()
     open.value ? close() : show()
   }
@@ -162,7 +227,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 }
 
 .cmd-panel {
-  width: min(520px, 100%);
+  width: min(560px, 100%);
   background: var(--color-bg-elevated, var(--color-bg));
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl, 16px);
@@ -198,18 +263,36 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
   border: 1px solid var(--color-border);
 }
 
+.cmd-scroll {
+  max-height: min(420px, 56vh);
+  overflow-y: auto;
+  padding: var(--space-2) var(--space-2) var(--space-3);
+}
+
+.cmd-group + .cmd-group {
+  margin-top: 6px;
+}
+
+.cmd-group-title {
+  margin: 6px 10px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
 .cmd-list {
   list-style: none;
   margin: 0;
-  padding: var(--space-2);
-  max-height: 320px;
-  overflow-y: auto;
+  padding: 0;
 }
 
 .cmd-list li {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   padding: 10px 12px;
   border-radius: var(--radius-md);
   cursor: pointer;
@@ -218,20 +301,30 @@ onUnmounted(() => window.removeEventListener('keydown', onKeydown))
   transition: background var(--duration-fast) var(--ease-out);
 }
 
+.cmd-item-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .cmd-list li.is-active,
 .cmd-list li:hover {
   background: var(--color-accent-light);
 }
 
 .cmd-item-hint {
+  flex: 0 0 auto;
   font-size: 12px;
   color: var(--color-text-tertiary);
 }
 
 .cmd-empty {
-  justify-content: center;
+  margin: 0;
+  padding: 24px 12px;
+  text-align: center;
   color: var(--color-text-secondary);
-  cursor: default;
+  font-size: 14px;
 }
 
 .cmd-palette-enter-active,

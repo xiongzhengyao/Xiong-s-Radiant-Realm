@@ -15,9 +15,17 @@ export default {
     backToTop: 'Back to top'
   },
   command: {
-    title: 'Quick navigation',
-    placeholder: 'Search pages…',
-    empty: 'No matching pages'
+    title: 'Quick search',
+    placeholder: 'Search pages, notes, projects…',
+    empty: 'No matches',
+    open: 'Open quick search',
+    shortcutMac: '⌘K',
+    shortcutWin: 'Ctrl K',
+    groups: {
+      pages: 'Pages',
+      notes: 'Notes',
+      projects: 'Projects'
+    }
   },
   career: {
     yearOngoing: 'Ongoing'
@@ -215,6 +223,8 @@ export default {
     searchPlaceholder: 'Search...',
     empty: 'Nothing here yet',
     viewAll: 'View all',
+    closeDetail: 'Close',
+    openDetail: 'View details',
     categories: {
       travel: 'Travel',
       food: 'Food',

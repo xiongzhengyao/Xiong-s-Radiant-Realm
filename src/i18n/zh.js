@@ -15,9 +15,17 @@ export default {
     backToTop: '回到顶部'
   },
   command: {
-    title: '快速导航',
-    placeholder: '搜索页面…',
-    empty: '没有匹配的页面'
+    title: '快速搜索',
+    placeholder: '搜索页面、笔记、项目…',
+    empty: '没有匹配的结果',
+    open: '打开快速搜索',
+    shortcutMac: '⌘K',
+    shortcutWin: 'Ctrl K',
+    groups: {
+      pages: '页面',
+      notes: '笔记',
+      projects: '项目'
+    }
   },
   career: {
     yearOngoing: '持续'
@@ -215,6 +223,9 @@ export default {
     searchPlaceholder: '搜索...',
     empty: '暂无相关内容',
     viewAll: '查看全部',
+    closeDetail: '关闭',
+    openDetail: '查看详情',
+
     categories: {
       travel: '旅行',
       food: '美食',
