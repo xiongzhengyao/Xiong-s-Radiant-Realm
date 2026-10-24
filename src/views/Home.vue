@@ -1,6 +1,10 @@
 <template>
   <div class="home">
     <div
+      class="home-wash"
+      aria-hidden="true"
+    />
+    <div
       class="home-grain"
       aria-hidden="true"
     />
@@ -236,12 +240,13 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
 
 <style scoped>
 .home {
-  --paper: #f4f1ea;
-  --ink: #1a1814;
-  --ink-soft: rgba(26, 24, 20, 0.68);
-  --ink-faint: rgba(26, 24, 20, 0.46);
-  --line: rgba(26, 24, 20, 0.14);
-  --silver: #7c7688;
+  --paper: #f3eef8;
+  --ink: #1c1830;
+  --ink-soft: rgba(40, 32, 72, 0.72);
+  --ink-faint: rgba(70, 56, 120, 0.52);
+  --line: rgba(125, 106, 214, 0.28);
+  --violet: #6d5bc8;
+  --violet-ink: #ffffff;
   position: relative;
   padding-top: var(--nav-height);
   background: var(--paper);
@@ -250,12 +255,28 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
 }
 
 html.dark .home {
-  --paper: #0c0d10;
-  --ink: #f3f0ea;
-  --ink-soft: rgba(243, 240, 234, 0.72);
-  --ink-faint: rgba(243, 240, 234, 0.48);
-  --line: rgba(243, 240, 234, 0.14);
-  --silver: #c8c2d6;
+  --paper: #0c0a14;
+  --ink: #f4f1fb;
+  --ink-soft: rgba(244, 241, 251, 0.74);
+  --ink-faint: rgba(210, 198, 255, 0.58);
+  --line: rgba(184, 164, 243, 0.32);
+  --violet: #c4b2f6;
+  --violet-ink: #1a1428;
+}
+
+.home-wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 52% 44% at 8% 12%, rgba(183, 164, 243, 0.55), transparent 68%),
+    radial-gradient(ellipse 40% 36% at 92% 78%, rgba(125, 106, 214, 0.22), transparent 70%);
+}
+
+html.dark .home-wash {
+  background:
+    radial-gradient(ellipse 55% 46% at 16% 8%, rgba(124, 70, 210, 0.42), transparent 64%),
+    radial-gradient(ellipse 42% 38% at 88% 82%, rgba(88, 36, 168, 0.36), transparent 70%);
 }
 
 .home-grain {
@@ -287,7 +308,7 @@ html.dark .home {
   font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--silver);
+  color: var(--violet);
 }
 
 .kicker-slash {
@@ -326,10 +347,10 @@ html.dark .home {
   justify-content: center;
   min-height: 44px;
   padding: 0 18px;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--violet);
   border-radius: 2px;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--violet);
+  color: var(--violet-ink);
   font-size: 13px;
   letter-spacing: 0.14em;
   text-decoration: none;
@@ -338,7 +359,7 @@ html.dark .home {
 
 .text-link--quiet {
   background: transparent;
-  color: var(--ink);
+  color: var(--violet);
 }
 
 .text-link:active {
@@ -348,7 +369,7 @@ html.dark .home {
 .text-link:focus-visible,
 .index-col:focus-visible,
 .continue-line:focus-visible {
-  outline: 2px solid var(--silver);
+  outline: 2px solid var(--violet);
   outline-offset: 3px;
 }
 
@@ -381,11 +402,11 @@ html.dark .home {
   }
 
   .text-link--quiet:hover {
-    background: rgba(26, 24, 20, 0.04);
+    background: rgba(125, 106, 214, 0.1);
   }
 
   html.dark .text-link--quiet:hover {
-    background: rgba(243, 240, 234, 0.06);
+    background: rgba(196, 178, 246, 0.12);
   }
 }
 
@@ -419,7 +440,7 @@ html.dark .home {
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--silver);
+  color: var(--violet);
 }
 
 .index-date {
@@ -486,7 +507,7 @@ html.dark .home {
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--silver);
+  color: var(--violet);
 }
 
 .continue-title {

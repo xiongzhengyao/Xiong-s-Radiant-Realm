@@ -562,11 +562,11 @@ html.dark {
 }
 
 .app.is-home {
-  background-color: #f4f1ea;
+  background-color: #f3eef8;
 }
 
 html.dark .app.is-home {
-  background-color: #0c0d10;
+  background-color: #0c0a14;
 }
 
 .app.is-home .studio-bg {
@@ -574,30 +574,30 @@ html.dark .app.is-home {
 }
 
 .app.is-home.is-scrolled .nav {
-  background: rgba(244, 241, 234, 0.92);
-  border-bottom-color: rgba(26, 24, 20, 0.08);
+  background: rgba(243, 238, 248, 0.92);
+  border-bottom-color: rgba(125, 106, 214, 0.2);
 }
 
 html.dark .app.is-home.is-scrolled .nav {
-  background: rgba(12, 13, 16, 0.9);
-  border-bottom-color: rgba(243, 240, 234, 0.1);
+  background: rgba(12, 10, 20, 0.9);
+  border-bottom-color: rgba(184, 164, 243, 0.24);
 }
 
 .app.is-home .footer::before {
-  background: rgba(26, 24, 20, 0.12);
+  background: linear-gradient(90deg, transparent 0%, rgba(125, 106, 214, 0.55) 50%, transparent 100%);
   opacity: 1;
 }
 
 html.dark .app.is-home .footer::before {
-  background: rgba(243, 240, 234, 0.12);
+  background: linear-gradient(90deg, transparent 0%, rgba(184, 164, 243, 0.55) 50%, transparent 100%);
 }
 
 .app.is-home .footer-email-btn {
-  color: #7c7688;
+  color: #6d5bc8;
 }
 
 html.dark .app.is-home .footer-email-btn {
-  color: #c8c2d6;
+  color: #c4b2f6;
 }
 
 main,
