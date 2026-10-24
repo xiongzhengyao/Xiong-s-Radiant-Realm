@@ -94,7 +94,7 @@ export default {
     eyebrow: 'A LIGHT',
     intro: '从博世到小米、大疆，\n在 Camera 系统里把一件事做深。',
     contactCta: '联系我',
-    resumeCta: '下载简历',
+    resumeCta: '打印简历',
     profile: {
       name: '熊正耀',
       nameAccent: '耀',
@@ -130,13 +130,13 @@ export default {
         period: '2022.08–2026.02',
         position: '影像系统优化',
         company: '小米',
-        description: '影像系统优化'
+        description: '梳理首帧出图链路，优化 sensor / ISP 初始化与冷启动路径'
       },
       {
         period: '2021.09–2022.03',
         position: '嵌入式软件开发',
         company: '博世',
-        description: '嵌入式软件开发'
+        description: '端侧 AI 图像采集与嵌入式处理流水线'
       }
     ],
     education: [

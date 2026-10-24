@@ -24,6 +24,7 @@ export const BLOG_CATEGORIES = [
   { name: 'Embedded', label: '嵌入式' },
   { name: 'Linux', label: 'Linux' },
   { name: 'Sensor', label: 'Sensor' },
+  { name: 'Camera', label: '影像' },
   { name: 'Notes', label: 'Notes' }
 ]
 
