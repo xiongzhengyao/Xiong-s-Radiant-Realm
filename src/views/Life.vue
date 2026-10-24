@@ -96,35 +96,60 @@
     <section class="section life-body">
       <div class="container-wide">
         <div
-          v-if="filteredPosts.length > 0"
+          v-if="leadLife"
           :key="`${selectedCategory}-${selectedYear}-${selectedMonth}-${searchQuery}`"
-          class="life-grid"
         >
           <article
-            v-for="(post, index) in filteredPosts"
-            :key="post.id"
-            class="life-card reveal"
-            :class="'reveal-delay-' + ((index % 3) + 1)"
+            class="life-lead reveal"
             role="button"
             tabindex="0"
-            :aria-label="$t('life.openDetail')"
-            @click="openDetail(post)"
-            @keydown.enter.prevent="openDetail(post)"
-            @keydown.space.prevent="openDetail(post)"
+            :aria-label="leadLife.title"
+            @click="openDetail(leadLife)"
+            @keydown.enter.prevent="openDetail(leadLife)"
+            @keydown.space.prevent="openDetail(leadLife)"
           >
-            <div class="life-cover">
+            <div class="life-lead-frame">
               <CoverArt
-                :seed="post.id"
-                :category="post.category"
-                :image="post.image"
+                :seed="leadLife.id"
+                :category="leadLife.category"
+                :image="leadLife.image"
                 size="lg"
               />
             </div>
-            <div class="life-caption">
-              <h3>{{ post.title }}</h3>
-              <span>{{ cardDate(post) }}</span>
+            <div class="life-lead-caption">
+              <h2>{{ leadLife.title }}</h2>
+              <span>{{ cardDate(leadLife) }}</span>
             </div>
           </article>
+          <div
+            v-if="restLife.length"
+            class="life-pair"
+          >
+            <article
+              v-for="post in restLife"
+              :key="post.id"
+              class="life-card reveal"
+              role="button"
+              tabindex="0"
+              :aria-label="post.title"
+              @click="openDetail(post)"
+              @keydown.enter.prevent="openDetail(post)"
+              @keydown.space.prevent="openDetail(post)"
+            >
+              <div class="life-cover">
+                <CoverArt
+                  :seed="post.id"
+                  :category="post.category"
+                  :image="post.image"
+                  size="lg"
+                />
+              </div>
+              <div class="life-caption">
+                <h3>{{ post.title }}</h3>
+                <span>{{ cardDate(post) }}</span>
+              </div>
+            </article>
+          </div>
         </div>
 
         <div
@@ -281,6 +306,9 @@ const filteredPosts = computed(() => {
     return hay.includes(q)
   })
 })
+
+const leadLife = computed(() => filteredPosts.value[0] || null)
+const restLife = computed(() => filteredPosts.value.slice(1))
 
 const postTags = post => {
   if (Array.isArray(post.tags) && post.tags.length) return post.tags
@@ -451,11 +479,12 @@ html.dark .chip:not(.active) {
   display: flex;
   align-items: center;
   gap: 8px;
-  width: min(260px, 100%);
-  padding: 10px 16px;
-  border-radius: 8px;
+  width: min(160px, 100%);
+  padding: 6px 0;
+  border-radius: 0;
   background: transparent;
-  border: 1px solid rgba(125, 106, 214, 0.28);
+  border: none;
+  border-bottom: 1px solid rgba(125, 106, 214, 0.35);
   color: var(--color-text-tertiary);
   box-shadow: none;
 }
@@ -471,49 +500,76 @@ html.dark .chip:not(.active) {
   min-width: 0;
 }
 
-.life-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px 16px;
-}
-
+.life-lead,
 .life-card {
-  background: transparent;
-  border: none;
-  box-shadow: none;
   cursor: pointer;
 }
 
+.life-lead:focus-visible,
 .life-card:focus-visible {
   outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
+  outline-offset: 4px;
 }
 
+.life-lead-frame,
 .life-cover {
-  aspect-ratio: 1;
-  border-radius: 8px;
   overflow: hidden;
+  border-radius: 12px;
 }
 
+.life-lead-frame {
+  aspect-ratio: 16 / 9;
+}
+
+.life-lead-caption,
 .life-caption {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 10px;
-  padding: 8px 2px 0;
+  gap: 16px;
+}
+
+.life-lead-caption {
+  margin-top: 16px;
+}
+
+.life-lead-caption h2,
+.life-caption h3 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.life-lead-caption h2 {
+  font-size: clamp(24px, 2.4vw, 32px);
+}
+
+.life-lead-caption span,
+.life-caption span {
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.life-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px 28px;
+  margin-top: 40px;
+}
+
+.life-cover {
+  aspect-ratio: 4 / 5;
+}
+
+.life-caption {
+  margin-top: 12px;
 }
 
 .life-caption h3 {
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.35;
-  letter-spacing: 0;
-}
-
-.life-caption span {
-  flex-shrink: 0;
-  font-size: 11px;
-  color: var(--color-text-tertiary);
+  font-size: 20px;
 }
 
 .life-tags {
@@ -634,18 +690,18 @@ html.dark .chip:not(.active) {
   opacity: 0;
 }
 
-@media (max-width: 960px) {
-  .life-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+@media (max-width: 720px) {
+  .life-pair {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .life-cover {
+    aspect-ratio: 3 / 2;
   }
 }
 
 @media (max-width: 640px) {
-  .life-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
 
   .life-controls {
     flex-direction: column;

@@ -121,35 +121,22 @@
               >{{ $t('projects.privateRepo') }}</span>
             </div>
           </article>
-          <div
+          <ol
             v-if="restProjects.length"
-            class="projects-grid"
+            class="project-index"
           >
-            <article
-              v-for="(project, index) in restProjects"
+            <li
+              v-for="project in restProjects"
               :key="project.id"
-              class="project-card reveal"
-              :class="'reveal-delay-' + ((index % 3) + 1)"
             >
-              <div class="project-cover">
-                <CoverArt
-                  :seed="project.id"
-                  :category="coverCategory(project)"
-                  :image="project.image"
-                  size="lg"
-                />
-              </div>
-              <div class="project-body">
-                <h3>{{ project.title }}</h3>
-                <p
-                  v-if="project.tags && project.tags[0]"
-                  class="project-card-tag"
-                >
-                  {{ project.tags[0] }}
-                </p>
-              </div>
-            </article>
-          </div>
+              <span class="project-index-year">{{ project.year }}</span>
+              <h3>{{ project.title }}</h3>
+              <span
+                v-if="project.tags && project.tags[0]"
+                class="project-index-tag"
+              >{{ project.tags[0] }}</span>
+            </li>
+          </ol>
         </template>
         <div
           v-else
@@ -263,7 +250,7 @@ html.dark .projects-snow {
 }
 
 .projects-header {
-  padding: var(--space-12) 0 var(--space-6);
+  padding: 40px 0 18px;
 }
 
 .projects-header h1 {
@@ -320,11 +307,12 @@ html.dark .chip:not(.active) {
   display: flex;
   align-items: center;
   gap: 8px;
-  width: min(260px, 100%);
-  padding: 10px 16px;
-  border-radius: 8px;
+  width: min(180px, 100%);
+  padding: 6px 0;
+  border-radius: 0;
   background: transparent;
-  border: 1px solid rgba(125, 106, 214, 0.28);
+  border: none;
+  border-bottom: 1px solid rgba(125, 106, 214, 0.35);
   color: var(--color-text-tertiary);
   box-shadow: none;
 }
@@ -340,28 +328,31 @@ html.dark .chip:not(.active) {
 }
 
 .project-feature {
-  margin-bottom: 36px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(260px, 0.78fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+  margin-bottom: 72px;
 }
 
 .project-feature-cover {
   width: 100%;
-  aspect-ratio: 16 / 8;
-  border-radius: 10px;
+  height: min(62vh, 560px);
+  border-radius: 12px;
   overflow: hidden;
 }
 
 .project-feature-copy {
-  max-width: 40em;
-  padding-top: 18px;
+  padding-bottom: 8px;
 }
 
 .project-feature-meta {
   display: flex;
-  gap: 12px;
-  margin: 0 0 8px;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
   color: var(--color-accent);
 }
 
@@ -381,45 +372,40 @@ html.dark .chip:not(.active) {
   color: var(--color-text-secondary);
 }
 
-.project-feature-tag,
-.project-card-tag {
-  font-size: 12px;
+.project-feature-tag {
+  font-size: 13px;
   letter-spacing: 0.04em;
   color: var(--color-text-tertiary);
 }
 
-.projects-grid {
+.project-index {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgba(125, 106, 214, 0.28);
+}
+
+.project-index li {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+  grid-template-columns: 132px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: baseline;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(125, 106, 214, 0.2);
 }
 
-.project-card {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+.project-index-year,
+.project-index-tag {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
 }
 
-.project-cover {
-  height: 180px;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.project-body {
-  padding: 12px 2px 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.project-body h3 {
+.project-index h3 {
+  margin: 0;
   font-family: var(--font-serif);
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
+  letter-spacing: -0.02em;
   line-height: 1.3;
 }
 
@@ -440,21 +426,27 @@ html.dark .chip:not(.active) {
   color: var(--color-text-secondary);
 }
 
-@media (max-width: 960px) {
-  .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+@media (max-width: 860px) {
+  .project-feature {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .project-feature-cover {
+    aspect-ratio: 4 / 5;
+    max-height: 70vh;
+  }
+
+  .project-index li {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  .project-index-tag {
+    display: none;
   }
 }
 
 @media (max-width: 640px) {
-  .project-feature-cover {
-    aspect-ratio: 4 / 3;
-  }
-
-  .projects-grid {
-    grid-template-columns: 1fr;
-  }
 
   .projects-controls {
     flex-direction: column;
