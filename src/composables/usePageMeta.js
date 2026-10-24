@@ -137,7 +137,7 @@ export function usePageMeta() {
     } else {
       document.querySelector('meta[property="article:published_time"]')?.remove()
     }
-    setMeta('twitter:card', override?.type === 'article' ? 'summary_large_image' : 'summary')
+    setMeta('twitter:card', 'summary_large_image')
     setMeta('twitter:title', document.title)
     setMeta('twitter:description', description)
     setMeta('twitter:image', ogImage)

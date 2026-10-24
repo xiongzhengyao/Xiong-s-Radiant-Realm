@@ -140,8 +140,8 @@
             />
             <button
               class="nav-action-btn theme-toggle"
-              :title="isDark ? 'Light mode' : 'Dark mode'"
-              :aria-label="isDark ? 'Light mode' : 'Dark mode'"
+              :title="isDark ? $t('nav.themeLight') : $t('nav.themeDark')"
+              :aria-label="isDark ? $t('nav.themeLight') : $t('nav.themeDark')"
               @click="toggleTheme(!isDark)"
             >
               <svg

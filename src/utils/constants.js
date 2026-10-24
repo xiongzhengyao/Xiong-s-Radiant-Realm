@@ -15,7 +15,7 @@ export const APP_CONFIG = {
   IMAGES: {
     PROFILE: '/images/profile.jpg',
     HERO_WORKSPACE: '/images/hero-workspace.svg',
-    OG_DEFAULT: '/og-default.svg'
+    OG_DEFAULT: '/og-default.png'
   }
 }
 

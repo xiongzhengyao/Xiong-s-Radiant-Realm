@@ -2,7 +2,7 @@
   <nav
     v-if="!hideForArticle"
     class="mobile-tabbar"
-    aria-label="Mobile navigation"
+    :aria-label="$t('nav.mobileNav')"
   >
     <router-link
       v-for="tab in tabs"

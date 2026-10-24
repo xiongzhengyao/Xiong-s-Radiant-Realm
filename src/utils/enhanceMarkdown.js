@@ -1,9 +1,23 @@
 /** Wrap code blocks with copy-button container */
-export function enhanceCodeBlocks(html) {
+export function enhanceCodeBlocks(html, labels = {}) {
   if (!html) return html
+  const copy = labels.copy || 'Copy'
+  const aria = labels.copyAria || labels.copy || 'Copy code'
   return html.replace(/<pre>([\s\S]*?)<\/pre>/g, (_match, inner) => {
-    return `<div class="code-block-wrap"><button type="button" class="code-copy-btn" aria-label="Copy code">Copy</button><pre>${inner}</pre></div>`
+    return `<div class="code-block-wrap"><button type="button" class="code-copy-btn" aria-label="${escapeAttr(aria)}">${escapeHtml(copy)}</button><pre>${inner}</pre></div>`
   })
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+function escapeAttr(value) {
+  return escapeHtml(value).replace(/'/g, '&#39;')
 }
 
 /** Wrap tables so wide content scrolls instead of breaking layout */
@@ -64,28 +78,37 @@ export function enhanceTableNumericColumns(container) {
   })
 }
 
-export function enhanceMarkdownHtml(html, { title } = {}) {
+export function enhanceMarkdownHtml(html, { title, copyLabel, copyAria } = {}) {
   let next = html
   if (title) next = stripDuplicateTitleHeading(next, title)
-  return enhanceTables(enhanceCodeBlocks(next))
+  return enhanceTables(enhanceCodeBlocks(next, { copy: copyLabel, copyAria }))
 }
 
-export function bindCodeCopyButtons(container, onCopied) {
+export function bindCodeCopyButtons(container, options = {}) {
   if (!container) return
+  const {
+    onCopied,
+    copyLabel = 'Copy',
+    copiedLabel = 'Copied',
+    failedLabel = 'Failed'
+  } = typeof options === 'function' ? { onCopied: options } : options
+
   container.querySelectorAll('.code-copy-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       const pre = btn.parentElement?.querySelector('pre')
       const code = pre?.textContent || ''
       try {
         await navigator.clipboard.writeText(code)
-        const original = btn.textContent
-        btn.textContent = 'Copied'
+        btn.textContent = copiedLabel
         onCopied?.()
         window.setTimeout(() => {
-          btn.textContent = original
+          btn.textContent = copyLabel
         }, 2000)
       } catch {
-        btn.textContent = 'Failed'
+        btn.textContent = failedLabel
+        window.setTimeout(() => {
+          btn.textContent = copyLabel
+        }, 2000)
       }
     })
   })

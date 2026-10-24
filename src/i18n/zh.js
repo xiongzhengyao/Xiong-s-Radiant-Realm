@@ -9,7 +9,10 @@ export default {
     brand: 'Snowhush',
     archive: '存档',
     skipToContent: '跳到主要内容',
-    toggleMenu: '切换导航菜单'
+    toggleMenu: '切换导航菜单',
+    themeLight: '切换到浅色模式',
+    themeDark: '切换到深色模式',
+    mobileNav: '移动端导航'
   },
   common: {
     backToTop: '回到顶部'
@@ -193,10 +196,13 @@ export default {
     copyLink: '复制链接',
     copySuccess: '链接已复制',
     breadcrumbBlog: '笔记',
+    breadcrumbNav: '面包屑导航',
     moreActions: '更多操作',
     relatedTitle: '相关文章',
     share: '分享',
     print: '打印',
+    codeCopy: '复制',
+    codeCopyAria: '复制代码',
     codeCopied: '已复制',
     read: '已读',
     allTags: '全部标签',
