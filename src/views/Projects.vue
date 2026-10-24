@@ -405,6 +405,7 @@ html.dark .chip:not(.active) {
 
 .project-cover {
   height: 180px;
+  border-radius: 8px;
   overflow: hidden;
 }
 
