@@ -120,24 +120,9 @@
                 size="lg"
               />
             </div>
-            <div class="life-card-body">
+            <div class="life-caption">
               <h3>{{ post.title }}</h3>
-              <p class="life-desc">
-                {{ post.description }}
-              </p>
-              <div
-                v-if="postTags(post).length"
-                class="life-tags"
-              >
-                <span
-                  v-for="tag in postTags(post)"
-                  :key="tag"
-                  class="tag tag-accent"
-                >{{ tag }}</span>
-              </div>
-              <div class="life-footer">
-                <span>{{ cardDate(post) }}</span>
-              </div>
+              <span>{{ cardDate(post) }}</span>
             </div>
           </article>
         </div>
@@ -489,18 +474,13 @@ html.dark .chip:not(.active) {
 .life-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  gap: 18px 16px;
 }
 
 .life-card {
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
-  border-radius: 12px;
-  border-color: rgba(125, 106, 214, 0.18);
+  background: transparent;
+  border: none;
   box-shadow: none;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
   cursor: pointer;
 }
 
@@ -510,34 +490,30 @@ html.dark .chip:not(.active) {
 }
 
 .life-cover {
-  height: 168px;
-  margin: 12px 12px 0;
-  border-radius: 16px;
+  aspect-ratio: 1;
+  border-radius: 8px;
   overflow: hidden;
 }
 
-.life-card-body {
-  padding: 18px 18px 20px;
+.life-caption {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 2px 0;
 }
 
-.life-card-body h3 {
-  font-size: 18px;
-  line-height: 1.3;
-}
-
-.life-desc {
+.life-caption h3 {
   font-size: 13px;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+
+.life-caption span {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--color-text-tertiary);
 }
 
 .life-tags {
@@ -545,13 +521,6 @@ html.dark .chip:not(.active) {
   flex-wrap: wrap;
   gap: 6px;
   padding-top: 4px;
-}
-
-.life-footer {
-  margin-top: auto;
-  padding-top: 8px;
-  font-size: 12px;
-  color: var(--color-text-tertiary);
 }
 
 .empty-state {
@@ -572,7 +541,7 @@ html.dark .chip:not(.active) {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: rgba(0, 0, 0, 0.48);
+  background: rgba(8, 6, 14, 0.82);
   backdrop-filter: blur(6px);
 }
 
@@ -674,7 +643,8 @@ html.dark .chip:not(.active) {
 
 @media (max-width: 640px) {
   .life-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
   .life-controls {

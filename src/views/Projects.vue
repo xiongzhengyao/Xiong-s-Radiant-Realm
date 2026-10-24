@@ -81,57 +81,76 @@
 
     <section class="section projects-body">
       <div class="container-wide">
-        <div
-          v-if="filteredProjects.length"
-          class="projects-grid"
-        >
-          <article
-            v-for="(project, index) in filteredProjects"
-            :key="project.id"
-            class="project-card reveal"
-            :class="'reveal-delay-' + ((index % 3) + 1)"
-          >
-            <div class="project-cover">
+        <template v-if="featuredProject">
+          <article class="project-feature reveal">
+            <div class="project-feature-cover">
               <CoverArt
-                :seed="project.id"
-                :category="coverCategory(project)"
-                :image="project.image"
+                :seed="featuredProject.id"
+                :category="coverCategory(featuredProject)"
+                :image="featuredProject.image"
                 size="lg"
               />
             </div>
-            <div class="project-body">
-              <h3>{{ project.title }}</h3>
-              <p class="project-role">
-                {{ $t('projects.rolePrefix') }}: {{ project.role || project.company }}
+            <div class="project-feature-copy">
+              <p class="project-feature-meta">
+                <span v-if="featuredProject.year">{{ featuredProject.year }}</span>
+                <span v-if="featuredProject.role || featuredProject.company">{{ featuredProject.role || featuredProject.company }}</span>
               </p>
-              <div class="project-tags">
-                <span
-                  v-for="tag in project.tags"
-                  :key="tag"
-                  class="tag tag-accent"
-                >{{ tag }}</span>
-              </div>
-              <div
-                v-if="project.url || project.private"
-                class="project-footer"
+              <h2>{{ featuredProject.title }}</h2>
+              <p v-if="featuredProject.description">
+                {{ featuredProject.description }}
+              </p>
+              <p
+                v-if="featuredProject.tags && featuredProject.tags[0]"
+                class="project-feature-tag"
               >
-                <a
-                  v-if="project.url"
-                  :href="project.url"
-                  class="project-link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {{ $t('projects.viewOnGithub') }}
-                </a>
-                <span
-                  v-else-if="project.private"
-                  class="project-private"
-                >{{ $t('projects.privateRepo') }}</span>
-              </div>
+                {{ featuredProject.tags[0] }}
+              </p>
+              <a
+                v-if="featuredProject.url"
+                :href="featuredProject.url"
+                class="project-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ $t('projects.viewOnGithub') }}
+              </a>
+              <span
+                v-else-if="featuredProject.private"
+                class="project-private"
+              >{{ $t('projects.privateRepo') }}</span>
             </div>
           </article>
-        </div>
+          <div
+            v-if="restProjects.length"
+            class="projects-grid"
+          >
+            <article
+              v-for="(project, index) in restProjects"
+              :key="project.id"
+              class="project-card reveal"
+              :class="'reveal-delay-' + ((index % 3) + 1)"
+            >
+              <div class="project-cover">
+                <CoverArt
+                  :seed="project.id"
+                  :category="coverCategory(project)"
+                  :image="project.image"
+                  size="lg"
+                />
+              </div>
+              <div class="project-body">
+                <h3>{{ project.title }}</h3>
+                <p
+                  v-if="project.tags && project.tags[0]"
+                  class="project-card-tag"
+                >
+                  {{ project.tags[0] }}
+                </p>
+              </div>
+            </article>
+          </div>
+        </template>
         <div
           v-else
           class="empty-state"
@@ -177,6 +196,9 @@ const filteredProjects = computed(() => {
     return hay.includes(q)
   })
 })
+
+const featuredProject = computed(() => filteredProjects.value[0] || null)
+const restProjects = computed(() => filteredProjects.value.slice(1))
 
 const coverCategory = project => {
   if (project.chip === 'app') return 'notes'
@@ -317,17 +339,64 @@ html.dark .chip:not(.active) {
   outline: none;
 }
 
+.project-feature {
+  margin-bottom: 36px;
+}
+
+.project-feature-cover {
+  width: 100%;
+  aspect-ratio: 16 / 8;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.project-feature-copy {
+  max-width: 40em;
+  padding-top: 18px;
+}
+
+.project-feature-meta {
+  display: flex;
+  gap: 12px;
+  margin: 0 0 8px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.project-feature h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 0 0 10px;
+}
+
+.project-feature-copy > p {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+.project-feature-tag,
+.project-card-tag {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--color-text-tertiary);
+}
+
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  gap: 22px;
 }
 
 .project-card {
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
-  border-radius: 12px;
-  border-color: rgba(125, 106, 214, 0.18);
+  background: transparent;
+  border: none;
   box-shadow: none;
   overflow: hidden;
   display: flex;
@@ -335,41 +404,22 @@ html.dark .chip:not(.active) {
 }
 
 .project-cover {
-  height: 168px;
-  margin: 12px 12px 0;
-  border-radius: 16px;
+  height: 180px;
   overflow: hidden;
 }
 
 .project-body {
-  padding: 18px 18px 20px;
+  padding: 12px 2px 4px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  flex: 1;
+  gap: 4px;
 }
 
 .project-body h3 {
-  font-size: 18px;
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 700;
   line-height: 1.3;
-}
-
-.project-role {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-
-.project-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: auto;
-  padding-top: 8px;
-}
-
-.project-footer {
-  padding-top: 4px;
 }
 
 .project-link {
@@ -397,6 +447,10 @@ html.dark .chip:not(.active) {
 }
 
 @media (max-width: 640px) {
+  .project-feature-cover {
+    aspect-ratio: 4 / 3;
+  }
+
   .projects-grid {
     grid-template-columns: 1fr;
   }
