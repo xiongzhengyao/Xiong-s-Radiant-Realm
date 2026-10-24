@@ -104,6 +104,35 @@
           </div>
 
           <div class="nav-actions">
+            <button
+              type="button"
+              class="nav-action-btn nav-search"
+              :title="commandShortcutLabel"
+              :aria-label="$t('command.open')"
+              @click="openCommandPalette"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              ><circle
+                cx="11"
+                cy="11"
+                r="8"
+              /><line
+                x1="21"
+                y1="21"
+                x2="16.65"
+                y2="16.65"
+              /></svg>
+              <kbd class="nav-cmd-kbd">{{ commandShortcutLabel }}</kbd>
+            </button>
             <span
               v-if="!showArchiveNav"
               class="nav-rule"
@@ -336,7 +365,7 @@
         </div>
       </footer>
       <BackToTop />
-      <CommandPalette />
+      <CommandPalette ref="commandPaletteRef" />
       <MobileTabBar />
     </div>
   </ErrorBoundary>
@@ -356,7 +385,7 @@ import { prefetchRoute } from '@/composables/useNavPrefetch'
 
 const route = useRoute()
 const router = useRouter()
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 const { isDark, toggleTheme } = useTheme()
 usePageMeta()
 const email = APP_CONFIG.EMAIL
@@ -365,6 +394,15 @@ const csdnUrl = APP_CONFIG.SOCIAL.CSDN
 const currentLocale = computed(() => locale.value)
 const mobileMenuOpen = ref(false)
 const isScrolled = ref(false)
+const commandPaletteRef = ref(null)
+const isAppleMod = typeof navigator !== 'undefined'
+  && /Mac|iPhone|iPad|iPod/i.test(navigator.platform || navigator.userAgent || '')
+const commandShortcutLabel = computed(() => (
+  isAppleMod ? t('command.shortcutMac') : t('command.shortcutWin')
+))
+const openCommandPalette = () => {
+  commandPaletteRef.value?.show?.()
+}
 /** Article detail hides MobileTabBar and uses a single mini share bar */
 const isArticleReading = computed(() => route.name === 'BlogPost')
 const showArchiveNav = computed(() => route.path === '/projects')
@@ -679,6 +717,24 @@ main,
   font-weight: 600;
 }
 
+.nav-search {
+  width: auto;
+  min-width: 36px;
+  padding: 0 10px;
+  gap: 6px;
+}
+
+.nav-cmd-kbd {
+  font-size: 11px;
+  line-height: 1;
+  padding: 3px 5px;
+  border-radius: 5px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  color: var(--color-text-tertiary);
+  font-family: var(--font-sans);
+}
+
 .nav-action-btn {
   display: flex;
   align-items: center;
@@ -887,6 +943,10 @@ main,
 
 /* --- Mobile responsive --- */
 @media (max-width: 734px) {
+  .nav-cmd-kbd {
+    display: none;
+  }
+
   .nav-toggle {
     display: flex;
   }
