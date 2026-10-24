@@ -96,50 +96,60 @@
     <section class="section life-body">
       <div class="container-wide">
         <div
-          v-if="filteredPosts.length > 0"
+          v-if="leadLife"
           :key="`${selectedCategory}-${selectedYear}-${selectedMonth}-${searchQuery}`"
-          class="life-grid"
         >
           <article
-            v-for="(post, index) in filteredPosts"
-            :key="post.id"
-            class="life-card reveal"
-            :class="'reveal-delay-' + ((index % 3) + 1)"
+            class="life-lead reveal"
             role="button"
             tabindex="0"
-            :aria-label="$t('life.openDetail')"
-            @click="openDetail(post)"
-            @keydown.enter.prevent="openDetail(post)"
-            @keydown.space.prevent="openDetail(post)"
+            :aria-label="leadLife.title"
+            @click="openDetail(leadLife)"
+            @keydown.enter.prevent="openDetail(leadLife)"
+            @keydown.space.prevent="openDetail(leadLife)"
           >
-            <div class="life-cover">
+            <div class="life-lead-frame">
               <CoverArt
-                :seed="post.id"
-                :category="post.category"
-                :image="post.image"
+                :seed="leadLife.id"
+                :category="leadLife.category"
+                :image="leadLife.image"
                 size="lg"
               />
             </div>
-            <div class="life-card-body">
-              <h3>{{ post.title }}</h3>
-              <p class="life-desc">
-                {{ post.description }}
-              </p>
-              <div
-                v-if="postTags(post).length"
-                class="life-tags"
-              >
-                <span
-                  v-for="tag in postTags(post)"
-                  :key="tag"
-                  class="tag tag-accent"
-                >{{ tag }}</span>
-              </div>
-              <div class="life-footer">
-                <span>{{ cardDate(post) }}</span>
-              </div>
+            <div class="life-lead-caption">
+              <h2>{{ leadLife.title }}</h2>
+              <span>{{ cardDate(leadLife) }}</span>
             </div>
           </article>
+          <div
+            v-if="restLife.length"
+            class="life-pair"
+          >
+            <article
+              v-for="post in restLife"
+              :key="post.id"
+              class="life-card reveal"
+              role="button"
+              tabindex="0"
+              :aria-label="post.title"
+              @click="openDetail(post)"
+              @keydown.enter.prevent="openDetail(post)"
+              @keydown.space.prevent="openDetail(post)"
+            >
+              <div class="life-cover">
+                <CoverArt
+                  :seed="post.id"
+                  :category="post.category"
+                  :image="post.image"
+                  size="lg"
+                />
+              </div>
+              <div class="life-caption">
+                <h3>{{ post.title }}</h3>
+                <span>{{ cardDate(post) }}</span>
+              </div>
+            </article>
+          </div>
         </div>
 
         <div
@@ -296,6 +306,9 @@ const filteredPosts = computed(() => {
     return hay.includes(q)
   })
 })
+
+const leadLife = computed(() => filteredPosts.value[0] || null)
+const restLife = computed(() => filteredPosts.value.slice(1))
 
 const postTags = post => {
   if (Array.isArray(post.tags) && post.tags.length) return post.tags
@@ -466,11 +479,12 @@ html.dark .chip:not(.active) {
   display: flex;
   align-items: center;
   gap: 8px;
-  width: min(260px, 100%);
-  padding: 10px 16px;
-  border-radius: 8px;
+  width: min(160px, 100%);
+  padding: 6px 0;
+  border-radius: 0;
   background: transparent;
-  border: 1px solid rgba(125, 106, 214, 0.28);
+  border: none;
+  border-bottom: 1px solid rgba(125, 106, 214, 0.35);
   color: var(--color-text-tertiary);
   box-shadow: none;
 }
@@ -486,58 +500,76 @@ html.dark .chip:not(.active) {
   min-width: 0;
 }
 
-.life-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
-}
-
+.life-lead,
 .life-card {
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
-  border-radius: 12px;
-  border-color: rgba(125, 106, 214, 0.18);
-  box-shadow: none;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
   cursor: pointer;
 }
 
+.life-lead:focus-visible,
 .life-card:focus-visible {
   outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
+  outline-offset: 4px;
 }
 
+.life-lead-frame,
 .life-cover {
-  height: 168px;
-  margin: 12px 12px 0;
-  border-radius: 16px;
   overflow: hidden;
+  border-radius: 12px;
 }
 
-.life-card-body {
-  padding: 18px 18px 20px;
+.life-lead-frame {
+  aspect-ratio: 16 / 9;
+}
+
+.life-lead-caption,
+.life-caption {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
 }
 
-.life-card-body h3 {
-  font-size: 18px;
+.life-lead-caption {
+  margin-top: 16px;
+}
+
+.life-lead-caption h2,
+.life-caption h3 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: -0.02em;
   line-height: 1.3;
 }
 
-.life-desc {
+.life-lead-caption h2 {
+  font-size: clamp(24px, 2.4vw, 32px);
+}
+
+.life-lead-caption span,
+.life-caption span {
+  flex-shrink: 0;
   font-size: 13px;
-  color: var(--color-text-secondary);
-  line-height: 1.5;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  color: var(--color-text-tertiary);
+}
+
+.life-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px 28px;
+  margin-top: 40px;
+}
+
+.life-cover {
+  aspect-ratio: 4 / 5;
+}
+
+.life-caption {
+  margin-top: 12px;
+}
+
+.life-caption h3 {
+  font-size: 20px;
 }
 
 .life-tags {
@@ -545,13 +577,6 @@ html.dark .chip:not(.active) {
   flex-wrap: wrap;
   gap: 6px;
   padding-top: 4px;
-}
-
-.life-footer {
-  margin-top: auto;
-  padding-top: 8px;
-  font-size: 12px;
-  color: var(--color-text-tertiary);
 }
 
 .empty-state {
@@ -572,7 +597,7 @@ html.dark .chip:not(.active) {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: rgba(0, 0, 0, 0.48);
+  background: rgba(8, 6, 14, 0.82);
   backdrop-filter: blur(6px);
 }
 
@@ -665,17 +690,18 @@ html.dark .chip:not(.active) {
   opacity: 0;
 }
 
-@media (max-width: 960px) {
-  .life-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+@media (max-width: 720px) {
+  .life-pair {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .life-cover {
+    aspect-ratio: 3 / 2;
   }
 }
 
 @media (max-width: 640px) {
-  .life-grid {
-    grid-template-columns: 1fr;
-  }
 
   .life-controls {
     flex-direction: column;

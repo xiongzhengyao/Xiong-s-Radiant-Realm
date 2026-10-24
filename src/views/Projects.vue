@@ -81,57 +81,63 @@
 
     <section class="section projects-body">
       <div class="container-wide">
-        <div
-          v-if="filteredProjects.length"
-          class="projects-grid"
-        >
-          <article
-            v-for="(project, index) in filteredProjects"
-            :key="project.id"
-            class="project-card reveal"
-            :class="'reveal-delay-' + ((index % 3) + 1)"
-          >
-            <div class="project-cover">
+        <template v-if="featuredProject">
+          <article class="project-feature reveal">
+            <div class="project-feature-cover">
               <CoverArt
-                :seed="project.id"
-                :category="coverCategory(project)"
-                :image="project.image"
+                :seed="featuredProject.id"
+                :category="coverCategory(featuredProject)"
+                :image="featuredProject.image"
                 size="lg"
               />
             </div>
-            <div class="project-body">
-              <h3>{{ project.title }}</h3>
-              <p class="project-role">
-                {{ $t('projects.rolePrefix') }}: {{ project.role || project.company }}
+            <div class="project-feature-copy">
+              <p class="project-feature-meta">
+                <span v-if="featuredProject.year">{{ featuredProject.year }}</span>
+                <span v-if="featuredProject.role || featuredProject.company">{{ featuredProject.role || featuredProject.company }}</span>
               </p>
-              <div class="project-tags">
-                <span
-                  v-for="tag in project.tags"
-                  :key="tag"
-                  class="tag tag-accent"
-                >{{ tag }}</span>
-              </div>
-              <div
-                v-if="project.url || project.private"
-                class="project-footer"
+              <h2>{{ featuredProject.title }}</h2>
+              <p v-if="featuredProject.description">
+                {{ featuredProject.description }}
+              </p>
+              <p
+                v-if="featuredProject.tags && featuredProject.tags[0]"
+                class="project-feature-tag"
               >
-                <a
-                  v-if="project.url"
-                  :href="project.url"
-                  class="project-link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {{ $t('projects.viewOnGithub') }}
-                </a>
-                <span
-                  v-else-if="project.private"
-                  class="project-private"
-                >{{ $t('projects.privateRepo') }}</span>
-              </div>
+                {{ featuredProject.tags[0] }}
+              </p>
+              <a
+                v-if="featuredProject.url"
+                :href="featuredProject.url"
+                class="project-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ $t('projects.viewOnGithub') }}
+              </a>
+              <span
+                v-else-if="featuredProject.private"
+                class="project-private"
+              >{{ $t('projects.privateRepo') }}</span>
             </div>
           </article>
-        </div>
+          <ol
+            v-if="restProjects.length"
+            class="project-index"
+          >
+            <li
+              v-for="project in restProjects"
+              :key="project.id"
+            >
+              <span class="project-index-year">{{ project.year }}</span>
+              <h3>{{ project.title }}</h3>
+              <span
+                v-if="project.tags && project.tags[0]"
+                class="project-index-tag"
+              >{{ project.tags[0] }}</span>
+            </li>
+          </ol>
+        </template>
         <div
           v-else
           class="empty-state"
@@ -177,6 +183,9 @@ const filteredProjects = computed(() => {
     return hay.includes(q)
   })
 })
+
+const featuredProject = computed(() => filteredProjects.value[0] || null)
+const restProjects = computed(() => filteredProjects.value.slice(1))
 
 const coverCategory = project => {
   if (project.chip === 'app') return 'notes'
@@ -241,7 +250,7 @@ html.dark .projects-snow {
 }
 
 .projects-header {
-  padding: var(--space-12) 0 var(--space-6);
+  padding: 40px 0 18px;
 }
 
 .projects-header h1 {
@@ -298,11 +307,12 @@ html.dark .chip:not(.active) {
   display: flex;
   align-items: center;
   gap: 8px;
-  width: min(260px, 100%);
-  padding: 10px 16px;
-  border-radius: 8px;
+  width: min(180px, 100%);
+  padding: 6px 0;
+  border-radius: 0;
   background: transparent;
-  border: 1px solid rgba(125, 106, 214, 0.28);
+  border: none;
+  border-bottom: 1px solid rgba(125, 106, 214, 0.35);
   color: var(--color-text-tertiary);
   box-shadow: none;
 }
@@ -317,59 +327,86 @@ html.dark .chip:not(.active) {
   outline: none;
 }
 
-.projects-grid {
+.project-feature {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(260px, 0.78fr);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: center;
+  margin-bottom: 72px;
 }
 
-.project-card {
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
+.project-feature-cover {
+  width: 100%;
+  height: min(62vh, 560px);
   border-radius: 12px;
-  border-color: rgba(125, 106, 214, 0.18);
-  box-shadow: none;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.project-cover {
-  height: 168px;
-  margin: 12px 12px 0;
-  border-radius: 16px;
   overflow: hidden;
 }
 
-.project-body {
-  padding: 18px 18px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
+.project-feature-copy {
+  padding-bottom: 8px;
 }
 
-.project-body h3 {
-  font-size: 18px;
-  line-height: 1.3;
-}
-
-.project-role {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-
-.project-tags {
+.project-feature-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: auto;
-  padding-top: 8px;
+  gap: 10px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--color-accent);
 }
 
-.project-footer {
-  padding-top: 4px;
+.project-feature h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 0 0 10px;
+}
+
+.project-feature-copy > p {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+.project-feature-tag {
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--color-text-tertiary);
+}
+
+.project-index {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgba(125, 106, 214, 0.28);
+}
+
+.project-index li {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: baseline;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(125, 106, 214, 0.2);
+}
+
+.project-index-year,
+.project-index-tag {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.project-index h3 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
 }
 
 .project-link {
@@ -389,17 +426,27 @@ html.dark .chip:not(.active) {
   color: var(--color-text-secondary);
 }
 
-@media (max-width: 960px) {
-  .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+@media (max-width: 860px) {
+  .project-feature {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .project-feature-cover {
+    aspect-ratio: 4 / 5;
+    max-height: 70vh;
+  }
+
+  .project-index li {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  .project-index-tag {
+    display: none;
   }
 }
 
 @media (max-width: 640px) {
-  .projects-grid {
-    grid-template-columns: 1fr;
-  }
 
   .projects-controls {
     flex-direction: column;

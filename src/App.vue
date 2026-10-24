@@ -6,7 +6,7 @@
     >{{ $t('nav.skipToContent') }}</a>
     <div
       class="app"
-      :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading, 'is-home': route.name === 'Home' }"
+      :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading, 'is-home': route.name === 'Home', 'is-quiet-sky': route.name === 'Projects' || route.name === 'Life' }"
     >
       <div
         class="studio-bg"
@@ -570,6 +570,11 @@ html.dark .app.is-home {
 }
 
 .app.is-home .studio-bg {
+  opacity: 0;
+}
+
+.app.is-quiet-sky .studio-snow,
+html.dark .app.is-quiet-sky .studio-stars {
   opacity: 0;
 }
 
