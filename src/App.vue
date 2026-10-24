@@ -6,7 +6,7 @@
     >{{ $t('nav.skipToContent') }}</a>
     <div
       class="app"
-      :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading }"
+      :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading, 'is-home': route.name === 'Home' }"
     >
       <div
         class="studio-bg"
@@ -559,6 +559,45 @@ html.dark {
   flex-direction: column;
   background-color: var(--color-bg);
   --back-to-top-offset: var(--space-6);
+}
+
+.app.is-home {
+  background-color: #f4f1ea;
+}
+
+html.dark .app.is-home {
+  background-color: #0c0d10;
+}
+
+.app.is-home .studio-bg {
+  opacity: 0;
+}
+
+.app.is-home.is-scrolled .nav {
+  background: rgba(244, 241, 234, 0.92);
+  border-bottom-color: rgba(26, 24, 20, 0.08);
+}
+
+html.dark .app.is-home.is-scrolled .nav {
+  background: rgba(12, 13, 16, 0.9);
+  border-bottom-color: rgba(243, 240, 234, 0.1);
+}
+
+.app.is-home .footer::before {
+  background: rgba(26, 24, 20, 0.12);
+  opacity: 1;
+}
+
+html.dark .app.is-home .footer::before {
+  background: rgba(243, 240, 234, 0.12);
+}
+
+.app.is-home .footer-email-btn {
+  color: #7c7688;
+}
+
+html.dark .app.is-home .footer-email-btn {
+  color: #c8c2d6;
 }
 
 main,
