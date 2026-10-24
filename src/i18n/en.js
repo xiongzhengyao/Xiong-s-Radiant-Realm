@@ -175,7 +175,7 @@ export default {
     ]
   },
   blog: {
-    eyebrow: 'Record and create.',
+    eyebrow: 'Notes',
     title: 'Notes',
     subtitle: 'Record and create.',
     all: 'All',

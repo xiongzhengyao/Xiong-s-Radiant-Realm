@@ -223,7 +223,7 @@ const printResume = () => {
 }
 
 html.dark .about-stars {
-  opacity: 0.45;
+  opacity: 0;
 }
 
 .about-board {
@@ -251,8 +251,9 @@ html.dark .about-stars {
 .timeline-card {
   background: var(--color-card-bg);
   border: 1px solid var(--color-card-border);
-  border-radius: 22px;
-  box-shadow: var(--shadow-md), var(--color-card-glow);
+  border-radius: 12px;
+  border-color: rgba(125, 106, 214, 0.18);
+  box-shadow: none;
 }
 
 .profile-card {
@@ -357,7 +358,9 @@ html.dark .about-name .accent {
 
 .skills-panel > h2,
 .section-head h2 {
-  font-size: 18px;
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 700;
   margin: 0 0 12px;
 }
 
@@ -390,9 +393,9 @@ html.dark .about-name .accent {
 .section-head p {
   margin: 0 0 4px;
   font-size: 12px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-text-tertiary);
+  color: var(--color-accent);
 }
 
 .timeline {
@@ -427,7 +430,8 @@ html.dark .about-name .accent {
 .timeline-time {
   padding: 16px 12px 0 0;
   text-align: right;
-  font-size: 12px;
+  font-family: var(--font-serif);
+  font-size: 13px;
   line-height: 1.45;
   color: var(--color-text-tertiary);
 }
