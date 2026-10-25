@@ -48,7 +48,7 @@
           </p>
           <ul class="profile-meta">
             <li>{{ $t('about.profile.location') }}</li>
-            <li>{{ $t('about.profile.years') }}</li>
+            <li>{{ $t('about.profile.years', { n: careerYears }) }}</li>
             <li>
               <a :href="`mailto:${email}`">{{ email }}</a>
             </li>
@@ -165,6 +165,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
 import { APP_CONFIG } from '@/utils/constants'
+import { getCareerYears } from '@/utils/careerYears'
 
 const { t, tm } = useI18n()
 useReveal()
@@ -176,6 +177,7 @@ const imageError = ref(false)
 const nameFull = computed(() => t('about.profile.name'))
 const accentChar = computed(() => t('about.profile.nameAccent'))
 const nameChars = computed(() => Array.from(nameFull.value))
+const careerYears = computed(() => getCareerYears())
 
 const asList = value => (Array.isArray(value) ? value : [])
 
