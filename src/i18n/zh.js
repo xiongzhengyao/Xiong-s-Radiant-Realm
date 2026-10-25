@@ -109,7 +109,7 @@ export default {
   },
   about: {
     title: '关于',
-    eyebrow: 'A LIGHT',
+    eyebrow: '人物',
     intro: '从博世到小米、大疆，\n在 Camera 系统里把一件事做深。',
     contactCta: '联系我',
     resumeCta: '打印简历',

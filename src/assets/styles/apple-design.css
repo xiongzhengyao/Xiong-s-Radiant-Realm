@@ -513,7 +513,7 @@ h1.reveal,
   white-space: nowrap;
   min-height: 42px;
   font-family: var(--font-sans);
-  border-radius: var(--radius-full);
+  border-radius: 2px;
 }
 
 /* Light press (80–120ms) then spring rebound — primary + outline/ghost */

@@ -109,7 +109,7 @@ export default {
   },
   about: {
     title: 'About',
-    eyebrow: 'A LIGHT',
+    eyebrow: 'Portrait',
     intro: 'From Bosch to Xiaomi and DJI,\ngoing deep on one thing inside Camera systems.',
     contactCta: 'Get in touch',
     resumeCta: 'Print résumé',

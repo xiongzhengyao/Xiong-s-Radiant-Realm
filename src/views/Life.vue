@@ -5,7 +5,6 @@
       aria-hidden="true"
     >
       <div class="life-mesh" />
-      <div class="life-snow" />
     </div>
 
     <section class="life-header">
@@ -404,21 +403,6 @@ watch(activePost, post => {
   background:
     radial-gradient(ellipse 50% 40% at 18% 20%, var(--color-mesh-1) 0%, transparent 55%),
     radial-gradient(ellipse 40% 35% at 85% 70%, var(--color-mesh-2) 0%, transparent 50%);
-}
-
-.life-snow {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  background-image:
-    radial-gradient(1.5px 1.5px at 12% 18%, rgba(255, 255, 255, 0.7) 0%, transparent 100%),
-    radial-gradient(1px 1px at 40% 62%, rgba(255, 255, 255, 0.55) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 72% 28%, rgba(255, 255, 255, 0.65) 0%, transparent 100%),
-    radial-gradient(1px 1px at 88% 74%, rgba(255, 255, 255, 0.5) 0%, transparent 100%);
-}
-
-html:not(.dark) .life-snow {
-  opacity: 0;
 }
 
 .life-header,
