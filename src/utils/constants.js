@@ -17,8 +17,8 @@ export const APP_CONFIG = {
     HERO_WORKSPACE: '/images/hero-workspace.svg',
     OG_DEFAULT: '/og-default.png'
   },
-  // Early August 2022 — first full-time role
-  CAREER_START: '2022-08-01'
+  // First full-time role
+  CAREER_START: '2022-08-12'
 }
 
 // 博客分类配置
