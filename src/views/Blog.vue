@@ -14,7 +14,6 @@
           aria-hidden="true"
         >
           <div class="notes-mesh" />
-          <div class="notes-snow" />
         </div>
 
         <section class="notes-header">
@@ -1003,20 +1002,6 @@ watch(filteredPosts, () => {
     radial-gradient(ellipse 40% 35% at 15% 80%, var(--color-mesh-2) 0%, transparent 50%);
 }
 
-.notes-snow {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  background-image:
-    radial-gradient(1.5px 1.5px at 15% 25%, #fff 0%, transparent 100%),
-    radial-gradient(1px 1px at 55% 40%, #fff 0%, transparent 100%),
-    radial-gradient(2px 2px at 80% 70%, #fff 0%, transparent 100%);
-}
-
-html.dark .notes-snow {
-  opacity: 0;
-}
-
 .notes-header,
 .notes-body {
   position: relative;
@@ -1080,11 +1065,12 @@ html.dark .chip:not(.active) {
   display: flex;
   align-items: center;
   gap: 8px;
-  width: min(260px, 100%);
-  padding: 10px 16px;
-  border-radius: 8px;
+  width: min(180px, 100%);
+  padding: 6px 0;
+  border-radius: 0;
   background: transparent;
-  border: 1px solid rgba(125, 106, 214, 0.28);
+  border: none;
+  border-bottom: 1px solid rgba(125, 106, 214, 0.35);
   color: var(--color-text-tertiary);
   box-shadow: none;
 }

@@ -5,12 +5,14 @@
       aria-hidden="true"
     >
       <div class="about-mesh" />
-      <div class="about-stars" />
     </div>
 
     <section class="about-board">
       <aside class="about-side">
         <div class="profile-card reveal">
+          <p class="page-kicker profile-kicker">
+            {{ $t('about.eyebrow') }}
+          </p>
           <div class="profile-head">
             <div class="avatar-wrap">
               <img
@@ -46,7 +48,7 @@
           </p>
           <ul class="profile-meta">
             <li>{{ $t('about.profile.location') }}</li>
-            <li>{{ $t('about.profile.years') }}</li>
+            <li>{{ $t('about.profile.years', { n: careerYears }) }}</li>
             <li>
               <a :href="`mailto:${email}`">{{ email }}</a>
             </li>
@@ -163,6 +165,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
 import { APP_CONFIG } from '@/utils/constants'
+import { getCareerYears } from '@/utils/careerYears'
 
 const { t, tm } = useI18n()
 useReveal()
@@ -174,6 +177,7 @@ const imageError = ref(false)
 const nameFull = computed(() => t('about.profile.name'))
 const accentChar = computed(() => t('about.profile.nameAccent'))
 const nameChars = computed(() => Array.from(nameFull.value))
+const careerYears = computed(() => getCareerYears())
 
 const asList = value => (Array.isArray(value) ? value : [])
 
@@ -210,21 +214,6 @@ const printResume = () => {
     radial-gradient(ellipse 45% 35% at 80% 70%, var(--color-mesh-2) 0%, transparent 55%);
 }
 
-.about-stars {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  background-image:
-    radial-gradient(1.5px 1.5px at 10% 20%, #fff 0%, transparent 100%),
-    radial-gradient(1px 1px at 30% 55%, #fff 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 70% 30%, #fff 0%, transparent 100%),
-    radial-gradient(1px 1px at 85% 65%, #fff 0%, transparent 100%),
-    radial-gradient(1px 1px at 50% 80%, #fff 0%, transparent 100%);
-}
-
-html.dark .about-stars {
-  opacity: 0;
-}
 
 .about-board {
   position: relative;
@@ -259,6 +248,11 @@ html.dark .about-stars {
 .profile-card {
   padding: 22px 22px 20px;
 }
+
+.profile-kicker {
+  margin: 0 0 14px;
+}
+
 
 .profile-head {
   display: flex;

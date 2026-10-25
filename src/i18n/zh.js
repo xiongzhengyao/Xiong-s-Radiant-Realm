@@ -109,7 +109,7 @@ export default {
   },
   about: {
     title: '关于',
-    eyebrow: 'A LIGHT',
+    eyebrow: '人物',
     intro: '从博世到小米、大疆，\n在 Camera 系统里把一件事做深。',
     contactCta: '联系我',
     resumeCta: '打印简历',
@@ -119,7 +119,7 @@ export default {
       title: "Camera 驱动软件工程师 {'@'} 大疆 · 上海",
       bio: '从博世到小米、大疆，在 Camera 系统里把一件事做深。',
       location: '上海',
-      years: '3 年+工作经验'
+      years: '{n} 年+工作经验'
     },
     skillsFlat: ['C/C++', 'Python', 'ARM', 'Sensor', 'Linux'],
     sections: {

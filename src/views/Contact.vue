@@ -5,7 +5,6 @@
       aria-hidden="true"
     >
       <div class="contact-mesh" />
-      <div class="contact-stars" />
     </div>
 
     <section class="contact-board">
@@ -16,7 +15,7 @@
         <h1 class="page-title">
           {{ $t('contact.title') }}
         </h1>
-        <p class="contact-sub">
+        <p class="page-lede">
           {{ $t('contact.subtitle') }}
         </p>
       </header>
@@ -148,21 +147,6 @@ useReveal()
     radial-gradient(ellipse 45% 35% at 80% 70%, var(--color-mesh-2) 0%, transparent 55%);
 }
 
-.contact-stars {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  background-image:
-    radial-gradient(1.5px 1.5px at 10% 20%, #fff 0%, transparent 100%),
-    radial-gradient(1px 1px at 30% 55%, #fff 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 70% 30%, #fff 0%, transparent 100%),
-    radial-gradient(1px 1px at 85% 65%, #fff 0%, transparent 100%),
-    radial-gradient(1px 1px at 50% 80%, #fff 0%, transparent 100%);
-}
-
-html.dark .contact-stars {
-  opacity: 0;
-}
 
 .contact-board {
   position: relative;
@@ -177,13 +161,6 @@ html.dark .contact-stars {
   margin-bottom: 28px;
 }
 
-.contact-eyebrow {
-  margin: 0 0 10px;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-tertiary);
-}
 
 .contact-intro h1 {
   margin: 0 0 12px;
@@ -194,12 +171,6 @@ html.dark .contact-stars {
   line-height: 1.15;
 }
 
-.contact-sub {
-  margin: 0;
-  font-size: 17px;
-  line-height: 1.65;
-  color: var(--color-text-secondary);
-}
 
 .contact-panels {
   display: grid;

@@ -5,7 +5,6 @@
       aria-hidden="true"
     >
       <div class="projects-mesh" />
-      <div class="projects-snow" />
     </div>
 
     <section class="projects-header">
@@ -222,20 +221,6 @@ watch(filteredProjects, () => {
   background:
     radial-gradient(ellipse 50% 40% at 75% 20%, var(--color-mesh-1) 0%, transparent 55%),
     radial-gradient(ellipse 40% 35% at 15% 80%, var(--color-mesh-2) 0%, transparent 50%);
-}
-
-.projects-snow {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  background-image:
-    radial-gradient(1.5px 1.5px at 15% 25%, #fff 0%, transparent 100%),
-    radial-gradient(1px 1px at 55% 40%, #fff 0%, transparent 100%),
-    radial-gradient(2px 2px at 80% 70%, #fff 0%, transparent 100%);
-}
-
-html.dark .projects-snow {
-  opacity: 0;
 }
 
 .projects-header,
