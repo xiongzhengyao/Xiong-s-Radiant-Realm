@@ -20,62 +20,91 @@
         </p>
       </header>
 
-      <div class="contact-letter reveal">
-        <p class="letter-place">
-          {{ $t('contact.info.address') }}
-        </p>
-        <a
-          class="letter-email"
-          :href="`mailto:${email}`"
-        >{{ email }}</a>
-        <a
-          v-if="showPhone"
-          class="letter-phone"
-          :href="`tel:${phoneTel}`"
-        >{{ phone }}</a>
-        <p class="letter-hint">
-          {{ $t('contact.responseTime') }}
-        </p>
-        <a
-          class="text-link"
-          :href="`mailto:${email}`"
-        >
-          {{ $t('contact.emailCta') }}
-        </a>
-      </div>
+      <div class="contact-panels">
+        <article class="contact-card reveal">
+          <h2>{{ $t('contact.info.title') }}</h2>
+          <ul class="contact-meta">
+            <li>{{ $t('contact.info.address') }}</li>
+            <li>
+              <a :href="`mailto:${email}`">{{ email }}</a>
+            </li>
+            <li v-if="showPhone">
+              <a :href="`tel:${phoneTel}`">{{ phone }}</a>
+            </li>
+          </ul>
+          <a
+            class="btn btn-primary contact-mail"
+            :href="`mailto:${email}`"
+          >
+            {{ $t('contact.emailCta') }}
+          </a>
+          <p class="contact-hint">
+            {{ $t('contact.responseTime') }}
+          </p>
+        </article>
 
-      <ol class="channel-index reveal reveal-delay-1">
-        <li>
-          <a
-            class="channel-row"
-            :href="githubUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="channel-name">GitHub</span>
-            <span class="channel-desc">{{ $t('contact.channels.github') }}</span>
-            <span
-              class="channel-arrow"
-              aria-hidden="true"
-            >›</span>
-          </a>
-        </li>
-        <li>
-          <a
-            class="channel-row"
-            :href="csdnUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="channel-name">CSDN</span>
-            <span class="channel-desc">{{ $t('contact.channels.csdn') }}</span>
-            <span
-              class="channel-arrow"
-              aria-hidden="true"
-            >›</span>
-          </a>
-        </li>
-      </ol>
+        <article class="contact-card reveal reveal-delay-1">
+          <h2>{{ $t('contact.info.social') }}</h2>
+          <ul class="channel-list">
+            <li>
+              <a
+                class="channel-link"
+                :href="githubUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span
+                  class="channel-icon"
+                  aria-hidden="true"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                  ><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" /></svg>
+                </span>
+                <span class="channel-copy">
+                  <span class="channel-name">GitHub</span>
+                  <span class="channel-desc">{{ $t('contact.channels.github') }}</span>
+                </span>
+                <span
+                  class="channel-arrow"
+                  aria-hidden="true"
+                >›</span>
+              </a>
+            </li>
+            <li>
+              <a
+                class="channel-link"
+                :href="csdnUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span
+                  class="channel-icon"
+                  aria-hidden="true"
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 1024 1024"
+                    fill="currentColor"
+                  ><path d="M512 0c282.784 0 512 229.216 512 512s-229.216 512-512 512S0 794.784 0 512 229.216 0 512 0z m189.952 752l11.2-108.224c-31.904 9.536-100.928 16.128-147.712 16.128-134.464 0-205.728-47.296-195.328-146.304 11.584-110.688 113.152-145.696 232.64-145.696 54.784 0 122.432 8.8 151.296 18.336L768 272.704C724.544 262.24 678.272 256 599.584 256c-203.2 0-388.704 94.88-406.4 263.488C178.336 660.96 303.584 768 535.616 768c80.672 0 138.464-6.432 166.336-16z" /></svg>
+                </span>
+                <span class="channel-copy">
+                  <span class="channel-name">CSDN</span>
+                  <span class="channel-desc">{{ $t('contact.channels.csdn') }}</span>
+                </span>
+                <span
+                  class="channel-arrow"
+                  aria-hidden="true"
+                >›</span>
+              </a>
+            </li>
+          </ul>
+        </article>
+      </div>
     </section>
   </div>
 </template>
@@ -118,174 +147,172 @@ useReveal()
     radial-gradient(ellipse 45% 35% at 80% 70%, var(--color-mesh-2) 0%, transparent 55%);
 }
 
+
 .contact-board {
   position: relative;
   z-index: 1;
-  max-width: 720px;
+  max-width: var(--max-width-wide);
   margin: 0 auto;
-  padding: clamp(36px, 6vh, 64px) 28px 80px;
+  padding: 36px 24px 80px;
 }
 
 .contact-intro {
-  margin-bottom: 36px;
+  max-width: 560px;
+  margin-bottom: 28px;
 }
 
-.contact-letter {
-  margin-bottom: 48px;
-  padding-bottom: 36px;
-  border-bottom: 1px solid rgba(125, 106, 214, 0.22);
-}
 
-.letter-place {
+.contact-intro h1 {
   margin: 0 0 12px;
+  font-family: var(--font-serif);
+  font-size: clamp(40px, 5vw, 56px);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+
+
+.contact-panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+.contact-card {
+  padding: 24px 24px 22px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: 12px;
+  border-color: rgba(125, 106, 214, 0.18);
+  box-shadow: none;
+}
+
+.contact-card h2 {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.contact-meta {
+  list-style: none;
+  margin: 0 0 22px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contact-meta li {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+}
+
+.contact-meta a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.contact-meta a:hover {
+  text-decoration: underline;
+}
+
+.contact-mail {
+  display: inline-flex;
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+
+.contact-hint {
+  margin: 0;
   font-size: 13px;
-  letter-spacing: 0.04em;
+  line-height: 1.5;
   color: var(--color-text-tertiary);
 }
 
-.letter-email {
-  display: block;
-  margin: 0 0 8px;
-  font-family: var(--font-serif);
-  font-size: clamp(24px, 3vw, 32px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
-  color: var(--color-text);
-  text-decoration: none;
-}
-
-.letter-email:hover {
-  color: var(--color-accent);
-}
-
-.letter-phone {
-  display: block;
-  margin: 0 0 16px;
-  font-size: 15px;
-  color: var(--color-text-secondary);
-  text-decoration: none;
-}
-
-.letter-phone:hover {
-  color: var(--color-accent);
-}
-
-.letter-hint {
-  margin: 0 0 24px;
-  font-size: 14px;
-  line-height: 1.55;
-  color: var(--color-text-secondary);
-}
-
-.text-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: 0 18px;
-  border: 1px solid var(--color-accent);
-  border-radius: 2px;
-  background: var(--color-accent);
-  color: #fff;
-  font-size: 13px;
-  letter-spacing: 0.14em;
-  text-decoration: none;
-  transition: transform 0.12s ease, background 0.2s ease, color 0.2s ease;
-}
-
-html.dark .text-link {
-  color: #1a1428;
-}
-
-.text-link:active {
-  transform: scale(0.98);
-}
-
-.text-link:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-}
-
-.channel-index {
+.channel-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: 1px solid rgba(125, 106, 214, 0.28);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.channel-index li {
-  border-bottom: 1px solid rgba(125, 106, 214, 0.2);
-}
-
-.channel-row {
-  display: grid;
-  grid-template-columns: 96px minmax(0, 1fr) auto;
-  gap: 16px;
-  align-items: baseline;
-  padding: 20px 0;
+.channel-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--color-card-border);
+  background: var(--color-bg-secondary);
   color: inherit;
   text-decoration: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    transform 0.12s var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.channel-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--color-card-bg);
+  color: var(--color-text);
+  flex: 0 0 auto;
+}
+
+.channel-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
 }
 
 .channel-name {
-  font-family: var(--font-serif);
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 15px;
+  font-weight: 600;
 }
 
 .channel-desc {
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--color-text-secondary);
+  font-size: 13px;
+  color: var(--color-text-tertiary);
 }
 
 .channel-arrow {
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1;
   color: var(--color-text-tertiary);
-  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .channel-row:hover .channel-name {
-    color: var(--color-accent);
-  }
-
-  .channel-row:hover .channel-arrow {
-    color: var(--color-accent);
-    transform: translateX(3px);
+  .channel-link:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-1px);
   }
 }
 
-.channel-row:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 4px;
+.channel-link:active {
+  transform: scale(0.99);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 780px) {
+  .contact-panels {
+    grid-template-columns: 1fr;
+  }
+
   .contact-board {
     padding: 28px 18px 64px;
   }
 
-  .channel-row {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 8px 12px;
-  }
-
-  .channel-name {
-    grid-column: 1;
-  }
-
-  .channel-desc {
-    grid-column: 1;
-  }
-
-  .channel-arrow {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    align-self: center;
+  .contact-intro h1 {
+    font-size: 40px;
   }
 }
 </style>

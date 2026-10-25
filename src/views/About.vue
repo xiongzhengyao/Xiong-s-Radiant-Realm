@@ -7,134 +7,155 @@
       <div class="about-mesh" />
     </div>
 
-    <section class="about-hero">
-      <div class="about-copy reveal">
-        <p class="page-kicker">
-          {{ $t('about.eyebrow') }}
-        </p>
-        <h1 class="about-name">
-          <template
-            v-for="(ch, i) in nameChars"
-            :key="i"
-          >
-            <span :class="{ accent: ch === accentChar }">{{ ch }}</span>
-          </template>
-        </h1>
-        <p class="page-lede about-lede">
-          {{ $t('about.intro') }}
-        </p>
-        <p class="about-role">
-          {{ $t('about.profile.title') }}
-        </p>
-        <ul class="about-meta">
-          <li>{{ $t('about.profile.location') }}</li>
-          <li>{{ $t('about.profile.years') }}</li>
-          <li>
-            <a :href="`mailto:${email}`">{{ email }}</a>
-          </li>
-        </ul>
-        <div class="about-actions no-print">
-          <router-link
-            class="text-link"
-            to="/contact"
-          >
-            {{ $t('about.contactCta') }}
-          </router-link>
-          <button
-            type="button"
-            class="text-link text-link--quiet"
-            @click="printResume"
-          >
-            {{ $t('about.resumeCta') }}
-          </button>
+    <section class="about-board">
+      <aside class="about-side">
+        <div class="profile-card reveal">
+          <p class="page-kicker profile-kicker">
+            {{ $t('about.eyebrow') }}
+          </p>
+          <div class="profile-head">
+            <div class="avatar-wrap">
+              <img
+                v-if="!imageError"
+                class="avatar"
+                :src="profileImage"
+                :alt="nameFull"
+                @error="imageError = true"
+              >
+              <div
+                v-else
+                class="avatar-fallback"
+              >
+                ZY
+              </div>
+            </div>
+            <div>
+              <h1 class="about-name">
+                <template
+                  v-for="(ch, i) in nameChars"
+                  :key="i"
+                >
+                  <span :class="{ accent: ch === accentChar }">{{ ch }}</span>
+                </template>
+              </h1>
+              <p class="about-title">
+                {{ $t('about.profile.title') }}
+              </p>
+            </div>
+          </div>
+          <p class="about-bio">
+            {{ $t('about.intro') }}
+          </p>
+          <ul class="profile-meta">
+            <li>{{ $t('about.profile.location') }}</li>
+            <li>{{ $t('about.profile.years') }}</li>
+            <li>
+              <a :href="`mailto:${email}`">{{ email }}</a>
+            </li>
+          </ul>
+          <div class="profile-actions no-print">
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click="$router.push('/contact')"
+            >
+              {{ $t('about.contactCta') }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline"
+              @click="printResume"
+            >
+              {{ $t('about.resumeCta') }}
+            </button>
+          </div>
         </div>
+
+        <div class="skills-panel reveal reveal-delay-1">
+          <h2>{{ $t('about.sections.skills') }}</h2>
+          <div
+            v-for="group in skillGroups"
+            :key="group.name"
+            class="skill-group"
+          >
+            <h3>{{ group.name }}</h3>
+            <div class="skill-tags">
+              <span
+                v-for="skill in group.items"
+                :key="skill"
+                class="tag tag-accent"
+              >{{ skill }}</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="about-main">
+        <section class="timeline-section">
+          <header class="section-head reveal">
+            <p>{{ $t('about.experience.eyebrow') }}</p>
+            <h2>{{ $t('about.sections.experience') }}</h2>
+          </header>
+          <ol class="timeline">
+            <li
+              v-for="(job, idx) in workExperience"
+              :key="`${job.company}-${job.period}`"
+              class="timeline-item reveal"
+              :class="['reveal-delay-' + (idx + 1), { 'is-current': idx === 0 }]"
+            >
+              <time class="timeline-time">{{ job.period }}</time>
+              <span
+                class="timeline-dot"
+                aria-hidden="true"
+              />
+              <article class="timeline-card">
+                <h3>{{ job.position }}</h3>
+                <p class="timeline-org">
+                  {{ job.company }}
+                </p>
+                <p
+                  v-if="job.description && job.description !== job.position"
+                  class="timeline-detail"
+                >
+                  {{ job.description }}
+                </p>
+              </article>
+            </li>
+          </ol>
+        </section>
+
+        <section class="timeline-section">
+          <header class="section-head reveal">
+            <h2>{{ $t('about.sections.education') }}</h2>
+          </header>
+          <ol class="timeline">
+            <li
+              v-for="(edu, idx) in educationHistory"
+              :key="`${edu.school}-${edu.period}`"
+              class="timeline-item reveal"
+              :class="'reveal-delay-' + (idx + 1)"
+            >
+              <time class="timeline-time">{{ edu.period }}</time>
+              <span
+                class="timeline-dot"
+                aria-hidden="true"
+              />
+              <article class="timeline-card">
+                <h3>{{ edu.degree }}</h3>
+                <p class="timeline-org">
+                  {{ edu.school }} · {{ edu.major }}
+                </p>
+                <p
+                  v-if="edu.details"
+                  class="timeline-detail"
+                >
+                  {{ edu.details }}
+                </p>
+              </article>
+            </li>
+          </ol>
+        </section>
       </div>
-
-      <figure class="about-portrait reveal reveal-delay-2">
-        <img
-          v-if="!imageError"
-          :src="profileImage"
-          :alt="nameFull"
-          @error="imageError = true"
-        >
-        <div
-          v-else
-          class="about-portrait-fallback"
-          aria-hidden="true"
-        >
-          ZY
-        </div>
-      </figure>
-    </section>
-
-    <section
-      v-if="skillsFlat.length"
-      class="about-skills reveal"
-      :aria-label="$t('about.sections.skills')"
-    >
-      <p class="skills-kicker">
-        {{ $t('about.sections.skills') }}
-      </p>
-      <p class="skills-line">
-        {{ skillsFlat.join(' · ') }}
-      </p>
-    </section>
-
-    <section class="about-path">
-      <header class="path-head reveal">
-        <p class="page-kicker">
-          {{ $t('about.experience.eyebrow') }}
-        </p>
-        <h2>{{ $t('about.sections.experience') }}</h2>
-      </header>
-      <ol class="path-index">
-        <li
-          v-for="(job, idx) in workExperience"
-          :key="`${job.company}-${job.period}`"
-          class="reveal"
-          :class="['reveal-delay-' + Math.min(idx + 1, 3), { 'is-current': idx === 0 }]"
-        >
-          <time>{{ job.period }}</time>
-          <div class="path-copy">
-            <h3>{{ job.position }}</h3>
-            <p
-              v-if="job.description && job.description !== job.position"
-              class="path-detail"
-            >
-              {{ job.description }}
-            </p>
-          </div>
-          <span class="path-org">{{ job.company }}</span>
-        </li>
-      </ol>
-    </section>
-
-    <section class="about-path about-path--edu">
-      <header class="path-head reveal">
-        <h2>{{ $t('about.sections.education') }}</h2>
-      </header>
-      <ol class="path-index">
-        <li
-          v-for="(edu, idx) in educationHistory"
-          :key="`${edu.school}-${edu.period}`"
-          class="reveal"
-          :class="'reveal-delay-' + Math.min(idx + 1, 3)"
-        >
-          <time>{{ edu.period }}</time>
-          <div class="path-copy">
-            <h3>{{ edu.degree }}</h3>
-            <p class="path-detail">
-              {{ edu.school }} · {{ edu.major }}
-            </p>
-            <p
-              v-if="edu.details"
-              class="path-detail path-detail--soft"
-            >
-              {{ edu.details }}
-            </p>
-          </div>
-        </li>
-      </ol>
     </section>
   </div>
 </template>
@@ -158,7 +179,7 @@ const nameChars = computed(() => Array.from(nameFull.value))
 
 const asList = value => (Array.isArray(value) ? value : [])
 
-const skillsFlat = computed(() => asList(tm('about.skillsFlat')))
+const skillGroups = computed(() => asList(tm('about.skillGroups')))
 const workExperience = computed(() => asList(tm('about.work')))
 const educationHistory = computed(() => asList(tm('about.education')))
 
@@ -172,6 +193,7 @@ const printResume = () => {
   position: relative;
   padding-top: var(--nav-height);
   min-height: 100vh;
+  background: transparent;
   overflow: hidden;
 }
 
@@ -190,299 +212,350 @@ const printResume = () => {
     radial-gradient(ellipse 45% 35% at 80% 70%, var(--color-mesh-2) 0%, transparent 55%);
 }
 
-.about-hero {
+
+.about-board {
   position: relative;
   z-index: 1;
-  max-width: 1180px;
+  max-width: var(--max-width-wide);
   margin: 0 auto;
-  padding: clamp(36px, 6vh, 64px) 28px 48px;
+  padding: 36px 24px 80px;
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(240px, 0.82fr);
-  gap: clamp(28px, 4vw, 56px);
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.about-side {
+  position: sticky;
+  top: calc(var(--nav-height) + 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-card,
+.skills-panel,
+.timeline-card {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: 12px;
+  border-color: rgba(125, 106, 214, 0.18);
+  box-shadow: none;
+}
+
+.profile-card {
+  padding: 22px 22px 20px;
+}
+
+.profile-kicker {
+  margin: 0 0 14px;
+}
+
+
+.profile-head {
+  display: flex;
   align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.avatar-wrap {
+  width: 84px;
+  height: 84px;
+  flex: 0 0 84px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--color-card-border);
+  background: var(--color-bg-secondary);
+}
+
+.avatar,
+.avatar-fallback {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-tertiary);
 }
 
 .about-name {
   font-family: var(--font-serif);
-  font-size: clamp(48px, 5.4vw, 72px);
+  font-size: 44px;
   font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.08;
-  margin: 0 0 16px;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  margin: 0 0 8px;
 }
 
 .about-name .accent {
-  color: #6d5bc8;
+  color: #9a8bc4;
 }
 
 html.dark .about-name .accent {
-  color: #c4b2f6;
+  color: #cbb6ff;
 }
 
-.about-lede {
-  white-space: pre-line;
-  margin-bottom: 18px;
-}
-
-.about-role {
-  margin: 0 0 14px;
-  font-size: 14px;
-  line-height: 1.5;
+.about-title {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
   color: var(--color-text-secondary);
 }
 
-.about-meta {
+.about-bio {
+  margin: 0 0 14px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--color-text);
+  white-space: pre-line;
+}
+
+.profile-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 16px;
-  margin: 0 0 28px;
+  gap: 8px 14px;
+  margin: 0 0 16px;
   padding: 0;
   list-style: none;
   font-size: 13px;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
 }
 
-.about-meta a {
+.profile-meta a {
   color: inherit;
   text-decoration: none;
 }
 
-.about-meta a:hover {
-  color: var(--color-accent);
-}
-
-.about-actions {
+.profile-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
 
-.text-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: 0 18px;
-  border: 1px solid var(--color-accent);
-  border-radius: 2px;
-  background: var(--color-accent);
-  color: #fff;
-  font-size: 13px;
-  letter-spacing: 0.14em;
-  text-decoration: none;
-  font-family: var(--font-sans);
-  cursor: pointer;
-  transition: transform 0.12s ease, background 0.2s ease, color 0.2s ease;
+.profile-actions .btn {
+  min-height: 40px;
+  padding: 8px 16px;
 }
 
-html.dark .text-link {
-  color: #1a1428;
+.skills-panel {
+  padding: 18px 20px 8px;
 }
 
-.text-link--quiet {
-  background: transparent;
-  color: var(--color-accent);
-}
-
-.text-link:active {
-  transform: scale(0.98);
-}
-
-.text-link:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-}
-
-.about-portrait {
-  margin: 0;
-  border-radius: 10px;
-  overflow: hidden;
-  aspect-ratio: 4 / 5;
-  background: var(--color-bg-secondary);
-  border-left: 1px solid rgba(125, 106, 214, 0.35);
-}
-
-.about-portrait img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.8s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .about-portrait:hover img {
-    transform: scale(1.04);
-  }
-}
-
-.about-portrait-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
+.skills-panel > h2,
+.section-head h2 {
   font-family: var(--font-serif);
-  font-size: 48px;
+  font-size: 22px;
   font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.skill-group {
+  padding: 12px 0 14px;
+  border-top: 1px solid var(--color-card-border);
+}
+
+.skill-group h3 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   color: var(--color-text-tertiary);
 }
 
-.about-skills {
-  position: relative;
-  z-index: 1;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0 28px 40px;
-  border-top: 1px solid rgba(125, 106, 214, 0.2);
-  padding-top: 28px;
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.skills-kicker {
-  margin: 0 0 8px;
+.about-main {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  min-width: 0;
+}
+
+.section-head p {
+  margin: 0 0 4px;
   font-size: 12px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-accent);
 }
 
-.skills-line {
-  margin: 0;
-  max-width: 40em;
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--color-text-secondary);
-}
-
-.about-path {
-  position: relative;
-  z-index: 1;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 0 28px 56px;
-}
-
-.about-path--edu {
-  padding-bottom: 80px;
-}
-
-.path-head {
-  margin-bottom: 18px;
-}
-
-.path-head h2 {
-  margin: 0;
-  font-family: var(--font-serif);
-  font-size: clamp(28px, 3vw, 36px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-
-.path-index {
-  list-style: none;
+.timeline {
+  --time-col: 118px;
+  --dot-col: 18px;
   margin: 0;
   padding: 0;
-  border-top: 1px solid rgba(125, 106, 214, 0.28);
+  list-style: none;
 }
 
-.path-index li {
+.timeline-item {
+  position: relative;
   display: grid;
-  grid-template-columns: 132px minmax(0, 1fr) auto;
-  gap: 16px;
-  align-items: baseline;
-  padding: 22px 0;
-  border-bottom: 1px solid rgba(125, 106, 214, 0.2);
+  grid-template-columns: var(--time-col) var(--dot-col) minmax(0, 1fr);
+  align-items: start;
 }
 
-.path-index time,
-.path-org {
+.timeline-item + .timeline-item {
+  margin-top: 16px;
+}
+
+.timeline-item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--time-col) + var(--dot-col) / 2);
+  top: 26px;
+  bottom: -42px;
+  border-left: 1.5px dashed var(--color-accent-border);
+  transform: translateX(-0.75px);
+}
+
+.timeline-time {
+  padding: 16px 12px 0 0;
+  text-align: right;
+  font-family: var(--font-serif);
   font-size: 13px;
+  line-height: 1.45;
   color: var(--color-text-tertiary);
 }
 
-.path-index li.is-current time {
+.timeline-item.is-current .timeline-time {
   color: var(--color-text);
   font-weight: 600;
 }
 
-.path-copy h3 {
-  margin: 0 0 6px;
-  font-family: var(--font-serif);
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+.timeline-dot {
+  width: 12px;
+  height: 12px;
+  margin: 20px auto 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(183, 164, 243, 0.32);
+  position: relative;
+  z-index: 1;
+}
+
+.timeline-dot::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 5px;
+  width: 14px;
+  height: 1.5px;
+  background: var(--color-accent-border);
+}
+
+.timeline-item.is-current .timeline-dot {
+  background: #9b87e8;
+  box-shadow: 0 0 0 5px rgba(183, 164, 243, 0.42);
+}
+
+html.dark .timeline-dot {
+  background: #1a1428;
+  box-shadow: 0 0 0 4px rgba(196, 170, 255, 0.28);
+}
+
+html.dark .timeline-item.is-current .timeline-dot {
+  background: #d7c6ff;
+  box-shadow: 0 0 0 5px rgba(196, 170, 255, 0.35);
+}
+
+.timeline-card {
+  padding: 14px 18px 16px;
+}
+
+.timeline-card h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
   line-height: 1.3;
 }
 
-.path-detail {
+.timeline-org,
+.timeline-detail {
   margin: 0;
   font-size: 14px;
   line-height: 1.55;
   color: var(--color-text-secondary);
 }
 
-.path-detail--soft {
-  margin-top: 4px;
-  color: var(--color-text-tertiary);
-}
-
-.path-org {
+.timeline-org {
   color: #7d6ad6;
   font-weight: 600;
 }
 
-html.dark .path-org {
+html.dark .timeline-org {
   color: #d2c2ff;
 }
 
-@media (max-width: 860px) {
-  .about-hero {
+.timeline-detail {
+  margin-top: 6px;
+}
+
+@media (max-width: 980px) {
+  .about-board {
     grid-template-columns: 1fr;
-    align-items: start;
-    padding-bottom: 36px;
+    gap: 20px;
   }
 
-  .about-portrait {
-    max-width: 420px;
-    max-height: 70vh;
-  }
-
-  .path-index li {
-    grid-template-columns: 96px minmax(0, 1fr);
-  }
-
-  .path-org {
-    grid-column: 2;
+  .about-side {
+    position: static;
   }
 }
 
 @media (max-width: 640px) {
-  .about-hero,
-  .about-skills,
-  .about-path {
-    padding-left: 18px;
-    padding-right: 18px;
+  .about-name {
+    font-size: 36px;
   }
 
-  .path-index li {
-    grid-template-columns: 1fr;
-    gap: 6px;
+  .timeline {
+    --time-col: 0px;
   }
 
-  .path-index time {
-    order: -1;
+  .timeline-item {
+    grid-template-columns: 18px minmax(0, 1fr);
+  }
+
+  .timeline-time {
+    grid-column: 2;
+    grid-row: 1;
+    padding: 0 0 8px 12px;
+    text-align: left;
+  }
+
+  .timeline-dot {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .timeline-card {
+    grid-column: 2;
+    grid-row: 2;
+    margin-left: 12px;
+  }
+
+  .timeline-item:not(:last-child)::before {
+    left: 9px;
+    bottom: -34px;
   }
 }
 
 @media print {
   .about-atmosphere,
-  .about-actions {
+  .profile-actions {
     display: none !important;
   }
 
-  .about-portrait {
-    max-height: 280px;
+  .about-side {
+    position: static;
   }
 }
 </style>
