@@ -37,9 +37,6 @@
             {{ $t('home.ctaNotes') }}
           </router-link>
         </div>
-        <p class="role">
-          {{ $t('home.roleLine') }}
-        </p>
       </div>
 
       <figure class="hero-frame reveal reveal-delay-2">
@@ -371,12 +368,6 @@ html.dark .home-wash {
 .continue-line:focus-visible {
   outline: 2px solid var(--violet);
   outline-offset: 3px;
-}
-
-.role {
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  color: var(--ink-faint);
 }
 
 .hero-frame {

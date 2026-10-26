@@ -79,13 +79,9 @@
             class="skill-group"
           >
             <h3>{{ group.name }}</h3>
-            <div class="skill-tags">
-              <span
-                v-for="skill in group.items"
-                :key="skill"
-                class="tag tag-accent"
-              >{{ skill }}</span>
-            </div>
+            <p class="skill-line">
+              {{ group.items.join(' · ') }}
+            </p>
           </div>
         </div>
       </aside>
@@ -371,10 +367,11 @@ html.dark .about-name .accent {
   color: var(--color-text-tertiary);
 }
 
-.skill-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+.skill-line {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
 }
 
 .about-main {

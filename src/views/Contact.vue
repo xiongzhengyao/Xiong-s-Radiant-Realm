@@ -48,26 +48,13 @@
           <ul class="channel-list">
             <li>
               <a
-                class="channel-link"
+                class="channel-row"
                 :href="githubUrl"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span
-                  class="channel-icon"
-                  aria-hidden="true"
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 16 16"
-                    fill="currentColor"
-                  ><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" /></svg>
-                </span>
-                <span class="channel-copy">
-                  <span class="channel-name">GitHub</span>
-                  <span class="channel-desc">{{ $t('contact.channels.github') }}</span>
-                </span>
+                <span class="channel-name">GitHub</span>
+                <span class="channel-desc">{{ $t('contact.channels.github') }}</span>
                 <span
                   class="channel-arrow"
                   aria-hidden="true"
@@ -76,26 +63,13 @@
             </li>
             <li>
               <a
-                class="channel-link"
+                class="channel-row"
                 :href="csdnUrl"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span
-                  class="channel-icon"
-                  aria-hidden="true"
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 1024 1024"
-                    fill="currentColor"
-                  ><path d="M512 0c282.784 0 512 229.216 512 512s-229.216 512-512 512S0 794.784 0 512 229.216 0 512 0z m189.952 752l11.2-108.224c-31.904 9.536-100.928 16.128-147.712 16.128-134.464 0-205.728-47.296-195.328-146.304 11.584-110.688 113.152-145.696 232.64-145.696 54.784 0 122.432 8.8 151.296 18.336L768 272.704C724.544 262.24 678.272 256 599.584 256c-203.2 0-388.704 94.88-406.4 263.488C178.336 660.96 303.584 768 535.616 768c80.672 0 138.464-6.432 166.336-16z" /></svg>
-                </span>
-                <span class="channel-copy">
-                  <span class="channel-name">CSDN</span>
-                  <span class="channel-desc">{{ $t('contact.channels.csdn') }}</span>
-                </span>
+                <span class="channel-name">CSDN</span>
+                <span class="channel-desc">{{ $t('contact.channels.csdn') }}</span>
                 <span
                   class="channel-arrow"
                   aria-hidden="true"
@@ -234,72 +208,57 @@ useReveal()
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  border-top: 1px solid rgba(125, 106, 214, 0.22);
 }
 
-.channel-link {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 14px;
-  border-radius: 16px;
-  border: 1px solid var(--color-card-border);
-  background: var(--color-bg-secondary);
+.channel-list li {
+  border-bottom: 1px solid rgba(125, 106, 214, 0.18);
+}
+
+.channel-row {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 14px 0;
   color: inherit;
   text-decoration: none;
-  transition:
-    border-color var(--duration-fast) var(--ease-out),
-    transform 0.12s var(--ease-out),
-    background var(--duration-fast) var(--ease-out);
-}
-
-.channel-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: var(--color-card-bg);
-  color: var(--color-text);
-  flex: 0 0 auto;
-}
-
-.channel-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  flex: 1;
 }
 
 .channel-name {
-  font-size: 15px;
-  font-weight: 600;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .channel-desc {
   font-size: 13px;
+  line-height: 1.5;
   color: var(--color-text-tertiary);
 }
 
 .channel-arrow {
-  font-size: 22px;
+  font-size: 18px;
   line-height: 1;
   color: var(--color-text-tertiary);
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .channel-link:hover {
-    border-color: var(--color-accent);
-    transform: translateY(-1px);
+  .channel-row:hover .channel-name {
+    color: var(--color-accent);
+  }
+
+  .channel-row:hover .channel-arrow {
+    color: var(--color-accent);
+    transform: translateX(3px);
   }
 }
 
-.channel-link:active {
-  transform: scale(0.99);
+.channel-row:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
 }
 
 @media (max-width: 780px) {
@@ -313,6 +272,25 @@ useReveal()
 
   .contact-intro h1 {
     font-size: 40px;
+  }
+
+  .channel-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 12px;
+  }
+
+  .channel-name {
+    grid-column: 1;
+  }
+
+  .channel-desc {
+    grid-column: 1;
+  }
+
+  .channel-arrow {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
   }
 }
 </style>

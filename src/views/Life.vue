@@ -548,6 +548,27 @@ html.dark .chip:not(.active) {
   aspect-ratio: 4 / 5;
 }
 
+.life-lead-frame :deep(.cover-art),
+.life-cover :deep(.cover-art),
+.life-lead-frame :deep(img),
+.life-cover :deep(img) {
+  transition: transform 0.7s var(--ease-out, ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .life-lead:hover .life-lead-frame :deep(.cover-art),
+  .life-lead:hover .life-lead-frame :deep(img),
+  .life-card:hover .life-cover :deep(.cover-art),
+  .life-card:hover .life-cover :deep(img) {
+    transform: scale(1.03);
+  }
+
+  .life-lead:hover .life-lead-caption h2,
+  .life-card:hover .life-caption h3 {
+    color: var(--color-accent);
+  }
+}
+
 .life-caption {
   margin-top: 12px;
 }
@@ -672,6 +693,27 @@ html.dark .chip:not(.active) {
 .life-sheet-leave-to .life-sheet {
   transform: translateY(12px) scale(0.98);
   opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .life-lead-frame :deep(.cover-art),
+  .life-cover :deep(.cover-art),
+  .life-lead-frame :deep(img),
+  .life-cover :deep(img) {
+    transition: none;
+  }
+
+  .life-sheet-enter-active,
+  .life-sheet-leave-active,
+  .life-sheet-enter-active .life-sheet,
+  .life-sheet-leave-active .life-sheet {
+    transition: none;
+  }
+
+  .life-sheet-enter-from .life-sheet,
+  .life-sheet-leave-to .life-sheet {
+    transform: none;
+  }
 }
 
 @media (max-width: 720px) {
