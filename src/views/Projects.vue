@@ -128,12 +128,32 @@
               v-for="project in restProjects"
               :key="project.id"
             >
-              <span class="project-index-year">{{ project.year }}</span>
-              <h3>{{ project.title }}</h3>
-              <span
-                v-if="project.tags && project.tags[0]"
-                class="project-index-tag"
-              >{{ project.tags[0] }}</span>
+              <template v-if="project.url">
+                <a
+                  class="project-index-row"
+                  :href="project.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span class="project-index-year">{{ project.year }}</span>
+                  <h3>{{ project.title }}</h3>
+                  <span
+                    v-if="project.tags && project.tags[0]"
+                    class="project-index-tag"
+                  >{{ project.tags[0] }}</span>
+                </a>
+              </template>
+              <div
+                v-else
+                class="project-index-row is-static"
+              >
+                <span class="project-index-year">{{ project.year }}</span>
+                <h3>{{ project.title }}</h3>
+                <span
+                  v-if="project.tags && project.tags[0]"
+                  class="project-index-tag"
+                >{{ project.tags[0] }}</span>
+              </div>
             </li>
           </ol>
         </template>
@@ -371,12 +391,28 @@ html.dark .chip:not(.active) {
 }
 
 .project-index li {
+  border-bottom: 1px solid rgba(125, 106, 214, 0.2);
+}
+
+.project-index-row {
   display: grid;
   grid-template-columns: 132px minmax(0, 1fr) auto;
   gap: 16px;
   align-items: baseline;
   padding: 20px 0;
-  border-bottom: 1px solid rgba(125, 106, 214, 0.2);
+  color: inherit;
+  text-decoration: none;
+}
+
+a.project-index-row:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a.project-index-row:hover h3 {
+    color: var(--color-accent);
+  }
 }
 
 .project-index-year,
@@ -422,7 +458,7 @@ html.dark .chip:not(.active) {
     max-height: 70vh;
   }
 
-  .project-index li {
+  .project-index-row {
     grid-template-columns: 88px minmax(0, 1fr);
   }
 

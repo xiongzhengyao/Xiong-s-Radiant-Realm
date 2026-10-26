@@ -435,16 +435,8 @@ h1.reveal,
   Explicitly NOT: flowing glow borders, 3D tilts, sparkles, scale(0.7) pop-in.
 */
 .card,
-.motion-card,
-.bento-card,
-.journal-featured,
-.journal-item,
 .continue-card,
-.post-card,
 .post-featured,
-.life-card,
-.project-card,
-.float-card:not(.float-card--hero),
 .resume-card {
   transition:
     transform var(--duration-rebound) var(--ease-spring),
@@ -455,16 +447,8 @@ h1.reveal,
 
 @media (hover: hover) and (pointer: fine) {
   .card:hover,
-  .motion-card:hover,
-  .bento-card:hover,
-  .journal-featured:hover,
-  .journal-item:hover,
   .continue-card:hover,
-  .post-card:hover,
   .post-featured:hover,
-  .life-card:hover,
-  .project-card:hover,
-  .float-card:not(.float-card--hero):hover,
   .resume-card:hover {
     transform: translateY(var(--motion-card-lift));
     border-color: var(--motion-card-border-hover);
@@ -474,16 +458,8 @@ h1.reveal,
 }
 
 .card:active,
-.motion-card:active,
-.bento-card:active,
-.journal-featured:active,
-.journal-item:active,
 .continue-card:active,
-.post-card:active,
 .post-featured:active,
-.life-card:active,
-.project-card:active,
-.float-card:not(.float-card--hero):active,
 .resume-card:active {
   transform: scale(var(--motion-card-press-scale));
   transition:
@@ -502,7 +478,7 @@ h1.reveal,
   font-size: 14px;
   font-weight: 600;
   line-height: 1.2;
-  border-radius: var(--radius-md);
+  border-radius: 2px;
   border: none;
   cursor: pointer;
   transition: background var(--duration-fast) var(--ease-out),
@@ -513,7 +489,6 @@ h1.reveal,
   white-space: nowrap;
   min-height: 42px;
   font-family: var(--font-sans);
-  border-radius: 2px;
 }
 
 /* Light press (80–120ms) then spring rebound — primary + outline/ghost */
@@ -576,7 +551,7 @@ h1.reveal,
   font-size: 12px;
   font-weight: 500;
   font-family: var(--font-sans);
-  border-radius: var(--radius-full);
+  border-radius: 2px;
   border: none;
   background: var(--color-tag-bg);
   color: var(--color-tag-text);
