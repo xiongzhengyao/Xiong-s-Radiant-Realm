@@ -114,9 +114,10 @@
   --page-enter-y: 0px;
   --page-leave-y: 0px;
   --page-leave-opacity: 0;
-  /* Cinema frame */
+  /* Cinema frame. Screen tracks the theme so list pages stay readable in light;
+     html.dark pins the screening room. Home paints its own stage on top. */
   --cinema-letterbox: clamp(28px, 7vh, 64px);
-  --cinema-screen: #05040a;
+  --cinema-screen: var(--color-bg);
   --cinema-violet: #8b7ad8;
   --cinema-violet-soft: #c4b2f6;
   /* Interactive cards — lift / press / purple border / soft shadow */
@@ -161,6 +162,7 @@
 html.dark {
   /* Screening-room dark — muted violet, not neon purple */
   --color-bg: #05040a;
+  --cinema-screen: #05040a;
   --color-bg-secondary: #0e0c14;
   --color-bg-tertiary: #121018;
   --color-surface: #16121f;
