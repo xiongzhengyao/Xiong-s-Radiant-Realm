@@ -79,13 +79,9 @@
             class="skill-group"
           >
             <h3>{{ group.name }}</h3>
-            <div class="skill-tags">
-              <span
-                v-for="skill in group.items"
-                :key="skill"
-                class="tag tag-accent"
-              >{{ skill }}</span>
-            </div>
+            <p class="skill-line">
+              {{ group.items.join(' · ') }}
+            </p>
           </div>
         </div>
       </aside>
@@ -220,10 +216,10 @@ const printResume = () => {
   z-index: 1;
   max-width: var(--max-width-wide);
   margin: 0 auto;
-  padding: 36px 24px 80px;
+  padding: 48px 28px calc(var(--cinema-letterbox) + 96px);
   display: grid;
   grid-template-columns: 340px minmax(0, 1fr);
-  gap: 28px;
+  gap: 36px;
   align-items: start;
 }
 
@@ -240,8 +236,7 @@ const printResume = () => {
 .timeline-card {
   background: var(--color-card-bg);
   border: 1px solid var(--color-card-border);
-  border-radius: 12px;
-  border-color: rgba(125, 106, 214, 0.18);
+  border-radius: 4px;
   box-shadow: none;
 }
 
@@ -289,19 +284,15 @@ const printResume = () => {
 
 .about-name {
   font-family: var(--font-serif);
-  font-size: 44px;
+  font-size: clamp(36px, 4vw, 48px);
   font-weight: 700;
-  letter-spacing: 0.04em;
-  line-height: 1;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
   margin: 0 0 8px;
 }
 
 .about-name .accent {
-  color: #9a8bc4;
-}
-
-html.dark .about-name .accent {
-  color: #cbb6ff;
+  color: var(--color-accent);
 }
 
 .about-title {
@@ -353,9 +344,10 @@ html.dark .about-name .accent {
 .skills-panel > h2,
 .section-head h2 {
   font-family: var(--font-serif);
-  font-size: 22px;
+  font-size: clamp(22px, 2.2vw, 28px);
   font-weight: 700;
-  margin: 0 0 12px;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px;
 }
 
 .skill-group {
@@ -371,10 +363,12 @@ html.dark .about-name .accent {
   color: var(--color-text-tertiary);
 }
 
-.skill-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+.skill-line {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  color: var(--color-text-secondary);
 }
 
 .about-main {
@@ -436,12 +430,12 @@ html.dark .about-name .accent {
 }
 
 .timeline-dot {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   margin: 20px auto 0;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(183, 164, 243, 0.32);
+  background: var(--color-accent);
+  box-shadow: 0 0 0 4px var(--color-accent-light);
   position: relative;
   z-index: 1;
 }
@@ -490,12 +484,8 @@ html.dark .timeline-item.is-current .timeline-dot {
 }
 
 .timeline-org {
-  color: #7d6ad6;
+  color: var(--color-accent);
   font-weight: 600;
-}
-
-html.dark .timeline-org {
-  color: #d2c2ff;
 }
 
 .timeline-detail {

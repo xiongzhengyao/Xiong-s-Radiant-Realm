@@ -210,11 +210,20 @@ watch(filteredProjects, () => {
   font-weight: 500;
   font-family: var(--font-sans);
   cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-cinema),
+    border-color var(--duration-fast) var(--ease-cinema);
 }
 
 .chip.active {
   color: var(--color-accent);
   border-bottom-color: var(--color-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover {
+    color: var(--color-text);
+  }
 }
 
 .search-wrap {
@@ -236,10 +245,10 @@ watch(filteredProjects, () => {
 .reel {
   display: flex;
   flex-direction: column;
-  gap: 56px;
+  gap: 72px;
   max-width: 1320px;
   margin: 0 auto;
-  padding: 12px 24px 0;
+  padding: 28px 24px 0;
 }
 
 .reel-scene {
@@ -260,6 +269,14 @@ watch(filteredProjects, () => {
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 1.4s var(--ease-cinema, ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .reel-scene:hover .reel-still :deep(.cover-art),
+  .reel-scene:hover .reel-still :deep(img) {
+    transform: scale(1.03);
+  }
 }
 
 .reel-veil {
@@ -293,12 +310,13 @@ watch(filteredProjects, () => {
 }
 
 .reel-caption h2 {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   font-family: var(--font-serif);
-  font-size: clamp(26px, 3.2vw, 42px);
+  font-size: clamp(28px, 3.6vw, 48px);
   font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  text-wrap: balance;
 }
 
 .reel-desc {
@@ -325,6 +343,22 @@ watch(filteredProjects, () => {
   text-transform: uppercase;
   color: var(--cinema-violet-soft, #c4b2f6);
   text-decoration: none;
+  transition: opacity var(--duration-fast) var(--ease-cinema);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-link:hover {
+    opacity: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reel-still :deep(.cover-art),
+  .reel-still :deep(img),
+  .chip,
+  .project-link {
+    transition: none;
+  }
 }
 
 .empty-state {

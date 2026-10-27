@@ -254,49 +254,53 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
 .title-veil {
   position: absolute;
   inset: 0;
+  /* Volume light: readable subtitle track without flattening the still */
   background:
-    linear-gradient(90deg, rgba(5, 4, 10, 0.82) 0%, rgba(5, 4, 10, 0.35) 48%, rgba(5, 4, 10, 0.55) 100%),
-    linear-gradient(0deg, rgba(5, 4, 10, 0.88) 0%, rgba(5, 4, 10, 0.2) 42%, rgba(88, 40, 160, 0.22) 100%);
+    linear-gradient(105deg, rgba(5, 4, 10, 0.9) 0%, rgba(5, 4, 10, 0.42) 42%, rgba(5, 4, 10, 0.28) 68%, rgba(5, 4, 10, 0.55) 100%),
+    linear-gradient(0deg, rgba(5, 4, 10, 0.92) 0%, rgba(5, 4, 10, 0.18) 48%, rgba(88, 48, 150, 0.18) 100%);
 }
 
 .title-copy {
   position: relative;
   z-index: 1;
-  max-width: 18em;
+  max-width: 16em;
 }
 
 .kicker {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 0 0 18px;
+  margin: 0 0 20px;
   font-size: 11px;
-  letter-spacing: 0.28em;
+  font-weight: 500;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--violet);
 }
 
 .kicker-slash {
-  opacity: 0.5;
+  opacity: 0.45;
 }
 
 .title-copy h1 {
-  margin: 0 0 16px;
+  margin: 0 0 18px;
   font-family: var(--font-serif);
   font-weight: 700;
-  font-size: clamp(44px, 7vw, 84px);
-  line-height: 1.08;
-  letter-spacing: -0.035em;
+  font-size: clamp(48px, 7.2vw, 92px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
   color: var(--ink);
   text-wrap: balance;
 }
 
 .lede {
-  margin: 0 0 28px;
-  font-size: 16px;
-  line-height: 1.65;
+  margin: 0 0 32px;
+  font-size: 17px;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
   color: var(--ink-soft);
-  max-width: 28em;
+  max-width: 26em;
+  text-wrap: pretty;
 }
 
 .hero-actions {
@@ -310,15 +314,25 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  padding: 0 18px;
+  padding: 0 20px;
   border: 1px solid var(--violet);
   border-radius: 2px;
   background: var(--violet);
   color: var(--violet-ink);
   font-size: 12px;
+  font-weight: 500;
   letter-spacing: 0.18em;
   text-decoration: none;
   text-transform: uppercase;
+  transition:
+    background var(--duration-base) var(--ease-cinema),
+    color var(--duration-base) var(--ease-cinema),
+    border-color var(--duration-base) var(--ease-cinema),
+    transform var(--duration-press) var(--ease-out);
+}
+
+.text-link:active {
+  transform: scale(0.98);
 }
 
 .text-link--quiet {
@@ -338,13 +352,15 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
   z-index: 1;
   max-width: 1320px;
   margin: 0 auto;
-  padding: 28px clamp(20px, 4vw, 48px) 12px;
+  padding: 56px clamp(20px, 4vw, 48px) 24px;
+  border-top: 1px solid rgba(196, 178, 246, 0.14);
 }
 
 .chapters-label {
-  margin: 0 0 18px;
+  margin: 0 0 28px;
   font-size: 11px;
-  letter-spacing: 0.28em;
+  font-weight: 500;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--violet);
 }
@@ -352,7 +368,7 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
 .chapters-rail {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  gap: 28px;
 }
 
 .chapter {
@@ -413,8 +429,14 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
     transform: scale(1.04);
   }
 
+  .text-link:hover {
+    background: #d6c8ff;
+    border-color: #d6c8ff;
+  }
+
   .text-link--quiet:hover {
     background: rgba(196, 178, 246, 0.12);
+    color: #e8dcff;
   }
 }
 

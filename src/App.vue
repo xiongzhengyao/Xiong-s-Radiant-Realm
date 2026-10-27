@@ -577,7 +577,7 @@ html.dark .app.is-quiet-sky .studio-stars {
   inset: 0;
   z-index: 85;
   pointer-events: none;
-  opacity: 0.07;
+  opacity: 0.055;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
@@ -678,14 +678,15 @@ main,
   align-items: center;
   gap: 8px;
   font-family: var(--font-sans);
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--color-text);
   text-decoration: none;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.08em;
+  text-transform: none;
   margin-right: 0;
   justify-self: start;
-  transition: opacity var(--duration-fast);
+  transition: opacity var(--duration-fast) var(--ease-cinema);
 }
 
 .nav-logo-mark {
@@ -710,15 +711,15 @@ main,
 
 .nav-link {
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
-  color: var(--color-text-secondary);
+  color: var(--color-text-tertiary);
   text-decoration: none;
-  padding: 6px 14px;
-  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  border-radius: 0;
   position: relative;
-  transition: color var(--duration-fast) var(--ease-out),
-              background var(--duration-fast) var(--ease-out);
+  letter-spacing: 0.04em;
+  transition: color var(--duration-base) var(--ease-cinema);
   white-space: nowrap;
 }
 
@@ -730,22 +731,22 @@ main,
 
 .nav-link.router-link-active {
   color: var(--color-text);
-  font-weight: 600;
+  font-weight: 500;
   background: transparent;
 }
 
 .nav-link.router-link-active::after {
   content: '';
   position: absolute;
-  bottom: 2px;
+  bottom: 4px;
   left: 12px;
   right: 12px;
   height: 1px;
   width: auto;
   transform: none;
   border-radius: 0;
-  background: var(--color-nav-current);
-  opacity: 0.9;
+  background: var(--color-accent);
+  opacity: 1;
 }
 
 .nav-actions {
@@ -872,7 +873,7 @@ main,
   position: relative;
   background: transparent;
   border-top: none;
-  padding: var(--space-16) 0 var(--space-8);
+  padding: var(--space-16) 0 calc(var(--cinema-letterbox) + var(--space-10));
 }
 
 .footer::before {
@@ -888,7 +889,7 @@ main,
     var(--color-accent) 50%,
     transparent 100%
   );
-  opacity: 0.4;
+  opacity: 0.28;
 }
 
 .footer-inner {
@@ -903,31 +904,36 @@ main,
 }
 
 .footer-logo {
-  font-size: 24px;
-  font-weight: 600;
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 700;
   color: var(--color-text);
   text-decoration: none;
   letter-spacing: -0.03em;
+  line-height: 1.1;
 }
 
 .footer-tagline {
   font-size: 14px;
   color: var(--color-text-secondary);
   margin: var(--space-3) 0 var(--space-4);
-  line-height: 1.5;
+  line-height: 1.65;
+  max-width: 28em;
 }
 
 .footer-email-btn {
   display: inline-flex;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   color: var(--color-accent);
   text-decoration: none;
+  transition: opacity var(--duration-fast) var(--ease-cinema);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .footer-email-btn:hover {
-    text-decoration: underline;
+    opacity: 0.72;
   }
 }
 
@@ -938,11 +944,12 @@ main,
 }
 
 .footer-heading {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-tertiary);
   margin-bottom: var(--space-4);
-  letter-spacing: 0;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
 
 .footer-col {
@@ -952,10 +959,10 @@ main,
 }
 
 .footer-link {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--color-text-secondary);
   text-decoration: none;
-  transition: color var(--duration-fast) var(--ease-out);
+  transition: color var(--duration-fast) var(--ease-cinema);
   line-height: 1.5;
 }
 
@@ -982,7 +989,7 @@ main,
 
 .footer-bottom {
   padding-top: var(--space-6);
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-divider);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -991,13 +998,15 @@ main,
 }
 
 .footer-built {
-  font-size: 13px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
   color: var(--color-text-tertiary);
   margin: 0;
 }
 
 .footer-bottom p {
-  font-size: 13px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
   color: var(--color-text-tertiary);
   margin: 0;
 }

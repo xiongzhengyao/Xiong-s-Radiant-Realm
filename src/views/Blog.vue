@@ -1048,12 +1048,21 @@ watch(filteredPosts, () => {
   font-weight: 500;
   font-family: var(--font-sans);
   cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-cinema),
+    border-color var(--duration-fast) var(--ease-cinema);
 }
 
 .chip.active {
   background: transparent;
   color: var(--color-accent);
   border-bottom-color: var(--color-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover {
+    color: var(--color-text);
+  }
 }
 
 html.dark .chip:not(.active) {
@@ -1112,14 +1121,14 @@ html.dark .chip:not(.active) {
   grid-template-columns: 96px minmax(0, 1fr) auto 88px;
   gap: 20px;
   align-items: center;
-  padding: 18px 0;
-  border-top: 1px solid rgba(125, 106, 214, 0.22);
+  padding: 22px 0;
+  border-top: 1px solid var(--color-divider);
   color: inherit;
   text-decoration: none;
 }
 
 .note-index .note-row:last-child {
-  border-bottom: 1px solid rgba(125, 106, 214, 0.22);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .note-row:focus-visible {
@@ -1134,11 +1143,12 @@ html.dark .chip:not(.active) {
 
 .note-main h2 {
   font-family: var(--font-serif);
-  font-size: 22px;
+  font-size: clamp(18px, 1.6vw, 22px);
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: -0.02em;
   margin: 0;
+  transition: color var(--duration-base) var(--ease-cinema);
 }
 
 .note-main p {
@@ -1162,10 +1172,10 @@ html.dark .chip:not(.active) {
 .note-thumb {
   width: 88px;
   height: 58px;
-  border-radius: 6px;
+  border-radius: 2px;
   overflow: hidden;
   opacity: 0;
-  transition: opacity 0.25s ease;
+  transition: opacity var(--duration-base) var(--ease-cinema);
 }
 
 .note-thumb img {
@@ -1178,6 +1188,10 @@ html.dark .chip:not(.active) {
 @media (hover: hover) and (pointer: fine) {
   .note-row:hover .note-thumb {
     opacity: 1;
+  }
+
+  .note-row:hover .note-main h2 {
+    color: var(--color-accent);
   }
 }
 
@@ -1435,11 +1449,12 @@ html.dark .chip:not(.active) {
 .article-title {
   font-family: var(--font-serif);
   font-size: clamp(1.85rem, 3.6vw, 2.65rem);
-  font-weight: 600;
-  line-height: 1.18;
-  letter-spacing: -0.03em;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
   color: var(--color-text);
   margin: 0 0 var(--space-4);
+  text-wrap: balance;
 }
 
 .article-lead {

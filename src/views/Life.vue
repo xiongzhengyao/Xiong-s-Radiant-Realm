@@ -419,12 +419,21 @@ watch(activePost, post => {
   font-weight: 500;
   font-family: var(--font-sans);
   cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-cinema),
+    border-color var(--duration-fast) var(--ease-cinema);
 }
 
 .chip.active {
   background: transparent;
   color: var(--color-accent);
   border-bottom-color: var(--color-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover {
+    color: var(--color-text);
+  }
 }
 
 html.dark .chip:not(.active) {
@@ -466,7 +475,7 @@ html.dark .chip:not(.active) {
 .life-scenes {
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: 64px;
 }
 
 .life-scene {
@@ -517,6 +526,7 @@ html.dark .chip:not(.active) {
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.3;
+  transition: color var(--duration-base) var(--ease-cinema);
 }
 
 .life-scene-caption span {

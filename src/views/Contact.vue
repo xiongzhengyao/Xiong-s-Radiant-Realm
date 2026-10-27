@@ -85,38 +85,41 @@ useReveal()
 }
 
 .curtain {
-  max-width: 720px;
+  max-width: 680px;
   margin: 0 auto;
   padding:
-    clamp(48px, 10vh, 96px)
+    clamp(64px, 14vh, 120px)
     28px
-    calc(var(--cinema-letterbox) + 80px);
+    calc(var(--cinema-letterbox) + 96px);
   text-align: center;
 }
 
 .curtain-title {
-  margin: 0 0 14px;
+  margin: 0 0 18px;
   font-family: var(--font-serif);
-  font-size: clamp(44px, 6vw, 72px);
+  font-size: clamp(48px, 6.5vw, 80px);
   font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  text-wrap: balance;
 }
 
 .curtain-lede {
-  margin: 0 auto 36px;
-  max-width: 28em;
-  font-size: 16px;
-  line-height: 1.65;
+  margin: 0 auto 48px;
+  max-width: 26em;
+  font-size: 17px;
+  line-height: 1.7;
   color: var(--color-text-secondary);
+  text-wrap: pretty;
 }
 
 .curtain-place {
   margin: 0 0 12px;
   font-size: 12px;
-  letter-spacing: 0.18em;
+  font-weight: 500;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-text-tertiary);
+  color: var(--color-accent);
 }
 
 .curtain-email {
@@ -129,10 +132,13 @@ useReveal()
   line-height: 1.25;
   color: var(--color-text);
   text-decoration: none;
+  transition: color var(--duration-base) var(--ease-cinema);
 }
 
-.curtain-email:hover {
-  color: var(--color-accent);
+@media (hover: hover) and (pointer: fine) {
+  .curtain-email:hover {
+    color: var(--color-accent);
+  }
 }
 
 .curtain-phone {
@@ -154,19 +160,31 @@ useReveal()
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  padding: 0 18px;
+  padding: 0 20px;
   border: 1px solid var(--color-accent);
   border-radius: 2px;
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-accent-contrast);
   font-size: 12px;
+  font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   text-decoration: none;
+  transition:
+    background var(--duration-base) var(--ease-cinema),
+    border-color var(--duration-base) var(--ease-cinema),
+    transform var(--duration-press) var(--ease-out);
 }
 
-html.dark .text-link {
-  color: #1a1428;
+.text-link:active {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .text-link:hover {
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+  }
 }
 
 .text-link:focus-visible,
@@ -202,6 +220,7 @@ html.dark .text-link {
   font-family: var(--font-serif);
   font-size: 18px;
   font-weight: 700;
+  transition: color var(--duration-base) var(--ease-cinema);
 }
 
 .credit-desc {
