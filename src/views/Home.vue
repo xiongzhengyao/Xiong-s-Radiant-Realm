@@ -1,16 +1,21 @@
 <template>
   <div class="home">
-    <div
-      class="home-wash"
-      aria-hidden="true"
-    />
-    <div
-      class="home-grain"
-      aria-hidden="true"
-    />
+    <section
+      class="title-card"
+      aria-label="Snowhush"
+    >
+      <div
+        class="title-still"
+        aria-hidden="true"
+      >
+        <img
+          src="/images/drone-white.jpg"
+          alt=""
+        >
+        <div class="title-veil" />
+      </div>
 
-    <section class="hero">
-      <div class="hero-copy reveal">
+      <div class="title-copy reveal">
         <p class="kicker">
           <span>Snowhush</span>
           <span
@@ -37,103 +42,80 @@
             {{ $t('home.ctaNotes') }}
           </router-link>
         </div>
-        <p class="role">
-          {{ $t('home.roleLine') }}
-        </p>
       </div>
-
-      <figure class="hero-frame reveal reveal-delay-2">
-        <img
-          src="/images/drone-white.jpg"
-          :alt="$t('home.heroAlt')"
-        >
-      </figure>
     </section>
 
     <section
-      class="index"
+      class="chapters"
       :aria-label="$t('home.latestNotes')"
     >
-      <router-link
-        class="index-col reveal"
-        :to="noteTo"
-        :aria-label="latestNote?.title || $t('home.indexNotes')"
-      >
-        <header class="index-head">
-          <span class="index-name">{{ $t('home.indexNotes') }}</span>
-          <span
-            v-if="noteRelative"
-            class="index-date"
-          >{{ noteRelative }}</span>
-        </header>
-        <div class="index-cover">
-          <img
-            :src="noteCover"
-            alt=""
-          >
-        </div>
-        <h2 v-if="latestNote?.title">
-          {{ latestNote.title }}
-        </h2>
-        <p
-          v-if="noteTagLabel"
-          class="index-tag"
+      <p class="chapters-label reveal">
+        Cont. · 续映
+      </p>
+      <div class="chapters-rail">
+        <router-link
+          class="chapter reveal"
+          :to="noteTo"
+          :aria-label="latestNote?.title || $t('home.indexNotes')"
         >
-          {{ noteTagLabel }}
-        </p>
-      </router-link>
+          <div class="chapter-still">
+            <img
+              :src="noteCover"
+              alt=""
+            >
+          </div>
+          <div class="chapter-meta">
+            <span class="chapter-name">{{ $t('home.indexNotes') }}</span>
+            <span
+              v-if="noteRelative"
+              class="chapter-date"
+            >{{ noteRelative }}</span>
+          </div>
+          <h2 v-if="latestNote?.title">
+            {{ latestNote.title }}
+          </h2>
+        </router-link>
 
-      <router-link
-        v-if="featuredProject"
-        class="index-col reveal reveal-delay-1"
-        to="/projects"
-        :aria-label="featuredProject.title"
-      >
-        <header class="index-head">
-          <span class="index-name">{{ $t('home.indexWork') }}</span>
-          <span
-            v-if="featuredProject.year"
-            class="index-date"
-          >{{ featuredProject.year }}</span>
-        </header>
-        <div class="index-cover">
-          <img
-            :src="featuredProject.image || '/images/drone-studio.jpg'"
-            alt=""
-          >
-        </div>
-        <h2>{{ featuredProject.title }}</h2>
-        <p
-          v-if="projectTagLabel"
-          class="index-tag"
+        <router-link
+          v-if="featuredProject"
+          class="chapter reveal reveal-delay-1"
+          to="/projects"
+          :aria-label="featuredProject.title"
         >
-          {{ projectTagLabel }}
-        </p>
-      </router-link>
+          <div class="chapter-still">
+            <img
+              :src="featuredProject.image || '/images/drone-studio.jpg'"
+              alt=""
+            >
+          </div>
+          <div class="chapter-meta">
+            <span class="chapter-name">{{ $t('home.indexWork') }}</span>
+            <span
+              v-if="featuredProject.year"
+              class="chapter-date"
+            >{{ featuredProject.year }}</span>
+          </div>
+          <h2>{{ featuredProject.title }}</h2>
+        </router-link>
 
-      <router-link
-        class="index-col reveal reveal-delay-2"
-        to="/life"
-        :aria-label="lifeCaptionText"
-      >
-        <header class="index-head">
-          <span class="index-name">{{ $t('home.indexLife') }}</span>
-          <span class="index-date">{{ lifeMeta }}</span>
-        </header>
-        <div class="index-cover">
-          <img
-            :src="lifeImage"
-            alt=""
-          >
-        </div>
-        <h2>{{ lifeCaptionText }}</h2>
-        <p
-          v-if="lifeTagText"
-          class="index-tag"
+        <router-link
+          class="chapter reveal reveal-delay-2"
+          to="/life"
+          :aria-label="lifeCaptionText"
         >
-          {{ lifeTagText }}
-        </p>
-      </router-link>
+          <div class="chapter-still">
+            <img
+              :src="lifeImage"
+              alt=""
+            >
+          </div>
+          <div class="chapter-meta">
+            <span class="chapter-name">{{ $t('home.indexLife') }}</span>
+            <span class="chapter-date">{{ lifeMeta }}</span>
+          </div>
+          <h2>{{ lifeCaptionText }}</h2>
+        </router-link>
+      </div>
     </section>
 
     <section
@@ -163,7 +145,6 @@ import { useReveal } from '@/composables/useReveal'
 import { useBlogStore } from '@/stores/blogStore'
 import { useCareer } from '@/composables/useCareer'
 import { useReadHistory } from '@/composables/useReadHistory'
-import { getDesignTag } from '@/utils/categoryLabel'
 import { getPostCover } from '@/utils/postCover'
 import { formatRelativeDate } from '@/utils/relativeTime'
 
@@ -181,17 +162,8 @@ const continuePost = computed(() => {
 
 const latestNote = computed(() => blogStore.getRecentPosts(1)[0] || null)
 const featuredProject = computed(() => companyProjects.value[0] || null)
-const projectTagLabel = computed(() => {
-  const project = featuredProject.value
-  if (!project) return ''
-  if (Array.isArray(project.tags) && project.tags.length) return project.tags[0]
-  return project.role || ''
-})
 
 const noteCover = computed(() => getPostCover(latestNote.value))
-const noteTagLabel = computed(() => (
-  latestNote.value ? getDesignTag(latestNote.value, locale.value).label : ''
-))
 
 const noteRelative = computed(() => {
   if (latestNote.value?.dateLabel) return latestNote.value.dateLabel
@@ -220,7 +192,6 @@ const lifePosts = computed(() => {
 const latestLife = computed(() => lifePosts.value[0] || null)
 const lifeImage = computed(() => latestLife.value?.image || '/images/city.jpg')
 const lifeCaptionText = computed(() => latestLife.value?.title || t('home.lifeCaption'))
-const lifeTagText = computed(() => latestLife.value?.tags?.[0] || '')
 const lifeMeta = computed(() => (
   latestLife.value?.date
     ? formatRelativeDate(latestLife.value.date, locale.value)
@@ -240,105 +211,98 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
 
 <style scoped>
 .home {
-  --paper: #f3eef8;
-  --ink: #1c1830;
-  --ink-soft: rgba(40, 32, 72, 0.72);
-  --ink-faint: rgba(70, 56, 120, 0.52);
-  --line: rgba(125, 106, 214, 0.28);
-  --violet: #6d5bc8;
-  --violet-ink: #ffffff;
+  --ink: #f3efe8;
+  --ink-soft: rgba(243, 239, 232, 0.78);
+  --ink-faint: rgba(243, 239, 232, 0.48);
+  --violet: var(--cinema-violet-soft, #c4b2f6);
+  --violet-ink: #120e1c;
   position: relative;
-  padding-top: var(--nav-height);
-  background: var(--paper);
   color: var(--ink);
+  background: #07060c;
   min-height: 100vh;
+  padding-bottom: calc(var(--cinema-letterbox) + 48px);
 }
 
-html.dark .home {
-  --paper: #0c0a14;
-  --ink: #f4f1fb;
-  --ink-soft: rgba(244, 241, 251, 0.74);
-  --ink-faint: rgba(210, 198, 255, 0.58);
-  --line: rgba(184, 164, 243, 0.32);
-  --violet: #c4b2f6;
-  --violet-ink: #1a1428;
+.title-card {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  padding:
+    calc(var(--nav-height) + 24px)
+    clamp(20px, 4vw, 48px)
+    calc(var(--cinema-letterbox) + 48px);
+  overflow: hidden;
 }
 
-.home-wash {
+.title-still {
   position: absolute;
   inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 52% 44% at 8% 12%, rgba(183, 164, 243, 0.55), transparent 68%),
-    radial-gradient(ellipse 40% 36% at 92% 78%, rgba(125, 106, 214, 0.22), transparent 70%);
+  z-index: 0;
 }
 
-html.dark .home-wash {
-  background:
-    radial-gradient(ellipse 55% 46% at 16% 8%, rgba(124, 70, 210, 0.42), transparent 64%),
-    radial-gradient(ellipse 42% 38% at 88% 82%, rgba(88, 36, 168, 0.36), transparent 70%);
+.title-still img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  display: block;
+  animation: kenburns 18s var(--ease-cinema, ease) both;
+  transform-origin: 55% 40%;
 }
 
-.home-grain {
+.title-veil {
   position: absolute;
   inset: 0;
-  pointer-events: none;
-  opacity: 0.045;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background:
+    linear-gradient(90deg, rgba(5, 4, 10, 0.82) 0%, rgba(5, 4, 10, 0.35) 48%, rgba(5, 4, 10, 0.55) 100%),
+    linear-gradient(0deg, rgba(5, 4, 10, 0.88) 0%, rgba(5, 4, 10, 0.2) 42%, rgba(88, 40, 160, 0.22) 100%);
 }
 
-.hero {
+.title-copy {
   position: relative;
   z-index: 1;
-  max-width: 1180px;
-  margin: 0 auto;
-  min-height: calc(100vh - var(--nav-height));
-  padding: clamp(36px, 6vh, 72px) 28px 64px;
-  display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(260px, 0.86fr);
-  gap: clamp(28px, 4vw, 56px);
-  align-items: center;
+  max-width: 18em;
 }
 
 .kicker {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 22px;
-  font-size: 12px;
-  letter-spacing: 0.22em;
+  margin: 0 0 18px;
+  font-size: 11px;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--violet);
 }
 
 .kicker-slash {
-  opacity: 0.55;
+  opacity: 0.5;
 }
 
-.hero h1 {
+.title-copy h1 {
+  margin: 0 0 16px;
   font-family: var(--font-serif);
   font-weight: 700;
-  font-size: clamp(48px, 5.4vw, 72px);
-  line-height: 1.12;
+  font-size: clamp(44px, 7vw, 84px);
+  line-height: 1.08;
   letter-spacing: -0.035em;
   color: var(--ink);
-  max-width: 8em;
-  margin-bottom: 18px;
+  text-wrap: balance;
 }
 
 .lede {
+  margin: 0 0 28px;
   font-size: 16px;
   line-height: 1.65;
   color: var(--ink-soft);
   max-width: 28em;
-  margin-bottom: 28px;
 }
 
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 28px;
 }
 
 .text-link {
@@ -351,10 +315,10 @@ html.dark .home-wash {
   border-radius: 2px;
   background: var(--violet);
   color: var(--violet-ink);
-  font-size: 13px;
-  letter-spacing: 0.14em;
+  font-size: 12px;
+  letter-spacing: 0.18em;
   text-decoration: none;
-  transition: transform 0.12s ease, background 0.2s ease, color 0.2s ease;
+  text-transform: uppercase;
 }
 
 .text-link--quiet {
@@ -362,134 +326,102 @@ html.dark .home-wash {
   color: var(--violet);
 }
 
-.text-link:active {
-  transform: scale(0.98);
-}
-
 .text-link:focus-visible,
-.index-col:focus-visible,
+.chapter:focus-visible,
 .continue-line:focus-visible {
   outline: 2px solid var(--violet);
   outline-offset: 3px;
 }
 
-.role {
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  color: var(--ink-faint);
-}
-
-.hero-frame {
-  margin: 0;
-  padding-left: clamp(20px, 3vw, 48px);
-  border-left: 1px solid var(--line);
-}
-
-.hero-frame img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  object-position: center 42%;
-  border-radius: 10px;
-  transition: transform 0.8s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .hero-frame:hover img,
-  .index-col:hover .index-cover img {
-    transform: scale(1.04);
-  }
-
-  .text-link--quiet:hover {
-    background: rgba(125, 106, 214, 0.1);
-  }
-
-  html.dark .text-link--quiet:hover {
-    background: rgba(196, 178, 246, 0.12);
-  }
-}
-
-.index {
+.chapters {
   position: relative;
   z-index: 1;
-  max-width: 1180px;
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 8px 28px 28px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
-  border-top: 1px solid var(--line);
+  padding: 28px clamp(20px, 4vw, 48px) 12px;
 }
 
-.index-col {
-  display: block;
-  color: inherit;
-  text-decoration: none;
-  padding-top: 22px;
-}
-
-.index-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 12px;
-}
-
-.index-name {
+.chapters-label {
+  margin: 0 0 18px;
   font-size: 11px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--violet);
 }
 
-.index-date {
-  font-size: 12px;
-  color: var(--ink-faint);
+.chapters-rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
 }
 
-.index-cover {
-  height: 160px;
-  margin: 14px 0 14px;
-  border-radius: 8px;
+.chapter {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.chapter-still {
+  aspect-ratio: 2.39 / 1;
   overflow: hidden;
-  background: rgba(26, 24, 20, 0.06);
+  border-radius: 2px;
+  background: #120e1c;
 }
 
-.index-cover img {
+.chapter-still img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.8s ease;
+  transition: transform 1.2s var(--ease-cinema, ease);
 }
 
-.index-col h2 {
+.chapter-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.chapter-name {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--violet);
+}
+
+.chapter-date {
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+.chapter h2 {
+  margin: 8px 0 0;
   font-family: var(--font-serif);
-  font-size: 22px;
+  font-size: clamp(18px, 1.6vw, 24px);
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: -0.02em;
-  color: var(--ink);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.index-tag {
-  margin-top: 8px;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  color: var(--ink-faint);
+@media (hover: hover) and (pointer: fine) {
+  .chapter:hover .chapter-still img {
+    transform: scale(1.04);
+  }
+
+  .text-link--quiet:hover {
+    background: rgba(196, 178, 246, 0.12);
+  }
 }
 
 .continue {
-  position: relative;
-  z-index: 1;
-  max-width: 1180px;
-  margin: 12px auto 72px;
-  padding: 0 28px;
+  max-width: 1320px;
+  margin: 8px auto 0;
+  padding: 0 clamp(20px, 4vw, 48px);
 }
 
 .continue-line {
@@ -497,15 +429,15 @@ html.dark .home-wash {
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: baseline;
   gap: 18px;
-  padding: 18px 0;
-  border-top: 1px solid var(--line);
+  padding: 20px 0;
+  border-top: 1px solid rgba(196, 178, 246, 0.22);
   color: inherit;
   text-decoration: none;
 }
 
 .continue-label {
   font-size: 11px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--violet);
 }
@@ -523,44 +455,23 @@ html.dark .home-wash {
   color: var(--ink-faint);
 }
 
+@keyframes kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
+}
+
 @media (max-width: 860px) {
-  .hero {
+  .title-copy {
+    max-width: none;
+  }
+
+  .chapters-rail {
     grid-template-columns: 1fr;
-    min-height: 0;
-    padding: 28px 20px 36px;
     gap: 28px;
   }
 
-  .hero h1 {
-    font-size: clamp(40px, 12vw, 56px);
-  }
-
-  .hero-frame {
-    border-left: 0;
-    padding-left: 0;
-    padding-top: 8px;
-  }
-
-  .hero-frame img {
-    aspect-ratio: 4 / 5;
-    max-height: 46vh;
-    width: 100%;
-    object-fit: cover;
-  }
-
-  .index {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    padding: 0 20px 12px;
-  }
-
-  .index-cover {
-    height: 180px;
-  }
-
-  .continue {
-    padding: 0 20px;
-    margin-bottom: 48px;
+  .chapter-still {
+    aspect-ratio: 16 / 9;
   }
 
   .continue-line {
@@ -573,8 +484,11 @@ html.dark .home-wash {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-frame img,
-  .index-cover img,
+  .title-still img {
+    animation: none;
+  }
+
+  .chapter-still img,
   .text-link {
     transition: none;
   }

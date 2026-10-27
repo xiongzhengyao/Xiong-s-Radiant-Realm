@@ -1433,7 +1433,7 @@ html.dark .chip:not(.active) {
 }
 
 .article-title {
-  font-family: var(--font-mono);
+  font-family: var(--font-serif);
   font-size: clamp(1.85rem, 3.6vw, 2.65rem);
   font-weight: 600;
   line-height: 1.18;

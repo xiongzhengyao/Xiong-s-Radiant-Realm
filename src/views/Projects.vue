@@ -1,12 +1,5 @@
 <template>
   <div class="projects">
-    <div
-      class="projects-atmosphere"
-      aria-hidden="true"
-    >
-      <div class="projects-mesh" />
-    </div>
-
     <section class="projects-header">
       <div class="container-wide">
         <p class="page-kicker">
@@ -49,24 +42,6 @@
             </button>
           </div>
           <div class="search-wrap">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              aria-hidden="true"
-            ><circle
-              cx="11"
-              cy="11"
-              r="8"
-            /><line
-              x1="21"
-              y1="21"
-              x2="16.65"
-              y2="16.65"
-            /></svg>
             <input
               v-model="searchInput"
               type="search"
@@ -78,71 +53,62 @@
       </div>
     </section>
 
-    <section class="section projects-body">
-      <div class="container-wide">
-        <template v-if="featuredProject">
-          <article class="project-feature reveal">
-            <div class="project-feature-cover">
-              <CoverArt
-                :seed="featuredProject.id"
-                :category="coverCategory(featuredProject)"
-                :image="featuredProject.image"
-                size="lg"
-              />
-            </div>
-            <div class="project-feature-copy">
-              <p class="project-feature-meta">
-                <span v-if="featuredProject.year">{{ featuredProject.year }}</span>
-                <span v-if="featuredProject.role || featuredProject.company">{{ featuredProject.role || featuredProject.company }}</span>
-              </p>
-              <h2>{{ featuredProject.title }}</h2>
-              <p v-if="featuredProject.description">
-                {{ featuredProject.description }}
-              </p>
-              <p
-                v-if="featuredProject.tags && featuredProject.tags[0]"
-                class="project-feature-tag"
-              >
-                {{ featuredProject.tags[0] }}
-              </p>
-              <a
-                v-if="featuredProject.url"
-                :href="featuredProject.url"
-                class="project-link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {{ $t('projects.viewOnGithub') }}
-              </a>
-              <span
-                v-else-if="featuredProject.private"
-                class="project-private"
-              >{{ $t('projects.privateRepo') }}</span>
-            </div>
-          </article>
-          <ol
-            v-if="restProjects.length"
-            class="project-index"
-          >
-            <li
-              v-for="project in restProjects"
-              :key="project.id"
-            >
-              <span class="project-index-year">{{ project.year }}</span>
-              <h3>{{ project.title }}</h3>
-              <span
-                v-if="project.tags && project.tags[0]"
-                class="project-index-tag"
-              >{{ project.tags[0] }}</span>
-            </li>
-          </ol>
-        </template>
-        <div
-          v-else
-          class="empty-state"
+    <section class="reel">
+      <template v-if="filteredProjects.length">
+        <article
+          v-for="(project, idx) in filteredProjects"
+          :key="project.id"
+          class="reel-scene reveal"
+          :class="'reveal-delay-' + Math.min(idx + 1, 3)"
         >
-          <p>{{ showArchive ? $t('projects.archiveEmpty') : $t('projects.empty') }}</p>
-        </div>
+          <div class="reel-still">
+            <CoverArt
+              :seed="project.id"
+              :category="coverCategory(project)"
+              :image="project.image"
+              size="lg"
+            />
+            <div class="reel-veil" />
+          </div>
+          <div class="reel-caption">
+            <p class="reel-meta">
+              <span v-if="project.year">{{ project.year }}</span>
+              <span v-if="project.role || project.company">{{ project.role || project.company }}</span>
+            </p>
+            <h2>{{ project.title }}</h2>
+            <p
+              v-if="project.description"
+              class="reel-desc"
+            >
+              {{ project.description }}
+            </p>
+            <p
+              v-if="project.tags && project.tags[0]"
+              class="reel-tag"
+            >
+              {{ project.tags[0] }}
+            </p>
+            <a
+              v-if="project.url"
+              :href="project.url"
+              class="project-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ $t('projects.viewOnGithub') }}
+            </a>
+            <span
+              v-else-if="project.private"
+              class="project-private"
+            >{{ $t('projects.privateRepo') }}</span>
+          </div>
+        </article>
+      </template>
+      <div
+        v-else
+        class="empty-state"
+      >
+        <p>{{ showArchive ? $t('projects.archiveEmpty') : $t('projects.empty') }}</p>
       </div>
     </section>
   </div>
@@ -168,7 +134,6 @@ const chipKeys = ['firmware', 'tools', 'app']
 
 const filteredProjects = computed(() => {
   const q = String(searchQuery.value || '').toLowerCase().trim()
-  // Default: company work. Archive: personal / open-source tools.
   const pool = projects.value.filter(project => (
     showArchive.value ? project.group === 'personal' : project.group === 'company'
   ))
@@ -182,9 +147,6 @@ const filteredProjects = computed(() => {
     return hay.includes(q)
   })
 })
-
-const featuredProject = computed(() => filteredProjects.value[0] || null)
-const restProjects = computed(() => filteredProjects.value.slice(1))
 
 const coverCategory = project => {
   if (project.chip === 'app') return 'notes'
@@ -203,39 +165,13 @@ watch(filteredProjects, () => {
 .projects {
   position: relative;
   padding-top: var(--nav-height);
+  padding-bottom: calc(var(--cinema-letterbox) + 64px);
   min-height: 100vh;
   background: transparent;
-  overflow: hidden;
-}
-
-.projects-atmosphere {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.projects-mesh {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 50% 40% at 75% 20%, var(--color-mesh-1) 0%, transparent 55%),
-    radial-gradient(ellipse 40% 35% at 15% 80%, var(--color-mesh-2) 0%, transparent 50%);
-}
-
-.projects-header,
-.projects-body {
-  position: relative;
-  z-index: 1;
-}
-
-.projects-body.section {
-  padding-top: 0;
-  padding-bottom: 80px;
 }
 
 .projects-header {
-  padding: 40px 0 18px;
+  padding: 36px 0 20px;
 }
 
 .projects-header h1 {
@@ -269,7 +205,6 @@ watch(filteredProjects, () => {
   border-bottom: 1px solid transparent;
   border-radius: 0;
   background: transparent;
-  box-shadow: none;
   color: var(--color-text-tertiary);
   font-size: 13px;
   font-weight: 500;
@@ -278,32 +213,18 @@ watch(filteredProjects, () => {
 }
 
 .chip.active {
-  background: transparent;
   color: var(--color-accent);
   border-bottom-color: var(--color-accent);
 }
 
-html.dark .chip:not(.active) {
-  background: transparent;
-  border-color: transparent;
-}
-
 .search-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   width: min(180px, 100%);
   padding: 6px 0;
-  border-radius: 0;
-  background: transparent;
-  border: none;
   border-bottom: 1px solid rgba(125, 106, 214, 0.35);
-  color: var(--color-text-tertiary);
-  box-shadow: none;
 }
 
 .search-input {
-  flex: 1;
+  width: 100%;
   border: none;
   background: transparent;
   color: var(--color-text);
@@ -312,97 +233,98 @@ html.dark .chip:not(.active) {
   outline: none;
 }
 
-.project-feature {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(260px, 0.78fr);
-  gap: clamp(28px, 4vw, 56px);
-  align-items: center;
-  margin-bottom: 72px;
+.reel {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 12px 24px 0;
 }
 
-.project-feature-cover {
-  width: 100%;
-  height: min(62vh, 560px);
-  border-radius: 12px;
+.reel-scene {
+  position: relative;
+}
+
+.reel-still {
+  position: relative;
+  aspect-ratio: 2.39 / 1;
   overflow: hidden;
+  border-radius: 2px;
+  background: #0a0812;
 }
 
-.project-feature-copy {
-  padding-bottom: 8px;
+.reel-still :deep(.cover-art),
+.reel-still :deep(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.project-feature-meta {
+.reel-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(5, 4, 10, 0.72) 0%, rgba(5, 4, 10, 0.15) 55%, rgba(5, 4, 10, 0.35) 100%),
+    linear-gradient(0deg, rgba(5, 4, 10, 0.7) 0%, transparent 45%);
+  pointer-events: none;
+}
+
+.reel-caption {
+  position: absolute;
+  left: clamp(16px, 3vw, 36px);
+  right: clamp(16px, 3vw, 36px);
+  bottom: clamp(16px, 3vw, 32px);
+  max-width: 34em;
+  color: #f3efe8;
+  z-index: 1;
+}
+
+.reel-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 0 0 12px;
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  color: var(--color-accent);
+  gap: 10px 14px;
+  margin: 0 0 10px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(196, 178, 246, 0.9);
 }
 
-.project-feature h2 {
+.reel-caption h2 {
+  margin: 0 0 10px;
   font-family: var(--font-serif);
-  font-size: clamp(28px, 3vw, 40px);
+  font-size: clamp(26px, 3.2vw, 42px);
   font-weight: 700;
   letter-spacing: -0.03em;
-  line-height: 1.2;
-  margin: 0 0 10px;
+  line-height: 1.15;
 }
 
-.project-feature-copy > p {
-  margin: 0 0 10px;
+.reel-desc {
+  margin: 0 0 12px;
   font-size: 15px;
-  line-height: 1.65;
-  color: var(--color-text-secondary);
+  line-height: 1.55;
+  color: rgba(243, 239, 232, 0.78);
 }
 
-.project-feature-tag {
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  color: var(--color-text-tertiary);
-}
-
-.project-index {
-  list-style: none;
+.reel-tag,
+.project-private {
   margin: 0;
-  padding: 0;
-  border-top: 1px solid rgba(125, 106, 214, 0.28);
-}
-
-.project-index li {
-  display: grid;
-  grid-template-columns: 132px minmax(0, 1fr) auto;
-  gap: 16px;
-  align-items: baseline;
-  padding: 20px 0;
-  border-bottom: 1px solid rgba(125, 106, 214, 0.2);
-}
-
-.project-index-year,
-.project-index-tag {
-  font-size: 13px;
-  color: var(--color-text-tertiary);
-}
-
-.project-index h3 {
-  margin: 0;
-  font-family: var(--font-serif);
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.3;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: rgba(243, 239, 232, 0.5);
 }
 
 .project-link {
+  display: inline-block;
+  margin-top: 4px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-accent);
-}
-
-.project-private {
-  font-size: 12px;
-  color: var(--color-text-tertiary);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cinema-violet-soft, #c4b2f6);
+  text-decoration: none;
 }
 
 .empty-state {
@@ -412,34 +334,32 @@ html.dark .chip:not(.active) {
 }
 
 @media (max-width: 860px) {
-  .project-feature {
-    grid-template-columns: 1fr;
-    align-items: start;
+  .reel-still {
+    aspect-ratio: 16 / 9;
   }
 
-  .project-feature-cover {
-    aspect-ratio: 4 / 5;
-    max-height: 70vh;
+  .reel-caption {
+    position: static;
+    margin-top: 14px;
+    max-width: none;
+    color: var(--color-text);
   }
 
-  .project-index li {
-    grid-template-columns: 88px minmax(0, 1fr);
+  .reel-meta {
+    color: var(--color-accent);
   }
 
-  .project-index-tag {
+  .reel-desc {
+    color: var(--color-text-secondary);
+  }
+
+  .reel-veil {
     display: none;
   }
-}
-
-@media (max-width: 640px) {
 
   .projects-controls {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .search-wrap {
-    min-width: 0;
   }
 }
 </style>

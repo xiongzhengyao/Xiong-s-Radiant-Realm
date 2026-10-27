@@ -5,9 +5,21 @@
       class="skip-link"
     >{{ $t('nav.skipToContent') }}</a>
     <div
-      class="app"
-      :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading, 'is-home': route.name === 'Home', 'is-quiet-sky': route.name === 'Projects' || route.name === 'Life' }"
+      class="app is-cinema"
+      :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading, 'is-home': route.name === 'Home', 'is-quiet-sky': route.name === 'Projects' || route.name === 'Life' || route.name === 'Home' }"
     >
+      <div
+        class="cinema-letterbox cinema-letterbox--top"
+        aria-hidden="true"
+      />
+      <div
+        class="cinema-letterbox cinema-letterbox--bottom"
+        aria-hidden="true"
+      />
+      <div
+        class="cinema-grain"
+        aria-hidden="true"
+      />
       <div
         class="studio-bg"
         aria-hidden="true"
@@ -15,23 +27,6 @@
         <div class="studio-beams" />
         <div class="studio-stars" />
         <div class="studio-ridge" />
-        <div class="studio-snow">
-          <svg
-            v-for="flake in flakes"
-            :key="flake.id"
-            class="snowflake"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            :style="flake.style"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-width="1.2"
-              d="M12 2.5v19M4.8 6.8l14.4 10.4M4.8 17.2l14.4-10.4M12 6.2l-1.6-2.4M12 6.2l1.6-2.4M12 17.8l-1.6 2.4M12 17.8l1.6 2.4"
-            />
-          </svg>
-        </div>
       </div>
       <!-- Navigation -->
       <nav
@@ -407,19 +402,6 @@ const openCommandPalette = () => {
 const isArticleReading = computed(() => route.name === 'BlogPost')
 const showArchiveNav = computed(() => route.path === '/projects')
 const isArchiveOn = computed(() => route.query.archive === '1')
-const flakes = Array.from({ length: 14 }, (_, i) => ({
-  id: i,
-  style: {
-    left: `${(i * 17 + 4) % 96}%`,
-    top: `${(i * 23 + 6) % 92}%`,
-    width: `${12 + (i % 4) * 5}px`,
-    height: `${12 + (i % 4) * 5}px`,
-    opacity: 0.28 + (i % 5) * 0.1,
-    animationDuration: `${16 + (i % 7) * 3}s`,
-    animationDelay: `${-i * 1.3}s`
-  }
-}))
-
 const toggleArchive = () => {
   const query = { ...route.query }
   if (query.archive === '1') delete query.archive
@@ -505,30 +487,21 @@ html.dark {
 /* Page route transitions — ~280ms, displacement ≤8px, out-in (no circular expand) */
 .page-enter-active,
 .page-leave-active {
-  transition: opacity var(--duration-page) var(--ease-out),
-              transform var(--duration-page) var(--ease-out);
+  transition: opacity var(--duration-page) var(--ease-cinema);
 }
 
 .page-enter-from {
   opacity: 0;
-  transform: translateY(var(--page-enter-y));
 }
 
 .page-leave-to {
-  /* Keep faint residual opacity so out-in mid-frame isn't a black void */
   opacity: var(--page-leave-opacity);
-  transform: translateY(var(--page-leave-y));
 }
 
 @media (prefers-reduced-motion: reduce) {
   .page-enter-active,
   .page-leave-active {
-    transition: opacity 120ms ease;
-  }
-
-  .page-enter-from,
-  .page-leave-to {
-    transform: none;
+    transition: opacity 180ms ease;
   }
 }
 </style>
@@ -558,24 +531,66 @@ html.dark {
   display: flex;
   flex-direction: column;
   background-color: var(--color-bg);
-  --back-to-top-offset: var(--space-6);
+  --back-to-top-offset: calc(var(--cinema-letterbox) + var(--space-6));
+}
+
+.app.is-cinema {
+  background-color: var(--cinema-screen);
 }
 
 .app.is-home {
-  background-color: #f3eef8;
+  background-color: #07060c;
 }
 
-html.dark .app.is-home {
-  background-color: #0c0a14;
+html:not(.dark) .app.is-home {
+  background-color: #0c0a12;
 }
 
 .app.is-home .studio-bg {
   opacity: 0;
 }
 
-.app.is-quiet-sky .studio-snow,
 html.dark .app.is-quiet-sky .studio-stars {
   opacity: 0;
+}
+
+.cinema-letterbox {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: var(--cinema-letterbox);
+  background: #000;
+  z-index: 90;
+  pointer-events: none;
+}
+
+.cinema-letterbox--top {
+  top: 0;
+}
+
+.cinema-letterbox--bottom {
+  bottom: 0;
+}
+
+.cinema-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+.app.is-article-reading .cinema-letterbox,
+.app.is-article-reading .cinema-grain {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinema-grain {
+    opacity: 0.04;
+  }
 }
 
 .app.is-home.is-scrolled .nav {
@@ -633,6 +648,8 @@ main,
   right: 0;
   z-index: 1000;
   height: var(--nav-height);
+  padding-top: var(--cinema-letterbox);
+  box-sizing: border-box;
   background: transparent;
   border-bottom: 1px solid transparent;
   transition: background var(--duration-base) var(--ease-out),
@@ -648,7 +665,7 @@ main,
 }
 
 .nav-inner {
-  height: 100%;
+  height: var(--nav-bar);
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;

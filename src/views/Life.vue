@@ -93,62 +93,38 @@
     </section>
 
     <section class="section life-body">
-      <div class="container-wide">
+      <div class="life-reel">
         <div
-          v-if="leadLife"
+          v-if="filteredPosts.length"
           :key="`${selectedCategory}-${selectedYear}-${selectedMonth}-${searchQuery}`"
+          class="life-scenes"
         >
           <article
-            class="life-lead reveal"
+            v-for="(post, idx) in filteredPosts"
+            :key="post.id"
+            class="life-scene reveal"
+            :class="'reveal-delay-' + Math.min(idx + 1, 3)"
             role="button"
             tabindex="0"
-            :aria-label="leadLife.title"
-            @click="openDetail(leadLife)"
-            @keydown.enter.prevent="openDetail(leadLife)"
-            @keydown.space.prevent="openDetail(leadLife)"
+            :aria-label="post.title"
+            @click="openDetail(post)"
+            @keydown.enter.prevent="openDetail(post)"
+            @keydown.space.prevent="openDetail(post)"
           >
-            <div class="life-lead-frame">
+            <div class="life-scene-still">
               <CoverArt
-                :seed="leadLife.id"
-                :category="leadLife.category"
-                :image="leadLife.image"
+                :seed="post.id"
+                :category="post.category"
+                :image="post.image"
                 size="lg"
               />
+              <div class="life-scene-veil" />
             </div>
-            <div class="life-lead-caption">
-              <h2>{{ leadLife.title }}</h2>
-              <span>{{ cardDate(leadLife) }}</span>
+            <div class="life-scene-caption">
+              <h2>{{ post.title }}</h2>
+              <span>{{ cardDate(post) }}</span>
             </div>
           </article>
-          <div
-            v-if="restLife.length"
-            class="life-pair"
-          >
-            <article
-              v-for="post in restLife"
-              :key="post.id"
-              class="life-card reveal"
-              role="button"
-              tabindex="0"
-              :aria-label="post.title"
-              @click="openDetail(post)"
-              @keydown.enter.prevent="openDetail(post)"
-              @keydown.space.prevent="openDetail(post)"
-            >
-              <div class="life-cover">
-                <CoverArt
-                  :seed="post.id"
-                  :category="post.category"
-                  :image="post.image"
-                  size="lg"
-                />
-              </div>
-              <div class="life-caption">
-                <h3>{{ post.title }}</h3>
-                <span>{{ cardDate(post) }}</span>
-              </div>
-            </article>
-          </div>
         </div>
 
         <div
@@ -305,9 +281,6 @@ const filteredPosts = computed(() => {
     return hay.includes(q)
   })
 })
-
-const leadLife = computed(() => filteredPosts.value[0] || null)
-const restLife = computed(() => filteredPosts.value.slice(1))
 
 const postTags = post => {
   if (Array.isArray(post.tags) && post.tags.length) return post.tags
@@ -484,76 +457,84 @@ html.dark .chip:not(.active) {
   min-width: 0;
 }
 
-.life-lead,
-.life-card {
+.life-reel {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.life-scenes {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.life-scene {
   cursor: pointer;
 }
 
-.life-lead:focus-visible,
-.life-card:focus-visible {
+.life-scene:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 4px;
 }
 
-.life-lead-frame,
-.life-cover {
+.life-scene-still {
+  position: relative;
+  aspect-ratio: 2.39 / 1;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 2px;
+  background: #0a0812;
 }
 
-.life-lead-frame {
-  aspect-ratio: 16 / 9;
+.life-scene-still :deep(.cover-art),
+.life-scene-still :deep(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 1.4s var(--ease-cinema, ease);
 }
 
-.life-lead-caption,
-.life-caption {
+.life-scene-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(5, 4, 10, 0.72) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.life-scene-caption {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 16px;
+  margin-top: 14px;
 }
 
-.life-lead-caption {
-  margin-top: 16px;
-}
-
-.life-lead-caption h2,
-.life-caption h3 {
+.life-scene-caption h2 {
   margin: 0;
   font-family: var(--font-serif);
+  font-size: clamp(22px, 2.4vw, 32px);
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.3;
 }
 
-.life-lead-caption h2 {
-  font-size: clamp(24px, 2.4vw, 32px);
-}
-
-.life-lead-caption span,
-.life-caption span {
+.life-scene-caption span {
   flex-shrink: 0;
   font-size: 13px;
+  letter-spacing: 0.06em;
   color: var(--color-text-tertiary);
 }
 
-.life-pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px 28px;
-  margin-top: 40px;
-}
+@media (hover: hover) and (pointer: fine) {
+  .life-scene:hover .life-scene-still :deep(.cover-art),
+  .life-scene:hover .life-scene-still :deep(img) {
+    transform: scale(1.03);
+  }
 
-.life-cover {
-  aspect-ratio: 4 / 5;
-}
-
-.life-caption {
-  margin-top: 12px;
-}
-
-.life-caption h3 {
-  font-size: 20px;
+  .life-scene:hover .life-scene-caption h2 {
+    color: var(--color-accent);
+  }
 }
 
 .life-tags {
@@ -581,19 +562,18 @@ html.dark .chip:not(.active) {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: rgba(8, 6, 14, 0.82);
-  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.92);
 }
 
 .life-sheet {
   position: relative;
-  width: min(640px, 100%);
-  max-height: min(860px, 92vh);
+  width: min(880px, 100%);
+  max-height: min(900px, 92vh);
   overflow: auto;
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
-  border-radius: 24px;
-  box-shadow: var(--shadow-lg), var(--color-card-glow);
+  background: #0c0a12;
+  border: 1px solid rgba(196, 178, 246, 0.18);
+  border-radius: 4px;
+  color: #f3efe8;
 }
 
 .life-sheet-close {
@@ -637,12 +617,14 @@ html.dark .chip:not(.active) {
 .life-sheet-date {
   margin: 0 0 8px;
   font-size: 13px;
-  color: var(--color-text-tertiary);
+  letter-spacing: 0.08em;
+  color: rgba(196, 178, 246, 0.75);
 }
 
 .life-sheet-body h2 {
   margin: 0 0 12px;
-  font-size: clamp(24px, 3vw, 32px);
+  font-family: var(--font-serif);
+  font-size: clamp(24px, 3vw, 36px);
   line-height: 1.25;
 }
 
@@ -650,7 +632,7 @@ html.dark .chip:not(.active) {
   margin: 0 0 16px;
   font-size: 16px;
   line-height: 1.7;
-  color: var(--color-text-secondary);
+  color: rgba(243, 239, 232, 0.72);
 }
 
 .life-sheet-enter-active,
@@ -675,13 +657,8 @@ html.dark .chip:not(.active) {
 }
 
 @media (max-width: 720px) {
-  .life-pair {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-
-  .life-cover {
-    aspect-ratio: 3 / 2;
+  .life-scene-still {
+    aspect-ratio: 16 / 9;
   }
 }
 
@@ -703,7 +680,26 @@ html.dark .chip:not(.active) {
 
   .life-sheet {
     max-height: 88vh;
-    border-radius: 20px 20px 12px 12px;
+    border-radius: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .life-scene-still :deep(.cover-art),
+  .life-scene-still :deep(img) {
+    transition: none;
+  }
+
+  .life-sheet-enter-active,
+  .life-sheet-leave-active,
+  .life-sheet-enter-active .life-sheet,
+  .life-sheet-leave-active .life-sheet {
+    transition: none;
+  }
+
+  .life-sheet-enter-from .life-sheet,
+  .life-sheet-leave-to .life-sheet {
+    transform: none;
   }
 }
 </style>

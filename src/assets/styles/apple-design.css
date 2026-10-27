@@ -98,21 +98,27 @@
   --duration-slower: 0.6s;
   --duration-press: 0.1s;          /* 80–120ms press-in */
   --duration-rebound: 0.3s;        /* 280–320ms spring release */
-  --duration-page: 0.28s;          /* site-wide route transition (~280ms) */
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --duration-page: 0.7s;           /* cinematic route cut */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   /* Tiny overshoot only (y≈1.05). Do not raise toward 1.35. */
   --ease-spring: cubic-bezier(0.22, 1, 0.36, 1.05);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  /* Scroll reveal — 250–320ms, offset ~12px, stagger 40–60ms */
-  --reveal-offset: 12px;
-  --reveal-stagger: 0.05s;
-  --reveal-duration: 0.28s;
-  --reveal-duration-title: 0.36s;  /* titles slightly slower; still <400ms */
-  /* Route page transition — displacement ≤8px; leave keeps faint opacity (no black void) */
-  --page-enter-y: 8px;
-  --page-leave-y: -6px;
-  --page-leave-opacity: 0.18;
+  --ease-cinema: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* Scroll reveal — slower title-card pacing */
+  --reveal-offset: 24px;
+  --reveal-stagger: 0.09s;
+  --reveal-duration: 0.9s;
+  --reveal-duration-title: 1.05s;
+  /* Route page transition — soft black cut */
+  --page-enter-y: 0px;
+  --page-leave-y: 0px;
+  --page-leave-opacity: 0;
+  /* Cinema frame */
+  --cinema-letterbox: clamp(28px, 7vh, 64px);
+  --cinema-screen: #05040a;
+  --cinema-violet: #8b7ad8;
+  --cinema-violet-soft: #c4b2f6;
   /* Interactive cards — lift / press / purple border / soft shadow */
   --motion-card-lift: -4px;
   --motion-card-press-scale: 0.978;
@@ -121,7 +127,8 @@
   --motion-card-bg-hover: color-mix(in srgb, var(--color-card-bg) 97%, #ffffff 3%);
 
   /* Layout */
-  --nav-height: 72px;
+  --nav-bar: 72px;
+  --nav-height: calc(var(--nav-bar) + var(--cinema-letterbox));
   --max-width: 980px;
   --max-width-wide: 1320px;
   --max-width-narrow: 720px;
@@ -632,9 +639,9 @@ h1.reveal,
 /* --- Responsive --- */
 @media (max-width: 734px) {
   :root {
-    --nav-height: 48px;
+    --nav-bar: 48px;
     /* Slightly less scroll-reveal displacement on mobile */
-    --reveal-offset: 8px;
+    --reveal-offset: 12px;
     --motion-card-lift: -4px;
   }
   .container,
