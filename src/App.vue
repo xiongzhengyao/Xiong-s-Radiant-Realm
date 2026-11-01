@@ -9,10 +9,6 @@
       :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading, 'is-home': route.name === 'Home', 'is-quiet-sky': route.name === 'Projects' || route.name === 'Life' || route.name === 'Home' }"
     >
       <div
-        class="cinema-letterbox cinema-letterbox--top"
-        aria-hidden="true"
-      />
-      <div
         class="cinema-letterbox cinema-letterbox--bottom"
         aria-hidden="true"
       />
@@ -564,10 +560,6 @@ html.dark .app.is-quiet-sky .studio-stars {
   pointer-events: none;
 }
 
-.cinema-letterbox--top {
-  top: 0;
-}
-
 .cinema-letterbox--bottom {
   bottom: 0;
 }
@@ -648,7 +640,6 @@ main,
   right: 0;
   z-index: 1000;
   height: var(--nav-height);
-  padding-top: var(--cinema-letterbox);
   box-sizing: border-box;
   background: transparent;
   border-bottom: 1px solid transparent;
