@@ -1,13 +1,31 @@
 <template>
-  <div v-if="hasError" class="error-boundary">
+  <div
+    v-if="hasError"
+    class="error-boundary"
+  >
     <div class="error-card">
       <h1>{{ $t('error.title') }}</h1>
       <p>{{ $t('error.subtitle') }}</p>
       <div class="error-actions">
-        <button class="btn btn-primary" type="button" @click="handleReset">{{ $t('error.reload') }}</button>
-        <button class="btn btn-outline" type="button" @click="goHome">{{ $t('error.home') }}</button>
+        <button
+          class="btn btn-primary"
+          type="button"
+          @click="handleReset"
+        >
+          {{ $t('error.reload') }}
+        </button>
+        <button
+          class="btn btn-outline"
+          type="button"
+          @click="goHome"
+        >
+          {{ $t('error.home') }}
+        </button>
       </div>
-      <details v-if="errorInfo" class="error-details">
+      <details
+        v-if="errorInfo"
+        class="error-details"
+      >
         <summary>{{ $t('error.details') }}</summary>
         <pre>{{ errorInfo }}</pre>
       </details>

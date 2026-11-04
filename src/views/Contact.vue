@@ -26,12 +26,21 @@
       <p class="curtain-hint">
         {{ $t('contact.responseTime') }}
       </p>
-      <a
-        class="text-link"
-        :href="`mailto:${email}`"
-      >
-        {{ $t('contact.emailCta') }}
-      </a>
+
+      <p class="intents-label">
+        {{ $t('contact.intentsTitle') }}
+      </p>
+      <div class="intent-row">
+        <a
+          v-for="key in intentKeys"
+          :key="key"
+          class="text-link"
+          :class="{ 'text-link--quiet': key !== 'collab' }"
+          :href="mailtoFor(key)"
+        >
+          {{ $t(`contact.intents.${key}.label`) }}
+        </a>
+      </div>
 
       <ol class="credits">
         <li>
@@ -63,15 +72,24 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
 import { APP_CONFIG } from '@/utils/constants'
 
+const { t } = useI18n()
 const email = APP_CONFIG.EMAIL
 const phone = APP_CONFIG.PHONE
 const showPhone = APP_CONFIG.SHOW_PHONE === true
 const phoneTel = computed(() => String(phone || '').replace(/\s+/g, ''))
 const githubUrl = APP_CONFIG.SOCIAL.GITHUB
 const csdnUrl = APP_CONFIG.SOCIAL.CSDN
+const intentKeys = ['collab', 'tech', 'hello']
+
+const mailtoFor = key => {
+  const subject = encodeURIComponent(t(`contact.intents.${key}.subject`))
+  const body = encodeURIComponent(t(`contact.intents.${key}.body`))
+  return `mailto:${email}?subject=${subject}&body=${body}`
+}
 
 useReveal()
 </script>
@@ -155,25 +173,47 @@ useReveal()
   color: var(--color-text-secondary);
 }
 
+.intents-label {
+  margin: 0 0 14px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.intent-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
 .text-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  padding: 0 20px;
+  padding: 0 18px;
   border: 1px solid var(--color-accent);
   border-radius: 2px;
   background: var(--color-accent);
   color: var(--color-accent-contrast);
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   text-decoration: none;
   transition:
     background var(--duration-base) var(--ease-cinema),
     border-color var(--duration-base) var(--ease-cinema),
+    color var(--duration-base) var(--ease-cinema),
     transform var(--duration-press) var(--ease-out);
+}
+
+.text-link--quiet {
+  background: transparent;
+  color: var(--color-accent);
 }
 
 .text-link:active {
@@ -184,6 +224,12 @@ useReveal()
   .text-link:hover {
     background: var(--color-accent-hover);
     border-color: var(--color-accent-hover);
+    color: var(--color-accent-contrast);
+  }
+
+  .text-link--quiet:hover {
+    background: var(--color-accent-light);
+    color: var(--color-accent);
   }
 }
 

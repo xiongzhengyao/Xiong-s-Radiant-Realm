@@ -19,7 +19,7 @@ export default {
   },
   command: {
     title: 'Quick search',
-    placeholder: 'Search pages, notes, projects…',
+    placeholder: 'Search pages, notes, projects, life…',
     empty: 'No matches',
     open: 'Open quick search',
     shortcutMac: '⌘K',
@@ -27,7 +27,8 @@ export default {
     groups: {
       pages: 'Pages',
       notes: 'Notes',
-      projects: 'Projects'
+      projects: 'Projects',
+      life: 'Life'
     }
   },
   career: {
@@ -87,6 +88,7 @@ export default {
     indexNotes: 'Notes',
     indexWork: 'Work',
     indexLife: 'Life',
+    chaptersLabel: 'Cont.',
     exploreWork: 'Explore my work',
     readNotes: 'Read latest notes',
     latestNotes: 'Latest notes',
@@ -112,7 +114,7 @@ export default {
     eyebrow: 'Portrait',
     intro: 'From Bosch to Xiaomi and DJI,\ngoing deep on one thing inside Camera systems.',
     contactCta: 'Get in touch',
-    resumeCta: 'Print résumé',
+    resumeCta: 'Print this page',
     profile: {
       name: '熊正耀',
       nameAccent: '耀',
@@ -184,8 +186,11 @@ export default {
     yearLabel: 'Year',
     tagLabel: 'Tags',
     designTags: [
-      { id: 'work', label: 'Work notes' },
       { id: 'imaging', label: 'Imaging' },
+      { id: 'sensor', label: 'Sensor' },
+      { id: 'linux', label: 'Linux' },
+      { id: 'embedded', label: 'Embedded' },
+      { id: 'notes', label: 'Notes' },
       { id: 'life', label: 'Life' }
     ],
     loadMore: 'Load more',
@@ -247,28 +252,100 @@ export default {
     },
     posts: [
       {
-        id: 1,
+        id: 'shanghai-weekend',
         title: 'Weekend in Shanghai',
-        date: '2024-02-10',
-        description: 'A cultural walk through Shanghai — the Bund, Tianzifang, and the city rhythm between old lanes and new towers.',
+        date: '2025-10-12',
+        description: 'A weekend walk through the Bund and Tianzifang — clearing the mind after a week of driver work.',
         tags: ['Travel', 'City'],
         category: 'travel',
         image: '/images/city.jpg'
       },
       {
-        id: 2,
-        title: 'Annual photo collection',
+        id: 'cherry-spring',
+        title: 'Spring cherry on the roadside',
+        date: '2025-03-28',
+        description: 'Phone snaps of cherry blossoms. Not a portfolio shoot — just keeping the soft pink of that day.',
+        tags: ['Photography', 'Spring'],
+        category: 'photography',
+        image: '/images/cherry.jpg'
+      },
+      {
+        id: 'rain-commute',
+        title: 'Rainy commute',
+        date: '2025-06-18',
+        description: 'Rain louder than the podcast. The city slows down in water.',
+        tags: ['Photography', 'City'],
+        category: 'photography',
+        image: '/images/rain.jpg'
+      },
+      {
+        id: 'cafe-debug',
+        title: 'Logs in a café',
+        date: '2025-08-03',
+        description: 'Staring at logs with an americano. Some bugs need caffeine; some just need leaving the desk.',
+        tags: ['Thoughts', 'Work'],
+        category: 'thoughts',
+        image: '/images/cafe.jpg'
+      },
+      {
+        id: 'coffee-morning',
+        title: 'Morning coffee',
+        date: '2025-01-19',
+        description: 'Ten quiet minutes before work — steam, cup rim, IDE still closed.',
+        tags: ['Food', 'Daily'],
+        category: 'food',
+        image: '/images/coffee.jpg'
+      },
+      {
+        id: 'beach-clear',
+        title: 'A walk by the sea',
+        date: '2024-11-02',
+        description: 'Clear the head, then come back. Sea wind beats any standup.',
+        tags: ['Travel', 'Rest'],
+        category: 'travel',
+        image: '/images/beach.jpg'
+      },
+      {
+        id: 'sunset-sea',
+        title: 'Sunset shoreline',
+        date: '2024-09-15',
+        description: 'Chasing light until dark. Exposure can wait — press the shutter first.',
+        tags: ['Photography', 'Sea'],
+        category: 'photography',
+        image: '/images/sunset-sea.jpg'
+      },
+      {
+        id: 'desk-night',
+        title: 'Late at the desk',
+        date: '2024-07-22',
+        description: 'One lamp left on. Only after a clean debug break do you notice the window went black.',
+        tags: ['Thoughts', 'Work'],
+        category: 'thoughts',
+        image: '/images/desk.jpg'
+      },
+      {
+        id: 'plant-corner',
+        title: 'Plant by the window',
+        date: '2024-05-08',
+        description: 'I kill fancy flowers. A low-maintenance plant is something that rarely crashes.',
+        tags: ['Daily'],
+        category: 'thoughts',
+        image: '/images/plant.jpg'
+      },
+      {
+        id: 'photo-yearbook',
+        title: 'Annual photo picks',
         date: '2024-02-08',
-        description: 'Moments from everyday life and notes on how I chase light across seasons and cityscapes.',
+        description: 'Seasons and city light. Sometimes poster-like; more often just a glance while passing by.',
         tags: ['Photography', 'Art'],
         category: 'photography',
         image: '/images/mountains.jpg'
       },
       {
-        id: 3,
+        id: 'sapiens-notes',
         title: 'Notes on Sapiens',
         date: '2024-02-05',
-        description: 'Reflections on human history — from the cognitive revolution to the scientific age.',
+        description: 'From the cognitive revolution to the scientific age — a wider timescale for people who write systems.',
         tags: ['Reading', 'Thoughts'],
         category: 'reading',
         image: '/images/book.jpg'
@@ -288,13 +365,14 @@ export default {
     },
     rolePrefix: 'Core role',
     groups: {
+      all: 'All',
       company: 'Company',
       personal: 'Open Source / Personal'
     },
     privateRepo: 'Private repository',
     viewOnGithub: 'View repository',
     empty: 'No matching projects',
-    archiveHint: 'Open-source tools and personal projects. The default list shows company work only.',
+    archiveHint: 'Filter by company or open source. Open-source repos show alongside company work by default.',
     archiveEmpty: 'No personal or open-source projects yet.',
     items: [
       {
@@ -395,6 +473,24 @@ export default {
     subtitle: 'Open to technical discussions, collaborations, or just saying hi — email works best.',
     emailCta: 'Send email',
     responseTime: 'I usually reply within 1–2 business days.',
+    intentsTitle: 'What is this about',
+    intents: {
+      collab: {
+        label: 'Collaboration',
+        subject: 'Collaboration · snowhush.com',
+        body: 'Hi, I would like to talk about a collaboration:\n\n'
+      },
+      tech: {
+        label: 'Technical chat',
+        subject: 'Technical discussion · snowhush.com',
+        body: 'Hi, I would like to ask / discuss:\n\n'
+      },
+      hello: {
+        label: 'Just saying hi',
+        subject: 'Hello · snowhush.com',
+        body: 'Hi,\n\n'
+      }
+    },
     channels: {
       github: 'Open-source tools and daily code',
       csdn: 'Technical posts and engineering notes'

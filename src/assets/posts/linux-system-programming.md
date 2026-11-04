@@ -4,6 +4,7 @@ date: 2024-09-12
 author: 熊正耀
 category: linux
 tags: [Linux, 系统编程, 进程, IPC]
+image: /images/laptop.jpg
 keywords: [linux, 进程, 线程, ipc, 系统编程]
 excerpt: Linux 进程管理、进程间通信、信号处理与多线程编程的核心概念与实践要点。
 ---

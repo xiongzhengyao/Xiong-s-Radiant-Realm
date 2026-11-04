@@ -26,7 +26,7 @@ npm run build
 npm run serve
 ```
 
-默认开发端口 `8888`（冲突时自动切换）。
+默认开发端口 `5174`（见 `package.json` 的 `dev` 脚本）。
 
 ---
 

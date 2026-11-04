@@ -653,9 +653,11 @@ const clearListFilters = () => {
 const designTags = computed(() => {
   const items = tm('blog.designTags')
   const fallback = [
-    { id: 'work', label: locale.value === 'en' ? 'Work notes' : '工作思考' },
     { id: 'imaging', label: locale.value === 'en' ? 'Imaging' : '影像' },
-    { id: 'life', label: locale.value === 'en' ? 'Life' : '生活' }
+    { id: 'sensor', label: 'Sensor' },
+    { id: 'linux', label: 'Linux' },
+    { id: 'embedded', label: locale.value === 'en' ? 'Embedded' : '嵌入式' },
+    { id: 'notes', label: locale.value === 'en' ? 'Notes' : '笔记' }
   ]
   const all = Array.isArray(items) && items.length ? items : fallback
   return all.filter(tag => posts.value.some(post => getDesignTag(post, locale.value).id === tag.id))
@@ -777,9 +779,11 @@ const loadPost = async id => {
     type: 'article',
     canonical: `${APP_CONFIG.SITE_URL}/blog/${postData.id}/${postData.slug}`,
     publishedTime: postData.date,
-    image: postData.image
-      ? (postData.image.startsWith('http') ? postData.image : `${APP_CONFIG.SITE_URL}${postData.image}`)
-      : `${APP_CONFIG.SITE_URL}${APP_CONFIG.IMAGES.OG_DEFAULT}`,
+    image: (() => {
+      const cover = getPostCover(postData)
+      if (!cover) return `${APP_CONFIG.SITE_URL}${APP_CONFIG.IMAGES.OG_DEFAULT}`
+      return cover.startsWith('http') ? cover : `${APP_CONFIG.SITE_URL}${cover}`
+    })(),
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'BlogPosting',

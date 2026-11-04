@@ -40,8 +40,3 @@ export const ROUTES = {
   CONTACT: '/contact'
 }
 
-// 分页配置
-export const PAGINATION = {
-  PAGE_SIZE: 5,
-  PAGE_SIZES: [5, 10, 20, 50]
-}

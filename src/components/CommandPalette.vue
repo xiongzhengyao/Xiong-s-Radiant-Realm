@@ -95,7 +95,7 @@ import { useBlogStore } from '@/stores/blogStore'
 import { useCareer } from '@/composables/useCareer'
 
 const router = useRouter()
-const { t } = useI18n()
+const { t, tm } = useI18n()
 const blogStore = useBlogStore()
 const { projects } = useCareer()
 
@@ -124,17 +124,31 @@ const noteItems = computed(() => blogStore.posts.map(post => ({
 
 const projectItems = computed(() => projects.value.map(project => ({
   key: `project-${project.id}`,
-  path: '/projects',
+  path: `/projects/${project.id}`,
   label: project.title,
   hint: project.company || t('command.groups.projects'),
   kind: 'project',
   search: [project.title, project.role, project.description, project.company, ...(project.tags || [])].join(' ')
 })))
 
+const lifeItems = computed(() => {
+  const items = tm('life.posts')
+  if (!Array.isArray(items)) return []
+  return items.map(post => ({
+    key: `life-${post.id}`,
+    path: `/life/${post.id}`,
+    label: post.title,
+    hint: t('command.groups.life'),
+    kind: 'life',
+    search: [post.title, post.description, ...(post.tags || [])].join(' ')
+  }))
+})
+
 const allItems = computed(() => [
   ...navItems.value,
   ...noteItems.value,
-  ...projectItems.value
+  ...projectItems.value,
+  ...lifeItems.value
 ])
 
 const filteredItems = computed(() => {
@@ -150,7 +164,8 @@ const groupedResults = computed(() => {
   const order = [
     { id: 'page', label: t('command.groups.pages') },
     { id: 'note', label: t('command.groups.notes') },
-    { id: 'project', label: t('command.groups.projects') }
+    { id: 'project', label: t('command.groups.projects') },
+    { id: 'life', label: t('command.groups.life') }
   ]
   return order
     .map(group => ({

@@ -4,6 +4,7 @@ date: 2024-07-10
 author: 熊正耀
 category: sensor
 tags: [CMOS, CCD, 图像传感器, Camera]
+image: /images/plant.jpg
 keywords: [图像传感器, cmos, ccd, isp]
 excerpt: CMOS 与 CCD 的光电转换原理、特性对比，以及在手机、安防与工业检测中的典型应用。
 ---

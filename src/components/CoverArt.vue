@@ -9,11 +9,20 @@
       :alt="label || ''"
       loading="lazy"
       class="cover-art-img"
-    />
+    >
     <template v-else>
-      <div class="cover-art-bg" :style="bgStyle" />
-      <div class="cover-art-noise" aria-hidden="true" />
-      <div class="cover-art-lines" aria-hidden="true" />
+      <div
+        class="cover-art-bg"
+        :style="bgStyle"
+      />
+      <div
+        class="cover-art-noise"
+        aria-hidden="true"
+      />
+      <div
+        class="cover-art-lines"
+        aria-hidden="true"
+      />
       <span
         v-for="(_, i) in 3"
         :key="i"
@@ -21,7 +30,10 @@
         :style="shapeStyles[i]"
         aria-hidden="true"
       />
-      <span v-if="label" class="cover-art-label">{{ label }}</span>
+      <span
+        v-if="label"
+        class="cover-art-label"
+      >{{ label }}</span>
     </template>
   </div>
 </template>

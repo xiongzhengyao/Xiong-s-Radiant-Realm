@@ -11,13 +11,26 @@
         <p class="page-lede">
           {{ $t('projects.subtitle') }}
         </p>
-        <p
-          v-if="showArchive"
-          class="archive-note reveal"
-        >
+        <p class="archive-note reveal">
           {{ $t('projects.archiveHint') }}
         </p>
         <div class="projects-controls reveal reveal-delay-1">
+          <div
+            class="filter-chips"
+            role="tablist"
+            :aria-label="$t('projects.groups.all')"
+          >
+            <button
+              v-for="group in groupKeys"
+              :key="group"
+              type="button"
+              class="chip"
+              :class="{ active: selectedGroup === group }"
+              @click="selectedGroup = group"
+            >
+              {{ $t(`projects.groups.${group}`) }}
+            </button>
+          </div>
           <div
             class="filter-chips"
             role="tablist"
@@ -57,9 +70,13 @@
       <template v-if="filteredProjects.length">
         <article
           v-for="(project, idx) in filteredProjects"
+          :id="`project-${project.id}`"
           :key="project.id"
           class="reel-scene reveal"
-          :class="'reveal-delay-' + Math.min(idx + 1, 3)"
+          :class="[
+            'reveal-delay-' + Math.min(idx + 1, 3),
+            { 'is-focused': focusedId === project.id }
+          ]"
         >
           <div class="reel-still">
             <CoverArt
@@ -74,6 +91,7 @@
             <p class="reel-meta">
               <span v-if="project.year">{{ project.year }}</span>
               <span v-if="project.role || project.company">{{ project.role || project.company }}</span>
+              <span class="reel-group">{{ $t(`projects.groups.${project.group === 'personal' ? 'personal' : 'company'}`) }}</span>
             </p>
             <h2>{{ project.title }}</h2>
             <p
@@ -108,7 +126,7 @@
         v-else
         class="empty-state"
       >
-        <p>{{ showArchive ? $t('projects.archiveEmpty') : $t('projects.empty') }}</p>
+        <p>{{ selectedGroup === 'personal' ? $t('projects.archiveEmpty') : $t('projects.empty') }}</p>
       </div>
     </section>
   </div>
@@ -116,30 +134,41 @@
 
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useReveal } from '@/composables/useReveal'
 import { useCareer } from '@/composables/useCareer'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import CoverArt from '@/components/CoverArt.vue'
 
+const props = defineProps({
+  id: { type: String, default: '' }
+})
+
 const route = useRoute()
+const router = useRouter()
 const { projects } = useCareer()
 const { observe } = useReveal()
-const showArchive = computed(() => route.query.archive === '1')
 
+const groupFromRoute = () => {
+  if (route.query.archive === '1' || route.query.group === 'personal') return 'personal'
+  if (route.query.group === 'company') return 'company'
+  return 'all'
+}
+
+const selectedGroup = ref(groupFromRoute())
 const selectedChip = ref('all')
 const searchInput = ref('')
 const searchQuery = useDebouncedRef(searchInput, 200)
 const chipKeys = ['firmware', 'tools', 'app']
+const groupKeys = ['all', 'company', 'personal']
+const focusedId = computed(() => String(props.id || route.params.id || route.query.id || ''))
 
 const filteredProjects = computed(() => {
   const q = String(searchQuery.value || '').toLowerCase().trim()
-  const pool = projects.value.filter(project => (
-    showArchive.value ? project.group === 'personal' : project.group === 'company'
-  ))
-  return pool.filter(project => {
+  return projects.value.filter(project => {
+    const groupOk = selectedGroup.value === 'all' || project.group === selectedGroup.value
     const chipOk = selectedChip.value === 'all' || project.chip === selectedChip.value
-    if (!chipOk) return false
+    if (!groupOk || !chipOk) return false
     if (!q) return true
     const hay = [project.title, project.role, project.description, project.company, ...(project.tags || [])]
       .join(' ')
@@ -154,10 +183,47 @@ const coverCategory = project => {
   return 'sensor'
 }
 
-onMounted(() => observe())
+const syncGroupToRoute = group => {
+  const query = { ...route.query }
+  delete query.archive
+  if (group === 'all') delete query.group
+  else query.group = group
+  router.replace({ name: route.name, params: route.params, query })
+}
+
+const focusProject = async () => {
+  const id = focusedId.value
+  if (!id) return
+  await nextTick()
+  const el = document.getElementById(`project-${id}`)
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+}
+
+watch(selectedGroup, group => {
+  syncGroupToRoute(group)
+})
+
+watch(
+  () => [route.query.group, route.query.archive],
+  () => {
+    selectedGroup.value = groupFromRoute()
+  }
+)
 
 watch(filteredProjects, () => {
-  nextTick(() => observe())
+  nextTick(() => {
+    observe()
+    focusProject()
+  })
+})
+
+watch(focusedId, () => {
+  focusProject()
+})
+
+onMounted(() => {
+  observe()
+  focusProject()
 })
 </script>
 
@@ -253,6 +319,13 @@ watch(filteredProjects, () => {
 
 .reel-scene {
   position: relative;
+  scroll-margin-top: calc(var(--nav-height) + 24px);
+  border-radius: 2px;
+  transition: box-shadow var(--duration-base) var(--ease-cinema);
+}
+
+.reel-scene.is-focused {
+  box-shadow: 0 0 0 1px rgba(196, 178, 246, 0.45);
 }
 
 .reel-still {
@@ -309,6 +382,10 @@ watch(filteredProjects, () => {
   color: rgba(196, 178, 246, 0.9);
 }
 
+.reel-group {
+  opacity: 0.72;
+}
+
 .reel-caption h2 {
   margin: 0 0 12px;
   font-family: var(--font-serif);
@@ -352,6 +429,12 @@ watch(filteredProjects, () => {
   }
 }
 
+.empty-state {
+  text-align: center;
+  padding: 64px 16px;
+  color: var(--color-text-secondary);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reel-still :deep(.cover-art),
   .reel-still :deep(img),
@@ -361,39 +444,14 @@ watch(filteredProjects, () => {
   }
 }
 
-.empty-state {
-  text-align: center;
-  padding: 64px 16px;
-  color: var(--color-text-secondary);
-}
-
-@media (max-width: 860px) {
+@media (max-width: 720px) {
   .reel-still {
     aspect-ratio: 16 / 9;
   }
 
-  .reel-caption {
-    position: static;
-    margin-top: 14px;
-    max-width: none;
-    color: var(--color-text);
-  }
-
-  .reel-meta {
-    color: var(--color-accent);
-  }
-
-  .reel-desc {
-    color: var(--color-text-secondary);
-  }
-
-  .reel-veil {
-    display: none;
-  }
-
-  .projects-controls {
-    flex-direction: column;
-    align-items: stretch;
+  .reel {
+    gap: 48px;
+    padding: 20px 16px 0;
   }
 }
 </style>

@@ -1,18 +1,42 @@
 <template>
   <div class="not-found">
-    <div class="not-found-mesh" aria-hidden="true" />
+    <div
+      class="not-found-mesh"
+      aria-hidden="true"
+    />
     <div class="not-found-inner reveal is-visible">
-      <p class="not-found-code">404</p>
+      <p class="not-found-code">
+        404
+      </p>
       <h1>{{ $t('notFound.title') }}</h1>
-      <p class="not-found-desc">{{ $t('notFound.desc') }}</p>
+      <p class="not-found-desc">
+        {{ $t('notFound.desc') }}
+      </p>
       <div class="not-found-actions">
-        <button class="btn btn-primary" @click="$router.push('/')">{{ $t('notFound.home') }}</button>
-        <button class="btn btn-outline" @click="goBack">{{ $t('notFound.back') }}</button>
+        <button
+          class="btn btn-primary"
+          @click="$router.push('/')"
+        >
+          {{ $t('notFound.home') }}
+        </button>
+        <button
+          class="btn btn-outline"
+          @click="goBack"
+        >
+          {{ $t('notFound.back') }}
+        </button>
       </div>
       <div class="not-found-quick">
-        <p class="quick-label">{{ $t('notFound.quickLinks') }}</p>
+        <p class="quick-label">
+          {{ $t('notFound.quickLinks') }}
+        </p>
         <div class="quick-grid">
-          <router-link v-for="link in quickLinks" :key="link.path" :to="link.path" class="quick-link">
+          <router-link
+            v-for="link in quickLinks"
+            :key="link.path"
+            :to="link.path"
+            class="quick-link"
+          >
             {{ $t(link.label) }}
           </router-link>
         </div>

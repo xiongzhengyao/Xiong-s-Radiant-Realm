@@ -19,7 +19,7 @@ export default {
   },
   command: {
     title: '快速搜索',
-    placeholder: '搜索页面、笔记、项目…',
+    placeholder: '搜索页面、笔记、项目、生活…',
     empty: '没有匹配的结果',
     open: '打开快速搜索',
     shortcutMac: '⌘K',
@@ -27,7 +27,8 @@ export default {
     groups: {
       pages: '页面',
       notes: '笔记',
-      projects: '项目'
+      projects: '项目',
+      life: '生活'
     }
   },
   career: {
@@ -87,6 +88,7 @@ export default {
     indexNotes: '笔记',
     indexWork: '作品',
     indexLife: '生活',
+    chaptersLabel: '续映',
     exploreWork: '探索我的工作',
     readNotes: '阅读最新笔记',
     latestNotes: '最新笔记',
@@ -112,7 +114,7 @@ export default {
     eyebrow: '人物',
     intro: '从博世到小米、大疆，\n在 Camera 系统里把一件事做深。',
     contactCta: '联系我',
-    resumeCta: '打印简历',
+    resumeCta: '打印本页简历',
     profile: {
       name: '熊正耀',
       nameAccent: '耀',
@@ -184,8 +186,11 @@ export default {
     yearLabel: '年份',
     tagLabel: '标签',
     designTags: [
-      { id: 'work', label: '工作思考' },
       { id: 'imaging', label: '影像' },
+      { id: 'sensor', label: 'Sensor' },
+      { id: 'linux', label: 'Linux' },
+      { id: 'embedded', label: '嵌入式' },
+      { id: 'notes', label: '笔记' },
       { id: 'life', label: '生活' }
     ],
     loadMore: '加载更多',
@@ -248,28 +253,100 @@ export default {
     },
     posts: [
       {
-        id: 1,
+        id: 'shanghai-weekend',
         title: '上海周末游记',
-        date: '2024-02-10',
-        description: '周末在上海的人文探索之旅，感受这座城市的魅力。漫步于外滩，穿行于田子坊，体验上海的文艺气息。',
+        date: '2025-10-12',
+        description: '周末在上海的人文探索之旅。外滩的江风、田子坊的窄巷，把一周写驱动的脑子换一换。',
         tags: ['旅行', '城市'],
         category: 'travel',
         image: '/images/city.jpg'
       },
       {
-        id: 2,
-        title: '年度摄影作品集',
+        id: 'cherry-spring',
+        title: '春日路边的樱',
+        date: '2025-03-28',
+        description: '路过一片樱花，手机随手拍。不追求大片，只想把那天的浅粉留住。',
+        tags: ['摄影', '春天'],
+        category: 'photography',
+        image: '/images/cherry.jpg'
+      },
+      {
+        id: 'rain-commute',
+        title: '雨天通勤',
+        date: '2025-06-18',
+        description: '雨声盖过耳机里的播客。城市在水里，人也慢一点。',
+        tags: ['摄影', '城市'],
+        category: 'photography',
+        image: '/images/rain.jpg'
+      },
+      {
+        id: 'cafe-debug',
+        title: '咖啡馆里的日志',
+        date: '2025-08-03',
+        description: '拿着一杯美式对着 log 发呆。有些 bug 需要咖啡因，有些只需要离开工位。',
+        tags: ['随想', '工作'],
+        category: 'thoughts',
+        image: '/images/cafe.jpg'
+      },
+      {
+        id: 'coffee-morning',
+        title: '晨间咖啡',
+        date: '2025-01-19',
+        description: '开工前十分钟的安静。蒸汽、杯沿、还没打开的 IDE。',
+        tags: ['美食', '日常'],
+        category: 'food',
+        image: '/images/coffee.jpg'
+      },
+      {
+        id: 'beach-clear',
+        title: '海边走走',
+        date: '2024-11-02',
+        description: '把脑子清空再回来。海风比任何 standup 都管用。',
+        tags: ['旅行', '放松'],
+        category: 'travel',
+        image: '/images/beach.jpg'
+      },
+      {
+        id: 'sunset-sea',
+        title: '日落海岸线',
+        date: '2024-09-15',
+        description: '追光到天暗。曝光与白平衡想太多，不如先按下快门。',
+        tags: ['摄影', '海边'],
+        category: 'photography',
+        image: '/images/sunset-sea.jpg'
+      },
+      {
+        id: 'desk-night',
+        title: '夜深工位',
+        date: '2024-07-22',
+        description: '灯只留一盏。调试到段落处，才发现窗外已经黑透。',
+        tags: ['随想', '工作'],
+        category: 'thoughts',
+        image: '/images/desk.jpg'
+      },
+      {
+        id: 'plant-corner',
+        title: '窗边绿植',
+        date: '2024-05-08',
+        description: '养不活很贵的花，但养得活一盆懒人绿。生活需要一点不会 crash 的东西。',
+        tags: ['日常'],
+        category: 'thoughts',
+        image: '/images/plant.jpg'
+      },
+      {
+        id: 'photo-yearbook',
+        title: '年度摄影精选',
         date: '2024-02-08',
-        description: '记录生活中的美好瞬间，分享摄影心得。用镜头捕捉城市的光影变化，记录四季的自然风光。',
+        description: '用镜头记下四季与城市光影。海报感偶尔有，更多是路过时的一眼。',
         tags: ['摄影', '艺术'],
         category: 'photography',
         image: '/images/mountains.jpg'
       },
       {
-        id: 3,
+        id: 'sapiens-notes',
         title: '读《人类简史》有感',
         date: '2024-02-05',
-        description: '关于人类历史、文明演进的思考。从认知革命到科技革命，人类社会经历了怎样的变迁？',
+        description: '从认知革命到科技革命。写系统的人偶尔也要抬头看看更大的时间尺度。',
         tags: ['读书', '思考'],
         category: 'reading',
         image: '/images/book.jpg'
@@ -289,13 +366,14 @@ export default {
     },
     rolePrefix: '核心角色',
     groups: {
+      all: '全部',
       company: '公司项目',
       personal: '开源 / 个人'
     },
     privateRepo: '私有仓库',
     viewOnGithub: '查看仓库',
     empty: '没有找到匹配的项目',
-    archiveHint: '开源工具与个人项目。默认列表只展示公司项目。',
+    archiveHint: '可按公司 / 开源筛选。开源仓库默认与公司项目一同展示。',
     archiveEmpty: '暂无开源或个人项目。',
     items: [
       {
@@ -396,6 +474,24 @@ export default {
     subtitle: '期待与你的交流。无论是技术讨论还是项目合作，都欢迎写信。',
     emailCta: '发送邮件',
     responseTime: '通常在 1–2 个工作日内回复。',
+    intentsTitle: '想聊什么',
+    intents: {
+      collab: {
+        label: '项目合作',
+        subject: '合作咨询 · snowhush.com',
+        body: '你好，我想聊聊合作机会：\n\n'
+      },
+      tech: {
+        label: '技术讨论',
+        subject: '技术讨论 · snowhush.com',
+        body: '你好，我想请教 / 讨论：\n\n'
+      },
+      hello: {
+        label: '随便打个招呼',
+        subject: '你好 · snowhush.com',
+        body: '你好，\n\n'
+      }
+    },
     channels: {
       github: '开源项目与日常代码',
       csdn: '技术文章与工程笔记'

@@ -59,6 +59,7 @@ const tabs = [
 
 const isActive = path => {
   if (path === '/') return route.path === '/'
+  if (path === '/about') return route.path === '/about' || route.path.startsWith('/contact')
   return route.path === path || route.path.startsWith(`${path}/`)
 }
 </script>
