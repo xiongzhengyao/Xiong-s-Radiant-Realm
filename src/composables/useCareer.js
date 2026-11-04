@@ -25,7 +25,8 @@ export function useCareer() {
         tags: copy.tags || item.tags,
         group: item.group || 'company',
         url: item.url || null,
-        private: Boolean(item.private)
+        private: Boolean(item.private),
+        case: copy.case || null
       }
     })
   )

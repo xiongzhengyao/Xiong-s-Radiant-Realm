@@ -7,6 +7,7 @@ import '@/assets/styles/apple-design.css'
 import '@/assets/styles/print.css'
 import i18n from './i18n'
 import ErrorBoundary from './components/ErrorBoundary.vue'
+import { useAnalytics } from '@/composables/useAnalytics'
 
 const app = createApp(App)
 
@@ -23,3 +24,5 @@ app.use(router)
 app.use(i18n)
 
 app.mount('#app')
+
+useAnalytics().install()

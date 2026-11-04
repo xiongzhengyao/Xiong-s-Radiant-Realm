@@ -114,7 +114,8 @@ export default {
     eyebrow: '人物',
     intro: '从博世到小米、大疆，\n在 Camera 系统里把一件事做深。',
     contactCta: '联系我',
-    resumeCta: '打印本页简历',
+    resumeCta: '打开简历',
+    resumePrint: '打印本页',
     profile: {
       name: '熊正耀',
       nameAccent: '耀',
@@ -375,6 +376,11 @@ export default {
     empty: '没有找到匹配的项目',
     archiveHint: '可按公司 / 开源筛选。开源仓库默认与公司项目一同展示。',
     archiveEmpty: '暂无开源或个人项目。',
+    caseProblem: '问题',
+    caseApproach: '做法',
+    caseResult: '结果',
+    caseClose: '收起案例',
+    caseOpen: '查看案例',
     items: [
       {
         id: 'dji-sensor',
@@ -384,7 +390,12 @@ export default {
         role: 'Camera Driver 系统开发',
         chip: 'firmware',
         description: 'Sensor 驱动 bring-up 与产线自动化测试框架，覆盖初始化、寄存器校验与异常路径。',
-        tags: ['固件优化']
+        tags: ['固件优化'],
+        case: {
+          problem: '新 Sensor / 模组上线时，手工 bring-up 与产线抽检路径不一致，异常难复现。',
+          approach: '把电源、时钟、总线、ID、初始化表、链路、出流收成可脚本化检查点，接入产线自动化。',
+          result: '换模组时排查有固定顺序；异常路径可回归，减少「只在工位复现」的黑洞。'
+        }
       },
       {
         id: 'xiaomi-perf',
@@ -394,7 +405,12 @@ export default {
         role: '影像工具主程',
         chip: 'firmware',
         description: '梳理首帧出图链路，优化 sensor / ISP 初始化路径，降低冷启动延迟。',
-        tags: ['固件优化']
+        tags: ['固件优化'],
+        case: {
+          problem: '打开相机到预览可交互偏慢，优化点分散在驱动、ISP 与显示，缺少统一时间轴。',
+          approach: '定义首帧口径，按阶段打点；合并重复等待，允许安全的并行，按场景拆初始化表。',
+          result: '冷启动路径可度量；产品侧感知到的「打开变快」能对应到具体阶段收益。'
+        }
       },
       {
         id: 'bosch-edge',
@@ -404,7 +420,12 @@ export default {
         role: '嵌入式开发',
         chip: 'firmware',
         description: '嵌入式平台模型部署与图像采集处理流水线，串联采集、预处理与推理。',
-        tags: ['稳定性']
+        tags: ['稳定性'],
+        case: {
+          problem: '端侧采集与推理流水线耦合紧，换模型或分辨率时回归成本高。',
+          approach: '拆成采集、预处理、推理三段接口，固定缓冲与错误码约定，补关键路径压测。',
+          result: '换模型时主要改中间段；采集侧稳定性问题可单独定位。'
+        }
       },
       {
         id: 'isp-pipeline',
@@ -414,7 +435,12 @@ export default {
         role: '技术写作',
         chip: 'tools',
         description: '将 Camera 系统经验沉淀为可复用的技术博客与工程笔记。',
-        tags: ['效率工具']
+        tags: ['效率工具'],
+        case: {
+          problem: '项目里的经验留在口头与私有文档，新人上手慢，对外也难展示。',
+          approach: '把可公开部分写成结构化笔记：路径图、清单、算例，统一放在本站。',
+          result: '形成可持续更新的公开知识库，求职与协作时有据可查。'
+        }
       },
       {
         id: 'script-manager',
@@ -424,7 +450,12 @@ export default {
         role: '工具主程',
         chip: 'tools',
         description: 'TypeScript 脚本管理工具，统一组织、运行与维护本地脚本工作流。',
-        tags: ['效率工具']
+        tags: ['效率工具'],
+        case: {
+          problem: '本地脚本散落各处，参数与运行方式不统一，分享成本高。',
+          approach: '用 TypeScript 做统一入口：组织、运行、维护脚本，开源到 GitHub。',
+          result: '个人与协作场景有同一套调用方式；仓库可直接访问。'
+        }
       },
       {
         id: 'log-viewer',

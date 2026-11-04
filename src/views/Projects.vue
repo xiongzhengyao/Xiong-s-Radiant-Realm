@@ -78,7 +78,14 @@
             { 'is-focused': focusedId === project.id }
           ]"
         >
-          <div class="reel-still">
+          <div
+            class="reel-still"
+            role="link"
+            tabindex="0"
+            :aria-label="project.title"
+            @click="openProject(project)"
+            @keydown.enter.prevent="openProject(project)"
+          >
             <CoverArt
               :seed="project.id"
               :category="coverCategory(project)"
@@ -106,19 +113,55 @@
             >
               {{ project.tags[0] }}
             </p>
-            <a
-              v-if="project.url"
-              :href="project.url"
-              class="project-link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ $t('projects.viewOnGithub') }}
-            </a>
-            <span
-              v-else-if="project.private"
-              class="project-private"
-            >{{ $t('projects.privateRepo') }}</span>
+            <div class="reel-actions">
+              <button
+                v-if="project.case"
+                type="button"
+                class="project-link project-link--button"
+                @click.stop="openProject(project)"
+              >
+                {{ focusedId === project.id ? $t('projects.caseClose') : $t('projects.caseOpen') }}
+              </button>
+              <a
+                v-if="project.url"
+                :href="project.url"
+                class="project-link"
+                target="_blank"
+                rel="noopener noreferrer"
+                @click.stop
+              >
+                {{ $t('projects.viewOnGithub') }}
+              </a>
+              <span
+                v-else-if="project.private"
+                class="project-private"
+              >{{ $t('projects.privateRepo') }}</span>
+            </div>
+          </div>
+          <div
+            v-if="focusedId === project.id && project.case"
+            class="case-panel"
+          >
+            <div class="case-grid">
+              <div>
+                <p class="case-label">
+                  {{ $t('projects.caseProblem') }}
+                </p>
+                <p>{{ project.case.problem }}</p>
+              </div>
+              <div>
+                <p class="case-label">
+                  {{ $t('projects.caseApproach') }}
+                </p>
+                <p>{{ project.case.approach }}</p>
+              </div>
+              <div>
+                <p class="case-label">
+                  {{ $t('projects.caseResult') }}
+                </p>
+                <p>{{ project.case.result }}</p>
+              </div>
+            </div>
           </div>
         </article>
       </template>
@@ -181,6 +224,15 @@ const coverCategory = project => {
   if (project.chip === 'app') return 'notes'
   if (project.chip === 'tools') return 'linux'
   return 'sensor'
+}
+
+const openProject = project => {
+  if (!project?.id) return
+  if (focusedId.value === project.id) {
+    router.replace({ name: 'Projects', query: route.query })
+    return
+  }
+  router.push({ name: 'ProjectDetail', params: { id: project.id }, query: route.query })
 }
 
 const syncGroupToRoute = group => {
@@ -411,9 +463,17 @@ onMounted(() => {
   color: rgba(243, 239, 232, 0.5);
 }
 
+.reel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  margin-top: 8px;
+  align-items: center;
+}
+
 .project-link {
   display: inline-block;
-  margin-top: 4px;
+  margin-top: 0;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -423,9 +483,53 @@ onMounted(() => {
   transition: opacity var(--duration-fast) var(--ease-cinema);
 }
 
+.project-link--button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .project-link:hover {
     opacity: 0.72;
+  }
+}
+
+.case-panel {
+  margin-top: 18px;
+  padding: 22px 24px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-bg) 88%, var(--color-accent) 12%);
+  color: var(--color-text);
+}
+
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.case-label {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.case-grid p:last-child {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 860px) {
+  .case-grid {
+    grid-template-columns: 1fr;
   }
 }
 

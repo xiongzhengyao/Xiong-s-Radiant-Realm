@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>熊正耀 · Resume · Snowhush</title>
+  <meta name="description" content="Camera driver software engineer — DJI, Xiaomi, Bosch. Print or Save as PDF from the browser." />
+  <style>
+    :root {
+      --ink: #1c1b22;
+      --muted: #5c5a6a;
+      --line: rgba(26, 26, 34, 0.12);
+      --accent: #6d5bc8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif;
+      color: var(--ink);
+      background: #f5f4f8;
+      line-height: 1.5;
+    }
+    .sheet {
+      max-width: 820px;
+      margin: 32px auto;
+      padding: 40px 48px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-bottom: 24px;
+    }
+    .toolbar a, .toolbar button {
+      font: inherit;
+      font-size: 13px;
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      text-decoration: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .toolbar button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-family: "Noto Serif SC", "Songti SC", serif;
+      font-size: 34px;
+      letter-spacing: -0.02em;
+    }
+    .role { margin: 0 0 8px; color: var(--muted); }
+    .meta { margin: 0 0 28px; font-size: 14px; color: var(--muted); }
+    .meta a { color: var(--accent); text-decoration: none; }
+    h2 {
+      margin: 28px 0 12px;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+    ul { margin: 0; padding-left: 1.2em; }
+    li { margin: 0 0 6px; }
+    .job { margin: 0 0 16px; }
+    .job h3 { margin: 0 0 4px; font-size: 16px; }
+    .job .when { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    @media print {
+      body { background: #fff; }
+      .sheet { margin: 0; border: none; padding: 0; max-width: none; }
+      .toolbar { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="toolbar no-print">
+      <a href="/about">返回关于页</a>
+      <button class="primary" type="button" onclick="window.print()">打印 / 另存为 PDF</button>
+    </div>
+
+    <h1>熊正耀</h1>
+    <p class="role">Camera 驱动软件工程师 @ 大疆 · 上海</p>
+    <p class="meta">
+      <a href="mailto:xiongzhengyao163@163.com">xiongzhengyao163@163.com</a>
+      ·
+      <a href="https://snowhush.com">snowhush.com</a>
+      ·
+      <a href="https://github.com/xiongzhengyao">GitHub</a>
+    </p>
+
+    <h2>简介</h2>
+    <p>从博世到小米、大疆，在 Camera 系统里把一件事做深：Sensor bring-up、冷启动与首帧、产线自动化与可公开的工程笔记。</p>
+
+    <h2>经历</h2>
+    <div class="job">
+      <h3>大疆 · Camera Driver 系统开发</h3>
+      <p class="when">2026.02 — 至今 · 上海</p>
+      <ul>
+        <li>Sensor 驱动 bring-up 与产线自动化测试框架</li>
+        <li>初始化、寄存器校验与异常路径回归</li>
+      </ul>
+    </div>
+    <div class="job">
+      <h3>小米 · 影像工具</h3>
+      <p class="when">2022.08 — 2026.02</p>
+      <ul>
+        <li>Camera 冷启动与首帧路径梳理</li>
+        <li>Sensor / ISP 初始化与工程效率工具</li>
+      </ul>
+    </div>
+    <div class="job">
+      <h3>博世 · 嵌入式开发</h3>
+      <p class="when">2021 — 2022</p>
+      <ul>
+        <li>端侧 AI 图像采集与处理流水线</li>
+      </ul>
+    </div>
+
+    <h2>技能</h2>
+    <ul>
+      <li>C / C++ · Python · Shell</li>
+      <li>Sensor · Camera Driver · Linux · 嵌入式</li>
+      <li>产线自动化 · 技术写作 · 开源工具</li>
+    </ul>
+
+    <h2>教育</h2>
+    <ul>
+      <li>上海大学 · 硕士</li>
+      <li>南京航空航天大学金城学院 · 车辆工程 · 学士</li>
+    </ul>
+
+    <h2>精选开源</h2>
+    <ul>
+      <li>Script-Manager · LogViewer · log_system · scripts_android</li>
+    </ul>
+  </div>
+</body>
+</html>

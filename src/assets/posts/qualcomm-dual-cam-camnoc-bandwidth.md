@@ -6,6 +6,8 @@ category: camera
 tags: [Camera, 带宽, Qualcomm, NOC, Overflow]
 keywords: [camera, bandwidth, qualcomm, camnoc, overflow, ddr]
 excerpt: 双摄同开时 Camera NOC 写 DDR 背压如何传到 FE/VFE/IFE/TFE 与 CSID；用 128/256bit 理论带宽与 30fps 双路算例说明平均通常够、峰值与投票才是坑。
+excerptEn: When dual cameras stream together, Camera NOC write backpressure reaches FE/VFE/IFE/TFE and CSID — average bandwidth often looks fine; peaks and votes are the trap.
+titleEn: Qualcomm dual-cam + Camera NOC bandwidth — backpressure from sensor to DDR
 image: /images/drone-white.jpg
 ---
 

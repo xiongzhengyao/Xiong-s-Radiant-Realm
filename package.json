@@ -13,7 +13,8 @@
     "release:local": "npm run build && launchctl kickstart -k gui/$(id -u)/com.snowhush.site",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "format": "prettier --write \"src/**/*.{js,vue,json,css,scss,md}\"",
-    "format:check": "prettier --check \"src/**/*.{js,vue,json,css,scss,md}\""
+    "format:check": "prettier --check \"src/**/*.{js,vue,json,css,scss,md}\"",
+    "test": "node --test scripts/test-site.cjs"
   },
   "dependencies": {
     "element-plus": "^2.4.0",

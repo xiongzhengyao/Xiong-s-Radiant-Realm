@@ -125,9 +125,9 @@
               >
                 <time :datetime="post.date">{{ cardDate(post) }}</time>
                 <div class="note-main">
-                  <h2>{{ post.title }}</h2>
-                  <p v-if="post.excerpt">
-                    {{ post.excerpt }}
+                  <h2>{{ displayTitle(post) }}</h2>
+                  <p v-if="displayExcerpt(post)">
+                    {{ displayExcerpt(post) }}
                   </p>
                 </div>
                 <span class="note-kind">{{ designTag(post).label }}</span>
@@ -276,13 +276,13 @@
                 </template>
               </div>
               <h1 class="article-title">
-                {{ currentPost.title }}
+                {{ displayTitle(currentPost) }}
               </h1>
               <p
-                v-if="currentPost.excerpt"
+                v-if="displayExcerpt(currentPost)"
                 class="article-lead"
               >
-                {{ currentPost.excerpt }}
+                {{ displayExcerpt(currentPost) }}
               </p>
               <div
                 v-if="heroTags.length"
@@ -422,8 +422,8 @@
                     @click="loadPost(post.id)"
                   >
                     <span class="tag tag-accent">{{ designTag(post).label }}</span>
-                    <h3>{{ post.title }}</h3>
-                    <p>{{ post.excerpt }}</p>
+                    <h3>{{ displayTitle(post) }}</h3>
+                    <p>{{ displayExcerpt(post) }}</p>
                   </article>
                 </div>
               </section>
@@ -665,6 +665,14 @@ const designTags = computed(() => {
 
 const designTag = post => getDesignTag(post, locale.value)
 
+const displayTitle = post => (
+  locale.value === 'en' && post?.titleEn ? post.titleEn : post?.title
+)
+
+const displayExcerpt = post => (
+  locale.value === 'en' && post?.excerptEn ? post.excerptEn : post?.excerpt
+)
+
 const cardDate = post => post.dateLabel || formatRelativeDate(post.date, locale.value)
 
 const coverOf = post => getPostCover(post)
@@ -879,7 +887,9 @@ const filteredPosts = computed(() => {
   let result = posts.value.filter(post => {
     const searchable = [
       post.title,
+      post.titleEn,
       post.excerpt,
+      post.excerptEn,
       ...(post.tags || []),
       ...(post.keywords || []),
       post.category
