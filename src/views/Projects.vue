@@ -11,13 +11,26 @@
         <p class="page-lede">
           {{ $t('projects.subtitle') }}
         </p>
-        <p
-          v-if="showArchive"
-          class="archive-note reveal"
-        >
+        <p class="archive-note reveal">
           {{ $t('projects.archiveHint') }}
         </p>
         <div class="projects-controls reveal reveal-delay-1">
+          <div
+            class="filter-chips"
+            role="tablist"
+            :aria-label="$t('projects.groups.all')"
+          >
+            <button
+              v-for="group in groupKeys"
+              :key="group"
+              type="button"
+              class="chip"
+              :class="{ active: selectedGroup === group }"
+              @click="selectedGroup = group"
+            >
+              {{ $t(`projects.groups.${group}`) }}
+            </button>
+          </div>
           <div
             class="filter-chips"
             role="tablist"
@@ -57,11 +70,22 @@
       <template v-if="filteredProjects.length">
         <article
           v-for="(project, idx) in filteredProjects"
+          :id="`project-${project.id}`"
           :key="project.id"
           class="reel-scene reveal"
-          :class="'reveal-delay-' + Math.min(idx + 1, 3)"
+          :class="[
+            'reveal-delay-' + Math.min(idx + 1, 3),
+            { 'is-focused': focusedId === project.id }
+          ]"
         >
-          <div class="reel-still">
+          <div
+            class="reel-still"
+            role="link"
+            tabindex="0"
+            :aria-label="project.title"
+            @click="openProject(project)"
+            @keydown.enter.prevent="openProject(project)"
+          >
             <CoverArt
               :seed="project.id"
               :category="coverCategory(project)"
@@ -74,6 +98,7 @@
             <p class="reel-meta">
               <span v-if="project.year">{{ project.year }}</span>
               <span v-if="project.role || project.company">{{ project.role || project.company }}</span>
+              <span class="reel-group">{{ $t(`projects.groups.${project.group === 'personal' ? 'personal' : 'company'}`) }}</span>
             </p>
             <h2>{{ project.title }}</h2>
             <p
@@ -88,19 +113,55 @@
             >
               {{ project.tags[0] }}
             </p>
-            <a
-              v-if="project.url"
-              :href="project.url"
-              class="project-link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ $t('projects.viewOnGithub') }}
-            </a>
-            <span
-              v-else-if="project.private"
-              class="project-private"
-            >{{ $t('projects.privateRepo') }}</span>
+            <div class="reel-actions">
+              <button
+                v-if="project.case"
+                type="button"
+                class="project-link project-link--button"
+                @click.stop="openProject(project)"
+              >
+                {{ focusedId === project.id ? $t('projects.caseClose') : $t('projects.caseOpen') }}
+              </button>
+              <a
+                v-if="project.url"
+                :href="project.url"
+                class="project-link"
+                target="_blank"
+                rel="noopener noreferrer"
+                @click.stop
+              >
+                {{ $t('projects.viewOnGithub') }}
+              </a>
+              <span
+                v-else-if="project.private"
+                class="project-private"
+              >{{ $t('projects.privateRepo') }}</span>
+            </div>
+          </div>
+          <div
+            v-if="focusedId === project.id && project.case"
+            class="case-panel"
+          >
+            <div class="case-grid">
+              <div>
+                <p class="case-label">
+                  {{ $t('projects.caseProblem') }}
+                </p>
+                <p>{{ project.case.problem }}</p>
+              </div>
+              <div>
+                <p class="case-label">
+                  {{ $t('projects.caseApproach') }}
+                </p>
+                <p>{{ project.case.approach }}</p>
+              </div>
+              <div>
+                <p class="case-label">
+                  {{ $t('projects.caseResult') }}
+                </p>
+                <p>{{ project.case.result }}</p>
+              </div>
+            </div>
           </div>
         </article>
       </template>
@@ -108,7 +169,7 @@
         v-else
         class="empty-state"
       >
-        <p>{{ showArchive ? $t('projects.archiveEmpty') : $t('projects.empty') }}</p>
+        <p>{{ selectedGroup === 'personal' ? $t('projects.archiveEmpty') : $t('projects.empty') }}</p>
       </div>
     </section>
   </div>
@@ -116,30 +177,41 @@
 
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useReveal } from '@/composables/useReveal'
 import { useCareer } from '@/composables/useCareer'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import CoverArt from '@/components/CoverArt.vue'
 
+const props = defineProps({
+  id: { type: String, default: '' }
+})
+
 const route = useRoute()
+const router = useRouter()
 const { projects } = useCareer()
 const { observe } = useReveal()
-const showArchive = computed(() => route.query.archive === '1')
 
+const groupFromRoute = () => {
+  if (route.query.archive === '1' || route.query.group === 'personal') return 'personal'
+  if (route.query.group === 'company') return 'company'
+  return 'all'
+}
+
+const selectedGroup = ref(groupFromRoute())
 const selectedChip = ref('all')
 const searchInput = ref('')
 const searchQuery = useDebouncedRef(searchInput, 200)
 const chipKeys = ['firmware', 'tools', 'app']
+const groupKeys = ['all', 'company', 'personal']
+const focusedId = computed(() => String(props.id || route.params.id || route.query.id || ''))
 
 const filteredProjects = computed(() => {
   const q = String(searchQuery.value || '').toLowerCase().trim()
-  const pool = projects.value.filter(project => (
-    showArchive.value ? project.group === 'personal' : project.group === 'company'
-  ))
-  return pool.filter(project => {
+  return projects.value.filter(project => {
+    const groupOk = selectedGroup.value === 'all' || project.group === selectedGroup.value
     const chipOk = selectedChip.value === 'all' || project.chip === selectedChip.value
-    if (!chipOk) return false
+    if (!groupOk || !chipOk) return false
     if (!q) return true
     const hay = [project.title, project.role, project.description, project.company, ...(project.tags || [])]
       .join(' ')
@@ -154,10 +226,56 @@ const coverCategory = project => {
   return 'sensor'
 }
 
-onMounted(() => observe())
+const openProject = project => {
+  if (!project?.id) return
+  if (focusedId.value === project.id) {
+    router.replace({ name: 'Projects', query: route.query })
+    return
+  }
+  router.push({ name: 'ProjectDetail', params: { id: project.id }, query: route.query })
+}
+
+const syncGroupToRoute = group => {
+  const query = { ...route.query }
+  delete query.archive
+  if (group === 'all') delete query.group
+  else query.group = group
+  router.replace({ name: route.name, params: route.params, query })
+}
+
+const focusProject = async () => {
+  const id = focusedId.value
+  if (!id) return
+  await nextTick()
+  const el = document.getElementById(`project-${id}`)
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+}
+
+watch(selectedGroup, group => {
+  syncGroupToRoute(group)
+})
+
+watch(
+  () => [route.query.group, route.query.archive],
+  () => {
+    selectedGroup.value = groupFromRoute()
+  }
+)
 
 watch(filteredProjects, () => {
-  nextTick(() => observe())
+  nextTick(() => {
+    observe()
+    focusProject()
+  })
+})
+
+watch(focusedId, () => {
+  focusProject()
+})
+
+onMounted(() => {
+  observe()
+  focusProject()
 })
 </script>
 
@@ -253,6 +371,13 @@ watch(filteredProjects, () => {
 
 .reel-scene {
   position: relative;
+  scroll-margin-top: calc(var(--nav-height) + 24px);
+  border-radius: 2px;
+  transition: box-shadow var(--duration-base) var(--ease-cinema);
+}
+
+.reel-scene.is-focused {
+  box-shadow: 0 0 0 1px rgba(196, 178, 246, 0.45);
 }
 
 .reel-still {
@@ -309,6 +434,10 @@ watch(filteredProjects, () => {
   color: rgba(196, 178, 246, 0.9);
 }
 
+.reel-group {
+  opacity: 0.72;
+}
+
 .reel-caption h2 {
   margin: 0 0 12px;
   font-family: var(--font-serif);
@@ -334,9 +463,17 @@ watch(filteredProjects, () => {
   color: rgba(243, 239, 232, 0.5);
 }
 
+.reel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  margin-top: 8px;
+  align-items: center;
+}
+
 .project-link {
   display: inline-block;
-  margin-top: 4px;
+  margin-top: 0;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -346,10 +483,60 @@ watch(filteredProjects, () => {
   transition: opacity var(--duration-fast) var(--ease-cinema);
 }
 
+.project-link--button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .project-link:hover {
     opacity: 0.72;
   }
+}
+
+.case-panel {
+  margin-top: 18px;
+  padding: 22px 24px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-bg) 88%, var(--color-accent) 12%);
+  color: var(--color-text);
+}
+
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.case-label {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.case-grid p:last-child {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 860px) {
+  .case-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 64px 16px;
+  color: var(--color-text-secondary);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -361,39 +548,14 @@ watch(filteredProjects, () => {
   }
 }
 
-.empty-state {
-  text-align: center;
-  padding: 64px 16px;
-  color: var(--color-text-secondary);
-}
-
-@media (max-width: 860px) {
+@media (max-width: 720px) {
   .reel-still {
     aspect-ratio: 16 / 9;
   }
 
-  .reel-caption {
-    position: static;
-    margin-top: 14px;
-    max-width: none;
-    color: var(--color-text);
-  }
-
-  .reel-meta {
-    color: var(--color-accent);
-  }
-
-  .reel-desc {
-    color: var(--color-text-secondary);
-  }
-
-  .reel-veil {
-    display: none;
-  }
-
-  .projects-controls {
-    flex-direction: column;
-    align-items: stretch;
+  .reel {
+    gap: 48px;
+    padding: 20px 16px 0;
   }
 }
 </style>

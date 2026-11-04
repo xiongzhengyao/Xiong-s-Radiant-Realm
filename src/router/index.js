@@ -34,6 +34,13 @@ const routes = [
     meta: { titleKey: 'meta.projectsTitle', descKey: 'meta.projectsDesc' }
   },
   {
+    path: '/projects/:id',
+    name: 'ProjectDetail',
+    component: () => import('../views/Projects.vue'),
+    props: true,
+    meta: { titleKey: 'meta.projectsTitle', descKey: 'meta.projectsDesc' }
+  },
+  {
     path: '/contact',
     name: 'Contact',
     component: () => import('../views/Contact.vue'),
@@ -43,6 +50,13 @@ const routes = [
     path: '/life',
     name: 'Life',
     component: () => import('../views/Life.vue'),
+    meta: { titleKey: 'meta.lifeTitle', descKey: 'meta.lifeDesc' }
+  },
+  {
+    path: '/life/:id',
+    name: 'LifeDetail',
+    component: () => import('../views/Life.vue'),
+    props: true,
     meta: { titleKey: 'meta.lifeTitle', descKey: 'meta.lifeDesc' }
   },
   {

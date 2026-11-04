@@ -9,10 +9,6 @@
       :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading, 'is-home': route.name === 'Home', 'is-quiet-sky': route.name === 'Projects' || route.name === 'Life' || route.name === 'Home' }"
     >
       <div
-        class="cinema-letterbox cinema-letterbox--top"
-        aria-hidden="true"
-      />
-      <div
         class="cinema-letterbox cinema-letterbox--bottom"
         aria-hidden="true"
       />
@@ -129,7 +125,6 @@
               <kbd class="nav-cmd-kbd">{{ commandShortcutLabel }}</kbd>
             </button>
             <span
-              v-if="!showArchiveNav"
               class="nav-rule"
               aria-hidden="true"
             />
@@ -205,21 +200,6 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               ><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
-            </button>
-            <span
-              v-if="showArchiveNav"
-              class="nav-rule"
-              aria-hidden="true"
-            />
-            <button
-              v-if="showArchiveNav"
-              type="button"
-              class="nav-archive"
-              :class="{ active: isArchiveOn }"
-              :aria-pressed="isArchiveOn"
-              @click="toggleArchive"
-            >
-              {{ $t('nav.archive') }}
             </button>
             <button
               class="nav-toggle"
@@ -400,16 +380,8 @@ const openCommandPalette = () => {
 }
 /** Article detail hides MobileTabBar and uses a single mini share bar */
 const isArticleReading = computed(() => route.name === 'BlogPost')
-const showArchiveNav = computed(() => route.path === '/projects')
-const isArchiveOn = computed(() => route.query.archive === '1')
-const toggleArchive = () => {
-  const query = { ...route.query }
-  if (query.archive === '1') delete query.archive
-  else query.archive = '1'
-  router.replace({ path: route.path, query })
-}
 
-/* IA lock: 首页 · 笔记 · 项目 · 生活 · 关于 — no 存档 / contact in primary nav */
+/* IA lock: 首页 · 笔记 · 项目 · 生活 · 关于 — contact via About / footer */
 const navLinks = [
   { path: '/', label: 'nav.home' },
   { path: '/blog', label: 'nav.blog' },
@@ -564,10 +536,6 @@ html.dark .app.is-quiet-sky .studio-stars {
   pointer-events: none;
 }
 
-.cinema-letterbox--top {
-  top: 0;
-}
-
 .cinema-letterbox--bottom {
   bottom: 0;
 }
@@ -648,7 +616,6 @@ main,
   right: 0;
   z-index: 1000;
   height: var(--nav-height);
-  padding-top: var(--cinema-letterbox);
   box-sizing: border-box;
   background: transparent;
   border-bottom: 1px solid transparent;

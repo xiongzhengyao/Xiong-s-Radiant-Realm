@@ -19,10 +19,24 @@ export function getCategoryLabel(category, locale = 'zh') {
   return zh
 }
 
+/** Prefer frontmatter category so list chips match the note taxonomy. */
+const CATEGORY_DESIGN = {
+  camera: 'imaging',
+  sensor: 'sensor',
+  linux: 'linux',
+  embedded: 'embedded',
+  notes: 'notes',
+  life: 'life'
+}
+
 const TAG_LABELS = {
-  work: { zh: '工作思考', en: 'Work notes' },
   imaging: { zh: '影像', en: 'Imaging' },
+  sensor: { zh: 'Sensor', en: 'Sensor' },
+  linux: { zh: 'Linux', en: 'Linux' },
+  embedded: { zh: '嵌入式', en: 'Embedded' },
+  notes: { zh: '笔记', en: 'Notes' },
   life: { zh: '生活', en: 'Life' },
+  work: { zh: '工作思考', en: 'Work notes' },
   project: { zh: '项目', en: 'Project' }
 }
 
@@ -45,9 +59,9 @@ export function getDesignTag(post, locale = 'zh') {
   let id = 'work'
   if (has(['项目', 'Project'])) id = 'project'
   else if (has(['生活', 'Life', '生活碎片']) || cat === 'life') id = 'life'
-  else if (has(IMAGING_TAGS) || cat === 'camera') id = 'imaging'
+  else if (CATEGORY_DESIGN[cat]) id = CATEGORY_DESIGN[cat]
+  else if (has(IMAGING_TAGS)) id = 'imaging'
   else if (has(['工作思考', 'Work notes'])) id = 'work'
-  // sensor / linux / embedded / notes stay as work unless tagged above
 
-  return { id, label: TAG_LABELS[id][lang] }
+  return { id, label: TAG_LABELS[id]?.[lang] || getCategoryLabel(cat, locale) }
 }

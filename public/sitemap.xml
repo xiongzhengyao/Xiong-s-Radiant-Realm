@@ -1,17 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://snowhush.com/</loc><changefreq>weekly</changefreq></url>
-  <url><loc>https://snowhush.com/about</loc><changefreq>weekly</changefreq></url>
-  <url><loc>https://snowhush.com/projects</loc><changefreq>weekly</changefreq></url>
-  <url><loc>https://snowhush.com/blog</loc><changefreq>weekly</changefreq></url>
-  <url><loc>https://snowhush.com/life</loc><changefreq>weekly</changefreq></url>
-  <url><loc>https://snowhush.com/contact</loc><changefreq>weekly</changefreq></url>
+  <url><loc>https://snowhush.com/</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq></url>
+  <url><loc>https://snowhush.com/about</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/projects</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq></url>
+  <url><loc>https://snowhush.com/blog</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq></url>
+  <url><loc>https://snowhush.com/life</loc><lastmod>2026-11-04</lastmod><changefreq>weekly</changefreq></url>
+  <url><loc>https://snowhush.com/contact</loc><lastmod>2026-11-04</lastmod><changefreq>yearly</changefreq></url>
+  <url><loc>https://snowhush.com/resume.html</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/blog/288925/camera-stream-on-bringup-checklist</loc><lastmod>2026-11-02</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/blog/398398/camera-first-frame-cold-start</loc><lastmod>2026-10-28</lastmod><changefreq>monthly</changefreq></url>
   <url><loc>https://snowhush.com/blog/216244/qualcomm-dual-cam-camnoc-bandwidth</loc><lastmod>2026-10-17</lastmod><changefreq>monthly</changefreq></url>
-  <url><loc>https://snowhush.com/blog/139734/计算</loc><lastmod>2026-03-14</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/blog/139734/%E8%AE%A1%E7%AE%97</loc><lastmod>2026-03-14</lastmod><changefreq>monthly</changefreq></url>
   <url><loc>https://snowhush.com/blog/92852/linux-system-programming</loc><lastmod>2024-09-12</lastmod><changefreq>monthly</changefreq></url>
   <url><loc>https://snowhush.com/blog/830804/i2c-i3c-protocols</loc><lastmod>2024-08-20</lastmod><changefreq>monthly</changefreq></url>
   <url><loc>https://snowhush.com/blog/80775/image-sensors</loc><lastmod>2024-07-10</lastmod><changefreq>monthly</changefreq></url>
   <url><loc>https://snowhush.com/blog/429226/environmental-sensors</loc><lastmod>2024-06-15</lastmod><changefreq>monthly</changefreq></url>
   <url><loc>https://snowhush.com/blog/739870/inertial-sensors</loc><lastmod>2024-05-22</lastmod><changefreq>monthly</changefreq></url>
   <url><loc>https://snowhush.com/blog/806838/learning-resources</loc><lastmod>2024-03-01</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/life/shanghai-weekend</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/life/cherry-spring</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/life/rain-commute</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/life/cafe-debug</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/life/coffee-morning</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/life/beach-clear</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/life/sunset-sea</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/life/desk-night</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/life/plant-corner</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/life/photo-yearbook</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/life/sapiens-notes</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/projects/dji-sensor</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/projects/xiaomi-perf</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/projects/bosch-edge</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/projects/isp-pipeline</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/projects/script-manager</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/projects/log-viewer</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/projects/log-system</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/projects/scripts-android</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
+  <url><loc>https://snowhush.com/projects/cost-tracker</loc><lastmod>2026-11-04</lastmod><changefreq>monthly</changefreq></url>
 </urlset>

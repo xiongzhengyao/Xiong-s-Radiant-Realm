@@ -50,7 +50,7 @@
       :aria-label="$t('home.latestNotes')"
     >
       <p class="chapters-label reveal">
-        Cont. · 续映
+        {{ $t('home.chaptersLabel') }}
       </p>
       <div class="chapters-rail">
         <router-link
@@ -79,7 +79,7 @@
         <router-link
           v-if="featuredProject"
           class="chapter reveal reveal-delay-1"
-          to="/projects"
+          :to="`/projects/${featuredProject.id}`"
           :aria-label="featuredProject.title"
         >
           <div class="chapter-still">
@@ -100,7 +100,7 @@
 
         <router-link
           class="chapter reveal reveal-delay-2"
-          to="/life"
+          :to="latestLife?.id ? `/life/${latestLife.id}` : '/life'"
           :aria-label="lifeCaptionText"
         >
           <div class="chapter-still">

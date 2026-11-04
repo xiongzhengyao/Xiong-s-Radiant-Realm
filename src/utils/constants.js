@@ -17,6 +17,9 @@ export const APP_CONFIG = {
     HERO_WORKSPACE: '/images/hero-workspace.svg',
     OG_DEFAULT: '/og-default.png'
   },
+  /** Empty = analytics off. Example Plausible: 'https://plausible.io/js/script.js' + domain id */
+  ANALYTICS_SRC: '',
+  ANALYTICS_ID: '',
   // First full-time role
   CAREER_START: '2022-08-12'
 }
@@ -40,8 +43,3 @@ export const ROUTES = {
   CONTACT: '/contact'
 }
 
-// 分页配置
-export const PAGINATION = {
-  PAGE_SIZE: 5,
-  PAGE_SIZES: [5, 10, 20, 50]
-}

@@ -61,12 +61,20 @@
             >
               {{ $t('about.contactCta') }}
             </button>
+            <a
+              class="btn btn-outline"
+              href="/resume.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ $t('about.resumeCta') }}
+            </a>
             <button
               type="button"
               class="btn btn-outline"
               @click="printResume"
             >
-              {{ $t('about.resumeCta') }}
+              {{ $t('about.resumePrint') }}
             </button>
           </div>
         </div>

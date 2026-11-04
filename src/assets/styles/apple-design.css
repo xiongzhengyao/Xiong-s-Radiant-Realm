@@ -129,7 +129,7 @@
 
   /* Layout */
   --nav-bar: 72px;
-  --nav-height: calc(var(--nav-bar) + var(--cinema-letterbox));
+  --nav-height: var(--nav-bar);
   --max-width: 980px;
   --max-width-wide: 1320px;
   --max-width-narrow: 720px;

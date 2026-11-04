@@ -206,6 +206,10 @@ import { useReveal } from '@/composables/useReveal'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import CoverArt from '@/components/CoverArt.vue'
 
+const props = defineProps({
+  id: { type: String, default: '' }
+})
+
 const route = useRoute()
 const router = useRouter()
 const { t, tm, locale } = useI18n()
@@ -221,6 +225,8 @@ const posts = computed(() => {
   const items = tm('life.posts')
   return Array.isArray(items) ? items : []
 })
+
+const detailId = computed(() => String(props.id || route.params.id || route.query.id || ''))
 
 const categoryChips = computed(() => {
   const seen = new Set()
@@ -289,21 +295,17 @@ const postTags = post => {
   return label && label !== key ? [label] : []
 }
 
-const syncDetailToRoute = post => {
-  const query = { ...route.query }
-  if (post) query.id = String(post.id)
-  else delete query.id
-  router.replace({ query })
-}
-
 const openDetail = post => {
+  if (!post) return
   activePost.value = post
-  syncDetailToRoute(post)
+  router.replace({ name: 'LifeDetail', params: { id: String(post.id) } })
 }
 
 const closeDetail = () => {
   activePost.value = null
-  syncDetailToRoute(null)
+  if (route.name === 'LifeDetail' || route.params.id || route.query.id) {
+    router.replace({ name: 'Life', query: {} })
+  }
 }
 
 const resetFilters = () => {
@@ -324,7 +326,7 @@ watch(monthChips, chips => {
 })
 
 watch(
-  () => route.query.id,
+  detailId,
   id => {
     if (!id) {
       activePost.value = null

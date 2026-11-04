@@ -125,9 +125,9 @@
               >
                 <time :datetime="post.date">{{ cardDate(post) }}</time>
                 <div class="note-main">
-                  <h2>{{ post.title }}</h2>
-                  <p v-if="post.excerpt">
-                    {{ post.excerpt }}
+                  <h2>{{ displayTitle(post) }}</h2>
+                  <p v-if="displayExcerpt(post)">
+                    {{ displayExcerpt(post) }}
                   </p>
                 </div>
                 <span class="note-kind">{{ designTag(post).label }}</span>
@@ -276,13 +276,13 @@
                 </template>
               </div>
               <h1 class="article-title">
-                {{ currentPost.title }}
+                {{ displayTitle(currentPost) }}
               </h1>
               <p
-                v-if="currentPost.excerpt"
+                v-if="displayExcerpt(currentPost)"
                 class="article-lead"
               >
-                {{ currentPost.excerpt }}
+                {{ displayExcerpt(currentPost) }}
               </p>
               <div
                 v-if="heroTags.length"
@@ -422,8 +422,8 @@
                     @click="loadPost(post.id)"
                   >
                     <span class="tag tag-accent">{{ designTag(post).label }}</span>
-                    <h3>{{ post.title }}</h3>
-                    <p>{{ post.excerpt }}</p>
+                    <h3>{{ displayTitle(post) }}</h3>
+                    <p>{{ displayExcerpt(post) }}</p>
                   </article>
                 </div>
               </section>
@@ -653,15 +653,25 @@ const clearListFilters = () => {
 const designTags = computed(() => {
   const items = tm('blog.designTags')
   const fallback = [
-    { id: 'work', label: locale.value === 'en' ? 'Work notes' : '工作思考' },
     { id: 'imaging', label: locale.value === 'en' ? 'Imaging' : '影像' },
-    { id: 'life', label: locale.value === 'en' ? 'Life' : '生活' }
+    { id: 'sensor', label: 'Sensor' },
+    { id: 'linux', label: 'Linux' },
+    { id: 'embedded', label: locale.value === 'en' ? 'Embedded' : '嵌入式' },
+    { id: 'notes', label: locale.value === 'en' ? 'Notes' : '笔记' }
   ]
   const all = Array.isArray(items) && items.length ? items : fallback
   return all.filter(tag => posts.value.some(post => getDesignTag(post, locale.value).id === tag.id))
 })
 
 const designTag = post => getDesignTag(post, locale.value)
+
+const displayTitle = post => (
+  locale.value === 'en' && post?.titleEn ? post.titleEn : post?.title
+)
+
+const displayExcerpt = post => (
+  locale.value === 'en' && post?.excerptEn ? post.excerptEn : post?.excerpt
+)
 
 const cardDate = post => post.dateLabel || formatRelativeDate(post.date, locale.value)
 
@@ -777,9 +787,11 @@ const loadPost = async id => {
     type: 'article',
     canonical: `${APP_CONFIG.SITE_URL}/blog/${postData.id}/${postData.slug}`,
     publishedTime: postData.date,
-    image: postData.image
-      ? (postData.image.startsWith('http') ? postData.image : `${APP_CONFIG.SITE_URL}${postData.image}`)
-      : `${APP_CONFIG.SITE_URL}${APP_CONFIG.IMAGES.OG_DEFAULT}`,
+    image: (() => {
+      const cover = getPostCover(postData)
+      if (!cover) return `${APP_CONFIG.SITE_URL}${APP_CONFIG.IMAGES.OG_DEFAULT}`
+      return cover.startsWith('http') ? cover : `${APP_CONFIG.SITE_URL}${cover}`
+    })(),
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'BlogPosting',
@@ -875,7 +887,9 @@ const filteredPosts = computed(() => {
   let result = posts.value.filter(post => {
     const searchable = [
       post.title,
+      post.titleEn,
       post.excerpt,
+      post.excerptEn,
       ...(post.tags || []),
       ...(post.keywords || []),
       post.category
