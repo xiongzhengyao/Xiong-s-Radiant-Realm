@@ -1223,18 +1223,38 @@ html.dark .chip:not(.active) {
 
 @media (max-width: 760px) {
   .note-row {
-    grid-template-columns: 72px minmax(0, 1fr) 72px;
-    gap: 12px;
+    grid-template-columns: auto minmax(0, 1fr) 88px;
+    grid-template-rows: auto auto;
+    gap: 6px 12px;
+    align-items: start;
+  }
+
+  .note-row time {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
   }
 
   .note-kind {
-    display: none;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: start;
+    align-self: center;
+    font-size: 11px;
+  }
+
+  .note-main {
+    grid-column: 1 / 3;
+    grid-row: 2;
   }
 
   .note-thumb {
-    width: 72px;
-    height: 48px;
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    width: 88px;
+    height: 64px;
     opacity: 1;
+    align-self: center;
   }
 }
 
@@ -1246,6 +1266,15 @@ html.dark .chip:not(.active) {
 
   .search-wrap {
     min-width: 0;
+  }
+
+  .note-row {
+    grid-template-columns: auto minmax(0, 1fr) 76px;
+  }
+
+  .note-thumb {
+    width: 76px;
+    height: 56px;
   }
 }
 

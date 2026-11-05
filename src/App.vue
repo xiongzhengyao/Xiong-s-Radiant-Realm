@@ -6,7 +6,13 @@
     >{{ $t('nav.skipToContent') }}</a>
     <div
       class="app is-cinema"
-      :class="{ 'is-scrolled': isScrolled, 'is-article-reading': isArticleReading, 'is-home': route.name === 'Home', 'is-quiet-sky': route.name === 'Projects' || route.name === 'Life' || route.name === 'Home' }"
+      :class="{
+        'is-scrolled': isScrolled,
+        'is-article-reading': isArticleReading,
+        'is-home': route.name === 'Home',
+        'is-quiet-sky': route.name === 'Projects' || route.name === 'Life' || route.name === 'Home',
+        'is-info-page': isInfoPage,
+      }"
     >
       <div
         class="cinema-letterbox cinema-letterbox--bottom"
@@ -381,6 +387,11 @@ const openCommandPalette = () => {
 /** Article detail hides MobileTabBar and uses a single mini share bar */
 const isArticleReading = computed(() => route.name === 'BlogPost')
 
+/** Soft-studio info pages: quieter grain / beams than cinema stages */
+const isInfoPage = computed(() =>
+  ['Blog', 'BlogPost', 'About', 'Contact', 'NotFound'].includes(route.name)
+)
+
 /* IA lock: 首页 · 笔记 · 项目 · 生活 · 关于 — contact via About / footer */
 const navLinks = [
   { path: '/', label: 'nav.home' },
@@ -402,6 +413,10 @@ const toggleLocale = () => {
 
 const isNavActive = path => {
   if (path === '/') return route.path === '/'
+  /* Contact is reached from About — keep About lit for orientation */
+  if (path === '/about') {
+    return route.path === '/about' || route.path.startsWith('/contact')
+  }
   return route.path === path || route.path.startsWith(`${path}/`)
 }
 
@@ -514,12 +529,17 @@ html.dark {
   background-color: #07060c;
 }
 
+/* Daytime screening — light home follows soft-studio screen, not a fake night */
 html:not(.dark) .app.is-home {
-  background-color: #0c0a12;
+  background-color: var(--cinema-screen);
 }
 
-.app.is-home .studio-bg {
+html.dark .app.is-home .studio-bg {
   opacity: 0;
+}
+
+html:not(.dark) .app.is-home .studio-bg {
+  opacity: 0.55;
 }
 
 html.dark .app.is-quiet-sky .studio-stars {
@@ -531,13 +551,17 @@ html.dark .app.is-quiet-sky .studio-stars {
   left: 0;
   right: 0;
   height: var(--cinema-letterbox);
-  background: #000;
+  background: var(--cinema-letterbox-fill, #000);
   z-index: 90;
   pointer-events: none;
 }
 
 .cinema-letterbox--bottom {
   bottom: 0;
+}
+
+html:not(.dark) .cinema-letterbox--bottom {
+  box-shadow: inset 0 1px 0 rgba(26, 26, 34, 0.06);
 }
 
 .cinema-grain {
@@ -550,6 +574,15 @@ html.dark .app.is-quiet-sky .studio-stars {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
+/* Info pages: quieter atmosphere so copy stays clean */
+.app.is-info-page .cinema-grain {
+  opacity: 0.02;
+}
+
+html:not(.dark) .app.is-info-page .studio-beams {
+  opacity: 0.35;
+}
+
 .app.is-article-reading .cinema-letterbox,
 .app.is-article-reading .cinema-grain {
   opacity: 0;
@@ -559,11 +592,16 @@ html.dark .app.is-quiet-sky .studio-stars {
   .cinema-grain {
     opacity: 0.04;
   }
+
+  .app.is-info-page .cinema-grain {
+    opacity: 0.015;
+  }
 }
 
+/* Home scrolled nav tracks the active stage (day vs night) */
 .app.is-home.is-scrolled .nav {
-  background: rgba(243, 238, 248, 0.92);
-  border-bottom-color: rgba(125, 106, 214, 0.2);
+  background: var(--color-nav-bg);
+  border-bottom-color: var(--color-divider);
 }
 
 html.dark .app.is-home.is-scrolled .nav {
@@ -599,12 +637,27 @@ main,
     padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
     /* Tab bar height + 12px clearance */
     --back-to-top-offset: calc(56px + env(safe-area-inset-bottom, 0px) + 12px);
+    /* Mobile: letterbox yields to tab bar — keep a hairline ledge only */
+    --cinema-letterbox: 8px;
+  }
+
+  html.dark .app {
+    --cinema-letterbox: 16px;
   }
 
   .app.is-article-reading {
     /* One bar only: article mini share bar (48px) */
     padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
     --back-to-top-offset: calc(48px + env(safe-area-inset-bottom, 0px) + 12px);
+  }
+
+  .cinema-letterbox--bottom {
+    /* Sit above the mobile tab bar so it does not stack as a double black strip */
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .app.is-article-reading .cinema-letterbox--bottom {
+    bottom: 0;
   }
 }
 

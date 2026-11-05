@@ -211,16 +211,34 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
 
 <style scoped>
 .home {
+  /* Night screening (dark) — default cinema stage */
   --ink: #f3efe8;
   --ink-soft: rgba(243, 239, 232, 0.78);
   --ink-faint: rgba(243, 239, 232, 0.48);
   --violet: var(--cinema-violet-soft, #c4b2f6);
   --violet-ink: #120e1c;
+  --stage: #07060c;
+  --chapter-rule: rgba(196, 178, 246, 0.14);
+  --continue-rule: rgba(196, 178, 246, 0.22);
+  --still-fallback: #120e1c;
   position: relative;
   color: var(--ink);
-  background: #07060c;
+  background: var(--stage);
   min-height: 100vh;
   padding-bottom: calc(var(--cinema-letterbox) + 48px);
+}
+
+/* Daytime screening — soft-studio ink over a lifted still */
+html:not(.dark) .home {
+  --ink: #1c1b22;
+  --ink-soft: rgba(28, 27, 34, 0.78);
+  --ink-faint: rgba(28, 27, 34, 0.5);
+  --violet: var(--color-accent);
+  --violet-ink: #ffffff;
+  --stage: var(--color-bg);
+  --chapter-rule: rgba(26, 26, 34, 0.1);
+  --continue-rule: rgba(26, 26, 34, 0.12);
+  --still-fallback: var(--color-cover-bg);
 }
 
 .title-card {
@@ -251,6 +269,10 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
   transform-origin: 55% 40%;
 }
 
+html:not(.dark) .title-still img {
+  filter: saturate(0.92) brightness(1.08);
+}
+
 .title-veil {
   position: absolute;
   inset: 0;
@@ -258,6 +280,12 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
   background:
     linear-gradient(105deg, rgba(5, 4, 10, 0.9) 0%, rgba(5, 4, 10, 0.42) 42%, rgba(5, 4, 10, 0.28) 68%, rgba(5, 4, 10, 0.55) 100%),
     linear-gradient(0deg, rgba(5, 4, 10, 0.92) 0%, rgba(5, 4, 10, 0.18) 48%, rgba(88, 48, 150, 0.18) 100%);
+}
+
+html:not(.dark) .title-veil {
+  background:
+    linear-gradient(105deg, rgba(230, 228, 238, 0.94) 0%, rgba(230, 228, 238, 0.62) 38%, rgba(230, 228, 238, 0.22) 68%, rgba(230, 228, 238, 0.55) 100%),
+    linear-gradient(0deg, rgba(230, 228, 238, 0.88) 0%, rgba(230, 228, 238, 0.2) 48%, rgba(183, 164, 243, 0.22) 100%);
 }
 
 .title-copy {
@@ -271,11 +299,17 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
   align-items: center;
   gap: 10px;
   margin: 0 0 20px;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.32em;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--violet);
+}
+
+.kicker > span:first-child {
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  color: var(--ink);
 }
 
 .kicker-slash {
@@ -353,7 +387,7 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
   max-width: 1320px;
   margin: 0 auto;
   padding: 56px clamp(20px, 4vw, 48px) 24px;
-  border-top: 1px solid rgba(196, 178, 246, 0.14);
+  border-top: 1px solid var(--chapter-rule);
 }
 
 .chapters-label {
@@ -381,7 +415,7 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
   aspect-ratio: 2.39 / 1;
   overflow: hidden;
   border-radius: 2px;
-  background: #120e1c;
+  background: var(--still-fallback);
 }
 
 .chapter-still img {
@@ -438,6 +472,17 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
     background: rgba(196, 178, 246, 0.12);
     color: #e8dcff;
   }
+
+  html:not(.dark) .text-link:hover {
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+    color: var(--violet-ink);
+  }
+
+  html:not(.dark) .text-link--quiet:hover {
+    background: var(--color-accent-light);
+    color: var(--color-accent-hover);
+  }
 }
 
 .continue {
@@ -452,7 +497,7 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
   align-items: baseline;
   gap: 18px;
   padding: 20px 0;
-  border-top: 1px solid rgba(196, 178, 246, 0.22);
+  border-top: 1px solid var(--continue-rule);
   color: inherit;
   text-decoration: none;
 }

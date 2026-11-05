@@ -239,17 +239,19 @@ const printResume = () => {
   gap: 16px;
 }
 
+/* Editorial chapters — no decorative cards */
 .profile-card,
 .skills-panel,
 .timeline-card {
-  background: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
-  border-radius: 4px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
   box-shadow: none;
 }
 
 .profile-card {
-  padding: 22px 22px 20px;
+  padding: 8px 0 20px;
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .profile-kicker {
@@ -270,7 +272,7 @@ const printResume = () => {
   flex: 0 0 84px;
   border-radius: 50%;
   overflow: hidden;
-  border: 1px solid var(--color-card-border);
+  border: 1px solid var(--color-divider);
   background: var(--color-bg-secondary);
 }
 
@@ -346,7 +348,7 @@ const printResume = () => {
 }
 
 .skills-panel {
-  padding: 18px 20px 8px;
+  padding: 8px 0 0;
 }
 
 .skills-panel > h2,
@@ -360,7 +362,7 @@ const printResume = () => {
 
 .skill-group {
   padding: 12px 0 14px;
-  border-top: 1px solid var(--color-card-border);
+  border-top: 1px solid var(--color-divider);
 }
 
 .skill-group h3 {
@@ -474,7 +476,7 @@ html.dark .timeline-item.is-current .timeline-dot {
 }
 
 .timeline-card {
-  padding: 14px 18px 16px;
+  padding: 12px 0 16px 4px;
 }
 
 .timeline-card h3 {
