@@ -407,9 +407,10 @@ onMounted(() => {
 .reel-veil {
   position: absolute;
   inset: 0;
+  /* Stronger caption track so white airframes stay readable */
   background:
-    linear-gradient(90deg, rgba(5, 4, 10, 0.72) 0%, rgba(5, 4, 10, 0.15) 55%, rgba(5, 4, 10, 0.35) 100%),
-    linear-gradient(0deg, rgba(5, 4, 10, 0.7) 0%, transparent 45%);
+    linear-gradient(90deg, rgba(5, 4, 10, 0.88) 0%, rgba(5, 4, 10, 0.42) 42%, rgba(5, 4, 10, 0.28) 70%, rgba(5, 4, 10, 0.5) 100%),
+    linear-gradient(0deg, rgba(5, 4, 10, 0.86) 0%, rgba(5, 4, 10, 0.28) 42%, transparent 62%);
   pointer-events: none;
 }
 
@@ -421,6 +422,7 @@ onMounted(() => {
   max-width: 34em;
   color: #f3efe8;
   z-index: 1;
+  text-shadow: 0 1px 18px rgba(5, 4, 10, 0.45);
 }
 
 .reel-meta {
@@ -446,6 +448,7 @@ onMounted(() => {
   letter-spacing: -0.035em;
   line-height: 1.1;
   text-wrap: balance;
+  text-shadow: 0 2px 24px rgba(5, 4, 10, 0.55);
 }
 
 .reel-desc {

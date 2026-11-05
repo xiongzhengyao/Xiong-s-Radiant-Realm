@@ -387,11 +387,15 @@ watch(activePost, post => {
 }
 
 .life-header {
-  padding: 36px 0 8px;
+  padding: 20px 0 4px;
 }
 
 .life-header h1 {
-  margin: 0 0 12px;
+  margin: 0 0 8px;
+}
+
+.life-header .page-lede {
+  margin-bottom: 18px;
 }
 
 .life-controls {
@@ -399,18 +403,19 @@ watch(activePost, post => {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
 }
 
 .filter-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 4px 0;
+  max-width: min(100%, 920px);
 }
 
 .chip {
   padding: 4px 0 6px;
-  margin-right: 16px;
+  margin-right: 14px;
   border: none;
   border-bottom: 1px solid transparent;
   border-radius: 0;
@@ -471,13 +476,18 @@ html.dark .chip:not(.active) {
 .life-reel {
   max-width: 1320px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 8px 24px 0;
 }
 
 .life-scenes {
   display: flex;
   flex-direction: column;
-  gap: 64px;
+  gap: 56px;
+}
+
+.life-scene:first-child {
+  /* Pull the first still into the first viewport */
+  margin-top: 4px;
 }
 
 .life-scene {
@@ -509,7 +519,9 @@ html.dark .chip:not(.active) {
 .life-scene-veil {
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, rgba(5, 4, 10, 0.72) 0%, transparent 50%);
+  background:
+    linear-gradient(0deg, rgba(5, 4, 10, 0.78) 0%, rgba(5, 4, 10, 0.2) 42%, transparent 58%),
+    linear-gradient(90deg, rgba(5, 4, 10, 0.35) 0%, transparent 45%);
   pointer-events: none;
 }
 

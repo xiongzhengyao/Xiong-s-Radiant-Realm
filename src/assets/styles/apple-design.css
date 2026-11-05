@@ -20,15 +20,17 @@
   --color-surface-elevated: #ffffff;
   --color-text: #1c1b22;
   --color-text-secondary: #5c5a6a;
-  --color-text-tertiary: #8d8a99;
-  --color-accent: #7d6ad6;
-  --color-accent-hover: #6d5bc8;
+  /* ≥4.5:1 on --color-bg (#e6e4ee) for filter/meta copy */
+  --color-text-tertiary: #656274;
+  --color-accent: #5c4bb8;
+  --color-accent-hover: #4f3fa8;
   --color-accent-contrast: #ffffff;
   --color-accent-light: rgba(183, 164, 243, 0.2);
   --color-accent-border: rgba(125, 106, 214, 0.35);
   --color-cta-bg: #b7a4f3;
   --color-cta-bg-hover: #a892ee;
-  --color-cta-text: #ffffff;
+  /* Near-black on soft lavender — ≥4.5:1 (white-on-lavender fails) */
+  --color-cta-text: #120e1c;
   --color-mist: #8a8a9a;
   --color-nav-current: #1a1a22;
   --color-border: rgba(26, 26, 34, 0.08);
@@ -39,7 +41,7 @@
   --color-code-bg: #ececf4;
   --color-pill-bg: rgba(255, 255, 255, 0.78);
   --color-pill-accent-bg: rgba(183, 164, 243, 0.22);
-  --color-pill-accent-text: #6d5cb8;
+  --color-pill-accent-text: #5c4bb8;
   /* Light Hero continuous with light nav (no dark hero bar) */
   --color-hero-bg: #f5f5fa;
   --color-hero-text: #1a1a22;
@@ -52,7 +54,7 @@
   --color-hero-muted: #5c5c6e;
   --color-cover-bg: #e8e6f4;
   --color-tag-bg: rgba(124, 108, 240, 0.1);
-  --color-tag-text: #6b5ce0;
+  --color-tag-text: #5c4bb8;
   --color-input-bg: #ffffff;
   --color-input-border: rgba(26, 26, 34, 0.1);
   --color-input-focus: rgba(124, 108, 240, 0.28);
@@ -115,8 +117,10 @@
   --page-leave-y: 0px;
   --page-leave-opacity: 0;
   /* Cinema frame. Screen tracks the theme so list pages stay readable in light;
-     html.dark pins the screening room. Home paints its own stage on top. */
-  --cinema-letterbox: clamp(28px, 7vh, 64px);
+     html.dark pins the screening room. Home paints its own stage on top.
+     Light letterbox is a thin soft-studio ledge, not a black bar. */
+  --cinema-letterbox: clamp(12px, 2.8vh, 28px);
+  --cinema-letterbox-fill: var(--color-bg);
   --cinema-screen: var(--color-bg);
   --cinema-violet: #8b7ad8;
   --cinema-violet-soft: #c4b2f6;
@@ -163,6 +167,8 @@ html.dark {
   /* Screening-room dark — muted violet, not neon purple */
   --color-bg: #05040a;
   --cinema-screen: #05040a;
+  --cinema-letterbox: clamp(28px, 7vh, 64px);
+  --cinema-letterbox-fill: #000;
   --color-bg-secondary: #0e0c14;
   --color-bg-tertiary: #121018;
   --color-surface: #16121f;
@@ -290,7 +296,7 @@ h1 { font-size: clamp(32px, 5vw, 56px); font-weight: 600; letter-spacing: -0.025
 }
 
 .page-lede {
-  margin: 0 0 36px;
+  margin: 0 0 28px;
   max-width: 34em;
   font-size: 17px;
   line-height: 1.7;
@@ -532,7 +538,8 @@ h1.reveal,
   white-space: nowrap;
   min-height: 42px;
   font-family: var(--font-sans);
-  border-radius: 2px;
+  /* Soft-studio info controls; cinema pages keep their own 2px CTAs */
+  border-radius: var(--radius-sm);
 }
 
 /* Light press (80–120ms) then spring rebound — primary + outline/ghost */
