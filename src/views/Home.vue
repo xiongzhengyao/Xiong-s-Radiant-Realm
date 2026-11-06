@@ -319,7 +319,7 @@ html:not(.dark) .title-veil {
 
 .title-copy h1 {
   margin: 0 0 18px;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-weight: 700;
   font-size: clamp(48px, 7.2vw, 92px);
   line-height: 1.05;
@@ -448,7 +448,7 @@ html:not(.dark) .title-veil {
 
 .chapter h2 {
   margin: 8px 0 0;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: clamp(18px, 1.6vw, 24px);
   font-weight: 700;
   line-height: 1.3;
@@ -511,7 +511,7 @@ html:not(.dark) .title-veil {
 }
 
 .continue-title {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 18px;
   line-height: 1.4;
   overflow: hidden;

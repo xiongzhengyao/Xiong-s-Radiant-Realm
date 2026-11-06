@@ -96,7 +96,7 @@ const initials = computed(() => {
 .author-byline {
   margin: 0;
   font-size: 13px;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   color: var(--color-text-tertiary);
   display: flex;
   flex-wrap: wrap;
@@ -153,7 +153,7 @@ const initials = computed(() => {
   height: 100%;
   font-size: 16px;
   font-weight: 600;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   color: var(--color-text-tertiary);
   background: var(--color-bg-secondary);
 }
@@ -161,7 +161,7 @@ const initials = computed(() => {
 .author-label {
   font-size: 10px;
   font-weight: 600;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
@@ -171,7 +171,7 @@ const initials = computed(() => {
 .author-body .author-name {
   font-size: 15px;
   font-weight: 600;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   margin: 0 0 var(--space-1);
 }
 
@@ -192,13 +192,13 @@ const initials = computed(() => {
 
 .author-topics-label {
   font-size: 11px;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   color: var(--color-text-tertiary);
 }
 
 .author-topic {
   font-size: 11px;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   padding: 2px 0;
   border-radius: 0;
   background: transparent;

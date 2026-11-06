@@ -12,6 +12,8 @@
 - 文档渲染：markdown-it
 - 服务端：Express（静态资源 + SPA fallback）
 
+**Typography：** UI/正文用系统 sans（`--font-sans`）；展示衬线 Noto Serif SC 700 仅用于关于页姓名（`.about-name`）；JetBrains Mono（`--font-mono`）仅用于 `pre`/`code`。静态页（如 `public/resume.html`）对齐同一 sans 栈，勿引用未 `@font-face` 的字体。
+
 ---
 
 ## 2. 目录结构

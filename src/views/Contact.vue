@@ -114,7 +114,7 @@ useReveal()
 
 .curtain-title {
   margin: 0 0 18px;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: clamp(48px, 6.5vw, 80px);
   font-weight: 700;
   letter-spacing: -0.04em;
@@ -143,7 +143,7 @@ useReveal()
 .curtain-email {
   display: block;
   margin: 0 0 10px;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: clamp(26px, 4vw, 40px);
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -263,7 +263,7 @@ useReveal()
 }
 
 .credit-name {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 18px;
   font-weight: 700;
   transition: color var(--duration-base) var(--ease-cinema);
