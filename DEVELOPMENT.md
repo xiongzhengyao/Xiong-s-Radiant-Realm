@@ -24,19 +24,33 @@ Xiong-s-Radiant-Realm/
 │   ├── assets/
 │   │   ├── posts/                  # Markdown 文章（构建时懒加载）
 │   │   └── styles/apple-design.css # 全局设计系统
-│   ├── components/                 # 通用组件
+│   ├── components/                 # 外壳与通用组件
 │   ├── composables/                # 可复用逻辑
 │   ├── data/career.js              # 项目/职业结构化数据
 │   ├── i18n/                       # 中英文文案
+│   ├── modules/                    # 站点模块清单（导航、路由、搜索、站点地图）
 │   ├── stores/blogStore.js         # 博客数据（懒加载）
 │   ├── views/                      # 页面
-│   ├── App.vue
+│   ├── App.vue                     # 外壳：读模块清单，不写死栏目
 │   └── main.js
 ├── public/                         # 公共静态资源
-├── scripts/generate-feeds.js       # 构建时 RSS + sitemap
+├── scripts/generate-feeds.mjs      # 构建时 RSS + sitemap（静态页来自模块清单）
 ├── server.js
 └── vite.config.js
 ```
+
+新增一个栏目时，只改 `src/modules/`，不要在 `App.vue`、`router/index.js`、底栏、命令面板里再抄一份路径。步骤写在 `src/modules/catalog.mjs` 文件头。
+
+模块分四层，互不把对方的细节写死：
+
+| 层   | 文件                              | 负责                                            |
+| ---- | --------------------------------- | ----------------------------------------------- |
+| 清单 | `catalog.mjs` | 路径、导航、页脚、底栏、外壳样式、静态站点地图 |
+| 查询 | `query.mjs` | 从清单算出导航 / 页脚 / 高亮，Node 和页面都能用 |
+| 内容 | `content-sources.mjs` + `search/` | 文章、项目、生活的深链和命令面板结果 |
+| 页面 | `loaders.js` + `views/` | 组件本身。视图只通过 `paths.mjs` 生成详情地址 |
+
+外壳样式（首页夜景、信息页、阅读态、列表/详情是否共用过渡）写在对应路由上，由 `route.meta` 驱动，不靠页面名字判断。
 
 ---
 

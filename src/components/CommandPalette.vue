@@ -88,94 +88,16 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
+import { ref, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
-import { useBlogStore } from '@/stores/blogStore'
-import { useCareer } from '@/composables/useCareer'
+import { useCommandIndex } from '@/modules/search'
 
 const router = useRouter()
-const { t, tm } = useI18n()
-const blogStore = useBlogStore()
-const { projects } = useCareer()
+const { query, groupedResults, flatItems, prepare } = useCommandIndex()
 
 const open = ref(false)
-const query = ref('')
 const activeIndex = ref(0)
 const inputRef = ref(null)
-
-const navItems = computed(() => [
-  { key: 'nav-home', path: '/', label: t('nav.home'), hint: t('command.groups.pages'), kind: 'page' },
-  { key: 'nav-blog', path: '/blog', label: t('nav.blog'), hint: t('command.groups.pages'), kind: 'page' },
-  { key: 'nav-projects', path: '/projects', label: t('nav.projects'), hint: t('command.groups.pages'), kind: 'page' },
-  { key: 'nav-life', path: '/life', label: t('nav.life'), hint: t('command.groups.pages'), kind: 'page' },
-  { key: 'nav-about', path: '/about', label: t('nav.about'), hint: t('command.groups.pages'), kind: 'page' },
-  { key: 'nav-contact', path: '/contact', label: t('nav.contact'), hint: t('command.groups.pages'), kind: 'page' }
-])
-
-const noteItems = computed(() => blogStore.posts.map(post => ({
-  key: `note-${post.id}`,
-  path: `/blog/${post.id}/${encodeURIComponent(post.slug)}`,
-  label: post.title,
-  hint: t('command.groups.notes'),
-  kind: 'note',
-  search: [post.title, post.excerpt, ...(post.tags || [])].join(' ')
-})))
-
-const projectItems = computed(() => projects.value.map(project => ({
-  key: `project-${project.id}`,
-  path: `/projects/${project.id}`,
-  label: project.title,
-  hint: project.company || t('command.groups.projects'),
-  kind: 'project',
-  search: [project.title, project.role, project.description, project.company, ...(project.tags || [])].join(' ')
-})))
-
-const lifeItems = computed(() => {
-  const items = tm('life.posts')
-  if (!Array.isArray(items)) return []
-  return items.map(post => ({
-    key: `life-${post.id}`,
-    path: `/life/${post.id}`,
-    label: post.title,
-    hint: t('command.groups.life'),
-    kind: 'life',
-    search: [post.title, post.description, ...(post.tags || [])].join(' ')
-  }))
-})
-
-const allItems = computed(() => [
-  ...navItems.value,
-  ...noteItems.value,
-  ...projectItems.value,
-  ...lifeItems.value
-])
-
-const filteredItems = computed(() => {
-  const q = query.value.trim().toLowerCase()
-  if (!q) return navItems.value
-  return allItems.value.filter(item => {
-    const hay = `${item.label} ${item.hint} ${item.search || ''} ${item.path}`.toLowerCase()
-    return hay.includes(q)
-  }).slice(0, 24)
-})
-
-const groupedResults = computed(() => {
-  const order = [
-    { id: 'page', label: t('command.groups.pages') },
-    { id: 'note', label: t('command.groups.notes') },
-    { id: 'project', label: t('command.groups.projects') },
-    { id: 'life', label: t('command.groups.life') }
-  ]
-  return order
-    .map(group => ({
-      ...group,
-      items: filteredItems.value.filter(item => item.kind === group.id)
-    }))
-    .filter(group => group.items.length)
-})
-
-const flatItems = computed(() => groupedResults.value.flatMap(group => group.items))
 
 const flatIndex = item => flatItems.value.findIndex(entry => entry.key === item.key)
 
@@ -183,7 +105,7 @@ watch(query, () => {
   activeIndex.value = 0
 })
 
-watch(filteredItems, () => {
+watch(flatItems, () => {
   if (activeIndex.value >= flatItems.value.length) activeIndex.value = 0
 })
 
@@ -195,7 +117,7 @@ const close = () => {
 
 const show = async () => {
   open.value = true
-  await blogStore.ensureLoaded()
+  await prepare()
   nextTick(() => inputRef.value?.focus())
 }
 

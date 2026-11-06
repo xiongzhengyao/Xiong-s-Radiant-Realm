@@ -1,6 +1,9 @@
-const test = require('node:test')
-const assert = require('node:assert/strict')
-const feeds = require('./generate-feeds')
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import * as feeds from './generate-feeds.mjs'
+import catalog from '../src/modules/catalog.mjs'
+import * as query from '../src/modules/query.mjs'
+import * as sources from '../src/modules/content-sources.mjs'
 
 test('slugToId is stable for known slugs', () => {
   const a = feeds.slugToId('camera-first-frame-cold-start')
@@ -50,8 +53,48 @@ test('generateSitemap includes life and project deep links', () => {
   assert.match(xml, /\/resume\.html/)
 })
 
+test('site catalog drives nav, footer, and sitemap without duplicate routes', () => {
+  assert.deepEqual(query.validateCatalog(catalog), [])
+  assert.deepEqual(
+    query.primaryNav(catalog).map(item => item.path),
+    ['/', '/blog', '/projects', '/life', '/about']
+  )
+  assert.deepEqual(
+    query.footerLinks(catalog, 'explore').map(item => item.path),
+    ['/', '/blog', '/projects', '/life']
+  )
+  assert.deepEqual(
+    query.footerLinks(catalog, 'about').map(item => item.path),
+    ['/about', '/contact']
+  )
+  assert.deepEqual(
+    query.notFoundLinks(catalog).map(item => item.path),
+    ['/blog', '/projects', '/about', '/contact']
+  )
+  assert.deepEqual(
+    query.staticSitemap(catalog).map(item => item.path),
+    ['/', '/about', '/projects', '/blog', '/life', '/contact', '/resume.html']
+  )
+  assert.equal(
+    query.isNavActive('/about', { path: '/contact', meta: { highlightNav: '/about' } }),
+    true
+  )
+  assert.equal(query.isNavActive('/', { path: '/blog', meta: {} }), false)
+  assert.equal(query.isNavActive('/blog', { path: '/blog/1/slug', meta: {} }), true)
+
+  const searchIds = new Set(sources.collectionIds())
+  for (const mod of catalog) {
+    if (mod.search) {
+      assert.ok(searchIds.has(mod.search), `${mod.id} search "${mod.search}" has no content source`)
+    }
+  }
+
+  const entries = sources.contentSitemapEntries()
+  assert.ok(entries.some(entry => entry.path.includes('/projects/dji-sensor')))
+  assert.ok(entries.some(entry => entry.path.includes('/life/shanghai-weekend')))
+})
+
 test('design tag mapping prefers frontmatter category', () => {
-  // Mirror src/utils/categoryLabel.js CATEGORY_DESIGN without Vue tooling.
   const CATEGORY_DESIGN = {
     camera: 'imaging',
     sensor: 'sensor',

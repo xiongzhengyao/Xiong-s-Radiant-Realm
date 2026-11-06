@@ -3,6 +3,7 @@
     <Transition
       name="blog-view"
       mode="out-in"
+      @after-enter="observeRevealElements"
     >
       <div
         v-if="!currentPostId"
@@ -563,6 +564,7 @@ import { enhanceMarkdownHtml, bindCodeCopyButtons, enhanceTableNumericColumns } 
 import { setPageMetaOverride, clearPageMetaOverride } from '@/composables/usePageMeta'
 import ArticleAuthor from '@/components/ArticleAuthor.vue'
 import { APP_CONFIG } from '@/utils/constants'
+import { blogPostPath } from '@/modules/paths.mjs'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import { useReadHistory } from '@/composables/useReadHistory'
 import { useBookmarks } from '@/composables/useBookmarks'
@@ -741,7 +743,7 @@ const restoreScrollPosition = id => {
   return false
 }
 
-const postPath = post => `/blog/${post.id}/${encodeURIComponent(post.slug)}`
+const postPath = blogPostPath
 
 const backToList = () => {
   currentPostId.value = null
@@ -785,7 +787,7 @@ const loadPost = async id => {
     title: postData.title,
     description: postData.excerpt,
     type: 'article',
-    canonical: `${APP_CONFIG.SITE_URL}/blog/${postData.id}/${postData.slug}`,
+    canonical: `${APP_CONFIG.SITE_URL}${blogPostPath(postData)}`,
     publishedTime: postData.date,
     image: (() => {
       const cover = getPostCover(postData)
@@ -802,7 +804,7 @@ const loadPost = async id => {
         '@type': 'Person',
         name: t('about.profile.name')
       },
-      url: `${APP_CONFIG.SITE_URL}/blog/${postData.id}/${postData.slug}`
+      url: `${APP_CONFIG.SITE_URL}${blogPostPath(postData)}`
     }
   })
   if (!restoreScrollPosition(id)) {

@@ -8,10 +8,10 @@
       class="app is-cinema"
       :class="{
         'is-scrolled': isScrolled,
-        'is-article-reading': isArticleReading,
-        'is-home': route.name === 'Home',
-        'is-quiet-sky': route.name === 'Projects' || route.name === 'Life' || route.name === 'Home',
-        'is-info-page': isInfoPage,
+        'is-article-reading': route.meta.articleReading,
+        'is-home': route.meta.home,
+        'is-quiet-sky': route.meta.quietSky,
+        'is-info-page': route.meta.infoPage,
       }"
     >
       <div
@@ -259,28 +259,12 @@
                 {{ $t('footer.explore') }}
               </h4>
               <router-link
-                to="/"
+                v-for="link in exploreLinks"
+                :key="link.path"
+                :to="link.path"
                 class="footer-link"
               >
-                {{ $t('nav.home') }}
-              </router-link>
-              <router-link
-                to="/blog"
-                class="footer-link"
-              >
-                {{ $t('nav.blog') }}
-              </router-link>
-              <router-link
-                to="/projects"
-                class="footer-link"
-              >
-                {{ $t('nav.projects') }}
-              </router-link>
-              <router-link
-                to="/life"
-                class="footer-link"
-              >
-                {{ $t('nav.life') }}
+                {{ $t(link.label) }}
               </router-link>
             </div>
             <div class="footer-col">
@@ -288,16 +272,12 @@
                 {{ $t('footer.about') }}
               </h4>
               <router-link
-                to="/about"
+                v-for="link in aboutLinks"
+                :key="link.path"
+                :to="link.path"
                 class="footer-link"
               >
-                {{ $t('nav.about') }}
-              </router-link>
-              <router-link
-                to="/contact"
-                class="footer-link"
-              >
-                {{ $t('nav.contact') }}
+                {{ $t(link.label) }}
               </router-link>
               <button
                 type="button"
@@ -362,7 +342,7 @@ import { APP_CONFIG } from '@/utils/constants'
 import BackToTop from '@/components/BackToTop.vue'
 import CommandPalette from '@/components/CommandPalette.vue'
 import MobileTabBar from '@/components/MobileTabBar.vue'
-import { prefetchRoute } from '@/composables/useNavPrefetch'
+import { footerLinks, isNavActive as matchNav, prefetchRoute, primaryNav } from '@/modules'
 
 const route = useRoute()
 const router = useRouter()
@@ -384,22 +364,11 @@ const commandShortcutLabel = computed(() => (
 const openCommandPalette = () => {
   commandPaletteRef.value?.show?.()
 }
-/** Article detail hides MobileTabBar and uses a single mini share bar */
-const isArticleReading = computed(() => route.name === 'BlogPost')
 
-/** Soft-studio info pages: quieter grain / beams than cinema stages */
-const isInfoPage = computed(() =>
-  ['Blog', 'BlogPost', 'About', 'Contact', 'NotFound'].includes(route.name)
-)
-
-/* IA lock: 首页 · 笔记 · 项目 · 生活 · 关于 — contact via About / footer */
-const navLinks = [
-  { path: '/', label: 'nav.home' },
-  { path: '/blog', label: 'nav.blog' },
-  { path: '/projects', label: 'nav.projects' },
-  { path: '/life', label: 'nav.life' },
-  { path: '/about', label: 'nav.about' },
-]
+/* 导航、页脚来自模块清单。联系页不进主导航，由 About 的 highlightNav 点亮。 */
+const navLinks = primaryNav()
+const exploreLinks = footerLinks('explore')
+const aboutLinks = footerLinks('about')
 
 const toggleLocale = () => {
   const next = locale.value === 'zh' ? 'en' : 'zh'
@@ -411,19 +380,9 @@ const toggleLocale = () => {
   router.replace({ path: route.path, query })
 }
 
-const isNavActive = path => {
-  if (path === '/') return route.path === '/'
-  /* Contact is reached from About — keep About lit for orientation */
-  if (path === '/about') {
-    return route.path === '/about' || route.path.startsWith('/contact')
-  }
-  return route.path === path || route.path.startsWith(`${path}/`)
-}
+const isNavActive = path => matchNav(path, route)
 
-const pageTransitionKey = viewRoute => {
-  if (viewRoute.path.startsWith('/blog')) return 'blog'
-  return viewRoute.path
-}
+const pageTransitionKey = viewRoute => viewRoute.meta.transitionGroup || viewRoute.path
 
 const closeMobileMenu = () => {
   mobileMenuOpen.value = false
