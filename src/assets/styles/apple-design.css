@@ -22,6 +22,7 @@
   --color-text-secondary: #5c5a6a;
   /* ≥4.5:1 on --color-bg (#e6e4ee) for filter/meta copy */
   --color-text-tertiary: #656274;
+  --color-text-quaternary: #7a7888;
   --color-accent: #5c4bb8;
   --color-accent-hover: #4f3fa8;
   --color-accent-contrast: #ffffff;
@@ -107,11 +108,11 @@
   --ease-spring: cubic-bezier(0.22, 1, 0.36, 1.05);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-cinema: cubic-bezier(0.22, 0.61, 0.36, 1);
-  /* Scroll reveal — slower title-card pacing */
+  /* Scroll reveal — Phase 1 quiet physics (280–400ms), title a beat longer */
   --reveal-offset: 24px;
-  --reveal-stagger: 0.09s;
-  --reveal-duration: 0.9s;
-  --reveal-duration-title: 1.05s;
+  --reveal-stagger: 0.06s;
+  --reveal-duration: 0.36s;
+  --reveal-duration-title: 0.42s;
   /* Route page transition — soft black cut */
   --page-enter-y: 0px;
   --page-leave-y: 0px;
@@ -175,7 +176,10 @@ html.dark {
   --color-surface-elevated: #1c1828;
   --color-text: #f3efe8;
   --color-text-secondary: rgba(243, 239, 232, 0.72);
-  --color-text-tertiary: rgba(243, 239, 232, 0.46);
+  /* ≥0.58 ≈ ≥5.5:1 on #05040a — AA for meta / inactive chrome */
+  --color-text-tertiary: rgba(243, 239, 232, 0.58);
+  /* Decorative / captions only — not for interactive labels */
+  --color-text-quaternary: rgba(243, 239, 232, 0.42);
   --color-accent: #c4b2f6;
   --color-accent-hover: #d6c8ff;
   --color-accent-contrast: #120e1c;
@@ -189,27 +193,29 @@ html.dark {
   --color-border: rgba(196, 178, 246, 0.16);
   --color-divider: rgba(196, 178, 246, 0.1);
   --color-overlay: rgba(5, 4, 10, 0.9);
-  --color-nav-bg: rgba(5, 4, 10, 0.82);
-  --color-card-bg: rgba(16, 13, 24, 0.92);
+  /* Higher alpha so starfield / grain does not wash text */
+  --color-nav-bg: rgba(5, 4, 10, 0.96);
+  --color-card-bg: rgba(16, 13, 24, 0.97);
   --color-pill-bg: rgba(255, 255, 255, 0.06);
-  --color-pill-accent-bg: rgba(176, 140, 255, 0.2);
+  --color-pill-accent-bg: rgba(196, 178, 246, 0.2);
   --color-pill-accent-text: #eadfff;
   --color-code-bg: #16141f;
   --color-hero-bg: #0b0a12;
   --color-hero-text: #f4f2fb;
-  --color-hero-ghost-border: rgba(196, 181, 253, 0.45);
+  --color-hero-ghost-border: rgba(196, 178, 246, 0.45);
   --color-hero-ghost-text: #e9e4f8;
-  --color-hero-ghost-hover-bg: rgba(168, 85, 247, 0.12);
-  --color-hero-ghost-hover-border: rgba(168, 85, 247, 0.65);
+  /* Screening-room muted violet — same hue as --color-accent (#c4b2f6) */
+  --color-hero-ghost-hover-bg: rgba(196, 178, 246, 0.12);
+  --color-hero-ghost-hover-border: rgba(196, 178, 246, 0.65);
   --color-hero-ghost-hover-text: #f4f2fb;
-  --color-hero-cta-border: rgba(168, 85, 247, 0.28);
+  --color-hero-cta-border: rgba(196, 178, 246, 0.28);
   --color-hero-muted: rgba(244, 242, 251, 0.72);
   --color-cover-bg: #16121f;
-  --color-tag-bg: rgba(168, 85, 247, 0.2);
+  --color-tag-bg: rgba(196, 178, 246, 0.2);
   --color-tag-text: #e9d5ff;
   --color-input-bg: #16121f;
-  --color-input-border: rgba(196, 181, 253, 0.22);
-  --color-input-focus: rgba(168, 85, 247, 0.4);
+  --color-input-border: rgba(196, 178, 246, 0.22);
+  --color-input-focus: rgba(196, 178, 246, 0.4);
   --color-card-glow: none;
   --color-card-border: rgba(196, 178, 246, 0.18);
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
@@ -705,7 +711,7 @@ h1.reveal,
 /* --- Selection --- */
 ::selection {
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-accent-contrast);
 }
 
 /* --- Element Plus Overrides --- */
@@ -767,6 +773,25 @@ h1.reveal,
 .el-textarea__inner:focus {
   border-color: var(--color-accent) !important;
   box-shadow: 0 0 0 3px var(--color-input-focus) !important;
+}
+
+/* Toast / ElMessage — map onto design tokens (teleported to body) */
+.el-message {
+  --el-message-bg-color: var(--color-surface-elevated) !important;
+  --el-message-border-color: var(--color-border) !important;
+  --el-message-text-color: var(--color-text) !important;
+  background: var(--color-surface-elevated) !important;
+  border-color: var(--color-border) !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.el-message .el-message__content {
+  color: var(--color-text) !important;
+}
+
+html.dark .el-message {
+  background: var(--color-surface-elevated) !important;
+  border-color: var(--color-border) !important;
 }
 
 /* --- Rich Markdown Content (tech-doc typesetting) --- */

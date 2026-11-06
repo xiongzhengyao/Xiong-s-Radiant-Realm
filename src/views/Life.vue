@@ -443,11 +443,6 @@ watch(activePost, post => {
   }
 }
 
-html.dark .chip:not(.active) {
-  background: transparent;
-  border-color: transparent;
-}
-
 .search-wrap {
   display: flex;
   align-items: center;
@@ -457,7 +452,7 @@ html.dark .chip:not(.active) {
   border-radius: 0;
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(125, 106, 214, 0.35);
+  border-bottom: 1px solid var(--color-input-border);
   color: var(--color-text-tertiary);
   box-shadow: none;
 }

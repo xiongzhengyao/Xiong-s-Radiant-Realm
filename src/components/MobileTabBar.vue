@@ -88,7 +88,7 @@ const isActive = path => {
   justify-content: center;
   gap: 2px;
   text-decoration: none;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   font-size: 10px;
   font-weight: 600;
   transition: color var(--duration-fast) var(--ease-out);
