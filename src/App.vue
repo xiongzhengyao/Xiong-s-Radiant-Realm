@@ -527,11 +527,24 @@ html.dark {
 
 .app.is-home {
   background-color: #07060c;
+  /* Shell chrome follows the cinema stage (not generic page tokens alone) */
+  --shell-ink: #f3efe8;
+  --shell-ink-muted: rgba(243, 239, 232, 0.78);
+  --shell-ink-faint: rgba(243, 239, 232, 0.58);
+  --shell-nav-bg: rgba(12, 10, 20, 0.94);
+  --shell-nav-border: rgba(196, 178, 246, 0.22);
+  --shell-accent: #c4b2f6;
 }
 
 /* Daytime screening — light home follows soft-studio screen, not a fake night */
 html:not(.dark) .app.is-home {
   background-color: var(--cinema-screen);
+  --shell-ink: var(--color-text);
+  --shell-ink-muted: var(--color-text-secondary);
+  --shell-ink-faint: var(--color-text-tertiary);
+  --shell-nav-bg: var(--color-nav-bg);
+  --shell-nav-border: var(--color-divider);
+  --shell-accent: var(--color-accent);
 }
 
 html.dark .app.is-home .studio-bg {
@@ -540,6 +553,61 @@ html.dark .app.is-home .studio-bg {
 
 html:not(.dark) .app.is-home .studio-bg {
   opacity: 0.55;
+}
+
+/* Home shell: logo / links / footer read stage ink */
+.app.is-home .nav-logo,
+.app.is-home .nav-toggle span,
+.app.is-home .footer-logo {
+  color: var(--shell-ink);
+}
+
+.app.is-home .nav-link {
+  color: var(--shell-ink-faint);
+}
+
+.app.is-home .nav-link:hover,
+.app.is-home .nav-link.router-link-active,
+.app.is-home .nav-action-btn:hover,
+.app.is-home .nav-archive.active {
+  color: var(--shell-ink);
+}
+
+.app.is-home .nav-action-btn,
+.app.is-home .nav-archive,
+.app.is-home .footer-tagline,
+.app.is-home .footer-link {
+  color: var(--shell-ink-muted);
+}
+
+.app.is-home .nav-cmd-kbd,
+.app.is-home .footer-heading,
+.app.is-home .footer-built,
+.app.is-home .footer-bottom p {
+  color: var(--shell-ink-faint);
+}
+
+.app.is-home .footer-email-btn {
+  color: var(--shell-accent);
+}
+
+/* Unscrolled light home: soft top scrim so dark ink stays readable over the still */
+html:not(.dark) .app.is-home:not(.is-scrolled) .nav {
+  background: linear-gradient(
+    180deg,
+    rgba(230, 228, 238, 0.92) 0%,
+    rgba(230, 228, 238, 0.55) 62%,
+    rgba(230, 228, 238, 0) 100%
+  );
+}
+
+html.dark .app.is-home:not(.is-scrolled) .nav {
+  background: linear-gradient(
+    180deg,
+    rgba(7, 6, 12, 0.72) 0%,
+    rgba(7, 6, 12, 0.28) 70%,
+    transparent 100%
+  );
 }
 
 html.dark .app.is-quiet-sky .studio-stars {
@@ -600,30 +668,15 @@ html:not(.dark) .app.is-info-page .studio-beams {
 
 /* Home scrolled nav tracks the active stage (day vs night) */
 .app.is-home.is-scrolled .nav {
-  background: var(--color-nav-bg);
-  border-bottom-color: var(--color-divider);
-}
-
-html.dark .app.is-home.is-scrolled .nav {
-  background: rgba(12, 10, 20, 0.9);
-  border-bottom-color: rgba(184, 164, 243, 0.24);
+  background: var(--shell-nav-bg);
+  border-bottom-color: var(--shell-nav-border);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
 }
 
 .app.is-home .footer::before {
-  background: linear-gradient(90deg, transparent 0%, rgba(125, 106, 214, 0.55) 50%, transparent 100%);
-  opacity: 1;
-}
-
-html.dark .app.is-home .footer::before {
-  background: linear-gradient(90deg, transparent 0%, rgba(184, 164, 243, 0.55) 50%, transparent 100%);
-}
-
-.app.is-home .footer-email-btn {
-  color: #6d5bc8;
-}
-
-html.dark .app.is-home .footer-email-btn {
-  color: #c4b2f6;
+  background: linear-gradient(90deg, transparent 0%, var(--shell-accent) 50%, transparent 100%);
+  opacity: 0.55;
 }
 
 main,
@@ -733,7 +786,8 @@ main,
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 400;
-  color: var(--color-text-tertiary);
+  /* Secondary (not tertiary) — inactive nav must stay AA */
+  color: var(--color-text-secondary);
   text-decoration: none;
   padding: 8px 12px;
   border-radius: 0;

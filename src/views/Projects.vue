@@ -347,7 +347,7 @@ onMounted(() => {
 .search-wrap {
   width: min(180px, 100%);
   padding: 6px 0;
-  border-bottom: 1px solid rgba(125, 106, 214, 0.35);
+  border-bottom: 1px solid var(--color-input-border);
 }
 
 .search-input {
@@ -437,7 +437,7 @@ onMounted(() => {
 }
 
 .reel-group {
-  opacity: 0.72;
+  opacity: 0.88;
 }
 
 .reel-caption h2 {
@@ -463,7 +463,7 @@ onMounted(() => {
   margin: 0;
   font-size: 12px;
   letter-spacing: 0.08em;
-  color: rgba(243, 239, 232, 0.5);
+  color: rgba(243, 239, 232, 0.72);
 }
 
 .reel-actions {

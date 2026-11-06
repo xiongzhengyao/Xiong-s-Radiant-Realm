@@ -211,10 +211,10 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
 
 <style scoped>
 .home {
-  /* Night screening (dark) — default cinema stage */
+  /* Night screening (dark) — default cinema stage; ink aligned with shell tokens */
   --ink: #f3efe8;
   --ink-soft: rgba(243, 239, 232, 0.78);
-  --ink-faint: rgba(243, 239, 232, 0.48);
+  --ink-faint: rgba(243, 239, 232, 0.58);
   --violet: var(--cinema-violet-soft, #c4b2f6);
   --violet-ink: #120e1c;
   --stage: #07060c;
@@ -228,11 +228,11 @@ watch([latestNote, continuePost, featuredProject, latestLife], () => {
   padding-bottom: calc(var(--cinema-letterbox) + 48px);
 }
 
-/* Daytime screening — soft-studio ink over a lifted still */
+/* Daytime screening — soft-studio ink over a lifted still (matches App shell) */
 html:not(.dark) .home {
-  --ink: #1c1b22;
-  --ink-soft: rgba(28, 27, 34, 0.78);
-  --ink-faint: rgba(28, 27, 34, 0.5);
+  --ink: var(--color-text);
+  --ink-soft: var(--color-text-secondary);
+  --ink-faint: var(--color-text-tertiary);
   --violet: var(--color-accent);
   --violet-ink: #ffffff;
   --stage: var(--color-bg);
@@ -284,8 +284,9 @@ html:not(.dark) .title-still img {
 
 html:not(.dark) .title-veil {
   background:
-    linear-gradient(105deg, rgba(230, 228, 238, 0.94) 0%, rgba(230, 228, 238, 0.62) 38%, rgba(230, 228, 238, 0.22) 68%, rgba(230, 228, 238, 0.55) 100%),
-    linear-gradient(0deg, rgba(230, 228, 238, 0.88) 0%, rgba(230, 228, 238, 0.2) 48%, rgba(183, 164, 243, 0.22) 100%);
+    linear-gradient(105deg, rgba(230, 228, 238, 0.94) 0%, rgba(230, 228, 238, 0.62) 38%, rgba(230, 228, 238, 0.28) 68%, rgba(230, 228, 238, 0.58) 100%),
+    linear-gradient(0deg, rgba(230, 228, 238, 0.9) 0%, rgba(230, 228, 238, 0.28) 48%, rgba(183, 164, 243, 0.22) 100%),
+    linear-gradient(180deg, rgba(230, 228, 238, 0.72) 0%, transparent 28%);
 }
 
 .title-copy {

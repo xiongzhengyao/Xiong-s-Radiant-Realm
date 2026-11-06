@@ -244,12 +244,12 @@ useReveal()
   margin: 56px auto 0;
   padding: 0;
   max-width: 420px;
-  border-top: 1px solid rgba(125, 106, 214, 0.28);
+  border-top: 1px solid var(--color-border);
   text-align: left;
 }
 
 .credits li {
-  border-bottom: 1px solid rgba(125, 106, 214, 0.2);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .credit-row {

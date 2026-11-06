@@ -461,18 +461,18 @@ const printResume = () => {
 }
 
 .timeline-item.is-current .timeline-dot {
-  background: #9b87e8;
-  box-shadow: 0 0 0 5px rgba(183, 164, 243, 0.42);
+  background: var(--color-accent-hover);
+  box-shadow: 0 0 0 5px var(--color-accent-light);
 }
 
 html.dark .timeline-dot {
-  background: #1a1428;
-  box-shadow: 0 0 0 4px rgba(196, 170, 255, 0.28);
+  background: var(--color-surface);
+  box-shadow: 0 0 0 4px var(--color-accent-light);
 }
 
 html.dark .timeline-item.is-current .timeline-dot {
-  background: #d7c6ff;
-  box-shadow: 0 0 0 5px rgba(196, 170, 255, 0.35);
+  background: var(--color-accent);
+  box-shadow: 0 0 0 5px var(--color-accent-light);
 }
 
 .timeline-card {
