@@ -5,7 +5,7 @@
  * 1. 在这里追加一项（路由、导航、页脚、底栏、站点地图、外壳样式）。
  * 2. 在 src/modules/loaders.js 增加同名组件加载器。
  * 3. 若该栏目有可搜索内容：
- *    - 在 src/modules/content-sources.cjs 登记集合（站点地图深链）
+ *    - 在 src/modules/content-sources.mjs 登记集合（站点地图深链）
  *    - 在 src/modules/search/ 增加一个 provider，并在 search/index.js 挂上
  *
  * 不需要再改 App.vue、router、MobileTabBar、CommandPalette、generate-feeds。

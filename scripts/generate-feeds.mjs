@@ -1,22 +1,23 @@
-const fs = require('fs')
-const path = require('path')
-const catalog = require('../src/modules/catalog.cjs')
-const { staticSitemap } = require('../src/modules/query.cjs')
-const { blogPostPath, lifePath, projectPath } = require('../src/modules/paths.cjs')
-const sources = require('../src/modules/content-sources.cjs')
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import catalog from '../src/modules/catalog.mjs'
+import { staticSitemap } from '../src/modules/query.mjs'
+import { blogPostPath, lifePath, projectPath } from '../src/modules/paths.mjs'
+import * as sources from '../src/modules/content-sources.mjs'
 
-const ROOT = path.join(__dirname, '..')
+const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const PUBLIC_DIR = path.join(ROOT, 'public')
 const SITE_URL = process.env.SITE_URL || 'https://snowhush.com'
 
-const escapeXml = str =>
+export const escapeXml = str =>
   String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
 
-const generateRss = posts => {
+export const generateRss = posts => {
   const items = posts
     .map(post => {
       const url = `${SITE_URL}${blogPostPath(post)}`
@@ -50,7 +51,7 @@ const urlEntry = (loc, lastmod, changefreq = 'monthly') => {
   return `  <url><loc>${SITE_URL}${loc}</loc>${mod}<changefreq>${changefreq}</changefreq></url>`
 }
 
-const generateSitemap = (posts, lifeIds, projectIds) => {
+export const generateSitemap = (posts, lifeIds, projectIds) => {
   const today = new Date().toISOString().slice(0, 10)
   const staticUrls = staticSitemap(catalog)
     .map(page => urlEntry(page.path, today, page.changefreq))
@@ -84,16 +85,16 @@ const main = () => {
   )
 }
 
-module.exports = {
-  parseFrontmatter: sources.parseFrontmatter,
-  slugToId: sources.slugToId,
-  stripMd: sources.stripMd,
-  loadPosts: sources.loadPosts,
-  generateRss,
-  generateSitemap,
-  loadLifeIds: sources.loadLifeIds,
-  loadProjectIds: sources.loadProjectIds,
-  escapeXml
-}
+export const {
+  parseFrontmatter,
+  slugToId,
+  stripMd,
+  loadPosts,
+  loadLifeIds,
+  loadProjectIds
+} = sources
 
-if (require.main === module) main()
+const isDirectRun =
+  process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+
+if (isDirectRun) main()

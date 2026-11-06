@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import catalog from '../catalog.js'
-import { commandPages } from '../query.js'
+import catalog from '../catalog.mjs'
+import { commandPages } from '../query.mjs'
 
 export function pageProvider() {
   const { t } = useI18n()

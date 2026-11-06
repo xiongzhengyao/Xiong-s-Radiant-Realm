@@ -1,6 +1,9 @@
-const test = require('node:test')
-const assert = require('node:assert/strict')
-const feeds = require('./generate-feeds')
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import * as feeds from './generate-feeds.mjs'
+import catalog from '../src/modules/catalog.mjs'
+import * as query from '../src/modules/query.mjs'
+import * as sources from '../src/modules/content-sources.mjs'
 
 test('slugToId is stable for known slugs', () => {
   const a = feeds.slugToId('camera-first-frame-cold-start')
@@ -51,10 +54,6 @@ test('generateSitemap includes life and project deep links', () => {
 })
 
 test('site catalog drives nav, footer, and sitemap without duplicate routes', () => {
-  const catalog = require('../src/modules/catalog.cjs')
-  const query = require('../src/modules/query.cjs')
-  const sources = require('../src/modules/content-sources.cjs')
-
   assert.deepEqual(query.validateCatalog(catalog), [])
   assert.deepEqual(
     query.primaryNav(catalog).map(item => item.path),
@@ -85,8 +84,9 @@ test('site catalog drives nav, footer, and sitemap without duplicate routes', ()
 
   const searchIds = new Set(sources.collectionIds())
   for (const mod of catalog) {
-    if (mod.search)
+    if (mod.search) {
       assert.ok(searchIds.has(mod.search), `${mod.id} search "${mod.search}" has no content source`)
+    }
   }
 
   const entries = sources.contentSitemapEntries()
@@ -95,7 +95,6 @@ test('site catalog drives nav, footer, and sitemap without duplicate routes', ()
 })
 
 test('design tag mapping prefers frontmatter category', () => {
-  // Mirror src/utils/categoryLabel.js CATEGORY_DESIGN without Vue tooling.
   const CATEGORY_DESIGN = {
     camera: 'imaging',
     sensor: 'sensor',

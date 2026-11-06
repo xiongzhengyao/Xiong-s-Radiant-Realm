@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { lifePath } from '../paths.js'
+import { lifePath } from '../paths.mjs'
 
 export function lifeProvider() {
   const { t, tm } = useI18n()

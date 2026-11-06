@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCareer } from '@/composables/useCareer'
-import { projectPath } from '../paths.js'
+import { projectPath } from '../paths.mjs'
 
 export function projectsProvider() {
   const { projects } = useCareer()

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite --port 5174 --host",
-    "build": "node scripts/generate-feeds.js && vite build",
+    "build": "node scripts/generate-feeds.mjs && vite build",
     "serve": "vite preview --port 8890 --host 127.0.0.1",
     "start": "node server.js",
     "new:post": "node scripts/new-post.js",
@@ -14,7 +14,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "format": "prettier --write \"src/**/*.{js,vue,json,css,scss,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,vue,json,css,scss,md}\"",
-    "test": "node --test scripts/test-site.cjs"
+    "test": "node --test scripts/test-site.mjs"
   },
   "dependencies": {
     "element-plus": "^2.4.0",

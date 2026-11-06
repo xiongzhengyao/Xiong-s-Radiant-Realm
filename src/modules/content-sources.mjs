@@ -2,11 +2,12 @@
  * Node 侧内容集合。构建 RSS / sitemap 时从这里取深链。
  * 浏览器里的搜索提供者见 src/modules/search/，id 必须和这里一致。
  */
-const fs = require('fs')
-const path = require('path')
-const { blogPostPath, lifePath, projectPath } = require('./paths.js')
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import { blogPostPath, lifePath, projectPath } from './paths.mjs'
 
-const ROOT = path.join(__dirname, '..', '..')
+const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const POSTS_DIR = path.join(ROOT, 'src/assets/posts')
 const I18N_ZH = path.join(ROOT, 'src/i18n/zh.js')
 const CAREER_JS = path.join(ROOT, 'src/data/career.js')
@@ -101,7 +102,7 @@ const contentSitemapEntries = () => {
   ]
 }
 
-module.exports = {
+export {
   COLLECTIONS,
   parseFrontmatter,
   slugToId,

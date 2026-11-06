@@ -1,16 +1,16 @@
 /**
  * Shell-facing module API.
- * Route views should import leaf files (paths.cjs / query.js), not this barrel,
+ * Route views should import leaf files (paths.mjs / query.mjs), not this barrel,
  * so the router graph does not cycle back through the loaders.
  */
-import catalog from './catalog.js'
+import catalog from './catalog.mjs'
 import {
   primaryNav as navOf,
   footerLinks as footerOf,
   tabNav,
   notFoundLinks as notFoundOf,
   isNavActive
-} from './query.js'
+} from './query.mjs'
 import { tabIcons } from './tab-icons'
 
 export { buildRoutes } from './routes'

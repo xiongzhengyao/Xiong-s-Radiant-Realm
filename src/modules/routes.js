@@ -1,5 +1,5 @@
-import catalog from './catalog.js'
-import { validateCatalog } from './query.js'
+import catalog from './catalog.mjs'
+import { validateCatalog } from './query.mjs'
 import { componentLoaders } from './loaders'
 import { tabIcons } from './tab-icons'
 

@@ -1,4 +1,4 @@
-import catalog from './catalog.js'
+import catalog from './catalog.mjs'
 import { componentLoaders } from './loaders'
 
 const prefetched = new Set()

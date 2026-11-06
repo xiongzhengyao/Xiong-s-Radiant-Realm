@@ -1,5 +1,5 @@
-import catalog from '@/modules/catalog.js'
-import { entryPath } from '@/modules/query.js'
+import catalog from '@/modules/catalog.mjs'
+import { entryPath } from '@/modules/query.mjs'
 
 const pathOf = id => {
   const mod = catalog.find(item => item.id === id)

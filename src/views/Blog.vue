@@ -564,7 +564,7 @@ import { enhanceMarkdownHtml, bindCodeCopyButtons, enhanceTableNumericColumns } 
 import { setPageMetaOverride, clearPageMetaOverride } from '@/composables/usePageMeta'
 import ArticleAuthor from '@/components/ArticleAuthor.vue'
 import { APP_CONFIG } from '@/utils/constants'
-import { blogPostPath } from '@/modules/paths.js'
+import { blogPostPath } from '@/modules/paths.mjs'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import { useReadHistory } from '@/composables/useReadHistory'
 import { useBookmarks } from '@/composables/useBookmarks'

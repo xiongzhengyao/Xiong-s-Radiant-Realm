@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useBlogStore } from '@/stores/blogStore'
-import { blogPostPath } from '../paths.js'
+import { blogPostPath } from '../paths.mjs'
 
 export function notesProvider() {
   const blogStore = useBlogStore()

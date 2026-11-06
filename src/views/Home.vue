@@ -147,7 +147,7 @@ import { useCareer } from '@/composables/useCareer'
 import { useReadHistory } from '@/composables/useReadHistory'
 import { getPostCover } from '@/utils/postCover'
 import { formatRelativeDate } from '@/utils/relativeTime'
-import { blogPostPath, lifePath, projectPath } from '@/modules/paths.js'
+import { blogPostPath, lifePath, projectPath } from '@/modules/paths.mjs'
 
 const { t, tm, locale } = useI18n()
 const blogStore = useBlogStore()

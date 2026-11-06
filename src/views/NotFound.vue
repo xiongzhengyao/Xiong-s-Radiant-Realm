@@ -49,8 +49,8 @@
 import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { setPageMetaOverride, clearPageMetaOverride, usePageMeta } from '@/composables/usePageMeta'
-import catalog from '@/modules/catalog.js'
-import { notFoundLinks } from '@/modules/query.js'
+import catalog from '@/modules/catalog.mjs'
+import { notFoundLinks } from '@/modules/query.mjs'
 
 const router = useRouter()
 usePageMeta()

@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import catalog from '../catalog.js'
+import catalog from '../catalog.mjs'
 import { pageProvider } from './page'
 import { notesProvider } from './notes'
 import { projectsProvider } from './projects'
