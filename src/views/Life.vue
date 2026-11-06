@@ -530,7 +530,7 @@ watch(activePost, post => {
 
 .life-scene-caption h2 {
   margin: 0;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: clamp(22px, 2.4vw, 32px);
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -642,7 +642,7 @@ watch(activePost, post => {
 
 .life-sheet-body h2 {
   margin: 0 0 12px;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: clamp(24px, 3vw, 36px);
   line-height: 1.25;
 }

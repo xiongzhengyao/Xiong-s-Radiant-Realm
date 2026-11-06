@@ -1151,7 +1151,7 @@ watch(filteredPosts, () => {
 }
 
 .note-main h2 {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: clamp(18px, 1.6vw, 22px);
   font-weight: 700;
   line-height: 1.3;
@@ -1336,7 +1336,7 @@ watch(filteredPosts, () => {
   align-items: center;
   gap: var(--space-2);
   font-size: 13px;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   flex-wrap: wrap;
   min-width: 0;
 }
@@ -1376,7 +1376,7 @@ watch(filteredPosts, () => {
 .toolbar-btn {
   padding: 7px 12px;
   font-size: 12px;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   letter-spacing: 0.01em;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
@@ -1428,7 +1428,7 @@ watch(filteredPosts, () => {
   text-align: left;
   padding: 8px 10px;
   font-size: 12px;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   border: none;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -1463,7 +1463,7 @@ watch(filteredPosts, () => {
   flex-wrap: wrap;
   gap: var(--space-2);
   font-size: 13px;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   color: var(--color-text-tertiary);
   margin-bottom: var(--space-5);
 }
@@ -1485,7 +1485,7 @@ watch(filteredPosts, () => {
 }
 
 .article-title {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: clamp(1.85rem, 3.6vw, 2.65rem);
   font-weight: 700;
   line-height: 1.12;
@@ -1510,7 +1510,7 @@ watch(filteredPosts, () => {
 }
 
 .article-tags .tag {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 12px;
   background: transparent;
   border: 1px solid var(--color-border);
@@ -1583,7 +1583,7 @@ watch(filteredPosts, () => {
 .toc-title {
   font-size: 11px;
   font-weight: 600;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-text-tertiary);
@@ -1653,7 +1653,7 @@ watch(filteredPosts, () => {
 }
 
 .related-title {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 1.125rem;
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -1676,7 +1676,7 @@ watch(filteredPosts, () => {
 
 .related-card h3 {
   font-size: 15px;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   margin: var(--space-2) 0 var(--space-2);
   line-height: 1.35;
 }
@@ -1720,7 +1720,7 @@ watch(filteredPosts, () => {
   background: transparent;
   color: var(--color-text);
   font-size: 14px;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   cursor: pointer;
   max-width: 45%;
   text-align: left;
@@ -1833,7 +1833,7 @@ watch(filteredPosts, () => {
   .toc-trigger .toc-count {
     margin-left: var(--space-3);
     font-size: 12px;
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     color: var(--color-text-tertiary);
   }
 
@@ -1900,7 +1900,7 @@ watch(filteredPosts, () => {
   background: transparent;
   color: var(--color-accent);
   font-size: 13px;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   cursor: pointer;
   padding: 4px 6px;
 }

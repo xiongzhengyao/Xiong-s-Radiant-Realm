@@ -353,7 +353,7 @@ const printResume = () => {
 
 .skills-panel > h2,
 .section-head h2 {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: clamp(22px, 2.2vw, 28px);
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -428,7 +428,7 @@ const printResume = () => {
 .timeline-time {
   padding: 16px 12px 0 0;
   text-align: right;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 13px;
   line-height: 1.45;
   color: var(--color-text-tertiary);

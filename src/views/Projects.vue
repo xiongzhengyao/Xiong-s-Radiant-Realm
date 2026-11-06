@@ -442,7 +442,7 @@ onMounted(() => {
 
 .reel-caption h2 {
   margin: 0 0 12px;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: clamp(28px, 3.6vw, 48px);
   font-weight: 700;
   letter-spacing: -0.035em;

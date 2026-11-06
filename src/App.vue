@@ -978,7 +978,7 @@ main,
 }
 
 .footer-logo {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 28px;
   font-weight: 700;
   color: var(--color-text);

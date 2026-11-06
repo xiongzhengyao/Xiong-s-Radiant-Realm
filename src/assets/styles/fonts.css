@@ -1,4 +1,9 @@
-/* Self-hosted mono for code. Serif is only used for the about-page name. */
+/*
+  Typography assets (three-tier):
+  - UI/body: system sans via --font-sans (no web body font)
+  - Display serif: Noto Serif SC 700 only — About page name (.about-name)
+  - Code: JetBrains Mono 400/600 via --font-mono on pre/code only
+*/
 @font-face {
   font-family: 'Noto Serif SC';
   font-style: normal;

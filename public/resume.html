@@ -7,6 +7,9 @@
   <meta name="description" content="Camera driver software engineer — DJI, Xiaomi, Bosch. Print or Save as PDF from the browser." />
   <style>
     :root {
+      /* Keep in sync with --font-sans in apple-design.css */
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
       --ink: #1c1b22;
       --muted: #5c5a6a;
       --line: rgba(26, 26, 34, 0.12);
@@ -15,7 +18,7 @@
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif;
+      font-family: var(--font-sans);
       color: var(--ink);
       background: #f5f4f8;
       line-height: 1.5;
@@ -51,7 +54,8 @@
     }
     h1 {
       margin: 0 0 6px;
-      font-family: "Noto Serif SC", "Songti SC", serif;
+      font-family: var(--font-sans);
+      font-weight: 700;
       font-size: 34px;
       letter-spacing: -0.02em;
     }
