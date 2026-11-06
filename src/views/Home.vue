@@ -79,7 +79,7 @@
         <router-link
           v-if="featuredProject"
           class="chapter reveal reveal-delay-1"
-          :to="`/projects/${featuredProject.id}`"
+          :to="projectPath(featuredProject.id)"
           :aria-label="featuredProject.title"
         >
           <div class="chapter-still">
@@ -100,7 +100,7 @@
 
         <router-link
           class="chapter reveal reveal-delay-2"
-          :to="latestLife?.id ? `/life/${latestLife.id}` : '/life'"
+          :to="latestLife?.id ? lifePath(latestLife.id) : '/life'"
           :aria-label="lifeCaptionText"
         >
           <div class="chapter-still">
@@ -147,6 +147,7 @@ import { useCareer } from '@/composables/useCareer'
 import { useReadHistory } from '@/composables/useReadHistory'
 import { getPostCover } from '@/utils/postCover'
 import { formatRelativeDate } from '@/utils/relativeTime'
+import { blogPostPath, lifePath, projectPath } from '@/modules/paths.js'
 
 const { t, tm, locale } = useI18n()
 const blogStore = useBlogStore()
@@ -174,13 +175,13 @@ const noteRelative = computed(() => {
 const noteTo = computed(() => {
   const post = latestNote.value
   if (!post) return '/blog'
-  return `/blog/${post.id}/${encodeURIComponent(post.slug)}`
+  return blogPostPath(post)
 })
 
 const continueTo = computed(() => {
   const post = continuePost.value
   if (!post) return '/blog'
-  return `/blog/${post.id}/${encodeURIComponent(post.slug)}`
+  return blogPostPath(post)
 })
 
 const lifePosts = computed(() => {

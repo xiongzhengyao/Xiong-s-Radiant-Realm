@@ -1,3 +1,11 @@
+import catalog from '@/modules/catalog.js'
+import { entryPath } from '@/modules/query.js'
+
+const pathOf = id => {
+  const mod = catalog.find(item => item.id === id)
+  return mod ? entryPath(mod) : ''
+}
+
 // 应用常量配置
 export const APP_CONFIG = {
   TITLE: 'Snowhush',
@@ -33,13 +41,12 @@ export const BLOG_CATEGORIES = [
   { name: 'Notes', label: 'Notes' }
 ]
 
-// 路由配置
+// 路由配置（由模块清单派生，避免和导航各写一套路径）
 export const ROUTES = {
-  HOME: '/',
-  ABOUT: '/about',
-  BLOG: '/blog',
-  PROJECTS: '/projects',
-  LIFE: '/life',
-  CONTACT: '/contact'
+  HOME: pathOf('home'),
+  ABOUT: pathOf('about'),
+  BLOG: pathOf('blog'),
+  PROJECTS: pathOf('projects'),
+  LIFE: pathOf('life'),
+  CONTACT: pathOf('contact')
 }
-

@@ -49,16 +49,13 @@
 import { onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { setPageMetaOverride, clearPageMetaOverride, usePageMeta } from '@/composables/usePageMeta'
+import catalog from '@/modules/catalog.js'
+import { notFoundLinks } from '@/modules/query.js'
 
 const router = useRouter()
 usePageMeta()
 
-const quickLinks = [
-  { path: '/blog', label: 'nav.blog' },
-  { path: '/projects', label: 'nav.projects' },
-  { path: '/about', label: 'nav.about' },
-  { path: '/contact', label: 'nav.contact' }
-]
+const quickLinks = notFoundLinks(catalog)
 
 const goBack = () => {
   if (window.history.length > 1) router.back()
