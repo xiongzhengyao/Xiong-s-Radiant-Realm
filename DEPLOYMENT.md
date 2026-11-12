@@ -154,13 +154,22 @@ curl http://127.0.0.1:8888/health
 
 ## 8. Cloudflare 缓存与发布后 purge
 
-生产经 Cloudflare Tunnel 对外时，Express 对 HTML / SPA 响应使用边缘短缓存：
+生产经 Cloudflare Tunnel 对外时，Express 把浏览器缓存和边缘缓存拆开：
 
-- `index.html` / SPA：`Cache-Control: public, max-age=0, s-maxage=120, stale-while-revalidate=60`
+- `index.html` / SPA：浏览器 `Cache-Control: public, max-age=0, must-revalidate`；边缘 `CDN-Cache-Control` 与 `Cloudflare-CDN-Cache-Control` 为 `public, s-maxage=86400, stale-while-revalidate=604800`
 - `manifest.json` / `rss.xml` / `sitemap.xml`：`s-maxage=300`（浏览器仍 `max-age=0`）
 - `/assets/*`（带 hash）：`public, max-age=31536000, immutable`
 
-**每次发布新前端后**，应 purge Cloudflare 上的 HTML（至少 `/`），否则边缘可能在最多约 2 分钟内继续返回旧 `index.html`（可能指向已不存在的旧 hash 资源）。
+Cloudflare 默认只按扩展名缓存，无扩展名的 HTML 会一直是 `cf-cache-status: DYNAMIC`，只加响应头不会生效。在该 zone 增加一条 Cache Rule：
+
+- 匹配：`http.request.method eq "GET" and not starts_with(http.request.uri.path, "/assets/") and not http.request.uri.path eq "/health" and not http.request.uri.path.extension in {"js" "css" "jpg" "jpeg" "png" "webp" "gif" "svg" "ico" "woff" "woff2" "xml" "json" "txt" "map"}`
+- Cache eligibility：Eligible for cache
+- Edge TTL：Use cache-control header if present
+- Browser TTL：Respect origin
+
+配好之后，重复打开会打到边缘；浏览器仍每次向边缘确认，所以发布后的新页面不会被本地旧 HTML 卡住。
+
+**每次发布新前端后**，应 purge Cloudflare 上的 HTML（至少 `/`）。边缘可以保留旧 `index.html` 最多一天，那份 HTML 会指向已经删掉的 hash 资源。部署脚本在设置了 `CF_ZONE_ID` 和 `CF_API_TOKEN` 时会自动 purge。
 
 ### Dashboard
 

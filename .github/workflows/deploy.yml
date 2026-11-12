@@ -99,3 +99,18 @@ jobs:
 
             echo "Health check failed" >&2
             exit 1
+
+      - name: Purge Cloudflare HTML cache
+        env:
+          CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${CF_ZONE_ID}" || -z "${CF_API_TOKEN}" ]]; then
+            echo "CF_ZONE_ID or CF_API_TOKEN is unset; skipping HTML purge."
+            exit 0
+          fi
+          curl -fsS -X POST "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
+            -H "Authorization: Bearer ${CF_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data '{"files":["https://snowhush.com/","https://snowhush.com/index.html"]}'

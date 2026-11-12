@@ -1,9 +1,15 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import * as feeds from './generate-feeds.mjs'
 import catalog from '../src/modules/catalog.mjs'
 import * as query from '../src/modules/query.mjs'
 import * as sources from '../src/modules/content-sources.mjs'
+import { GLYPHS_FILE, SUBSET_FONT, requiredSerifGlyphs } from './serif-glyphs.mjs'
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
 test('slugToId is stable for known slugs', () => {
   const a = feeds.slugToId('camera-first-frame-cold-start')
@@ -108,4 +114,34 @@ test('design tag mapping prefers frontmatter category', () => {
   assert.equal(map('sensor'), 'sensor')
   assert.equal(map('linux'), 'linux')
   assert.equal(map(''), 'work')
+})
+
+test('serif subset stays small and covers current titles', () => {
+  const bytes = fs.statSync(SUBSET_FONT).size
+  assert.ok(bytes < 400 * 1024, `serif font is ${bytes} bytes`)
+  const glyphs = fs.readFileSync(GLYPHS_FILE, 'utf8')
+  assert.equal(glyphs, requiredSerifGlyphs())
+  for (const ch of '把光写进系统') {
+    assert.ok(glyphs.includes(ch), `missing ${ch}`)
+  }
+})
+
+test('photos have a webp sibling and the hero is preloaded', () => {
+  const images = path.join(root, 'public/images')
+  const photos = fs.readdirSync(images).filter(name => /\.(jpe?g|png)$/i.test(name))
+  assert.ok(photos.length >= 10)
+  for (const name of photos) {
+    const webp = path.join(images, name.replace(/\.(jpe?g|png)$/i, '.webp'))
+    assert.ok(fs.existsSync(webp), `${name} is missing a webp sibling`)
+    assert.ok(fs.statSync(webp).size < fs.statSync(path.join(images, name)).size)
+  }
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8')
+  assert.match(html, /rel="preload"[\s\S]*?\/images\/drone-white\.webp/)
+})
+
+test('html cache headers stay revalidated in the browser', () => {
+  const server = fs.readFileSync(path.join(root, 'server.js'), 'utf8')
+  assert.match(server, /max-age=0, must-revalidate/)
+  assert.match(server, /Cloudflare-CDN-Cache-Control/)
+  assert.match(server, /s-maxage=86400/)
 })

@@ -133,10 +133,10 @@
                 </div>
                 <span class="note-kind">{{ designTag(post).label }}</span>
                 <span class="note-thumb">
-                  <img
+                  <ResponsiveImage
                     :src="coverOf(post)"
                     alt=""
-                  >
+                  />
                 </span>
               </router-link>
             </div>
@@ -394,10 +394,12 @@
                 v-if="currentPost.image"
                 class="article-cover"
               >
-                <img
+                <ResponsiveImage
                   :src="currentPost.image"
                   :alt="currentPost.title"
-                >
+                  loading="eager"
+                  fit="intrinsic"
+                />
               </div>
 
               <div
@@ -563,6 +565,7 @@ import { extractHeadings, injectHeadingIds } from '@/utils/headings'
 import { enhanceMarkdownHtml, bindCodeCopyButtons, enhanceTableNumericColumns } from '@/utils/enhanceMarkdown'
 import { setPageMetaOverride, clearPageMetaOverride } from '@/composables/usePageMeta'
 import ArticleAuthor from '@/components/ArticleAuthor.vue'
+import ResponsiveImage from '@/components/ResponsiveImage.vue'
 import { APP_CONFIG } from '@/utils/constants'
 import { blogPostPath } from '@/modules/paths.mjs'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
@@ -1189,7 +1192,7 @@ watch(filteredPosts, () => {
   transition: opacity var(--duration-base) var(--ease-cinema);
 }
 
-.note-thumb img {
+.note-thumb :deep(img) {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1526,7 +1529,7 @@ watch(filteredPosts, () => {
   border: 1px solid var(--color-border);
 }
 
-.article-cover img {
+.article-cover :deep(img) {
   width: 100%;
   height: auto;
   display: block;

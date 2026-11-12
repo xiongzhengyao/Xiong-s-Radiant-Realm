@@ -121,4 +121,14 @@ done
 echo "==> [remote] Deploy completed successfully: $(date)"
 EOF
 
+if [[ -n "${CF_ZONE_ID:-}" && -n "${CF_API_TOKEN:-}" ]]; then
+  echo "==> Purging Cloudflare HTML cache"
+  curl -fsS -X POST "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
+    -H "Authorization: Bearer ${CF_API_TOKEN}" \
+    -H "Content-Type: application/json" \
+    --data '{"files":["https://snowhush.com/","https://snowhush.com/index.html"]}'
+else
+  echo "==> CF_ZONE_ID or CF_API_TOKEN unset; skip HTML purge"
+fi
+
 echo "==> Done"
