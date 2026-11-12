@@ -10,10 +10,12 @@ const NODE_ENV = process.env.NODE_ENV || 'development'
 const DIST_DIR = path.join(__dirname, 'dist')
 const INDEX_FILE = path.join(DIST_DIR, 'index.html')
 
-// 边缘可缓存的 SPA HTML（浏览器不长期缓存，CF 可短时缓存）
-// 发布后需 purge CF 上的 `/`（见 DEPLOYMENT.md）
-const HTML_CACHE_CONTROL =
-  'public, max-age=0, s-maxage=120, stale-while-revalidate=60'
+// 浏览器每次向边缘确认；边缘按 CDN 头缓存一天。
+// Cloudflare 默认不缓存无扩展名的 HTML，还需要一条 Cache Rule（见 DEPLOYMENT.md）。
+// 发布后 purge `/`，否则旧 HTML 最多可留一天，并指向已经删掉的 hash 资源。
+const HTML_CACHE_CONTROL = 'public, max-age=0, must-revalidate'
+const HTML_CDN_CACHE_CONTROL =
+  'public, s-maxage=86400, stale-while-revalidate=604800'
 const FEED_CACHE_CONTROL =
   'public, max-age=0, s-maxage=300, stale-while-revalidate=60'
 const FEED_BASENAMES = new Set(['manifest.json', 'rss.xml', 'sitemap.xml'])
@@ -21,6 +23,8 @@ const FEED_BASENAMES = new Set(['manifest.json', 'rss.xml', 'sitemap.xml'])
 const setHtmlCacheHeaders = (res) => {
   if (NODE_ENV === 'production') {
     res.setHeader('Cache-Control', HTML_CACHE_CONTROL)
+    res.setHeader('CDN-Cache-Control', HTML_CDN_CACHE_CONTROL)
+    res.setHeader('Cloudflare-CDN-Cache-Control', HTML_CDN_CACHE_CONTROL)
   } else {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
     res.setHeader('Pragma', 'no-cache')
@@ -76,7 +80,7 @@ app.use((req, res, next) => {
 // 静态文件服务
 // 缓存策略：
 // 1) 带 hash 的 /assets/* 长期 immutable
-// 2) index.html / SPA HTML：edge 短缓存（s-maxage），浏览器 max-age=0
+// 2) index.html / SPA HTML：浏览器 max-age=0，边缘看 CDN-Cache-Control
 // 3) manifest / rss / sitemap：edge 短缓存
 app.use(
   express.static(DIST_DIR, {
