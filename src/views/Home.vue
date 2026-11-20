@@ -255,7 +255,7 @@ html:not(.dark) .home {
   padding:
     calc(var(--nav-height) + 24px)
     clamp(20px, 4vw, 48px)
-    calc(var(--cinema-letterbox) + 48px);
+    calc(var(--cinema-letterbox) + 128px);
   overflow: hidden;
 }
 
@@ -393,7 +393,7 @@ html:not(.dark) .title-veil {
   z-index: 1;
   max-width: 1320px;
   margin: 0 auto;
-  padding: 56px clamp(20px, 4vw, 48px) 24px;
+  padding: 80px clamp(20px, 4vw, 48px) 24px;
   border-top: 1px solid var(--chapter-rule);
 }
 
