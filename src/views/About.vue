@@ -270,13 +270,13 @@ const printResume = () => {
 .about-board {
   position: relative;
   z-index: 1;
-  max-width: 1180px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 48px 28px calc(var(--cinema-letterbox) + 96px);
   display: grid;
-  grid-template-columns: minmax(280px, 320px) minmax(0, 820px);
+  grid-template-columns: minmax(260px, 300px) minmax(0, 760px);
   justify-content: center;
-  gap: 56px;
+  gap: 64px;
   align-items: start;
 }
 
@@ -288,10 +288,8 @@ const printResume = () => {
   gap: 16px;
 }
 
-/* Editorial chapters — no decorative cards */
 .profile-card,
-.skills-panel,
-.timeline-card {
+.skills-panel {
   background: transparent;
   border: none;
   border-radius: 0;
@@ -316,20 +314,25 @@ const printResume = () => {
 }
 
 .avatar-wrap {
-  width: 84px;
-  height: 84px;
-  flex: 0 0 84px;
+  width: 104px;
+  height: 104px;
+  flex: 0 0 104px;
   border-radius: 50%;
   overflow: hidden;
-  border: 1px solid var(--color-divider);
+  border: 2px solid var(--color-accent-border);
   background: var(--color-bg-secondary);
+  box-shadow: 0 0 0 6px var(--color-accent-light);
 }
 
+.avatar-wrap :deep(.responsive-picture),
+.avatar-wrap :deep(img),
 .avatar,
 .avatar-fallback {
   width: 100%;
   height: 100%;
+  border-radius: 50%;
   object-fit: cover;
+  display: block;
 }
 
 .avatar-fallback {
@@ -445,9 +448,9 @@ const printResume = () => {
 
 .skill-group {
   padding: 16px;
-  border: 1px solid var(--color-divider);
+  border: 1px solid var(--color-accent-border);
   border-radius: var(--radius-md);
-  background: var(--color-card-bg);
+  background: color-mix(in srgb, var(--color-surface) 82%, var(--color-accent) 18%);
 }
 
 .skill-group h3 {
@@ -469,10 +472,11 @@ const printResume = () => {
 }
 
 .skill-tags li {
-  padding: 4px 8px;
+  padding: 5px 10px;
+  border: 1px solid var(--color-accent-border);
   border-radius: var(--radius-full);
-  background: var(--color-tag-bg);
-  color: var(--color-tag-text);
+  background: var(--color-pill-accent-bg);
+  color: var(--color-pill-accent-text);
   font-size: 12px;
   line-height: 1.4;
 }
@@ -480,9 +484,9 @@ const printResume = () => {
 .about-main {
   display: flex;
   flex-direction: column;
-  gap: 56px;
+  gap: 72px;
   min-width: 0;
-  max-width: 820px;
+  max-width: 760px;
 }
 
 .section-head p {
@@ -508,18 +512,22 @@ const printResume = () => {
 .now-notes {
   list-style: none;
   display: grid;
-  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
   margin: 0;
   padding: 0;
 }
 
 .now-notes a {
   display: grid;
-  gap: 4px;
-  padding: 14px 16px;
+  align-content: start;
+  gap: 6px;
+  height: 100%;
+  padding: 16px 18px;
+  border: 1px solid var(--color-accent-border);
   border-left: 3px solid var(--color-accent);
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
-  background: var(--color-card-bg);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-surface) 84%, var(--color-accent) 16%);
   color: inherit;
   text-decoration: none;
 }
@@ -560,7 +568,7 @@ const printResume = () => {
   left: calc(var(--time-col) + var(--dot-col) / 2);
   top: 26px;
   bottom: -58px;
-  border-left: 1.5px dashed var(--color-accent-border);
+  border-left: 2px solid var(--color-accent);
   transform: translateX(-0.75px);
 }
 
@@ -615,7 +623,12 @@ html.dark .timeline-item.is-current .timeline-dot {
 }
 
 .timeline-card {
-  padding: 12px 0 16px 4px;
+  margin-left: 8px;
+  padding: 16px 18px;
+  border: 1px solid var(--color-accent-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-surface) 84%, var(--color-accent) 16%);
 }
 
 .timeline-card h3 {
@@ -643,8 +656,8 @@ html.dark .timeline-item.is-current .timeline-dot {
 
 @media (max-width: 980px) {
   .about-board {
-    grid-template-columns: minmax(0, 820px);
-    gap: 40px;
+    grid-template-columns: minmax(0, 760px);
+    gap: 48px;
   }
 
   .about-side {
@@ -653,7 +666,8 @@ html.dark .timeline-item.is-current .timeline-dot {
 }
 
 @media (max-width: 720px) {
-  .skill-grid {
+  .skill-grid,
+  .now-notes {
     grid-template-columns: 1fr;
   }
 }
