@@ -15,13 +15,14 @@
           </p>
           <div class="profile-head">
             <div class="avatar-wrap">
-              <img
+              <ResponsiveImage
                 v-if="!imageError"
-                class="avatar"
+                img-class="avatar"
                 :src="profileImage"
                 :alt="nameFull"
+                loading="eager"
                 @error="imageError = true"
-              >
+              />
               <div
                 v-else
                 class="avatar-fallback"
@@ -169,6 +170,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
 import { APP_CONFIG } from '@/utils/constants'
+import ResponsiveImage from '@/components/ResponsiveImage.vue'
 import { getCareerYears } from '@/utils/careerYears'
 
 const { t, tm } = useI18n()

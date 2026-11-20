@@ -1,7 +1,7 @@
 /*
   Typography assets (three-tier):
   - UI/body: system sans via --font-sans (no web body font)
-  - Display serif: Noto Serif SC 700 only — About page name (.about-name)
+  - Display serif: subset of Noto Serif SC 700 for titles (source font is not shipped)
   - Code: JetBrains Mono 400/600 via --font-mono on pre/code only
 */
 @font-face {

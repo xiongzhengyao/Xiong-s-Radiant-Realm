@@ -3,13 +3,12 @@
     class="cover-art"
     :class="[`cover-art--${size}`, theme === 'dark' ? 'cover-art--dark' : 'cover-art--light']"
   >
-    <img
+    <ResponsiveImage
       v-if="image"
       :src="image"
       :alt="label || ''"
-      loading="lazy"
-      class="cover-art-img"
-    >
+      img-class="cover-art-img"
+    />
     <template v-else>
       <div
         class="cover-art-bg"
@@ -41,6 +40,7 @@
 <script setup>
 import { computed } from 'vue'
 import { getCoverArt, coverGradientStyle, coverShapeStyle } from '@/utils/coverArt'
+import ResponsiveImage from '@/components/ResponsiveImage.vue'
 import { useTheme } from '@/composables/useTheme'
 
 const props = defineProps({

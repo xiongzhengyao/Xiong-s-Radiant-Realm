@@ -15,12 +15,12 @@
     </template>
     <template v-else>
       <div class="author-avatar">
-        <img
+        <ResponsiveImage
           v-if="!imageError"
           :src="profileImage"
           :alt="name"
           @error="imageError = true"
-        >
+        />
         <span
           v-else
           class="author-fallback"
@@ -56,6 +56,7 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { APP_CONFIG } from '@/utils/constants'
+import ResponsiveImage from '@/components/ResponsiveImage.vue'
 
 defineProps({
   /** One-line byline for end-of-article placement */

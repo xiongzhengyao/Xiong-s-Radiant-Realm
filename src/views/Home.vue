@@ -8,10 +8,12 @@
         class="title-still"
         aria-hidden="true"
       >
-        <img
+        <ResponsiveImage
           src="/images/drone-white.jpg"
           alt=""
-        >
+          loading="eager"
+          fetchpriority="high"
+        />
         <div class="title-veil" />
       </div>
 
@@ -59,10 +61,10 @@
           :aria-label="latestNote?.title || $t('home.indexNotes')"
         >
           <div class="chapter-still">
-            <img
+            <ResponsiveImage
               :src="noteCover"
               alt=""
-            >
+            />
           </div>
           <div class="chapter-meta">
             <span class="chapter-name">{{ $t('home.indexNotes') }}</span>
@@ -83,10 +85,10 @@
           :aria-label="featuredProject.title"
         >
           <div class="chapter-still">
-            <img
+            <ResponsiveImage
               :src="featuredProject.image || '/images/drone-studio.jpg'"
               alt=""
-            >
+            />
           </div>
           <div class="chapter-meta">
             <span class="chapter-name">{{ $t('home.indexWork') }}</span>
@@ -104,10 +106,10 @@
           :aria-label="lifeCaptionText"
         >
           <div class="chapter-still">
-            <img
+            <ResponsiveImage
               :src="lifeImage"
               alt=""
-            >
+            />
           </div>
           <div class="chapter-meta">
             <span class="chapter-name">{{ $t('home.indexLife') }}</span>
@@ -148,6 +150,7 @@ import { useReadHistory } from '@/composables/useReadHistory'
 import { getPostCover } from '@/utils/postCover'
 import { formatRelativeDate } from '@/utils/relativeTime'
 import { blogPostPath, lifePath, projectPath } from '@/modules/paths.mjs'
+import ResponsiveImage from '@/components/ResponsiveImage.vue'
 
 const { t, tm, locale } = useI18n()
 const blogStore = useBlogStore()
@@ -260,7 +263,7 @@ html:not(.dark) .home {
   z-index: 0;
 }
 
-.title-still img {
+.title-still :deep(img) {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -270,7 +273,7 @@ html:not(.dark) .home {
   transform-origin: 55% 40%;
 }
 
-html:not(.dark) .title-still img {
+html:not(.dark) .title-still :deep(img) {
   filter: saturate(0.92) brightness(1.08);
 }
 
@@ -420,7 +423,7 @@ html:not(.dark) .title-veil {
   background: var(--still-fallback);
 }
 
-.chapter-still img {
+.chapter-still :deep(img) {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -461,7 +464,7 @@ html:not(.dark) .title-veil {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .chapter:hover .chapter-still img {
+  .chapter:hover .chapter-still :deep(img) {
     transform: scale(1.04);
   }
 
@@ -553,11 +556,11 @@ html:not(.dark) .title-veil {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .title-still img {
+  .title-still :deep(img) {
     animation: none;
   }
 
-  .chapter-still img,
+  .chapter-still :deep(img),
   .text-link {
     transition: none;
   }
