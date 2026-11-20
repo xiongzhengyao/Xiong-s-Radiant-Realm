@@ -30,20 +30,18 @@
                 ZY
               </div>
             </div>
-            <div>
-              <h1 class="about-name">
-                <template
-                  v-for="(ch, i) in nameChars"
-                  :key="i"
-                >
-                  <span :class="{ accent: ch === accentChar }">{{ ch }}</span>
-                </template>
-              </h1>
-              <p class="about-title">
-                {{ $t('about.profile.title') }}
-              </p>
-            </div>
+            <h1 class="about-name">
+              <template
+                v-for="(ch, i) in nameChars"
+                :key="i"
+              >
+                <span :class="{ accent: ch === accentChar }">{{ ch }}</span>
+              </template>
+            </h1>
           </div>
+          <p class="about-title">
+            {{ $t('about.profile.title') }}
+          </p>
           <p class="about-bio">
             {{ $t('about.intro') }}
           </p>
@@ -63,7 +61,7 @@
               {{ $t('about.contactCta') }}
             </button>
             <a
-              class="btn btn-outline"
+              class="profile-quiet"
               href="/resume.html"
               target="_blank"
               rel="noopener noreferrer"
@@ -72,25 +70,11 @@
             </a>
             <button
               type="button"
-              class="btn btn-outline"
+              class="profile-quiet"
               @click="printResume"
             >
               {{ $t('about.resumePrint') }}
             </button>
-          </div>
-        </div>
-
-        <div class="skills-panel reveal reveal-delay-1">
-          <h2>{{ $t('about.sections.skills') }}</h2>
-          <div
-            v-for="group in skillGroups"
-            :key="group.name"
-            class="skill-group"
-          >
-            <h3>{{ group.name }}</h3>
-            <p class="skill-line">
-              {{ group.items.join(' · ') }}
-            </p>
           </div>
         </div>
       </aside>
@@ -113,10 +97,37 @@
               :key="post.id"
             >
               <router-link :to="blogPostPath(post)">
-                {{ displayNoteTitle(post) }}
+                <time
+                  v-if="post.date"
+                  :datetime="post.date"
+                >{{ post.date }}</time>
+                <span>{{ displayNoteTitle(post) }}</span>
               </router-link>
             </li>
           </ul>
+        </section>
+
+        <section class="skills-panel">
+          <header class="section-head">
+            <h2>{{ $t('about.sections.skills') }}</h2>
+          </header>
+          <div class="skill-grid">
+            <article
+              v-for="group in skillGroups"
+              :key="group.name"
+              class="skill-group"
+            >
+              <h3>{{ group.name }}</h3>
+              <ul class="skill-tags">
+                <li
+                  v-for="item in group.items"
+                  :key="item"
+                >
+                  {{ item }}
+                </li>
+              </ul>
+            </article>
+          </div>
         </section>
 
         <section class="timeline-section">
@@ -259,12 +270,13 @@ const printResume = () => {
 .about-board {
   position: relative;
   z-index: 1;
-  max-width: var(--max-width-wide);
+  max-width: 1180px;
   margin: 0 auto;
   padding: 48px 28px calc(var(--cinema-letterbox) + 96px);
   display: grid;
-  grid-template-columns: 340px minmax(0, 1fr);
-  gap: 36px;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 820px);
+  justify-content: center;
+  gap: 56px;
   align-items: start;
 }
 
@@ -333,9 +345,9 @@ const printResume = () => {
   font-family: var(--font-serif);
   font-size: clamp(36px, 4vw, 48px);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   line-height: 1.05;
-  margin: 0 0 8px;
+  margin: 0;
 }
 
 .about-name .accent {
@@ -343,16 +355,18 @@ const printResume = () => {
 }
 
 .about-title {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.45;
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.55;
   color: var(--color-text-secondary);
 }
 
 .about-bio {
-  margin: 0 0 14px;
-  font-size: 15px;
-  line-height: 1.65;
+  margin: 0 0 16px;
+  padding-left: 12px;
+  border-left: 2px solid var(--color-accent);
+  font-size: 16px;
+  line-height: 1.75;
   color: var(--color-text);
   white-space: pre-line;
 }
@@ -360,12 +374,20 @@ const printResume = () => {
 .profile-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 14px;
-  margin: 0 0 16px;
+  gap: 8px;
+  margin: 0 0 18px;
   padding: 0;
   list-style: none;
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 1.4;
   color: var(--color-text-secondary);
+}
+
+.profile-meta li {
+  padding: 4px 10px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-full);
+  background: var(--color-pill-bg);
 }
 
 .profile-meta a {
@@ -376,7 +398,8 @@ const printResume = () => {
 .profile-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  align-items: center;
+  gap: 12px 16px;
 }
 
 .profile-actions .btn {
@@ -384,8 +407,25 @@ const printResume = () => {
   padding: 8px 16px;
 }
 
+.profile-quiet {
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.profile-quiet:hover {
+  color: var(--color-text);
+}
+
 .skills-panel {
-  padding: 8px 0 0;
+  padding: 0;
 }
 
 .skills-panel > h2,
@@ -397,32 +437,52 @@ const printResume = () => {
   margin: 0 0 16px;
 }
 
+.skill-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
 .skill-group {
-  padding: 12px 0 14px;
-  border-top: 1px solid var(--color-divider);
+  padding: 16px;
+  border: 1px solid var(--color-divider);
+  border-radius: var(--radius-md);
+  background: var(--color-card-bg);
 }
 
 .skill-group h3 {
-  margin: 0 0 8px;
-  font-size: 12px;
+  margin: 0 0 12px;
+  font-size: 15px;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--color-text-tertiary);
+  letter-spacing: 0;
+  line-height: 1.4;
+  color: var(--color-text);
 }
 
-.skill-line {
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
   margin: 0;
-  font-size: 14px;
-  line-height: 1.7;
-  letter-spacing: 0.01em;
-  color: var(--color-text-secondary);
+  padding: 0;
+  list-style: none;
+}
+
+.skill-tags li {
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-tag-bg);
+  color: var(--color-tag-text);
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .about-main {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 56px;
   min-width: 0;
+  max-width: 820px;
 }
 
 .section-head p {
@@ -438,25 +498,41 @@ const printResume = () => {
 }
 
 .now-body {
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   max-width: 40rem;
   font-size: 16px;
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--color-text-secondary);
 }
 
 .now-notes {
   list-style: none;
+  display: grid;
+  gap: 10px;
   margin: 0;
   padding: 0;
 }
 
 .now-notes a {
-  display: block;
-  padding: 10px 0;
-  border-top: 1px solid var(--color-divider);
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border-left: 3px solid var(--color-accent);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background: var(--color-card-bg);
   color: inherit;
   text-decoration: none;
+}
+
+.now-notes time {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--color-text-tertiary);
+}
+
+.now-notes span {
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 .timeline {
@@ -475,7 +551,7 @@ const printResume = () => {
 }
 
 .timeline-item + .timeline-item {
-  margin-top: 16px;
+  margin-top: 32px;
 }
 
 .timeline-item:not(:last-child)::before {
@@ -483,7 +559,7 @@ const printResume = () => {
   position: absolute;
   left: calc(var(--time-col) + var(--dot-col) / 2);
   top: 26px;
-  bottom: -42px;
+  bottom: -58px;
   border-left: 1.5px dashed var(--color-accent-border);
   transform: translateX(-0.75px);
 }
@@ -552,7 +628,7 @@ html.dark .timeline-item.is-current .timeline-dot {
 .timeline-detail {
   margin: 0;
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.7;
   color: var(--color-text-secondary);
 }
 
@@ -567,12 +643,18 @@ html.dark .timeline-item.is-current .timeline-dot {
 
 @media (max-width: 980px) {
   .about-board {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    grid-template-columns: minmax(0, 820px);
+    gap: 40px;
   }
 
   .about-side {
     position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .skill-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -609,7 +691,7 @@ html.dark .timeline-item.is-current .timeline-dot {
 
   .timeline-item:not(:last-child)::before {
     left: 9px;
-    bottom: -34px;
+    bottom: -50px;
   }
 }
 
