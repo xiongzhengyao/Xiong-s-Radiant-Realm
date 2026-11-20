@@ -135,7 +135,7 @@
                 <span class="note-thumb">
                   <img
                     :src="coverOf(post)"
-                    alt=""
+                    :alt="altFor(coverOf(post), displayTitle(post))"
                   >
                 </span>
               </router-link>
@@ -396,7 +396,7 @@
               >
                 <img
                   :src="currentPost.image"
-                  :alt="currentPost.title"
+                  :alt="altFor(currentPost.image, displayTitle(currentPost))"
                 >
               </div>
 
@@ -565,6 +565,7 @@ import { setPageMetaOverride, clearPageMetaOverride } from '@/composables/usePag
 import ArticleAuthor from '@/components/ArticleAuthor.vue'
 import { APP_CONFIG } from '@/utils/constants'
 import { blogPostPath } from '@/modules/paths.mjs'
+import { resolveCoverAlt } from '@/utils/coverAlt.mjs'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import { useReadHistory } from '@/composables/useReadHistory'
 import { useBookmarks } from '@/composables/useBookmarks'
@@ -576,6 +577,7 @@ let scrollSaveTimer = null
 const { render: renderMarkdown } = useMarkdown()
 const { observe } = useReveal()
 const { locale, t, tm } = useI18n()
+const altFor = (src, title) => resolveCoverAlt(src, title, t)
 
 const searchInput = ref('')
 const searchQuery = useDebouncedRef(searchInput, 200)

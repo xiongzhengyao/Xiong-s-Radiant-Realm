@@ -248,6 +248,9 @@
             <p class="footer-tagline">
               {{ $t('footer.tagline') }}
             </p>
+            <p class="footer-sign">
+              {{ $t('footer.sign') }}
+            </p>
             <a
               :href="`mailto:${email}`"
               class="footer-email-btn"
@@ -535,6 +538,7 @@ html:not(.dark) .app.is-home .studio-bg {
 .app.is-home .nav-action-btn,
 .app.is-home .nav-archive,
 .app.is-home .footer-tagline,
+.app.is-home .footer-sign,
 .app.is-home .footer-link {
   color: var(--shell-ink-muted);
 }
@@ -949,8 +953,16 @@ main,
 .footer-tagline {
   font-size: 14px;
   color: var(--color-text-secondary);
-  margin: var(--space-3) 0 var(--space-4);
+  margin: var(--space-3) 0 6px;
   line-height: 1.65;
+  max-width: 28em;
+}
+
+.footer-sign {
+  margin: 0 0 var(--space-4);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-tertiary);
   max-width: 28em;
 }
 

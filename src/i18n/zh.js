@@ -50,7 +50,7 @@ export default {
     quickLinks: '快速导航'
   },
   meta: {
-    homeTitle: 'Snowhush',
+    homeTitle: 'Snowhush · Camera Driver 工程师 · 熊正耀',
     homeDesc: '把光写进系统，把安静留在页面。Camera 驱动 · 摄影与海报',
     aboutTitle: '关于我',
     aboutDesc: '熊正耀 — Camera 驱动软件工程师，曾就职于大疆、小米、博世',
@@ -68,10 +68,28 @@ export default {
     about: '关于',
     social: '社交',
     tagline: 'Quiet as fresh snow.',
+    sign: '在影像链路里把光写进系统。',
     emailCta: '写一封信',
     builtWith: '用 Vue 3 构建',
     rss: 'RSS 订阅',
     sitemap: '网站地图'
+  },
+  photos: {
+    droneWhite: '白色无人机正面特写，云台镜头居中',
+    droneStudio: '停在树前的无人机',
+    city: '城市街道与高楼',
+    desk: '窗边工位，桌上有一台笔记本',
+    laptop: '打开的笔记本电脑',
+    plant: '窗边的绿植',
+    coffee: '一杯咖啡',
+    cafe: '咖啡馆的一角',
+    rain: '雨天的街道',
+    cherry: '路边的樱花',
+    beach: '海边的沙滩',
+    sunsetSea: '日落时的海岸',
+    mountains: '远处的山',
+    book: '摊开的书',
+    profile: '熊正耀'
   },
   home: {
     hello: '你好，我是 Snowhush。',
@@ -113,6 +131,11 @@ export default {
     title: '关于',
     eyebrow: '人物',
     intro: '从博世到小米、大疆，\n在 Camera 系统里把一件事做深。',
+    now: {
+      eyebrow: '现在',
+      title: '最近在写',
+      body: '在整理 Camera 从传感器到首帧的笔记。最近公开的是 bring-up 清单和冷启动。'
+    },
     contactCta: '联系我',
     resumeCta: '打开简历',
     resumePrint: '打印本页',

@@ -4,15 +4,15 @@
       class="title-card"
       aria-label="Snowhush"
     >
-      <div
-        class="title-still"
-        aria-hidden="true"
-      >
+      <div class="title-still">
         <img
           src="/images/drone-white.jpg"
-          alt=""
+          :alt="altFor('/images/drone-white.jpg', $t('home.headline'))"
         >
-        <div class="title-veil" />
+        <div
+          class="title-veil"
+          aria-hidden="true"
+        />
       </div>
 
       <div class="title-copy reveal">
@@ -61,7 +61,7 @@
           <div class="chapter-still">
             <img
               :src="noteCover"
-              alt=""
+              :alt="altFor(noteCover, latestNote?.title)"
             >
           </div>
           <div class="chapter-meta">
@@ -85,7 +85,7 @@
           <div class="chapter-still">
             <img
               :src="featuredProject.image || '/images/drone-studio.jpg'"
-              alt=""
+              :alt="altFor(featuredProject.image || '/images/drone-studio.jpg', featuredProject.title)"
             >
           </div>
           <div class="chapter-meta">
@@ -106,7 +106,7 @@
           <div class="chapter-still">
             <img
               :src="lifeImage"
-              alt=""
+              :alt="altFor(lifeImage, lifeCaptionText)"
             >
           </div>
           <div class="chapter-meta">
@@ -148,8 +148,10 @@ import { useReadHistory } from '@/composables/useReadHistory'
 import { getPostCover } from '@/utils/postCover'
 import { formatRelativeDate } from '@/utils/relativeTime'
 import { blogPostPath, lifePath, projectPath } from '@/modules/paths.mjs'
+import { resolveCoverAlt } from '@/utils/coverAlt.mjs'
 
 const { t, tm, locale } = useI18n()
+const altFor = (src, title) => resolveCoverAlt(src, title, t)
 const blogStore = useBlogStore()
 const { companyProjects } = useCareer()
 const { continueReading } = useReadHistory()

@@ -2,6 +2,7 @@ import { watch, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { APP_CONFIG } from '@/utils/constants'
+import { formatDocumentTitle } from '@/utils/documentTitle.mjs'
 
 const pageOverride = ref(null)
 
@@ -124,7 +125,7 @@ export function usePageMeta() {
     if (override?.title) pageTitle = override.title
     if (override?.description) description = override.description
 
-    document.title = pageTitle === APP_CONFIG.TITLE ? pageTitle : `${pageTitle} · ${APP_CONFIG.TITLE}`
+    document.title = formatDocumentTitle(pageTitle, APP_CONFIG.TITLE)
     setMeta('description', description)
     setProperty('og:title', document.title)
     setProperty('og:description', description)

@@ -50,7 +50,7 @@ export default {
     quickLinks: 'Quick links'
   },
   meta: {
-    homeTitle: 'Snowhush',
+    homeTitle: 'Snowhush · Camera Driver · 熊正耀',
     homeDesc: 'Quiet as fresh snow. Camera systems · photography & posters',
     aboutTitle: 'About',
     aboutDesc: 'Xiong Zhengyao — Camera driver software engineer, previously at DJI, Xiaomi & Bosch',
@@ -68,10 +68,28 @@ export default {
     about: 'About',
     social: 'Social',
     tagline: 'Quiet as fresh snow.',
+    sign: 'Writing light into the imaging path.',
     emailCta: 'Write a letter',
     builtWith: 'Built with Vue 3',
     rss: 'RSS Feed',
     sitemap: 'Sitemap'
+  },
+  photos: {
+    droneWhite: 'Front close-up of a white drone, gimbal centered',
+    droneStudio: 'A drone parked in front of trees',
+    city: 'A city street and tall buildings',
+    desk: 'A desk by the window with a laptop',
+    laptop: 'An open laptop',
+    plant: 'A plant by the window',
+    coffee: 'A cup of coffee',
+    cafe: 'A corner of a cafe',
+    rain: 'A street in the rain',
+    cherry: 'Cherry blossoms by the road',
+    beach: 'A beach',
+    sunsetSea: 'The coast at sunset',
+    mountains: 'Mountains in the distance',
+    book: 'An open book',
+    profile: 'Xiong Zhengyao'
   },
   home: {
     hello: 'Hi, I am Snowhush.',
@@ -113,6 +131,11 @@ export default {
     title: 'About',
     eyebrow: 'Portrait',
     intro: 'From Bosch to Xiaomi and DJI,\ngoing deep on one thing inside Camera systems.',
+    now: {
+      eyebrow: 'Now',
+      title: 'Writing lately',
+      body: 'Notes on bringing a camera from the sensor to the first frame. The latest public ones are the bring-up checklist and cold start.'
+    },
     contactCta: 'Get in touch',
     resumeCta: 'Open résumé',
     resumePrint: 'Print this page',

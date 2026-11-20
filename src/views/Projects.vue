@@ -90,6 +90,7 @@
               :seed="project.id"
               :category="coverCategory(project)"
               :image="project.image"
+              :label="altFor(project.image, project.title)"
               size="lg"
             />
             <div class="reel-veil" />
@@ -106,6 +107,13 @@
               class="reel-desc"
             >
               {{ project.description }}
+            </p>
+            <p
+              v-if="project.case?.result"
+              class="reel-result"
+            >
+              <span class="reel-result-label">{{ $t('projects.caseResult') }}</span>
+              {{ project.case.result }}
             </p>
             <p
               v-if="project.tags && project.tags[0]"
@@ -178,10 +186,12 @@
 <script setup>
 import { ref, computed, watch, nextTick, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
 import { useCareer } from '@/composables/useCareer'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import CoverArt from '@/components/CoverArt.vue'
+import { resolveCoverAlt } from '@/utils/coverAlt.mjs'
 
 const props = defineProps({
   id: { type: String, default: '' }
@@ -189,6 +199,8 @@ const props = defineProps({
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
+const altFor = (src, title) => resolveCoverAlt(src, title, t)
 const { projects } = useCareer()
 const { observe } = useReveal()
 
@@ -456,6 +468,22 @@ onMounted(() => {
   font-size: 15px;
   line-height: 1.55;
   color: rgba(243, 239, 232, 0.78);
+}
+
+.reel-result {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(243, 239, 232, 0.92);
+}
+
+.reel-result-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(196, 178, 246, 0.9);
 }
 
 .reel-tag,
