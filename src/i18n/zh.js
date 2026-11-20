@@ -212,6 +212,14 @@ export default {
     breadcrumbNav: '面包屑导航',
     moreActions: '更多操作',
     relatedTitle: '相关文章',
+    paths: {
+      kicker: '阅读路径',
+      progress: '第 {n} 篇，共 {total} 篇',
+      cameraToFirstFrame: {
+        title: '从 Sensor 到首帧',
+        lede: '按动手的顺序读，不按发表日期。先认识传感器，再走总线、算参数、看带宽，最后落到 bring-up 和冷启动。'
+      }
+    },
     share: '分享',
     print: '打印',
     codeCopy: '复制',

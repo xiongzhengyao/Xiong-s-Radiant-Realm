@@ -113,6 +113,35 @@
 
         <section class="section notes-body">
           <div class="container-wide">
+            <section
+              v-if="showReadingPath"
+              class="reading-path"
+              :aria-label="$t(cameraPath.titleKey)"
+            >
+              <p class="reading-path-kicker">
+                {{ $t('blog.paths.kicker') }}
+              </p>
+              <h2 class="reading-path-title">
+                {{ $t(cameraPath.titleKey) }}
+              </h2>
+              <p class="reading-path-lede">
+                {{ $t(cameraPath.ledeKey) }}
+              </p>
+              <ol class="reading-path-steps">
+                <li
+                  v-for="step in cameraPathSteps"
+                  :key="step.slug"
+                >
+                  <router-link
+                    class="reading-path-step"
+                    :to="postPath(step.post)"
+                  >
+                    <span class="reading-path-index">{{ step.index + 1 }}</span>
+                    <span class="reading-path-name">{{ displayTitle(step.post) }}</span>
+                  </router-link>
+                </li>
+              </ol>
+            </section>
             <div
               v-if="filteredPosts.length"
               :key="`${selectedCategory}-${selectedYear}-${selectedTag}-${selectedDesignTag}-${showBookmarksOnly}-${searchQuery}`"
@@ -408,6 +437,35 @@
 
               <ArticleAuthor compact />
 
+              <nav
+                v-if="activePath"
+                class="path-continue"
+                :aria-label="$t(activePath.path.titleKey)"
+              >
+                <p class="path-continue-kicker">
+                  <span>{{ $t(activePath.path.titleKey) }}</span>
+                  <span>{{ $t('blog.paths.progress', { n: activePath.index + 1, total: activePath.total }) }}</span>
+                </p>
+                <ol class="path-continue-steps">
+                  <li
+                    v-for="step in activePath.steps"
+                    :key="step.slug"
+                    :class="{ 'is-current': step.slug === currentPost.slug }"
+                  >
+                    <span
+                      v-if="step.slug === currentPost.slug"
+                      aria-current="step"
+                    >{{ step.index + 1 }}. {{ displayTitle(step.post) }}</span>
+                    <router-link
+                      v-else
+                      :to="postPath(step.post)"
+                    >
+                      {{ step.index + 1 }}. {{ displayTitle(step.post) }}
+                    </router-link>
+                  </li>
+                </ol>
+              </nav>
+
               <section
                 v-if="relatedPosts.length"
                 class="related-posts"
@@ -565,6 +623,7 @@ import { setPageMetaOverride, clearPageMetaOverride } from '@/composables/usePag
 import ArticleAuthor from '@/components/ArticleAuthor.vue'
 import { APP_CONFIG } from '@/utils/constants'
 import { blogPostPath } from '@/modules/paths.mjs'
+import { locateInPath, readingPaths, stepsForPath } from '@/modules/reading-paths.mjs'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import { useReadHistory } from '@/composables/useReadHistory'
 import { useBookmarks } from '@/composables/useBookmarks'
@@ -697,6 +756,25 @@ const toggleBookmarkAction = () => {
 const relatedPosts = computed(() => {
   if (!currentPostId.value) return []
   return blogStore.getRelatedPosts(currentPostId.value, 3)
+})
+
+const postsBySlug = computed(() => new Map(posts.value.map(post => [post.slug, post])))
+const cameraPath = readingPaths[0]
+const cameraPathSteps = computed(() => stepsForPath(cameraPath, postsBySlug.value))
+const showReadingPath = computed(() => (
+  !searchQuery.value
+  && !showBookmarksOnly.value
+  && !selectedDesignTag.value
+  && !selectedYear.value
+  && cameraPathSteps.value.length > 1
+))
+const activePath = computed(() => {
+  const located = locateInPath(currentPost.value?.slug)
+  if (!located) return null
+  return {
+    ...located,
+    steps: stepsForPath(located.path, postsBySlug.value)
+  }
 })
 
 const bindMarkdownEnhancements = () => {
@@ -1652,6 +1730,103 @@ watch(filteredPosts, () => {
   margin-top: var(--space-16);
   padding-top: var(--space-10);
   border-top: 1px solid var(--color-divider);
+}
+
+.reading-path {
+  margin: 0 0 var(--space-12);
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.reading-path-kicker,
+.path-continue-kicker {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.reading-path-title {
+  margin: 0 0 8px;
+  font-family: var(--font-sans);
+  font-size: clamp(22px, 2vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.reading-path-lede {
+  margin: 0 0 18px;
+  max-width: 42rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.reading-path-steps,
+.path-continue-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.reading-path-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 28px;
+}
+
+.reading-path-step,
+.path-continue-steps a,
+.path-continue-steps span {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-border);
+  color: inherit;
+  text-decoration: none;
+}
+
+.reading-path-index {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.reading-path-name {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.path-continue {
+  margin-top: var(--space-16);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--color-divider);
+}
+
+.path-continue-kicker {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  letter-spacing: 0.14em;
+}
+
+.path-continue-steps .is-current span {
+  color: var(--color-accent);
+}
+
+@media (max-width: 860px) {
+  .reading-path-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .reading-path-step:hover,
+  .path-continue-steps a:hover {
+    color: var(--color-accent);
+  }
 }
 
 .related-title {
