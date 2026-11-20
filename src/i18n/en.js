@@ -212,6 +212,14 @@ export default {
     breadcrumbNav: 'Breadcrumb',
     moreActions: 'More actions',
     relatedTitle: 'Related posts',
+    paths: {
+      kicker: 'Reading path',
+      progress: '{n} of {total}',
+      cameraToFirstFrame: {
+        title: 'From the sensor to the first frame',
+        lede: 'Read these in the order you would bring a camera up, not the order they were published.'
+      }
+    },
     share: 'Share',
     print: 'Print',
     codeCopy: 'Copy',
