@@ -116,6 +116,7 @@
                 :seed="post.id"
                 :category="post.category"
                 :image="post.image"
+                :label="altFor(post.image, post.title)"
                 size="lg"
               />
               <div class="life-scene-veil" />
@@ -169,6 +170,7 @@
                 :seed="activePost.id"
                 :category="activePost.category"
                 :image="activePost.image"
+                :label="altFor(activePost.image, activePost.title)"
                 size="lg"
               />
             </div>
@@ -205,6 +207,7 @@ import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import CoverArt from '@/components/CoverArt.vue'
+import { resolveCoverAlt } from '@/utils/coverAlt.mjs'
 
 const props = defineProps({
   id: { type: String, default: '' }
@@ -213,6 +216,7 @@ const props = defineProps({
 const route = useRoute()
 const router = useRouter()
 const { t, tm, locale } = useI18n()
+const altFor = (src, title) => resolveCoverAlt(src, title, t)
 const selectedCategory = ref('all')
 const selectedYear = ref(null)
 const selectedMonth = ref(null)

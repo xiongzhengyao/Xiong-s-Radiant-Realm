@@ -96,6 +96,29 @@
       </aside>
 
       <div class="about-main">
+        <section class="now-section">
+          <header class="section-head">
+            <p>{{ $t('about.now.eyebrow') }}</p>
+            <h2>{{ $t('about.now.title') }}</h2>
+          </header>
+          <p class="now-body">
+            {{ $t('about.now.body') }}
+          </p>
+          <ul
+            v-if="recentNotes.length"
+            class="now-notes"
+          >
+            <li
+              v-for="post in recentNotes"
+              :key="post.id"
+            >
+              <router-link :to="blogPostPath(post)">
+                {{ displayNoteTitle(post) }}
+              </router-link>
+            </li>
+          </ul>
+        </section>
+
         <section class="timeline-section">
           <header class="section-head reveal">
             <p>{{ $t('about.experience.eyebrow') }}</p>
@@ -166,15 +189,27 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useReveal } from '@/composables/useReveal'
+import { useBlogStore } from '@/stores/blogStore'
+import { blogPostPath } from '@/modules/paths.mjs'
 import { APP_CONFIG } from '@/utils/constants'
 import ResponsiveImage from '@/components/ResponsiveImage.vue'
 import { getCareerYears } from '@/utils/careerYears'
 
-const { t, tm } = useI18n()
+const { t, tm, locale } = useI18n()
+const blogStore = useBlogStore()
 useReveal()
+
+const recentNotes = computed(() => blogStore.getRecentPosts(2))
+const displayNoteTitle = post => (
+  locale.value === 'en' && post?.titleEn ? post.titleEn : post?.title
+)
+
+onMounted(() => {
+  blogStore.ensureLoaded()
+})
 
 const email = APP_CONFIG.EMAIL
 const profileImage = APP_CONFIG.IMAGES.PROFILE
@@ -396,6 +431,32 @@ const printResume = () => {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-accent);
+}
+
+.now-section {
+  margin-bottom: 8px;
+}
+
+.now-body {
+  margin: 0 0 14px;
+  max-width: 40rem;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.now-notes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.now-notes a {
+  display: block;
+  padding: 10px 0;
+  border-top: 1px solid var(--color-divider);
+  color: inherit;
+  text-decoration: none;
 }
 
 .timeline {
